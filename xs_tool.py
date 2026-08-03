@@ -9,7 +9,10 @@ def process_xs_template(folder_path, template_filename="template.xs", output_fil
         print(f"Error: Could not find {template_path}")
         return
 
-    # UPDATED: Included / and \ to support subfolder paths like "common/ui.xs"
+    # Pattern for raw copy: matches 4 or more slashes like "//// common/nottud.xs"
+    raw_comment_pattern = re.compile(r'^(\s*)/{4,}\s*([a-zA-Z0-9_/\.-]+\.xs).*$')
+
+    # Pattern for formatted injection: matches standard double slash "// common/ui.xs"
     comment_pattern = re.compile(r'^(\s*)//\s*([a-zA-Z0-9_/\.-]+\.xs).*$')
     
     # Matches lines like: include "ui.xs"; or #include "ui.xs";
@@ -23,15 +26,30 @@ def process_xs_template(folder_path, template_filename="template.xs", output_fil
     MAX_LENGTH = 80
 
     for line_num, line in enumerate(template_lines):
+        raw_match = raw_comment_pattern.match(line)
         match = comment_pattern.match(line)
-        
-        if match:
-            # Normalize slashes for operating system compatibility
+
+        # 1. RAW COPY BEHAVIOR (////)
+        if raw_match:
+            include_filename = os.path.normpath(raw_match.group(2))
+            include_path = os.path.join(folder_path, include_filename)
+
+            if os.path.exists(include_path):
+                print(f"Directly copying raw content from {include_filename}...")
+                with open(include_path, 'r', encoding='utf-8') as inc_file:
+                    for inner_line in inc_file:
+                        output_lines.append(inner_line)
+            else:
+                print(f"Warning: File '{include_filename}' referenced on line {line_num + 1} was not found. Leaving comment as is.")
+                output_lines.append(line)
+
+        # 2. FORMATTED INJECTION BEHAVIOR (//)
+        elif match:
             include_filename = os.path.normpath(match.group(2))
             include_path = os.path.join(folder_path, include_filename)
 
             if os.path.exists(include_path):
-                print(f"Injecting {include_filename}...")
+                print(f"Injecting formatted {include_filename}...")
                 with open(include_path, 'r', encoding='utf-8') as inc_file:
                     for inner_line in inc_file:
                         inner_line = inner_line.rstrip('\r\n')
@@ -61,20 +79,21 @@ def process_xs_template(folder_path, template_filename="template.xs", output_fil
             else:
                 print(f"Warning: File '{include_filename}' referenced on line {line_num + 1} was not found. Leaving comment as is.")
                 output_lines.append(line)
+
+        # 3. STANDARD LINE (NO INJECTION)
         else:
             output_lines.append(line)
 
-    # If no output path is provided, default to folder_path / output_filename
+    # Output path resolution
     if not output_path:
         final_output_path = os.path.join(folder_path, output_filename)
     else:
-        # If output_path is a directory, append default filename to it
         if os.path.isdir(output_path):
             final_output_path = os.path.join(output_path, output_filename)
         else:
             final_output_path = output_path
 
-    # Ensure target parent directories exist if a custom output path was given
+    # Ensure parent directory exists
     output_dir = os.path.dirname(final_output_path)
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
@@ -86,8 +105,6 @@ def process_xs_template(folder_path, template_filename="template.xs", output_fil
 
 if __name__ == "__main__":
     target_folder = input("Enter the path to the project folder: ").strip().strip('"').strip("'")
-    
     custom_output = input("Enter output path (file or directory) [Press Enter for default]: ").strip().strip('"').strip("'")
     
-    # Pass custom_output or None if empty string
     process_xs_template(target_folder, output_path=custom_output if custom_output else None)

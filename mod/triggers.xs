@@ -1,6 +1,7 @@
 include "../common/ui.xs";
 include "config.xs";
 include "data/player.xs"
+include "common/ui.xs"
 
 rule FIRST_TRIGGER
 runImmediately
@@ -25,4 +26,9 @@ active
         trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
     }
     initPlayerData();
+    UiSystem system = uiSystemArray[1];
+    system.enter();
+    if(trCurrentPlayer() == 1){
+        setUiVisible(false);
+    }
 }

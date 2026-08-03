@@ -1,4 +1,4 @@
-include "lib/rm_core.xs";
+//// common/nottud.xs
 
 void generate()
 {
@@ -7,7 +7,7 @@ void generate()
     rmInitializeLand(cTerrainDefault, 5.00);
 
     // mod/config.xs
-    // mod/utils/map.xs
+    createTypedScheduler("scheduler", buildStringTypeArray());    
     // common/ui.xs
     // mod/data/card.xs
     // mod/data/hand.xs
