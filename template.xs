@@ -7,7 +7,6 @@ void generate()
     rmInitializeLand(cTerrainDefault, 5.00);
 
     // mod/config.xs
-    createTypedScheduler("scheduler", buildStringTypeArray());    
     // common/ui.xs
     // mod/data/card.xs
     // mod/data/hand.xs

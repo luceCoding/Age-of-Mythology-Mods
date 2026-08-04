@@ -1200,29 +1200,3 @@ string displayFloat(float value = 0.0, int maxDecimals = 6){
     }
     return (xsStringSubstring(valueAsString, 0, xsStringLength(valueAsString) - 2));
 }
-
-//Map code
-
-class ThemeForest {
-    int forestLow = -1;
-    string forestLowName = "";
-    string forestLowTree = "";
-    string forestHighName = "";
-    string forestHighTree = "";
-};
-
-ThemeForest createThemeForest(int forestLow = -1, string forestLowName = "", string forestLowTree = "", string forestHighName = "", string forestHighTree = ""){
-    ThemeForest entry;        
-    entry.forestLow = forestLow;
-    entry.forestLowName = forestLowName;
-    entry.forestLowTree = forestLowTree;
-    entry.forestHighName = forestHighName;
-    entry.forestHighTree = forestHighTree;
-    return entry;
-}
-
-int c = cNumberPlayers;
-int mapSizeTilesX = -1;
-int mapSizeTilesZ = -1;
-int mapSizeX = -1;
-int mapSizeZ = -1;

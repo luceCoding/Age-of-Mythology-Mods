@@ -5,87 +5,6 @@ const int VERTICAL_UI_PIXELS = 1080;
 float[] playerScreenIconSizeCompensationValue = default;
 const string(int) EMPTY_COUNTER_TEXT = [](int p = 1) -> string { return ""; };
 
-class CounterManager {
-    int p = -1;
-    bool visible = true;
-    string(int) lineLambda0 = EMPTY_COUNTER_TEXT;
-    string(int) lineLambda1 = EMPTY_COUNTER_TEXT;
-    string(int) lineLambda2 = EMPTY_COUNTER_TEXT;
-    
-    void updateCounters(){
-        if(p == trCurrentPlayer()){
-            trCounterAbort("0");
-            trCounterAbort("1");
-            trCounterAbort("2");
-        }
-        if(visible){
-            string line0 = lineLambda0(p);
-            string line1 = lineLambda1(p);
-            string line2 = lineLambda2(p);
-            if(line0 != "" && p == trCurrentPlayer()){
-                trCounterAddTime("0", -999999, 0, line0);
-            }
-            if(line1 != "" && p == trCurrentPlayer()){
-                trCounterAddTime("1", -999999, 0, line1);
-            }
-            if(line2 != "" && p == trCurrentPlayer()){
-                trCounterAddTime("2", -999999, 0, line2);
-            }
-        }
-    }
-    
-    void setVisible(bool newVisible = false){
-        visible = newVisible;
-        updateCounters();
-    }
-    
-    void setLine0(string(int) lineLambda = EMPTY_COUNTER_TEXT){
-        lineLambda0 = lineLambda;
-        if(visible){
-            updateCounters();
-        }
-    }
-    
-    void setLine1(string(int) lineLambda = EMPTY_COUNTER_TEXT){
-        lineLambda1 = lineLambda;
-        if(visible){
-            updateCounters();
-        }
-    }
-    
-    void setLine2(string(int) lineLambda = EMPTY_COUNTER_TEXT){
-        lineLambda2 = lineLambda;
-        if(visible){
-            updateCounters();
-        }
-    }
-};
-
-CounterManager[] counterManagerArray = default;
-
-void initialiseCounters(){
-    counterManagerArray.resize(c + 1);
-    for(int p = 1; p <= c; p++){
-        CounterManager counterManager = counterManagerArray[p];
-        counterManager.p = p;
-        counterManagerArray[p] = counterManager;
-    }
-    scheduler.add(1000, [](int iterations = 1) -> bool {
-        for(int p = 1; p <= c; p++){
-            CounterManager counterManager = counterManagerArray[p];
-            counterManager.updateCounters();
-            counterManagerArray[p] = counterManager;
-        }
-        return true;
-    });
-}
-
-void counterManagerSetVisible(int p = 1, bool visible = false){
-    CounterManager counterManager = counterManagerArray[p];
-    counterManager.setVisible(visible);
-    counterManagerArray[p] = counterManager;
-}
-
 void selectSingle(int unitId = -1){
     trUnitSelectClear();
     trUnitSelectByID(unitId);
@@ -996,7 +915,6 @@ void minimapSafeClickableWithHover(ref UiSystem system, float x = 0.0, float y =
 }
 
 void setUiVisible(bool visible = true){
-    counterManagerSetVisible(trCurrentPlayer(), visible);
     if(visible){
         trExecuteConsoleCommand("gadgetReal(AGameMinimap)");
     } else {
