@@ -1,10 +1,8 @@
 include "lib/rm_core.xs";
-include "hand.xs"
 
 class PlayerData {
     int m_playerUnitID = -1;
     int m_playerProtounitID = -1;
-    HandData m_playerHandData;
 };
 
 PlayerData[] PlayerDataArray = default;

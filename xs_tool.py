@@ -34,7 +34,7 @@ def process_xs_template(
     with open(template_path, "r", encoding="utf-8") as f:
         template_lines = f.readlines()
 
-    MAX_LENGTH = 80
+    MAX_LENGTH = 200
 
     for line_num, line in enumerate(template_lines):
         raw_match = raw_comment_pattern.match(line)

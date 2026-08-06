@@ -1,12 +1,12 @@
 include "lib/rm_core.xs";
 include "card.xs"
 
-class HandData {
-    int m_currMaxHandSize = 3;
+class BenchData {
+    int m_currMaxBenchSize = 3;
     CardData[] m_cardArray = default;
 
-    bool addCard(CardData card){
-        if (m_cardArray.size() >= m_currMaxHandSize){
+    bool addCard(ref CardData card){
+        if (m_cardArray.size() >= m_currMaxBenchSize){
             return false;
         }
         m_cardArray.add(card);
@@ -14,6 +14,6 @@ class HandData {
     }
 
     void incrementMaxHandSize(){
-        m_currMaxHandSize = m_currMaxHandSize + 1;
+        m_currMaxBenchSize = m_currMaxBenchSize + 1;
     }
 };

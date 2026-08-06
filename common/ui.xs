@@ -894,7 +894,7 @@ string minimapSafeSuffix(float posY = 0.0){
 }
 
 void minimapSafeDisplay(ref UiSystem system, float x = 0.0, float y = 0.0, string content = ""){
-    system.addDisplay(x, -0.5, content + minimapSafeSuffix(y));
+    system.addDisplay(x, y, content + minimapSafeSuffix(y));
 }
 
 void minimapSafeDisplayWithHover(ref UiSystem system, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = "", string rolloverName = "", string rolloverDescription = ""){
