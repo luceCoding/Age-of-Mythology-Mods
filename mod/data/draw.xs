@@ -1,8 +1,6 @@
 include "lib/rm_core.xs";
 include "card.xs";
 
-CardData g_nullCard;
-
 class DrawData {
     CardData[] m_cardArray = default;
 

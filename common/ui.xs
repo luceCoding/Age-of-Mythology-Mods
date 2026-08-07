@@ -924,3 +924,7 @@ void setUiVisible(bool visible = true){
         trUIPanelVisibility(i, visible);
     }
 }
+
+string getIconPathFormat(string iconPath = "", int size = 128){
+    return "<icon=(" + size + ")(" + iconPath + ")>";
+}

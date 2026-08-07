@@ -1,6 +1,6 @@
 include "lib/rm_core.xs";
 
-int g_uuidCounter = 0;
+int g_uuidCardCounter = 0;
 
 class CardData {
 
@@ -11,8 +11,12 @@ class CardData {
 
     void setCard(ref CardParameters params){
         m_cType = params.getcType();
-        m_uuid = g_uuidCounter;
-        g_uuidCounter = g_uuidCounter + 1;
+        m_uuid = g_uuidCardCounter;
+        g_uuidCardCounter = g_uuidCardCounter + 1;
+    }
+
+    int getUuid(){
+        return m_uuid;
     }
 
     bool isNull(){

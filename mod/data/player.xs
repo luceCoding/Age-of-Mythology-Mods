@@ -3,13 +3,11 @@ include "lib/rm_core.xs";
 class PlayerData {
     int m_playerUnitID = -1;
     int m_playerProtounitID = -1;
+    BenchData m_bench;
 };
 
-PlayerData[] PlayerDataArray = default;
+PlayerData[] g_PlayerDataArray = default;
 
 void initPlayerData(){
-    PlayerDataArray.resize(cNumberPlayers + 1);
-    for(int p = 0; p < cNumberPlayers; p++){
-        PlayerData pd = PlayerDataArray[p];
-    }
+    g_PlayerDataArray = new PlayerData(cNumberPlayers);
 }
