@@ -2,7 +2,7 @@ include "card.xs";
 include "deck.xs";
 include "cardParameters.xs";
 
-const int MAX_CARD_COPIES = 5;
+const int MAX_CARD_COPIES = 7;
 
 void addCardIntoDeck(int cType = -1, int age = 0, int cost = 1,
                     string titleText = "", string hoverText = "", string iconPath = ""){
@@ -11,8 +11,8 @@ void addCardIntoDeck(int cType = -1, int age = 0, int cost = 1,
     cTypeToCardParametersMap.put(cType, params);
     for(int i = 0; i < MAX_CARD_COPIES; i++) {
         CardData card;
-        card.setCard(params);
-        g_shop.addCardIntoDeck(card, age);
+        card.setCard(params, i);
+        g_shop.addCardIntoDeck(card);
     }
 }
 

@@ -67,3 +67,14 @@ class CardParameters {
         return m_params.strings[1];
     }
 };
+
+Parameters createParametersCopy(CardParameters params){
+    Parameters cardParams = createParameters();
+    for(int j = 0; j < params.m_params.ints.size(); j++) {
+        cardParams.ints.add(params.m_params.ints[j]);
+    }
+    for(int j = 0; j < params.m_params.strings.size(); j++) {
+        cardParams.strings.add(params.m_params.strings[j]);
+    }
+    return cardParams;
+}

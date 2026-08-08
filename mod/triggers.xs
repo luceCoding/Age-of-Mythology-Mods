@@ -37,7 +37,6 @@ active
 {
    if ((((xsGetTime() - (cActivationTime / 1000)) >= 1) != false))
    {
-        trSoundPlayFN("music\battle\rot_loaf.wav", -1, "","");
         openShop(1);
         xsDisableSelf();
    }

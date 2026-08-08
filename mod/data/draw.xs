@@ -4,6 +4,10 @@ include "card.xs";
 class DrawData {
     CardData[] m_cardArray = default;
 
+    int getSize(){
+        return m_cardArray.size();
+    }
+
     bool addCard(ref CardData card){
         if (m_cardArray.size() >= config_MAX_DRAWN_CARDS){
             return false;
@@ -31,5 +35,24 @@ class DrawData {
         m_cardArray.resize(lastIndex);
         log(3, "Removed card from draw " + removedCard.m_cType + ", size: " + m_cardArray.size());
         return removedCard;
+    }
+
+    CardData removeCardByUUID(int uuid = -1){        
+        for(int i = 0; i < m_cardArray.size(); i++) {
+            CardData currCard = m_cardArray[i];
+            if (currCard.getUuid() == uuid) {
+                int lastIndex = m_cardArray.size() - 1;
+                
+                // Overwrite with last element and shrink array
+                m_cardArray[i] = m_cardArray[lastIndex];
+                m_cardArray.resize(lastIndex);
+                
+                log(3, "Removed card from draw " + currCard.m_cType + ", size: " + m_cardArray.size());
+                return currCard;
+            }
+        }
+        
+        CardData emptyCard;
+        return emptyCard;
     }
 };
