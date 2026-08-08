@@ -4,8 +4,14 @@ include "data/bench.xs";
 include "data/card.xs";
 
 const int TOTAL_AGES = 5;
+const float SELL_MULTIPLIER = 0.8;
 int[] g_selectedUUIDs = default;
 bool[] g_shopNeedsRefresh = default;
+
+void createButton(ref UiSystem system, float drawPosx = 0.0, float drawPosY = 0.0, string buttonName = ""){
+    minimapSafeDisplay(system, drawPosx, drawPosY, getIconPathFormat("resources/front_end/Ornate_Buttons/BtnOrnate_Large_On.png", 128));
+    minimapSafeDisplay(system, drawPosx, drawPosY + 0.05, buttonName);
+}
 
 class Shop {
     DeckData[] m_decks = default;
@@ -14,10 +20,10 @@ class Shop {
 
     void init(){
         m_decks = new DeckData(TOTAL_AGES);
-        m_currDraws = new DrawData(cNumberPlayers);
-        m_benches = new BenchData(cNumberPlayers);
-        g_selectedUUIDs = new int(cNumberPlayers, -1);
-        g_shopNeedsRefresh = new bool(cNumberPlayers, false);
+        m_currDraws = new DrawData(cNumberPlayers + 1);
+        m_benches = new BenchData(cNumberPlayers + 1);
+        g_selectedUUIDs = new int(cNumberPlayers + 1, -1);
+        g_shopNeedsRefresh = new bool(cNumberPlayers + 1, false);
     }
 
     void addCardIntoDeck(ref CardData card){
@@ -56,8 +62,9 @@ class Shop {
         float additionalYOffset = 0;
         int uuid = currCard.getUuid();
         int selectedUUID = g_selectedUUIDs[p];
+        bool isSelected = uuid == selectedUUID;
         float iconMultiper = 1.0;
-        if (uuid == selectedUUID){
+        if (isSelected){
             iconMultiper = 1.25;
         }
 
@@ -105,76 +112,22 @@ class Shop {
         }
 
         // Cost
-        if (!(isBench)) {
-            int cost = params.getCost();
-            minimapSafeDisplay(system, posX, posY - 0.0275, cost + getIconPathFormat("resources/spectator/resource_icons/gold.png", 32));
+        int cost = params.getCost();
+        if (isBench) {
+            cost = cost * SELL_MULTIPLIER;
         }
+        minimapSafeDisplay(system, posX + 0.045 * iconMultiper, posY, getIconPathFormat("resources/spectator/resource_icons/gold.png", miniIconSize * 1.2));
+        if (isSelected){
+            minimapSafeDisplay(system, posX + 0.045 * iconMultiper, posY + (0.0075 * iconMultiper) , getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize / 2));
+        }
+        else{
+            minimapSafeDisplay(system, posX + 0.045 * iconMultiper, posY + (0.005 * iconMultiper) , getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize / 2));
+        }
+        minimapSafeDisplay(system, posX + 0.045 * iconMultiper, posY + 0.01 * iconMultiper, "" + cost);
 
         // Title
         string title = params.getTitle();
         minimapSafeDisplay(system, posX, posY + 0.12 * iconMultiper, title);
-    }
-
-    void renderDraws(ref UiSystem system, int p = 1){
-        float offsetX = 0.15;
-        DrawData currDraw = m_currDraws[p];
-        float posX = -((config_MAX_DRAWN_CARDS - 1) * offsetX) / 2.0;
-        float posY = -0.35;
-        CardData[] currCards = currDraw.m_cardArray;
-        for(int i = 0; i < currCards.size(); i++) {
-            CardData currCard = currCards[i];
-            renderCard(system, currCard, p, posX, posY);
-            posX = posX + offsetX;
-        }
-    }
-
-    void renderBench(ref UiSystem system, int p = 1) {
-        BenchData bench = m_benches[p];
-        CardData[] currCards = bench.getCards();
-        int totalCards = currCards.size();
-
-        if (totalCards == 0) return;
-
-        // Configurable layout parameters
-        float offsetX = 0.15;
-        float offsetY = 0.20;
-        int maxCardsPerRow = 6;
-        int maxRows = 3;
-
-        // Determine row count dynamically (capped at 3)
-        int numRows = (totalCards + maxCardsPerRow - 1) / maxCardsPerRow; // Ceiling division
-        if (numRows > maxRows) numRows = maxRows;
-
-        // Base cards per row (distributes remainders evenly across upper rows)
-        int cardsPerRow = (totalCards + numRows - 1) / numRows;
-
-        // Calculate vertical starting position (top row) to keep rows centered around Y = 0.0
-        float startY = ((numRows - 1) * offsetY) / 2.0;
-
-        for (int i = 0; i < totalCards; i++) {
-            CardData currCard = currCards[i];
-
-            // Determine row index (0 = top, 1 = middle, 2 = bottom) and index within that row
-            int rowIndex = i / cardsPerRow;
-            int indexInRow = i % cardsPerRow;
-
-            // Calculate actual card count for this specific row (handles partial bottom rows)
-            int rowCardCount = cardsPerRow;
-            if (rowIndex == numRows - 1) {
-                rowCardCount = totalCards - (rowIndex * cardsPerRow);
-            }
-
-            // Horizontal position (centered for this row)
-            float startX = -((rowCardCount - 1) * offsetX) / 2.0;
-            float posX = startX + (indexInRow * offsetX);
-
-            // Vertical position (top row is positive Y, moving down per row)
-            float posY = startY - (rowIndex * offsetY);
-
-            renderCard(system, currCard, p, posX, posY + 0.1, true);
-        }
-
-        log(3, "Bench " + totalCards);
     }
 
     void draw(int p = 0){
@@ -201,62 +154,176 @@ class Shop {
             if (removedCard.isNull() == false){
                     bench.addCard(removedCard);
                     g_selectedUUIDs[p] = -1; // Deselect card
+                    g_shopNeedsRefresh[p] = true;
             }
         }
-        g_shopNeedsRefresh[p] = true;
     }
 
-    void sell(int p = 0){
+    void lock(int p = 0){
 
     }
 
     void buyXP(int p = 0){
 
     }
+
+    void sell(int p = 0){
+        BenchData bench = m_benches[p];
+        CardData removedCard = bench.removeCardByUUID(g_selectedUUIDs[p]);
+        if (removedCard.isNull() == false){
+                addCardIntoDeck(removedCard);
+                g_selectedUUIDs[p] = -1; // Deselect card
+                g_shopNeedsRefresh[p] = true;
+        }
+    }
+
+    void deploy(int p = 0){
+
+    }
 };
 
 Shop g_shop;
 
+    void renderDraws(ref UiSystem system, int p = 1) {
+        DrawData currDraw = g_shop.m_currDraws[p];
+        CardData[] currCards = currDraw.m_cardArray;
+        int cardCount = currCards.size();
+
+        if (cardCount == 0) return;
+
+        float offsetX = 0.15;
+        float posY = -0.375;
+        float posX = -((cardCount - 1) * offsetX) / 2.0;
+
+        for (int i = 0; i < cardCount; i++) {
+            CardData currCard = currCards[i];
+            g_shop.renderCard(system, currCard, p, posX, posY);
+            if (currCard.getUuid() == g_selectedUUIDs[p]) {
+                CardParameters params = currCard.getCardParameters();
+                int cost = params.getCost() * 0.75;
+                float btnPosY = posY - 0.1; 
+
+                Parameters cardParams = createParametersCopy(params);
+                int uuid = currCard.getUuid();
+                cardParams.ints[0] = uuid;
+
+                minimapSafeClickable(system, 
+                                    posX - 0.06, btnPosY + 0.035, 0.1, 0.055,
+                                    "",
+                                    cardParams,
+                                    [](int p = 1, ref Parameters parameters) -> void {
+                        g_shop.buy(p);
+                    }
+                );
+                minimapSafeClickable(system, 
+                                    posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
+                                    "",
+                                    cardParams,
+                                    [](int p = 1, ref Parameters parameters) -> void {
+                        g_shop.lock(p);
+                    }
+                );
+                createButton(system, posX - 0.06, btnPosY, "BUY");
+                createButton(system, posX + 0.06, btnPosY, "LOCK");
+            }
+            posX = posX + offsetX;
+        }
+    }
+
+void renderBench(ref UiSystem system, int p = 1) {
+    BenchData bench = g_shop.m_benches[p];
+    CardData[] currCards = bench.getCards();
+    int totalCards = currCards.size();
+
+    if (totalCards == 0) return;
+
+    // Configurable layout parameters
+    float offsetX = 0.15;
+    float offsetY = 0.225;
+    int maxCardsPerRow = 6;
+    int maxRows = 3;
+
+    // Determine row count dynamically (capped at 3)
+    int numRows = (totalCards + maxCardsPerRow - 1) / maxCardsPerRow; // Ceiling division
+    if (numRows > maxRows) numRows = maxRows;
+
+    // Base cards per row (distributes remainders evenly across upper rows)
+    int cardsPerRow = (totalCards + numRows - 1) / numRows;
+
+    // Calculate vertical starting position (top row) to keep rows centered around Y = 0.0
+    float startY = ((numRows - 1) * offsetY) / 2.0;
+
+    for (int i = 0; i < totalCards; i++) {
+        CardData currCard = currCards[i];
+
+        // Determine row index (0 = top, 1 = middle, 2 = bottom) and index within that row
+        int rowIndex = i / cardsPerRow;
+        int indexInRow = i % cardsPerRow;
+
+        // Calculate actual card count for this specific row (handles partial bottom rows)
+        int rowCardCount = cardsPerRow;
+        if (rowIndex == numRows - 1) {
+            rowCardCount = totalCards - (rowIndex * cardsPerRow);
+        }
+
+        // Horizontal position (centered for this row)
+        float startX = -((rowCardCount - 1) * offsetX) / 2.0;
+        float posX = startX + (indexInRow * offsetX);
+
+        // Vertical position (top row is positive Y, moving down per row)
+        float posY = startY - (rowIndex * offsetY);
+
+        g_shop.renderCard(system, currCard, p, posX, posY + 0.1, true);
+
+        if (currCard.getUuid() == g_selectedUUIDs[p]) {
+            CardParameters params = currCard.getCardParameters();
+            int cost = params.getCost() * 0.75;
+            float btnPosY = posY + 0.005; 
+
+            Parameters cardParams = createParametersCopy(params);
+            int uuid = currCard.getUuid();
+            cardParams.ints[0] = uuid;
+
+            minimapSafeClickable(system, 
+                                posX - 0.06, btnPosY + 0.035, 0.1, 0.055,
+                                "",
+                                cardParams,
+                                [](int p = 1, ref Parameters parameters) -> void {
+                    g_shop.sell(p);
+                }
+            );
+            minimapSafeClickable(system, 
+                                posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
+                                "",
+                                cardParams,
+                                [](int p = 1, ref Parameters parameters) -> void {
+                    g_shop.deploy(p);
+                }
+            );
+            createButton(system, posX - 0.06, btnPosY, "SELL");
+            createButton(system, posX + 0.06, btnPosY, "DEPLOY");
+        }
+    }
+}
+
 void renderShop(ref UiSystem system, int p = 1){
-    g_shop.renderDraws(system, p);
-    g_shop.renderBench(system, p);
+    renderDraws(system, p);
+    renderBench(system, p);
 
     string[] buttonNames = new string(0, "");
-    buttonNames.add("BUY");
-    buttonNames.add("SELL");
     buttonNames.add("DRAW");
     buttonNames.add("BUY XP");
     float drawPosx = -0.5;
-    float drawPosY = -0.25;
     float yOffset = 0.075;
-    for(int i = 0; i < 4; i++) {
-        // Render draw button
-        minimapSafeDisplay(system, drawPosx, drawPosY, getIconPathFormat("resources/front_end/Ornate_Buttons/BtnOrnate_Large_On.png", 128));
-        minimapSafeDisplay(system, drawPosx, drawPosY + 0.05, buttonNames[i]);
+    float drawPosYStart = -0.325;
+
+    float drawPosY = drawPosYStart;
+    for(int i = 0; i < buttonNames.size(); i++) {
+        createButton(system, drawPosx, drawPosY, buttonNames[i]);
         drawPosY = drawPosY - yOffset;
     }
 
-    drawPosx = -0.5;
-    drawPosY = -0.25;
-    yOffset = 0.075;
-    minimapSafeClickable(system, 
-                        drawPosx, drawPosY + 0.035, 0.1, 0.055,
-                        "",
-                        EMPTY_PARAMETERS,
-                        [](int p = 1, ref Parameters parameters) -> void {
-            g_shop.buy(p);
-        }
-    );
-    drawPosY = drawPosY - yOffset;
-    minimapSafeClickable(system, 
-                        drawPosx, drawPosY + 0.035, 0.1, 0.055,
-                        "",
-                        EMPTY_PARAMETERS,
-                        [](int p = 1, ref Parameters parameters) -> void {
-            g_shop.sell(p);
-        }
-    );
-    drawPosY = drawPosY - yOffset;
+    drawPosY = drawPosYStart;
     minimapSafeClickable(system, 
                         drawPosx, drawPosY + 0.035, 0.1, 0.055,
                         "",
@@ -286,7 +353,7 @@ void openShop(int p = 1){
         setUiVisible(false);
         trSetObscuredUnits(false);
     }
-    renderShop(system, 1);
+    renderShop(system, p);
     uiSystemArray[p] = system;
 }
 
@@ -298,7 +365,7 @@ void refreshShop(int p = 1){
             setUiVisible(false);
             trSetObscuredUnits(false);
         }
-        renderShop(system, 1);
+        renderShop(system, p);
         uiSystemArray[p] = system;
     }
 }

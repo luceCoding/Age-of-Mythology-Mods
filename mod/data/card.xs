@@ -5,7 +5,7 @@ IntToCardParameterscTypeToCardParametersMap cTypeToCardParametersMap;
 
 class CardData {
 
-    bool m_locked = false;
+    bool m_isLocked = false;
     int m_cType = -1;
     int m_count = 1;
     int m_uuid = -1;
@@ -28,6 +28,18 @@ class CardData {
 
     int getSuit(){
         return m_suit;
+    }
+
+    void lockCard(){
+        m_isLocked = true;
+    }
+
+    void unlockCard(){
+        m_isLocked = false;
+    }
+
+    bool isLocked(){
+        return m_isLocked;
     }
 
     bool isNull(){

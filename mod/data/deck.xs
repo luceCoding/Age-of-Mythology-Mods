@@ -7,7 +7,7 @@ class DeckData {
     // Adds a card to the deck
     void addCard(ref CardData card) {
         m_cardArray.add(card);
-        log(3, "Added card to deck " + card.m_cType);
+        log(3, "Added card to deck " + card.getUuid());
     }
 
     // Draws the top card (last element in the array)
@@ -22,7 +22,7 @@ class DeckData {
 
         // Shrink the array by 1 to remove the top card
         m_cardArray.resize(lastIndex); 
-        log(3, "Popped card from deck " + drawnCard.m_cType + ", size: " + m_cardArray.size());
+        log(3, "Popped card from deck " + drawnCard.getUuid() + ", size: " + m_cardArray.size());
         return drawnCard;
     }
 
@@ -43,7 +43,7 @@ class DeckData {
 
         // Pop the last card off the deck
         m_cardArray.resize(lastIndex);
-        log(3, "Popped card from deck " + drawnCard.m_cType + ", size: " + m_cardArray.size());
+        log(3, "Popped card from deck " + drawnCard.getUuid() + ", size: " + m_cardArray.size());
         return drawnCard;
     }
 

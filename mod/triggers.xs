@@ -37,7 +37,9 @@ active
 {
    if ((((xsGetTime() - (cActivationTime / 1000)) >= 1) != false))
    {
-        openShop(1);
+        for(int p = 1; p <= cNumberPlayers; p = p + 1){
+            openShop(p);
+        }
         xsDisableSelf();
    }
 }

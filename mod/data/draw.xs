@@ -13,7 +13,7 @@ class DrawData {
             return false;
         }
         m_cardArray.add(card);
-        log(3, "Added card to draw " + card.m_cType + ", size: " + m_cardArray.size());
+        log(3, "Added card to draw " + card.getUuid() + ", size: " + m_cardArray.size());
         return true;
     }
 
@@ -33,7 +33,7 @@ class DrawData {
 
         // Pop the last card off the deck
         m_cardArray.resize(lastIndex);
-        log(3, "Removed card from draw " + removedCard.m_cType + ", size: " + m_cardArray.size());
+        log(3, "Removed card from draw " + removedCard.getUuid() + ", size: " + m_cardArray.size());
         return removedCard;
     }
 
@@ -47,7 +47,7 @@ class DrawData {
                 m_cardArray[i] = m_cardArray[lastIndex];
                 m_cardArray.resize(lastIndex);
                 
-                log(3, "Removed card from draw " + currCard.m_cType + ", size: " + m_cardArray.size());
+                log(3, "Removed card from draw " + currCard.getUuid() + ", size: " + m_cardArray.size());
                 return currCard;
             }
         }

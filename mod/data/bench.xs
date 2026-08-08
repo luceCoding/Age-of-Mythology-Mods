@@ -13,6 +13,25 @@ class BenchData {
         return true;
     }
 
+    CardData removeCardByUUID(int uuid = -1){        
+        for(int i = 0; i < m_cardArray.size(); i++) {
+            CardData currCard = m_cardArray[i];
+            if (currCard.getUuid() == uuid) {
+                int lastIndex = m_cardArray.size() - 1;
+                
+                // Overwrite with last element and shrink array
+                m_cardArray[i] = m_cardArray[lastIndex];
+                m_cardArray.resize(lastIndex);
+                
+                log(3, "Removed card from bench " + currCard.getUuid() + ", size: " + m_cardArray.size());
+                return currCard;
+            }
+        }
+        
+        CardData emptyCard;
+        return emptyCard;
+    }
+
     CardData[] getCards(){
         return m_cardArray;
     }

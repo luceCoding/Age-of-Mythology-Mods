@@ -8,5 +8,5 @@ class PlayerData {
 PlayerData[] g_PlayerDataArray = default;
 
 void initPlayerData(){
-    g_PlayerDataArray = new PlayerData(cNumberPlayers);
+    g_PlayerDataArray = new PlayerData(cNumberPlayers + 1);
 }
