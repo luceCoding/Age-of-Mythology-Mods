@@ -221,9 +221,7 @@ class Shop {
         BenchData bench = m_benches[p];
         CardData card = bench.getCardWithUUID(uuid);
         if (card.isNull()) return;
-        PlayerData player = g_PlayerDataArray[p];
-        player.deployCard(card);
-        g_PlayerDataArray[p] = player;
+        bench.deployCard(card);
         g_shopNeedsRefresh[p] = true;
     }
 
@@ -343,9 +341,7 @@ void renderBench(ref UiSystem system, int p = 1) {
             int uuid = currCard.getUuid();
             cardParams.ints[0] = uuid;
 
-            PlayerData player = g_PlayerDataArray[p];
-            bool isDeployed = player.isDeployed(currCard);
-            if (isDeployed){
+            if (bench.isDeployed(currCard)){
                 minimapSafeClickable(system, 
                                     posX, btnPosY + 0.035, 0.1, 0.055,
                                     "",
