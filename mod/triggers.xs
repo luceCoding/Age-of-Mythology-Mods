@@ -28,6 +28,7 @@ active
     }
     initPlayerData();
     initializeCardParametersMap();
+    createStartingUnits();
     xsDisableSelf();
 }
 

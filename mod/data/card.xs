@@ -30,8 +30,8 @@ class CardData {
         return m_suit;
     }
 
-    void lockCard(){
-        m_isLocked = true;
+    void toggleLock(){
+        m_isLocked = !m_isLocked;
     }
 
     void unlockCard(){

@@ -79,9 +79,16 @@ class Shop {
                             [](int p = 1, ref Parameters parameters) -> void {
                 g_selectedUUIDs[p] = parameters.ints[0];
                 g_shopNeedsRefresh[p] = true;
-                log(3, "Player " + p + " clicked " + parameters.strings[2] + " " + parameters.ints[0]);
+                log(3, "Player " + p + " clicked " + parameters.strings[3] + " " + parameters.ints[0]);
             }
         );
+
+        // Locked Icon
+        float lockedPosX = posX;
+        float lockedPoxY = posY + 0.025 * iconMultiper;
+        if (currCard.isLocked()){
+            minimapSafeDisplay(system, lockedPosX, lockedPoxY, getIconPathFormat("resources/in_game/hud/Icon_Delete.png", 64 * iconMultiper));
+        }
 
         // Age Icon
         int age = params.getAge();
@@ -132,8 +139,13 @@ class Shop {
 
     void draw(int p = 0){
         DrawData currDraw = m_currDraws[p];
-        while(currDraw.getSize() > 0) {
-            CardData removedCard = currDraw.removeCard(0);
+        for(int i = currDraw.getSize() - 1; i >= 0; i--) {
+            CardData currCard = currDraw.getCard(i);
+            if (currCard.isNull() || currCard.isLocked()){
+                continue;
+            }
+
+            CardData removedCard = currDraw.removeCard(i);
             if (removedCard.getUuid() == g_selectedUUIDs[p]){
                 g_selectedUUIDs[p] = -1; // Deselect card
             }
@@ -141,35 +153,53 @@ class Shop {
                 addCardIntoDeck(removedCard);
             }
         }
-        for(int i = 0; i < config_MAX_DRAWN_CARDS; i++) {
+
+        int emptySlots = 0;
+        for(int i = 0; i < currDraw.getSize(); i++) {
+            CardData currCard = currDraw.getCard(i);
+            if (currCard.isNull()){
+                emptySlots = emptySlots + 1;
+            }
+        }
+
+        for(int i = 0; i < emptySlots; i++) {
             drawFromDeck(0, p);
         }
     }
 
-    void buy(int p = 0){
+    void buy(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         if (bench.getNumberOfCardsHeld() < MAX_CARDS_IN_BENCH){
             DrawData currDraw = m_currDraws[p];
-            CardData removedCard = currDraw.removeCardByUUID(g_selectedUUIDs[p]);
+            CardData removedCard = currDraw.removeCardByUUID(uuid);
             if (removedCard.isNull() == false){
-                    bench.addCard(removedCard);
-                    g_selectedUUIDs[p] = -1; // Deselect card
-                    g_shopNeedsRefresh[p] = true;
+                removedCard.unlockCard();
+                bench.addCard(removedCard);
+                g_selectedUUIDs[p] = -1; // Deselect card
+                g_shopNeedsRefresh[p] = true;
             }
         }
     }
 
-    void lock(int p = 0){
-
+    void lock(int p = 0, int uuid = -1){
+        DrawData currDraw = m_currDraws[p];
+        for(int i = 0; i < currDraw.getSize(); i++) {
+            CardData currCard = currDraw.getCard(i);
+            if (currCard.getUuid() != -1 && currCard.getUuid() == uuid){
+                currCard.toggleLock();
+                currDraw.m_cardArray[i] = currCard;
+                g_shopNeedsRefresh[p] = true;
+            }
+        }
     }
 
     void buyXP(int p = 0){
 
     }
 
-    void sell(int p = 0){
+    void sell(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
-        CardData removedCard = bench.removeCardByUUID(g_selectedUUIDs[p]);
+        CardData removedCard = bench.removeCardByUUID(uuid);
         if (removedCard.isNull() == false){
                 addCardIntoDeck(removedCard);
                 g_selectedUUIDs[p] = -1; // Deselect card
@@ -177,8 +207,12 @@ class Shop {
         }
     }
 
-    void deploy(int p = 0){
-
+    void deploy(int p = 0, string protoName = ""){
+        PlayerData player = g_PlayerDataArray[p];
+        int playerShopId = player.getPlayerShopID();
+        vector position = trUnitGetPosition(playerShopId);
+        trUnitCreate(protoName, position.x, position.y, position.z, xsRandFloat(0.0, 360.0), p, false);
+        log(3, "Player " + p + " deployed " + protoName + " to " + playerShopId);
     }
 };
 
@@ -197,6 +231,11 @@ Shop g_shop;
 
         for (int i = 0; i < cardCount; i++) {
             CardData currCard = currCards[i];
+            if (currCard.isNull()) {
+                posX = posX + offsetX;
+                continue;
+            }
+
             g_shop.renderCard(system, currCard, p, posX, posY);
             if (currCard.getUuid() == g_selectedUUIDs[p]) {
                 CardParameters params = currCard.getCardParameters();
@@ -212,7 +251,7 @@ Shop g_shop;
                                     "",
                                     cardParams,
                                     [](int p = 1, ref Parameters parameters) -> void {
-                        g_shop.buy(p);
+                        g_shop.buy(p, parameters.ints[0]);
                     }
                 );
                 minimapSafeClickable(system, 
@@ -220,11 +259,11 @@ Shop g_shop;
                                     "",
                                     cardParams,
                                     [](int p = 1, ref Parameters parameters) -> void {
-                        g_shop.lock(p);
+                        g_shop.lock(p, parameters.ints[0]);
                     }
                 );
                 createButton(system, posX - 0.06, btnPosY, "BUY");
-                createButton(system, posX + 0.06, btnPosY, "LOCK");
+                createButton(system, posX + 0.06, btnPosY, "(UN)LOCK");
             }
             posX = posX + offsetX;
         }
@@ -233,7 +272,7 @@ Shop g_shop;
 void renderBench(ref UiSystem system, int p = 1) {
     BenchData bench = g_shop.m_benches[p];
     CardData[] currCards = bench.getCards();
-    int totalCards = currCards.size();
+    int totalCards = bench.getNumberOfCardsHeld();
 
     if (totalCards == 0) return;
 
@@ -253,12 +292,16 @@ void renderBench(ref UiSystem system, int p = 1) {
     // Calculate vertical starting position (top row) to keep rows centered around Y = 0.0
     float startY = ((numRows - 1) * offsetY) / 2.0;
 
-    for (int i = 0; i < totalCards; i++) {
+    int visibleIndex = 0;
+    for (int i = 0; i < currCards.size(); i++) {
         CardData currCard = currCards[i];
+        if (currCard.isNull()) {
+            continue;
+        }
 
         // Determine row index (0 = top, 1 = middle, 2 = bottom) and index within that row
-        int rowIndex = i / cardsPerRow;
-        int indexInRow = i % cardsPerRow;
+        int rowIndex = visibleIndex / cardsPerRow;
+        int indexInRow = visibleIndex % cardsPerRow;
 
         // Calculate actual card count for this specific row (handles partial bottom rows)
         int rowCardCount = cardsPerRow;
@@ -289,7 +332,7 @@ void renderBench(ref UiSystem system, int p = 1) {
                                 "",
                                 cardParams,
                                 [](int p = 1, ref Parameters parameters) -> void {
-                    g_shop.sell(p);
+                    g_shop.sell(p, parameters.ints[0]);
                 }
             );
             minimapSafeClickable(system, 
@@ -297,13 +340,25 @@ void renderBench(ref UiSystem system, int p = 1) {
                                 "",
                                 cardParams,
                                 [](int p = 1, ref Parameters parameters) -> void {
-                    g_shop.deploy(p);
+                    g_shop.deploy(p, parameters.strings[1]);
                 }
             );
             createButton(system, posX - 0.06, btnPosY, "SELL");
             createButton(system, posX + 0.06, btnPosY, "DEPLOY");
         }
+
+        visibleIndex = visibleIndex + 1;
     }
+}
+
+void closeShop(int p = 1){
+    UiSystem system = uiSystemArray[p];
+    system.exit(true);
+    if(trCurrentPlayer() == p){
+        setUiVisible(true);
+        trSetObscuredUnits(true);
+    }
+    uiSystemArray[p] = system;
 }
 
 void renderShop(ref UiSystem system, int p = 1){
@@ -343,6 +398,17 @@ void renderShop(ref UiSystem system, int p = 1){
     );
     drawPosY = drawPosY - yOffset;
 
+    float closeBtnPosX = drawPosx - 0.125;
+    createButton(system, closeBtnPosX, drawPosYStart, "EXIT SHOP");
+    minimapSafeClickable(system, 
+                        closeBtnPosX, drawPosYStart + 0.035, 0.1, 0.055,
+                        "",
+                        EMPTY_PARAMETERS,
+                        [](int p = 1, ref Parameters parameters) -> void {
+            closeShop(p);
+        }
+    );
+
     g_shopNeedsRefresh[p] = false;
 }
 
@@ -368,14 +434,4 @@ void refreshShop(int p = 1){
         renderShop(system, p);
         uiSystemArray[p] = system;
     }
-}
-
-void closeShop(int p = 1){
-    UiSystem system = uiSystemArray[p];
-    system.exit(true);
-    if(trCurrentPlayer() == p){
-        setUiVisible(true);
-        trSetObscuredUnits(true);
-    }
-    uiSystemArray[p] = system;
 }

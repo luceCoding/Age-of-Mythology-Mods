@@ -24,6 +24,8 @@ void generate()
     // mod/shop/shop.xs
     // mod/data/cardParametersData.xs
 
+    // mod/map/units.xs
+
     // mod/triggers.xs
 
     rmSetProgress(1.0);
