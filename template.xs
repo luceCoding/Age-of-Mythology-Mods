@@ -11,20 +11,24 @@ void generate()
     // common/logs.xs
     // mod/config.xs
     // common/ui.xs
+    // common/search.xs
+    
+    // mod/common/rng.xs
 
     // mod/data/cardParameters.xs
     defineMapDefinition("string", "CardParameters", "", "ProtoNameToCardParameters");
 
     // mod/data/card.xs
-    // mod/data/draw.xs
+    // mod/data/player.xs
     // mod/data/bench.xs
     // mod/data/deck.xs
-    // mod/data/player.xs
+    // mod/data/draw.xs
 
     // mod/shop/shop.xs
     // mod/data/cardParametersData.xs
 
     // mod/map/units.xs
+    // mod/shop/commands.xs
 
     // mod/triggers.xs
 

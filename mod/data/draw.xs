@@ -1,5 +1,6 @@
 include "lib/rm_core.xs";
 include "card.xs";
+include "player.xs";
 
 class DrawData {
     CardData[] m_cardArray = default;
@@ -12,7 +13,7 @@ class DrawData {
         return m_cardArray.size();
     }
 
-    bool addCard(ref CardData card){
+    bool addCard(ref CardData card, int p = 0){
         if (m_cardArray.size() <= 0){
             m_cardArray = new CardData(config_MAX_DRAWN_CARDS);
         }
@@ -20,6 +21,9 @@ class DrawData {
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData currCard = m_cardArray[i];
             if (currCard.isNull()){
+                PlayerData player = g_PlayerDataArray[p];
+                int luck = player.getLuckBonus();
+                card.rerollRarity(luck);
                 m_cardArray[i] = card;
                 m_cardCount = m_cardCount + 1;
                 log(3, "Added card to draw " + card.getUuid() + ", slot: " + i + ", size: " + m_cardCount);

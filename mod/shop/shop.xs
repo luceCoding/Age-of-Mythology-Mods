@@ -39,7 +39,7 @@ class Shop {
         DrawData currDraw = m_currDraws[p];
         CardData drawnCard = deck.drawRandomCard();
         if (drawnCard.isNull() == false){
-            bool hasAddedCard = currDraw.addCard(drawnCard);
+            bool hasAddedCard = currDraw.addCard(drawnCard, p);
             if (hasAddedCard == false){
                 deck.addCard(drawnCard);
                 m_decks[d] = deck;
@@ -72,9 +72,19 @@ class Shop {
         string iconPath = params.getIconPath();
         Parameters cardParams = createParametersCopy(params);
         cardParams.ints[0] = uuid;
+
+        int rarity = currCard.getRarity();
+        switch(rarity){
+            case 1: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_special.png", 128.0 * iconMultiper));
+            case 2: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unitcmd.png", 128.0 * iconMultiper));
+            case 3: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_myth.png", 128.0 * iconMultiper));
+            case 4: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_tech.png", 128.0 * iconMultiper));
+            default: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unit.png", 128.0 * iconMultiper));
+        }
+
         minimapSafeClickable(system, 
-                            posX, posY, 0.1, 0.12,
-                            getIconPathFormat(iconPath, 128.0 * iconMultiper),
+                            posX, posY + 0.008 * iconMultiper, 0.1, 0.12,
+                            getIconPathFormat(iconPath, 112.0 * iconMultiper),
                             cardParams,
                             [](int p = 1, ref Parameters parameters) -> void {
                 g_selectedUUIDs[p] = parameters.ints[0];
@@ -96,11 +106,11 @@ class Shop {
         float agePoxY = posY + 0.09 * iconMultiper;
         int miniIconSize = 32.0 * iconMultiper;
         switch(age){
-            case 0: minimapSafeDisplay(system, agePosX, agePoxY, getIconPathFormat("resources/postgame/timeline/Icon_Age1Small.png", miniIconSize));
             case 1: minimapSafeDisplay(system, agePosX, agePoxY, getIconPathFormat("resources/postgame/timeline/Icon_Age2Small.png", miniIconSize));
             case 2: minimapSafeDisplay(system, agePosX, agePoxY, getIconPathFormat("resources/postgame/timeline/Icon_Age3Small.png", miniIconSize));
             case 3: minimapSafeDisplay(system, agePosX, agePoxY, getIconPathFormat("resources/postgame/timeline/Icon_Age4Small.png", miniIconSize));
             case 4: minimapSafeDisplay(system, agePosX, agePoxY, getIconPathFormat("resources/postgame/timeline/Icon_Age5Small.png", miniIconSize));
+            default: minimapSafeDisplay(system, agePosX, agePoxY, getIconPathFormat("resources/postgame/timeline/Icon_Age1Small.png", miniIconSize));
         }
 
         // Suit Icon
@@ -134,7 +144,7 @@ class Shop {
 
         // Title
         string title = params.getTitle();
-        minimapSafeDisplay(system, posX, posY + 0.12 * iconMultiper, title);
+        {minimapSafeDisplay(system, posX, posY + 0.12 * iconMultiper, title);}
     }
 
     void draw(int p = 0){
@@ -210,9 +220,15 @@ class Shop {
     void deploy(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         CardData card = bench.getCardWithUUID(uuid);
+        if (card.isNull()) return;
         PlayerData player = g_PlayerDataArray[p];
-        player.deployCard(card, p);
+        player.deployCard(card);
         g_PlayerDataArray[p] = player;
+        g_shopNeedsRefresh[p] = true;
+    }
+
+    void withdraw(int p = 0, int uuid = -1){
+        g_shopNeedsRefresh[p] = true;
     }
 };
 
@@ -327,24 +343,39 @@ void renderBench(ref UiSystem system, int p = 1) {
             int uuid = currCard.getUuid();
             cardParams.ints[0] = uuid;
 
-            minimapSafeClickable(system, 
-                                posX - 0.06, btnPosY + 0.035, 0.1, 0.055,
-                                "",
-                                cardParams,
-                                [](int p = 1, ref Parameters parameters) -> void {
-                    g_shop.sell(p, parameters.ints[0]);
-                }
-            );
-            minimapSafeClickable(system, 
-                                posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
-                                "",
-                                cardParams,
-                                [](int p = 1, ref Parameters parameters) -> void {
-                    g_shop.deploy(p, parameters.ints[0]);
-                }
-            );
-            createButton(system, posX - 0.06, btnPosY, "SELL");
-            createButton(system, posX + 0.06, btnPosY, "DEPLOY");
+            PlayerData player = g_PlayerDataArray[p];
+            bool isDeployed = player.isDeployed(currCard);
+            if (isDeployed){
+                minimapSafeClickable(system, 
+                                    posX, btnPosY + 0.035, 0.1, 0.055,
+                                    "",
+                                    cardParams,
+                                    [](int p = 1, ref Parameters parameters) -> void {
+                        g_shop.withdraw(p, parameters.ints[0]);
+                    }
+                );
+                createButton(system, posX, btnPosY, "WITHDRAW");
+            }
+            else {
+                minimapSafeClickable(system, 
+                                    posX - 0.06, btnPosY + 0.035, 0.1, 0.055,
+                                    "",
+                                    cardParams,
+                                    [](int p = 1, ref Parameters parameters) -> void {
+                        g_shop.sell(p, parameters.ints[0]);
+                    }
+                );
+                minimapSafeClickable(system, 
+                                    posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
+                                    "",
+                                    cardParams,
+                                    [](int p = 1, ref Parameters parameters) -> void {
+                        g_shop.deploy(p, parameters.ints[0]);
+                    }
+                );
+                createButton(system, posX - 0.06, btnPosY, "SELL");
+                createButton(system, posX + 0.06, btnPosY, "DEPLOY");
+            }
         }
 
         visibleIndex = visibleIndex + 1;

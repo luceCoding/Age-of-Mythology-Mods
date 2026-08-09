@@ -19,6 +19,33 @@ active
     xsDisableSelf();
 }
 
+rule _Search
+highFrequency
+active
+runImmediately
+{
+    if (Search_conditionToRun(Search_lastTime)) {
+        ySearch.process([](int unitId = 0) -> void {
+            xsSetContextPlayer(-1);
+            int protoUnit = kbUnitGetProtoUnitID(unitId);
+            int owner = kbUnitGetPlayerID(unitId);
+            xsSetContextPlayer(owner);
+
+            if (kbProtoUnitIsType(protoUnit, COMMAND_TYPE)) {
+                trUnitDestroy();
+                PlayerCommands playerCommands = playerCommandsArray[owner];
+                for (int i = 0; i < playerCommands.plantArray.size(); i++) {
+                    if (playerCommands.plantArray[i] == protoUnit) {
+                        void(int) apply = playerCommands.applyArray[i];
+                        apply(owner);
+                    }
+                }
+            }
+        });
+        Search_lastTime = xsGetTimeMS();
+    }
+}
+
 rule FIRE_SECOND_TRIGGER
 highFrequency
 active
@@ -29,6 +56,7 @@ active
     initPlayerData();
     initializeCardParametersMap();
     createStartingUnits();
+    initPlayerCommands();
     xsDisableSelf();
 }
 
