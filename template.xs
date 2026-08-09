@@ -13,7 +13,7 @@ void generate()
     // common/ui.xs
 
     // mod/data/cardParameters.xs
-    defineMapDefinition("int", "CardParameters", "", "cTypeToCardParameters");
+    defineMapDefinition("string", "CardParameters", "", "ProtoNameToCardParameters");
 
     // mod/data/card.xs
     // mod/data/draw.xs

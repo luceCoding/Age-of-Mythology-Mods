@@ -13,6 +13,17 @@ class BenchData {
         return true;
     }
 
+    CardData getCardWithUUID(int uuid = -1){
+        for(int i = 0; i < m_cardArray.size(); i++) {
+            CardData card = m_cardArray[i];
+            if (card.getUuid() == uuid){
+                return card;
+            }
+        }
+        CardData emptyCard;
+        return emptyCard;
+    }
+
     CardData removeCardByUUID(int uuid = -1){        
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData currCard = m_cardArray[i];

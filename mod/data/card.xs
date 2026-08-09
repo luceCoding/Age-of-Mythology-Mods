@@ -1,25 +1,25 @@
-include "lib/rm_core.xs";
+include "cardParameters.xs";
 
 int g_uuidCardCounter = 0;
-IntToCardParameterscTypeToCardParametersMap cTypeToCardParametersMap;
+StringToCardParametersProtoNameToCardParametersMap ProtoNameToCardParametersMap;
 
 class CardData {
 
     bool m_isLocked = false;
-    int m_cType = -1;
+    string m_protoName = "";
     int m_count = 1;
     int m_uuid = -1;
     int m_suit = -1;
 
     void setCard(ref CardParameters params, int suit = -1){
-        m_cType = params.getcType();
+        m_protoName = params.getProtoUnit();
         m_uuid = g_uuidCardCounter;
         g_uuidCardCounter = g_uuidCardCounter + 1;
         m_suit = suit;
     }
 
     CardParameters getCardParameters(){
-        return cTypeToCardParametersMap.get(m_cType);
+        return ProtoNameToCardParametersMap.get(m_protoName);
     }
 
     int getUuid(){

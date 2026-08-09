@@ -207,67 +207,67 @@ class Shop {
         }
     }
 
-    void deploy(int p = 0, string protoName = ""){
+    void deploy(int p = 0, int uuid = -1){
+        BenchData bench = m_benches[p];
+        CardData card = bench.getCardWithUUID(uuid);
         PlayerData player = g_PlayerDataArray[p];
-        int playerShopId = player.getPlayerShopID();
-        vector position = trUnitGetPosition(playerShopId);
-        trUnitCreate(protoName, position.x, position.y, position.z, xsRandFloat(0.0, 360.0), p, false);
-        log(3, "Player " + p + " deployed " + protoName + " to " + playerShopId);
+        player.deployCard(card, p);
+        g_PlayerDataArray[p] = player;
     }
 };
 
 Shop g_shop;
 
-    void renderDraws(ref UiSystem system, int p = 1) {
-        DrawData currDraw = g_shop.m_currDraws[p];
-        CardData[] currCards = currDraw.m_cardArray;
-        int cardCount = currCards.size();
+void renderDraws(ref UiSystem system, int p = 1) {
+    DrawData currDraw = g_shop.m_currDraws[p];
+    CardData[] currCards = currDraw.m_cardArray;
+    int cardCount = currCards.size();
 
-        if (cardCount == 0) return;
+    if (cardCount == 0) return;
 
-        float offsetX = 0.15;
-        float posY = -0.375;
-        float posX = -((cardCount - 1) * offsetX) / 2.0;
+    float offsetX = 0.15;
+    float posY = -0.375;
+    float posX = -((cardCount - 1) * offsetX) / 2.0;
 
-        for (int i = 0; i < cardCount; i++) {
-            CardData currCard = currCards[i];
-            if (currCard.isNull()) {
-                posX = posX + offsetX;
-                continue;
-            }
-
-            g_shop.renderCard(system, currCard, p, posX, posY);
-            if (currCard.getUuid() == g_selectedUUIDs[p]) {
-                CardParameters params = currCard.getCardParameters();
-                int cost = params.getCost() * 0.75;
-                float btnPosY = posY - 0.1; 
-
-                Parameters cardParams = createParametersCopy(params);
-                int uuid = currCard.getUuid();
-                cardParams.ints[0] = uuid;
-
-                minimapSafeClickable(system, 
-                                    posX - 0.06, btnPosY + 0.035, 0.1, 0.055,
-                                    "",
-                                    cardParams,
-                                    [](int p = 1, ref Parameters parameters) -> void {
-                        g_shop.buy(p, parameters.ints[0]);
-                    }
-                );
-                minimapSafeClickable(system, 
-                                    posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
-                                    "",
-                                    cardParams,
-                                    [](int p = 1, ref Parameters parameters) -> void {
-                        g_shop.lock(p, parameters.ints[0]);
-                    }
-                );
-                createButton(system, posX - 0.06, btnPosY, "BUY");
-                createButton(system, posX + 0.06, btnPosY, "(UN)LOCK");
-            }
+    for (int i = 0; i < cardCount; i++) {
+        CardData currCard = currCards[i];
+        if (currCard.isNull()) {
             posX = posX + offsetX;
+            continue;
         }
+
+        g_shop.renderCard(system, currCard, p, posX, posY);
+        if (currCard.getUuid() == g_selectedUUIDs[p]) {
+            CardParameters params = currCard.getCardParameters();
+            int cost = params.getCost() * 0.75;
+            float btnPosY = posY - 0.1; 
+
+            Parameters cardParams = createParametersCopy(params);
+            int uuid = currCard.getUuid();
+            cardParams.ints[0] = uuid;
+
+            minimapSafeClickable(system, 
+                                posX - 0.06, btnPosY + 0.035, 0.1, 0.055,
+                                "",
+                                cardParams,
+                                [](int p = 1, ref Parameters parameters) -> void {
+                    g_shop.buy(p, parameters.ints[0]);
+                }
+            );
+            minimapSafeClickable(system, 
+                                posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
+                                "",
+                                cardParams,
+                                [](int p = 1, ref Parameters parameters) -> void {
+                    g_shop.lock(p, parameters.ints[0]);
+                }
+            );
+            createButton(system, posX - 0.06, btnPosY, "BUY");
+            createButton(system, posX + 0.06, btnPosY, "(UN)LOCK");
+        }
+        posX = posX + offsetX;
     }
+}
 
 void renderBench(ref UiSystem system, int p = 1) {
     BenchData bench = g_shop.m_benches[p];
@@ -340,7 +340,7 @@ void renderBench(ref UiSystem system, int p = 1) {
                                 "",
                                 cardParams,
                                 [](int p = 1, ref Parameters parameters) -> void {
-                    g_shop.deploy(p, parameters.strings[1]);
+                    g_shop.deploy(p, parameters.ints[0]);
                 }
             );
             createButton(system, posX - 0.06, btnPosY, "SELL");

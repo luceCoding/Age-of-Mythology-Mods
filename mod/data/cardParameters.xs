@@ -4,11 +4,10 @@ class CardParameters {
 
     Parameters m_params;
 
-    void setCardParameters(int cType = -1, int age = 0, int cost = 1,
+    void setCardParameters(int age = 0, int cost = 1,
                            string protounit = "", string titleText = "", string hoverText = "", string iconPath = ""){
         Parameters params = createParameters();
         params.ints.add(-1); // placeholder for data
-        params.ints.add(cType);
         params.ints.add(age);
         params.ints.add(cost);
         params.strings.add(""); // placeholder for data
@@ -26,25 +25,18 @@ class CardParameters {
         return m_params.ints[0];
     }
 
-    int getcType(){
+    int getAge(){
         if (m_params.ints.size() < 1){
-            return -1;
+            return 0;
         }
         return m_params.ints[1];
     }
 
-    int getAge(){
-        if (m_params.ints.size() < 2){
-            return 0;
-        }
-        return m_params.ints[2];
-    }
-
     int getCost(){
-        if (m_params.ints.size() < 3){
+        if (m_params.ints.size() < 2){
             return 999;
         }
-        return m_params.ints[3];
+        return m_params.ints[2];
     }
 
     string getStringData(){
