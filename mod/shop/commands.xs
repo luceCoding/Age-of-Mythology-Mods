@@ -32,16 +32,17 @@ string preparePlant(int p = 1, int plantType = -1,
     return plantName;
 }
 
-void initPlayerCommands(int p = 1){
+void initPlayerCommands(){
     playerCommandsArray.resize(cNumberPlayers + 1);
-    string plantName = preparePlant(p, cUnitTypePlantGreekBush, 
-                                    "Open shop",
-                                    "Use your gold to purchase cards at the shop.",
-                                    "shared\static_color\technologies\advanced_fortifications_icon.png",
-                                    [](int p = 1) -> void {
-                                                            openShop(p);
-                                                            log(3, "WTF");
-                                                        }
-                                    );
-    trProtounitAddTrain("Market", p, plantName, 0, 3);
+    for(int p = 0; p <= cNumberPlayers; p++) {
+        string plantName = preparePlant(p, cUnitTypePlantGreekBush, 
+                                        "Open shop",
+                                        "Use your gold to purchase cards at the shop.",
+                                        "resources\shared\static_color\buildings\market_icon.png",
+                                        [](int p = 1) -> void {
+                                                                openShop(p);
+                                                            }
+                                        );
+        trProtounitAddTrain("Market", p, plantName, 0, 5);
+    }
 }

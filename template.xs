@@ -17,6 +17,7 @@ void generate()
 
     // mod/data/cardParameters.xs
     defineMapDefinition("string", "CardParameters", "", "ProtoNameToCardParameters");
+    defineMapDefinition("int", "int", "", "CardUUIDToUnitID");
 
     // mod/data/card.xs
     // mod/data/player.xs

@@ -219,13 +219,13 @@ class Shop {
 
     void deploy(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
-        CardData card = bench.getCardWithUUID(uuid);
-        if (card.isNull()) return;
-        bench.deployCard(card);
+        bench.deployCard(uuid);
         g_shopNeedsRefresh[p] = true;
     }
 
     void withdraw(int p = 0, int uuid = -1){
+        BenchData bench = m_benches[p];
+        bench.withdrawCard(uuid);
         g_shopNeedsRefresh[p] = true;
     }
 };
@@ -341,7 +341,7 @@ void renderBench(ref UiSystem system, int p = 1) {
             int uuid = currCard.getUuid();
             cardParams.ints[0] = uuid;
 
-            if (bench.isDeployed(currCard)){
+            if (currCard.isDeployed()){
                 minimapSafeClickable(system, 
                                     posX, btnPosY + 0.035, 0.1, 0.055,
                                     "",

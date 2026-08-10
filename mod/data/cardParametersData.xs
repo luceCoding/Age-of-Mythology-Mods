@@ -31,7 +31,7 @@ void initializeCardParametersMap(){
                     "resources\\egyptian\\player_color\\units\\pharaoh_icon.png"
                     );
     addCardIntoDeck(0, 1,
-                    "Oracle", "Oracle", "Oracle",
+                    "OracleHero", "Oracle Hero", "Oracle Hero",
                     "resources\\atlantean\\player_color\\units\\oracle_icon.png"
                     );
     addCardIntoDeck(0, 2,
