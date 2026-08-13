@@ -2,7 +2,7 @@ include "card.xs";
 include "deck.xs";
 include "cardParameters.xs";
 
-const int MAX_CARD_COPIES = 7;
+const int MAX_CARD_COPIES = 4;
 
 void addCardIntoDeck(int age = 0, int cost = 1,
                     string protoName = "", string titleText = "", string hoverText = "", string iconPath = ""){

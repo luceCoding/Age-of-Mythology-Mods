@@ -15,6 +15,7 @@ active
     trDisableConquestCheck(true);
     trSetCommunityObjectivesVisibility(false);
     initialiseUiSystem(false);
+    initializeSynergies();
     g_shop.init();
     xsDisableSelf();
 }

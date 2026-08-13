@@ -3,6 +3,7 @@ include "lib/rm_core.xs";
 class CardParameters {
 
     Parameters m_params;
+    int[] m_unitTypes = default;
 
     void setCardParameters(int age = 0, int cost = 1,
                            string protounit = "", string titleText = "", string hoverText = "", string iconPath = ""){
@@ -16,6 +17,7 @@ class CardParameters {
         params.strings.add(titleText);
         params.strings.add(hoverText);
         m_params = params;
+        m_unitTypes = new int(8, -1);
     }
 
     int getIntData(){
@@ -66,6 +68,47 @@ class CardParameters {
         }
         return m_params.strings[3];
     }
+
+    bool isUnitType(string unitType = ""){
+        xsSetContextPlayer(0);
+        trUnitSelectClear();
+        int unitID = trUnitCreate(getProtoUnit(), 0, 0, 0, -1, 0, false);
+        trUnitSelectByID(unitID);
+        if (kbProtoUnitIsType(kbUnitGetProtoUnitID(unitID), kbGetUnitTypeID(unitType)) != false){
+            trUnitDestroy(true);
+            trUnitSelectClear();
+            log(3, "Is " + unitType + " unit type.");
+            return true;
+        }
+        trUnitDestroy(true);
+        trUnitSelectClear();
+        return false;
+    }
+
+    bool isUnitTypeCache(int index = 0, string unitType = ""){
+        if (m_unitTypes[index] == -1){
+            m_unitTypes[index] = isUnitType(unitType) ? 1 : 0;
+        }
+        return m_unitTypes[index] == 1;
+    }
+
+    bool isInfantry(){ return isUnitTypeCache(0, "AbstractInfantry");}
+    bool isArcher(){ return isUnitTypeCache(1, "AbstractArcher");}
+    bool isCavalry(){ return isUnitTypeCache(2, "AbstractCavalry");}
+    bool isMythUnit(){ return isUnitTypeCache(3, "MythUnit");}
+    bool isHero(){ return isUnitTypeCache(4, "Hero");}
+    bool isHealer(){ return isUnitTypeCache(5, "AbstractHealer");}
+    bool isSiege(){ return isUnitTypeCache(6, "AbstractSiegeWeapon");}
+    bool isBuilding(){ return isUnitTypeCache(7, "isBuilding");}
+
+    bool isGreek() { return xsStringFindFirst(getIconPath(), "greek", 0, false) != -1; }
+    bool isNorse() { return xsStringFindFirst(getIconPath(), "norse", 0, false) != -1; }
+    bool isEgyptian() { return xsStringFindFirst(getIconPath(), "egypt", 0, false) != -1; }
+    bool isAtlantean() { return xsStringFindFirst(getIconPath(), "atlantean", 0, false) != -1; }
+    bool isChinese() { return xsStringFindFirst(getIconPath(), "chinese", 0, false) != -1; }
+    bool isJapanese() { return xsStringFindFirst(getIconPath(), "japan", 0, false) != -1; }
+    bool isAztec() { return xsStringFindFirst(getIconPath(), "aztec", 0, false) != -1; }
+
 };
 
 Parameters createParametersCopy(CardParameters params){

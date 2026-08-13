@@ -2,7 +2,7 @@ include "cardParameters.xs";
 include "rng.xs";
 
 int g_uuidCardCounter = 0;
-StringToCardParametersProtoNameToCardParametersMap ProtoNameToCardParametersMap;
+StringToCardParametersHashMap ProtoNameToCardParametersMap;
 
 const int puFIELD_HITPOINTS = 0;
 const int puFIELD_SPEED = 1;
@@ -96,6 +96,10 @@ class CardData {
             case 6: 
                 trModifyProtounitData(m_protoName, p, puFIELD_SPEED, inversePercentDelta, relativityBasePERCENT);
         }
+    }
+
+    string getProtoName(){
+        return m_protoName;
     }
 
     int getRarity(){

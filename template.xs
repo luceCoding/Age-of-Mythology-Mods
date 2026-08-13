@@ -1,5 +1,6 @@
 //// mod/config.xs
 //// common/nottud.xs
+//// common/collections/hashmap.xs
 
 void generate()
 {
@@ -15,10 +16,14 @@ void generate()
     
     // mod/common/rng.xs
 
-    // mod/data/cardParameters.xs
-    defineMapDefinition("string", "CardParameters", "", "ProtoNameToCardParameters");
-    defineMapDefinition("int", "int", "", "CardUUIDToUnitID");
+    // mod/data/globals.xs
 
+    // mod/data/cardParameters.xs
+    defineHashMapDefinition("string", "CardParameters", "", "");
+    defineHashMapDefinition("int", "int", "", "");
+    defineHashMapDefinition("string", "int", "0", "");
+
+    // mod/data/synergies.xs
     // mod/data/card.xs
     // mod/data/player.xs
     // mod/data/bench.xs

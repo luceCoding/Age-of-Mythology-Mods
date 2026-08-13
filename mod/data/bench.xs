@@ -1,17 +1,19 @@
 include "lib/rm_core.xs";
 include "card.xs"
 
-const int MAX_CARDS_IN_BENCH = 21;
-IntToIntCardUUIDToUnitIDMap CardUUIDToUnitIDMap;
+IntToIntHashMap CardUUIDToUnitIDMap;
+StringToIntHashMap g_synergyHashMap;
 
 class BenchData {
     int m_player = -1;
     int m_playerShopId = -1;
+    int[] m_synergies = default;
     CardData[] m_cardArray = default;
 
     void init(int p = -1, int shopId = -1){
         m_player = p;
         m_playerShopId = shopId;
+        m_synergies = new int(8, 0);
     }
     
     int getPlayerShopID(){
@@ -62,6 +64,41 @@ class BenchData {
         return m_cardArray.size();
     }
 
+    void addSynergy(CardData card, int p = 0){
+        String key = card.getProtoName() + p;
+        int count = g_synergyHashMap.get(key);
+        if (count == 0){
+            CardParameters params = card.getCardParameters();
+            if (params.isInfantry()){m_synergies[0] = m_synergies[0] + 1;}
+            if (params.isArcher()){m_synergies[1] = m_synergies[1] + 1;}
+            if (params.isCavalry()){m_synergies[2] = m_synergies[2] + 1;}
+            if (params.isMythUnit()){m_synergies[3] = m_synergies[3] + 1;}
+            if (params.isHero()){m_synergies[4] = m_synergies[4] + 1;}
+            if (params.isHealer()){m_synergies[5] = m_synergies[5] + 1;}
+            if (params.isSiege()){m_synergies[6] = m_synergies[6] + 1;}
+            if (params.isBuilding()){m_synergies[7] = m_synergies[7] + 1;}
+        }
+        g_synergyHashMap.put(key, count + 1);
+    }
+
+    void removeSynergy(CardData card, int p = 0){
+        String key = card.getProtoName() + p;
+        int count = g_synergyHashMap.get(key);
+        count = count - 1;
+        g_synergyHashMap.put(key, count);
+        if (count == 0){
+            CardParameters params = card.getCardParameters();
+            if (params.isInfantry()){m_synergies[0] = m_synergies[0] - 1;}
+            if (params.isArcher()){m_synergies[1] = m_synergies[1] - 1;}
+            if (params.isCavalry()){m_synergies[2] = m_synergies[2] - 1;}
+            if (params.isMythUnit()){m_synergies[3] = m_synergies[3] - 1;}
+            if (params.isHero()){m_synergies[4] = m_synergies[4] - 1;}
+            if (params.isHealer()){m_synergies[5] = m_synergies[5] - 1;}
+            if (params.isSiege()){m_synergies[6] = m_synergies[6] - 1;}
+            if (params.isBuilding()){m_synergies[7] = m_synergies[7] - 1;}
+        }
+    }
+
     void deployCard(int uuid = -1){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData card = m_cardArray[i];
@@ -73,6 +110,7 @@ class BenchData {
             CardUUIDToUnitIDMap.put(card.getUuid(), unitID);
             card.applySuitBonus(m_player);
             card.deploy();
+            addSynergy(card, m_player);
             m_cardArray[i] = card;
             log(3, "Player " + m_player + " deployed " + protoName + " to shop " + m_playerShopId);
         }
@@ -83,6 +121,7 @@ class BenchData {
             CardData cardToWithdraw = m_cardArray[i];
             if (!(cardToWithdraw.isNull()) && cardToWithdraw.isDeployed() && uuid == cardToWithdraw.getUuid()){
                 int unitID = CardUUIDToUnitIDMap.get(uuid);
+                xsSetContextPlayer(m_player);
                 trUnitSelectClear();
                 trUnitSelectByID(unitID);
                 if (trUnitDead() == false){
@@ -93,6 +132,7 @@ class BenchData {
                         trUnitSelectClear();
                         cardToWithdraw.resetSuitBonus(m_player);
                         cardToWithdraw.withdraw();
+                        removeSynergy(cardToWithdraw, m_player);
                         m_cardArray[i] = cardToWithdraw;
                         log(3, "Player " + m_player + " withdrew to shop " + m_playerShopId);
                         return true;
@@ -108,5 +148,51 @@ class BenchData {
         }
         trUnitSelectClear();
         return false;
+    }
+
+    void renderSynergyIcon2(ref UiSystem system, float posX = 0.0, ref float posY, float posYOffset = 0.0, float width = 0.0, float height = 0.0, 
+                           int index = 0, 
+                           string iconPath = "", string rolloverName = "", string rolloverDesc = ""){
+        if (m_synergies[index] == 0){return;}
+        minimapSafeDisplay(system, posX - 0.01, posY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", 32));
+        minimapSafeDisplayWithHover(system, posX, posY, width, height, getIconPathFormat(iconPath, 32) + ": " + m_synergies[index], 
+                                    rolloverName,
+                                    rolloverDesc);
+        posY = posY - posYOffset;
+    }
+
+    void renderSynergies(ref UiSystem system, float posX = 0.0, float posY = 0.0, int p = 1) {
+        float width = 0.025;
+        float height = 0.0275;
+        float posYOffset = 0.035;
+
+        // 1. Initialize index map array [0, 1, 2, 3, 4, 5, 6, 7]
+        int[] sortedIndices = new int(8, 0);
+        for (int i = 0; i < sortedIndices.size(); i++) {
+            sortedIndices[i] = i;
+        }
+
+        // 2. Bubble sort indices based on values in m_synergies (Descending)
+        for (int i = 0; i < sortedIndices.size()-1; i++) {
+            for (int j = 0; j < 7 - i; j++) {
+                int idxA = sortedIndices[j];
+                int idxB = sortedIndices[j + 1];
+
+                if (m_synergies[idxA] < m_synergies[idxB]) {
+                    sortedIndices[j] = idxB;
+                    sortedIndices[j + 1] = idxA;
+                }
+            }
+        }
+
+        // 3. Render using sorted indices (renderSynergyIcon will naturally skip count == 0)
+        for (int i = 0; i < sortedIndices.size(); i++) {
+            int idx = sortedIndices[i];
+            if (m_synergies[idx] > 0) {
+                SynergyData synergy = g_synergyIcons[idx];
+                minimapSafeDisplay(system, posX + 0.0825, posY + 0.005, m_synergies[idx] + " : 2 > 3 > 4 > 5");
+                renderSynergyIcon(system, posX, posY, posYOffset, width, height, 32, idx);
+            }
+        }
     }
 };
