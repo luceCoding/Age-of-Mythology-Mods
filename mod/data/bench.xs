@@ -128,6 +128,7 @@ class BenchData {
             card.deploy();
             addSynergy(card, m_player);
             m_cardArray[i] = card;
+            trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
             log(3, "Player " + m_player + " deployed " + protoName + " to shop " + m_playerShopId);
         }
     }
@@ -150,6 +151,7 @@ class BenchData {
                         cardToWithdraw.withdraw();
                         removeSynergy(cardToWithdraw, m_player);
                         m_cardArray[i] = cardToWithdraw;
+                        trSoundsetPlayPlayer(m_player, "AotgBlessingUnequip");
                         log(3, "Player " + m_player + " withdrew to shop " + m_playerShopId);
                         return true;
                     }

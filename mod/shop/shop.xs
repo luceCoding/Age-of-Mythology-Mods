@@ -12,6 +12,15 @@ void createButton(ref UiSystem system, float drawPosx = 0.0, float drawPosY = 0.
     minimapSafeDisplay(system, drawPosx, drawPosY + 0.05, buttonName);
 }
 
+bool purchase(int goldAmount = 0, int p = 0){
+    if (((kbGetResourceAmount(p, kbGetResourceID("Gold")) >= goldAmount) != false)){
+        trPlayerGrantResources(p, "Gold", -goldAmount);
+        return true;
+    }
+    trSoundsetPlayPlayer(1, "PopCapHit");
+    return false;
+}
+
 class Shop {
     DeckData[] m_decks = default;
     DrawData[] m_currDraws = default;
@@ -27,6 +36,14 @@ class Shop {
         g_shopNeedsRefresh = new bool(cNumberPlayers + 1, false);
         m_totalShopExp = new int(cNumberPlayers + 1, 0);
         m_currShopLevel = new int(cNumberPlayers + 1, 0);
+    }
+
+    int getDrawCost(int p = 0){
+        return m_currShopLevel[p] + 2;
+    }
+
+    int getBuyXPCost(int p = 0){
+        return getDrawCost(p) * 2;
     }
 
     void addCardIntoDeck(ref CardData card){
@@ -135,7 +152,7 @@ class Shop {
         if (isBench) {
             cost = cost * SELL_MULTIPLIER;
         }
-        string costText = "<color=0.729,0.557,0.137>" + cost + "</color>" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32);
+        string costText = getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137>" + cost + "</color>";
         minimapSafeDisplay(system, posX, posY + 0.13 * iconMultiplier, costText);
 
         // Title
@@ -163,6 +180,8 @@ class Shop {
     }
 
     void draw(int p = 0){
+        if (purchase(getDrawCost(p), p) == false) {return;}
+
         DrawData currDraw = m_currDraws[p];
         for(int i = currDraw.getSize() - 1; i >= 0; i--) {
             CardData currCard = currDraw.getCard(i);
@@ -191,16 +210,25 @@ class Shop {
             int tier = getRandomTier(m_currShopLevel[p]);
             drawFromDeck(tier, p);
         }
+        trSoundsetPlayPlayer(p, "AotgNextPage");
     }
 
     void buy(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         if (bench.getNumberOfCardsHeld() < MAX_CARDS_IN_BENCH){
             DrawData currDraw = m_currDraws[p];
+
+            CardData card = currDraw.getCardByUUID(uuid);
+            if (card.isNull() == true){return;}
+            CardParameters params = card.getCardParameters();
+            int cost = params.getCost();
+            if (purchase(cost, p) == false){return;}
+
             CardData removedCard = currDraw.removeCardByUUID(uuid);
             if (removedCard.isNull() == false){
                 removedCard.unlockCard();
                 bench.addCard(removedCard);
+                trSoundsetPlayPlayer(1, "StorehouseSelect");
                 g_selectedUUIDs[p] = -1; // Deselect card
                 g_shopNeedsRefresh[p] = true;
             }
@@ -213,6 +241,7 @@ class Shop {
             CardData currCard = currDraw.getCard(i);
             if (currCard.getUuid() != -1 && currCard.getUuid() == uuid){
                 currCard.toggleLock();
+                trSoundsetPlayPlayer(p, "TradingPostSelect");
                 currDraw.m_cardArray[i] = currCard;
                 g_shopNeedsRefresh[p] = true;
             }
@@ -220,6 +249,8 @@ class Shop {
     }
 
     void buyXP(int p = 0){
+        if (purchase(getBuyXPCost(p), p) == false) {return;}
+
         int currShopLevel = m_currShopLevel[p];
         // Block buying XP if already at max level
         if (currShopLevel >= MAX_SHOP_LEVEL) {
@@ -231,8 +262,12 @@ class Shop {
 
             if (m_totalShopExp[p] >= level.m_expNeeded){
                 m_currShopLevel[p] = m_currShopLevel[p] + 1;
+                trSoundsetPlayPlayer(p, "AotgBlessingRewardReceivedDivine");
+                g_shopNeedsRefresh[p] = true;
+                return;
             }
         }
+        trSoundsetPlayPlayer(p, "AotgNodeSelectAvailable");
         g_shopNeedsRefresh[p] = true;
     }
 
@@ -241,6 +276,7 @@ class Shop {
         CardData removedCard = bench.removeCardByUUID(uuid);
         if (removedCard.isNull() == false){
                 addCardIntoDeck(removedCard);
+                trSoundsetPlayPlayer(p, "TributeReceived");
                 g_selectedUUIDs[p] = -1; // Deselect card
                 g_shopNeedsRefresh[p] = true;
         }
@@ -417,6 +453,7 @@ void closeShop(int p = 1){
         trSetObscuredUnits(true);
     }
     uiSystemArray[p] = system;
+    trSoundsetPlayPlayer(p, "UI_Latch");
 }
 
 void renderShop(ref UiSystem system, int p = 1){
@@ -424,22 +461,20 @@ void renderShop(ref UiSystem system, int p = 1){
     renderBench(system, p);
 
     string[] buttonNames = new string(0, "");
-    buttonNames.add("BUY XP");
-    buttonNames.add("DRAW");
+    buttonNames.add("");
+    buttonNames.add("");
     buttonNames.add("EXIT SHOP");
     float drawPosx = -0.55;
     float yOffset = 0.075;
-    float drawPosYStart = -0.325;
+    float drawPosYStart = -0.35;
 
     int shopLevel = g_shop.m_currShopLevel[p];
     if (shopLevel < MAX_SHOP_LEVEL && shopLevel < g_shopLevels.size()){
         ShopLevel level = g_shopLevels[shopLevel];
-        minimapSafeDisplay(system, drawPosx, drawPosYStart + 0.1, 
-            "Level: " + shopLevel + "\n" + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded);
+        minimapSafeDisplay(system, drawPosx, drawPosYStart + 0.1, "Level: " + shopLevel + "\n" + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded);
     }
     else {
-        minimapSafeDisplay(system, drawPosx, drawPosYStart + 0.1, 
-            "Level: " + MAX_SHOP_LEVEL + "\nMAX");
+        minimapSafeDisplay(system, drawPosx, drawPosYStart + 0.1, "Level: " + MAX_SHOP_LEVEL + "\nMAX");
     }
 
     float drawPosY = drawPosYStart;
@@ -457,6 +492,9 @@ void renderShop(ref UiSystem system, int p = 1){
             g_shop.buyXP(p);
         }
     );
+    minimapSafeDisplay(system, drawPosx, drawPosY + 0.03,
+                       "BUY XP\n" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + "<color=0.729,0.557,0.137>" + g_shop.getBuyXPCost(p) + "</color>");
+
     drawPosY = drawPosY - yOffset;
     minimapSafeClickable(system, 
                         drawPosx, drawPosY + 0.035, 0.1, 0.055,
@@ -466,6 +504,9 @@ void renderShop(ref UiSystem system, int p = 1){
             g_shop.draw(p);
         }
     );
+    minimapSafeDisplay(system, drawPosx, drawPosY + 0.03,
+                       "DRAW\n" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + "<color=0.729,0.557,0.137>" + g_shop.getDrawCost(p) + "</color>");
+
     drawPosY = drawPosY - yOffset;
     minimapSafeClickable(system, 
                         drawPosx, drawPosY + 0.035, 0.1, 0.055,
@@ -487,6 +528,7 @@ void openShop(int p = 1){
     }
     renderShop(system, p);
     uiSystemArray[p] = system;
+    trSoundsetPlayPlayer(p, "UI_Latch");
 }
 
 void refreshShop(int p = 1){

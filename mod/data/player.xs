@@ -16,6 +16,6 @@ PlayerData[] g_PlayerDataArray = default;
 void initPlayerData(){
     g_PlayerDataArray = new PlayerData(cNumberPlayers + 1);
     for (int p = 0; p <= cNumberPlayers; p++) {
-        trPlayerModifyData(p, 0, -1, 5, 0); // Add 5 population
+        trPlayerModifyData(p, 0, -1, 999, 0); // Add population
     }
 }
