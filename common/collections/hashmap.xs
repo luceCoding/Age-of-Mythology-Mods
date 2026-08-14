@@ -8,11 +8,21 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
         code(fromType+"[] keys = default;");
         code(toType+"[] values = default;");
         code("");
+        code("// Cache fields");
+        code(fromType+"[] cachedKeys = default;");
+        code(toType+"[] cachedValues = default;");
+        code("bool cacheValid = false;");
+        code("");
+        code("void invalidateCache(){");
+            code("cacheValid = false;");
+        code("}");
+        code("");
         code("void initialise(){");
             code("occupied = new bool(capacity, false);");
             code("keys = new "+fromType+"(capacity"+getArrayDefaultValue(fromType)+");");
             code("values = new "+toType+"(capacity"+getArrayDefaultValue(toType)+");");
             code("initialised = true;");
+            code("invalidateCache();");
         code("}");
         code("");
         code("int hash("+getParamQualifier(fromType)+" key"+getVariableDefaultValue(fromType)+"){");
@@ -22,7 +32,6 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
                 code("int keyInt = 0;");
                 code("if(key){ keyInt = 1; }");
             } else {
-                // XS implicitly converts/truncates float to int on direct variable assignment
                 code("int keyInt = key;");
             }
             code("int h = keyInt * 7324451;");
@@ -72,6 +81,7 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
                     code("}");
                 code("}");
             code("}");
+            code("invalidateCache();");
         code("}");
         code("");
         code(""+toType+" put("+getParamQualifier(fromType)+" key"+getVariableDefaultValue(fromType)+", "+getParamQualifier(toType)+" value"+getVariableDefaultValue(toType)+"){");
@@ -88,12 +98,14 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
             code("if(occupied[slot]){");
                 code(""+toType+" previous = values[slot];");
                 code("values[slot] = value;");
+                code("invalidateCache();");
                 code("return previous;");
             code("}");
             code("occupied[slot] = true;");
             code("keys[slot] = key;");
             code("values[slot] = value;");
             code("count++;");
+            code("invalidateCache();");
             code(returnStatementToUse);
         code("}");
         code("");
@@ -125,6 +137,7 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
             code(""+toType+" removed = values[slot];");
             code("occupied[slot] = false;");
             code("count--;");
+            code("invalidateCache();");
             code("");
             code("int nextSlot = slot + 1;");
             code("if(nextSlot >= capacity){");
@@ -162,6 +175,41 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
                 code("occupied[i] = false;");
             code("}");
             code("count = 0;");
+            code("invalidateCache();");
+        code("}");
+        code("");
+        code("void buildCache(){");
+            code("cachedKeys = new "+fromType+"(count"+getArrayDefaultValue(fromType)+");");
+            code("cachedValues = new "+toType+"(count"+getArrayDefaultValue(toType)+");");
+            code("int index = 0;");
+            code("for(int i = 0; i < capacity; i++){");
+                code("if(occupied[i]){");
+                    code("cachedKeys[index] = keys[i];");
+                    code("cachedValues[index] = values[i];");
+                    code("index++;");
+                code("}");
+            code("}");
+            code("cacheValid = true;");
+        code("}");
+        code("");
+        code(fromType+"[] getKeys(){");
+            code("if(!initialised || count == 0){");
+                code("return new "+fromType+"(0"+getArrayDefaultValue(fromType)+");");
+            code("}");
+            code("if(!cacheValid){");
+                code("buildCache();");
+            code("}");
+            code("return cachedKeys;");
+        code("}");
+        code("");
+        code(toType+"[] getValues(){");
+            code("if(!initialised || count == 0){");
+                code("return new "+toType+"(0"+getArrayDefaultValue(toType)+");");
+            code("}");
+            code("if(!cacheValid){");
+                code("buildCache();");
+            code("}");
+            code("return cachedValues;");
         code("}");
     code("};");
 }

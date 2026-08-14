@@ -46,4 +46,47 @@ void initializeCardParametersMap(){
                     "QuimichinSpy", "Quimichin Spy", "Quimichin Spy",
                     "resources\\aztec\\player_color\\units\\quimchin_spy_icon.png"
                     );
+    addCardIntoDeck(0, 2,
+                    "Kitsune", "Kitsune", "Kitsune",
+                    "resources\\japanese\\player_color\\units\\kitsune_icon.png"
+                    );
+
+    addCardIntoDeck(0, 2,
+                    "Anubite", "Anubite", "Anubite",
+                    "resources\\egyptian\\player_color\\units\\anubite_icon.png"
+                    );
+    addCardIntoDeck(0, 2,
+                    "Minotaur", "Minotaur", "Minotaur",
+                    "resources\\greek\\player_color\\units\\minotaur_icon.png"
+                    );
+    addCardIntoDeck(0, 2,
+                    "Centaur", "Centaur", "Centaur",
+                    "resources\\greek\\player_color\\units\\centaur_icon.png"
+                    );
+    addCardIntoDeck(0, 2,
+                    "Wadjet", "Wadjet", "Wadjet",
+                    "resources\\egyptian\\player_color\\units\\wadjet_icon.png"
+                    );
+
+    addCardIntoDeck(0, 2,
+                    "Hoplite", "Hoplite", "Hoplite",
+                    "resources\\greek\\player_color\\units\\hoplite_icon.png"
+                    );
+    addCardIntoDeck(0, 2,
+                    "Spearman", "Spearman", "Spearman",
+                    "resources\\egyptian\\player_color\\units\\spearman_icon.png"
+                    );
+    addCardIntoDeck(0, 2,
+                    "Axeman", "Axeman", "Axeman",
+                    "resources\\egyptian\\player_color\\units\\axeman_icon.png"
+                    );
+
+    addCardIntoDeck(0, 2,
+                    "Toxotes", "Toxotes", "Toxotes",
+                    "resources\\greek\\player_color\\units\\toxotes_icon.png"
+                    );
+    addCardIntoDeck(0, 2,
+                    "Slinger", "Slinger", "Slinger",
+                    "resources\\egyptian\\player_color\\units\\slinger_icon.png"
+                    );
 }

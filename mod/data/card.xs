@@ -4,20 +4,6 @@ include "rng.xs";
 int g_uuidCardCounter = 0;
 StringToCardParametersHashMap ProtoNameToCardParametersMap;
 
-const int puFIELD_HITPOINTS = 0;
-const int puFIELD_SPEED = 1;
-const int puFIELD_SHIELDS = 12;
-const int puFIELD_HACK_ARMOR = 13;
-const int puFIELD_PIERCE_ARMOR = 14;
-const int puFIELD_CRUSH_ARMOR = 15;
-const int puFIELD_HP_REGEN = 17;
-const int puFIELD_SHIELD_REGEN = 26;
-
-const int relativityABSOLUTE = 0;
-const int relativityASSIGN = 1;
-const int relativityPERCENT = 2;
-const int relativityBasePERCENT = 3;
-
 class CardData {
 
     bool m_isLocked = false;
@@ -55,17 +41,7 @@ class CardData {
                 trModifyProtounitAction(m_protoName, "RangedAttack", p, 14, percentDelta, relativityBasePERCENT);
             }
             case 2: trModifyProtounitData(m_protoName, p, puFIELD_HITPOINTS, percentDelta, relativityBasePERCENT);
-            case 3: {
-                trModifyProtounitData(m_protoName, p, puFIELD_HP_REGEN, 0.1 * (m_rarity + 1), relativityASSIGN);
-            }
-            case 4: trModifyProtounitData(m_protoName, p, puFIELD_PIERCE_ARMOR, percentDelta, relativityBasePERCENT);
-            case 5: {
-                int absoluteShields = 10 * (m_rarity + 1);
-                log(3, "" + m_rarity);
-                trModifyProtounitData(m_protoName, p, puFIELD_SHIELDS, absoluteShields, relativityABSOLUTE);
-                trModifyProtounitData(m_protoName, p, puFIELD_SHIELD_REGEN, 0.5, relativityASSIGN);
-            }
-            case 6: trModifyProtounitData(m_protoName, p, puFIELD_SPEED, percentDelta, relativityBasePERCENT);
+            case 3: trModifyProtounitData(m_protoName, p, puFIELD_PIERCE_ARMOR, percentDelta, relativityBasePERCENT);
         }
     }
 
@@ -83,18 +59,7 @@ class CardData {
             case 2: 
                 trModifyProtounitData(m_protoName, p, puFIELD_HITPOINTS, inversePercentDelta, relativityBasePERCENT);
             case 3: 
-                // Reset HP regeneration back to 0
-                trModifyProtounitData(m_protoName, p, puFIELD_HP_REGEN, 0.0, relativityASSIGN);
-            case 4: 
                 trModifyProtounitData(m_protoName, p, puFIELD_PIERCE_ARMOR, inversePercentDelta, relativityBasePERCENT);
-            case 5: {
-                // Subtract the added shields and reset shield regen back to 0
-                int absoluteShields = -10 * (m_rarity + 1);
-                trModifyProtounitData(m_protoName, p, puFIELD_SHIELDS, absoluteShields, relativityABSOLUTE);
-                trModifyProtounitData(m_protoName, p, puFIELD_SHIELD_REGEN, 0.0, relativityASSIGN);
-            }
-            case 6: 
-                trModifyProtounitData(m_protoName, p, puFIELD_SPEED, inversePercentDelta, relativityBasePERCENT);
         }
     }
 

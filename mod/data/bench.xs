@@ -7,13 +7,13 @@ StringToIntHashMap g_synergyHashMap;
 class BenchData {
     int m_player = -1;
     int m_playerShopId = -1;
-    int[] m_synergies = default;
+    int[] m_synergyCounter = default;
     CardData[] m_cardArray = default;
 
     void init(int p = -1, int shopId = -1){
         m_player = p;
         m_playerShopId = shopId;
-        m_synergies = new int(8, 0);
+        m_synergyCounter = new int(8, 0);
     }
     
     int getPlayerShopID(){
@@ -64,21 +64,36 @@ class BenchData {
         return m_cardArray.size();
     }
 
+    void incrementSynergyAndApplyBuff(int index = 0, int p = 0){
+        m_synergyCounter[index] = m_synergyCounter[index] + 1;
+        SynergyData synergy = g_synergies[index];
+        Buff buff = synergy.m_buffs[m_synergyCounter[index]];
+        buff.applyBuff(p);
+    }
+
     void addSynergy(CardData card, int p = 0){
         String key = card.getProtoName() + p;
         int count = g_synergyHashMap.get(key);
         if (count == 0){
             CardParameters params = card.getCardParameters();
-            if (params.isInfantry()){m_synergies[0] = m_synergies[0] + 1;}
-            if (params.isArcher()){m_synergies[1] = m_synergies[1] + 1;}
-            if (params.isCavalry()){m_synergies[2] = m_synergies[2] + 1;}
-            if (params.isMythUnit()){m_synergies[3] = m_synergies[3] + 1;}
-            if (params.isHero()){m_synergies[4] = m_synergies[4] + 1;}
-            if (params.isHealer()){m_synergies[5] = m_synergies[5] + 1;}
-            if (params.isSiege()){m_synergies[6] = m_synergies[6] + 1;}
-            if (params.isBuilding()){m_synergies[7] = m_synergies[7] + 1;}
+            if (params.isInfantry()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_INFANTRY, p);}
+            if (params.isArcher()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_RANGED, p);}
+            if (params.isCavalry()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_CAVALRY, p);}
+            if (params.isMythUnit()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_MYTH, p);}
+            if (params.isHero()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_HERO, p);}
+            if (params.isHealer()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_HEALER, p);}
+            if (params.isSiege()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_SIEGE, p);}
+            if (params.isBuilding()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_BUILDING, p);}
+            if (params.isSoldier()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_SOLDIER, p);}
         }
         g_synergyHashMap.put(key, count + 1);
+    }
+
+    void decrementSynergyAndResetBuff(int index = 0, int p = 0){
+        SynergyData synergy = g_synergies[index];
+        Buff buff = synergy.m_buffs[m_synergyCounter[index]];
+        buff.resetBuff(p);
+        m_synergyCounter[index] = m_synergyCounter[index] - 1;
     }
 
     void removeSynergy(CardData card, int p = 0){
@@ -88,14 +103,15 @@ class BenchData {
         g_synergyHashMap.put(key, count);
         if (count == 0){
             CardParameters params = card.getCardParameters();
-            if (params.isInfantry()){m_synergies[0] = m_synergies[0] - 1;}
-            if (params.isArcher()){m_synergies[1] = m_synergies[1] - 1;}
-            if (params.isCavalry()){m_synergies[2] = m_synergies[2] - 1;}
-            if (params.isMythUnit()){m_synergies[3] = m_synergies[3] - 1;}
-            if (params.isHero()){m_synergies[4] = m_synergies[4] - 1;}
-            if (params.isHealer()){m_synergies[5] = m_synergies[5] - 1;}
-            if (params.isSiege()){m_synergies[6] = m_synergies[6] - 1;}
-            if (params.isBuilding()){m_synergies[7] = m_synergies[7] - 1;}
+            if (params.isInfantry()){decrementSynergyAndResetBuff(SYNERGY_INDEX_INFANTRY, p);}
+            if (params.isArcher()){decrementSynergyAndResetBuff(SYNERGY_INDEX_RANGED, p);}
+            if (params.isCavalry()){decrementSynergyAndResetBuff(SYNERGY_INDEX_CAVALRY, p);}
+            if (params.isMythUnit()){decrementSynergyAndResetBuff(SYNERGY_INDEX_MYTH, p);}
+            if (params.isHero()){decrementSynergyAndResetBuff(SYNERGY_INDEX_HERO, p);}
+            if (params.isHealer()){decrementSynergyAndResetBuff(SYNERGY_INDEX_HEALER, p);}
+            if (params.isSiege()){decrementSynergyAndResetBuff(SYNERGY_INDEX_SIEGE, p);}
+            if (params.isBuilding()){decrementSynergyAndResetBuff(SYNERGY_INDEX_BUILDING, p);}
+            if (params.isSoldier()){decrementSynergyAndResetBuff(SYNERGY_INDEX_SOLDIER, p);}
         }
     }
 
@@ -150,20 +166,52 @@ class BenchData {
         return false;
     }
 
-    void renderSynergyIcon2(ref UiSystem system, float posX = 0.0, ref float posY, float posYOffset = 0.0, float width = 0.0, float height = 0.0, 
-                           int index = 0, 
-                           string iconPath = "", string rolloverName = "", string rolloverDesc = ""){
-        if (m_synergies[index] == 0){return;}
-        minimapSafeDisplay(system, posX - 0.01, posY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", 32));
-        minimapSafeDisplayWithHover(system, posX, posY, width, height, getIconPathFormat(iconPath, 32) + ": " + m_synergies[index], 
-                                    rolloverName,
-                                    rolloverDesc);
-        posY = posY - posYOffset;
+    string getSynergyText(int synergyIndex = 0) {
+        string text = "";
+        SynergyData synergy = g_synergies[synergyIndex];
+        Buff[] buffs = synergy.m_buffs;
+        
+        int currentCount = m_synergyCounter[synergyIndex];
+
+        // 1. Find the highest unlocked tier threshold <= currentCount
+        int activeTierIndex = -1;
+        for (int i = 0; i < buffs.size(); i++) {
+            Buff buff = buffs[i];
+            if (buff.isEmpty()) { continue; }
+
+            if (i <= currentCount) {
+                activeTierIndex = i; // Continually updates to the highest reached tier
+            }
+        }
+
+        // 2. Build the formatted string
+        bool isFirstItem = true;
+        for (int i = 0; i < buffs.size(); i++) {
+            Buff buff = buffs[i];
+            if (buff.isEmpty()) { continue; }
+
+            // Append separator between tiers
+            if (isFirstItem == false) {
+                text = text + " > ";
+            } else {
+                isFirstItem = false;
+            }
+
+            // Highlight if this specific tier index is the active threshold
+            if (i == activeTierIndex) {
+                // Active tier (Yellow / Gold)
+                text = text + "<color=1,0.84,0>" + i + "</color>";
+            } else {
+                // Inactive / Unreached tier (Grey)
+                text = text + "<color=0.5,0.5,0.5>" + i + "</color>";
+            }
+        }
+        return text;
     }
 
     void renderSynergies(ref UiSystem system, float posX = 0.0, float posY = 0.0, int p = 1) {
-        float width = 0.025;
-        float height = 0.0275;
+        float width = 0.1;
+        float height = 0.025;
         float posYOffset = 0.035;
 
         // 1. Initialize index map array [0, 1, 2, 3, 4, 5, 6, 7]
@@ -172,13 +220,13 @@ class BenchData {
             sortedIndices[i] = i;
         }
 
-        // 2. Bubble sort indices based on values in m_synergies (Descending)
+        // 2. Bubble sort indices based on values in m_synergyCounter (Descending)
         for (int i = 0; i < sortedIndices.size()-1; i++) {
             for (int j = 0; j < 7 - i; j++) {
                 int idxA = sortedIndices[j];
                 int idxB = sortedIndices[j + 1];
 
-                if (m_synergies[idxA] < m_synergies[idxB]) {
+                if (m_synergyCounter[idxA] < m_synergyCounter[idxB]) {
                     sortedIndices[j] = idxB;
                     sortedIndices[j + 1] = idxA;
                 }
@@ -188,10 +236,10 @@ class BenchData {
         // 3. Render using sorted indices (renderSynergyIcon will naturally skip count == 0)
         for (int i = 0; i < sortedIndices.size(); i++) {
             int idx = sortedIndices[i];
-            if (m_synergies[idx] > 0) {
-                SynergyData synergy = g_synergyIcons[idx];
-                minimapSafeDisplay(system, posX + 0.0825, posY + 0.005, m_synergies[idx] + " : 2 > 3 > 4 > 5");
-                renderSynergyIcon(system, posX, posY, posYOffset, width, height, 32, idx);
+            if (m_synergyCounter[idx] > 0) {
+                SynergyData synergy = g_synergies[idx];
+                //minimapSafeDisplay(system, posX + 0.0825, posY + 0.005, m_synergyCounter[idx] + " : " + getSynergyText(idx));
+                renderSynergyIcon(system, posX, posY, posYOffset, width, height, 32, idx, false, " " + m_synergyCounter[idx] + " : " + getSynergyText(idx),);
             }
         }
     }

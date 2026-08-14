@@ -1,5 +1,16 @@
 include "lib/rm_core.xs";
 
+const string UNIT_TYPE_INFANTRY = "AbstractInfantry";
+const string UNIT_TYPE_ARCHER = "AbstractArcher";
+const string UNIT_TYPE_RANGED = "Ranged";
+const string UNIT_TYPE_CAVALRY = "AbstractCavalry";
+const string UNIT_TYPE_MYTH = "MythUnit";
+const string UNIT_TYPE_HERO = "HERO";
+const string UNIT_TYPE_HEALER = "AbstractHealer";
+const string UNIT_TYPE_SIEGE = "AbstractSiegeWeapon";
+const string UNIT_TYPE_BUILDING = "Building";
+const string UNIT_TYPE_SOLDIER = "HumanSoldier";
+
 class CardParameters {
 
     Parameters m_params;
@@ -17,7 +28,7 @@ class CardParameters {
         params.strings.add(titleText);
         params.strings.add(hoverText);
         m_params = params;
-        m_unitTypes = new int(8, -1);
+        m_unitTypes = new int(MAX_SYNERGIES, -1);
     }
 
     int getIntData(){
@@ -92,14 +103,15 @@ class CardParameters {
         return m_unitTypes[index] == 1;
     }
 
-    bool isInfantry(){ return isUnitTypeCache(0, "AbstractInfantry");}
-    bool isArcher(){ return isUnitTypeCache(1, "AbstractArcher");}
-    bool isCavalry(){ return isUnitTypeCache(2, "AbstractCavalry");}
-    bool isMythUnit(){ return isUnitTypeCache(3, "MythUnit");}
-    bool isHero(){ return isUnitTypeCache(4, "Hero");}
-    bool isHealer(){ return isUnitTypeCache(5, "AbstractHealer");}
-    bool isSiege(){ return isUnitTypeCache(6, "AbstractSiegeWeapon");}
-    bool isBuilding(){ return isUnitTypeCache(7, "isBuilding");}
+    bool isInfantry(){ return isUnitTypeCache(0, UNIT_TYPE_INFANTRY);}
+    bool isArcher(){ return isUnitTypeCache(1, UNIT_TYPE_ARCHER) || isUnitTypeCache(1, UNIT_TYPE_RANGED);}
+    bool isCavalry(){ return isUnitTypeCache(2, UNIT_TYPE_CAVALRY);}
+    bool isMythUnit(){ return isUnitTypeCache(3, UNIT_TYPE_MYTH);}
+    bool isHero(){ return isUnitTypeCache(4, UNIT_TYPE_HERO);}
+    bool isHealer(){ return isUnitTypeCache(5, UNIT_TYPE_HEALER);}
+    bool isSiege(){ return isUnitTypeCache(6, UNIT_TYPE_SIEGE);}
+    bool isBuilding(){ return isUnitTypeCache(7, UNIT_TYPE_BUILDING);}
+    bool isSoldier(){ return isUnitTypeCache(8, UNIT_TYPE_SOLDIER);}
 
     bool isGreek() { return xsStringFindFirst(getIconPath(), "greek", 0, false) != -1; }
     bool isNorse() { return xsStringFindFirst(getIconPath(), "norse", 0, false) != -1; }
@@ -109,6 +121,20 @@ class CardParameters {
     bool isJapanese() { return xsStringFindFirst(getIconPath(), "japan", 0, false) != -1; }
     bool isAztec() { return xsStringFindFirst(getIconPath(), "aztec", 0, false) != -1; }
 
+    bool isASynergy(int synergy = -1){
+        switch(synergy){
+            case SYNERGY_INDEX_INFANTRY: return isInfantry();
+            case SYNERGY_INDEX_RANGED: return isArcher();
+            case SYNERGY_INDEX_CAVALRY: return isCavalry();
+            case SYNERGY_INDEX_MYTH: return isMythUnit();
+            case SYNERGY_INDEX_HERO: return isHero();
+            case SYNERGY_INDEX_HEALER: return isHealer();
+            case SYNERGY_INDEX_SIEGE: return isSiege();
+            case SYNERGY_INDEX_BUILDING: return isBuilding();
+            case SYNERGY_INDEX_SOLDIER: return isSoldier();
+        }
+        return false;
+    }
 };
 
 Parameters createParametersCopy(CardParameters params){

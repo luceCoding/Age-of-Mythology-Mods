@@ -19,12 +19,14 @@ void generate()
     // mod/data/globals.xs
 
     // mod/data/cardParameters.xs
+
     defineHashMapDefinition("string", "CardParameters", "", "");
     defineHashMapDefinition("int", "int", "", "");
     defineHashMapDefinition("string", "int", "0", "");
 
-    // mod/data/synergies.xs
     // mod/data/card.xs
+    // mod/data/buffs.xs
+    // mod/data/synergies.xs
     // mod/data/player.xs
     // mod/data/bench.xs
     // mod/data/deck.xs

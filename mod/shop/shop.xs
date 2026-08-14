@@ -97,15 +97,18 @@ class Shop {
         int suit = currCard.getSuit();
         float leftPosX = posX - 0.055 * iconMultiplier;
         float leftPosY = posY + 0.08 * iconMultiplier;
+        float width = 0.025;
+        float height = 0.025;
         minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize));
         switch(suit){
-            case 0: minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize));
-            case 1: minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/in_game/stat_hack_dmg.png", miniIconSize));
-            case 2: minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize));
-            case 3: minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize));
-            //case 4: minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/in_game/stat_hp_regen.png", miniIconSize));
-            //case 5: minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize));
-            //case 6: minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/in_game/stat_speed.png", miniIconSize));
+            case 0: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                                                getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "");
+            case 1: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                                                getIconPathFormat("resources/in_game/stat_hack_dmg.png", miniIconSize), "Upgrade: Attack", "");
+            case 2: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                                                getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "");
+            case 3: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                                                getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize), "Upgrade: Pierce Armor", "");
         }
 
         // Synergies
@@ -121,17 +124,7 @@ class Shop {
         if (params.isHealer()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 5);}
         if (params.isSiege()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 6);}
         if (params.isBuilding()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 7);}
-
-        // Age
-        //int age = params.getAge();
-        //string ageIcon = "";
-        //switch(age){
-        //    case 0: ageIcon = getIconPathFormat("resources/in_game/Gamepad_Radial_Menu/score_age_1.png", 32);
-        //    case 1: ageIcon = getIconPathFormat("resources/in_game/Gamepad_Radial_Menu/score_age_2.png", 32);
-        //    case 2: ageIcon = getIconPathFormat("resources/in_game/Gamepad_Radial_Menu/score_age_3.png", 32);
-        //    case 3: ageIcon = getIconPathFormat("resources/in_game/Gamepad_Radial_Menu/score_age_4.png", 32);
-        //    case 4: ageIcon = getIconPathFormat("resources/in_game/Gamepad_Radial_Menu/score_age_5.png", 32);
-        //}
+        if (params.isSoldier()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 8);}
 
         // Cost
         int cost = params.getCost();
@@ -305,7 +298,7 @@ void renderBench(ref UiSystem system, int p = 1) {
     BenchData bench = g_shop.m_benches[p];
     CardData[] currCards = bench.getCards();
 
-    bench.renderSynergies(system, -0.8, -0.2, p);
+    bench.renderSynergies(system, -0.75, -0.2, p);
 
     int totalCards = bench.getNumberOfCardsHeld();
     if (totalCards == 0) return;
@@ -416,7 +409,7 @@ void renderShop(ref UiSystem system, int p = 1){
     buttonNames.add("DRAW");
     buttonNames.add("BUY XP");
     buttonNames.add("EXIT SHOP");
-    float drawPosx = -0.5;
+    float drawPosx = -0.55;
     float yOffset = 0.075;
     float drawPosYStart = -0.325;
 
