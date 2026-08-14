@@ -18,6 +18,7 @@ void generate()
 
     // mod/data/globals.xs
 
+    // mod/shop/level.xs
     // mod/data/cardParameters.xs
 
     defineHashMapDefinition("string", "CardParameters", "", "");

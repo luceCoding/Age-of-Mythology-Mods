@@ -51,42 +51,68 @@ void initializeCardParametersMap(){
                     "resources\\japanese\\player_color\\units\\kitsune_icon.png"
                     );
 
-    addCardIntoDeck(0, 2,
+    addCardIntoDeck(1, 2,
                     "Anubite", "Anubite", "Anubite",
                     "resources\\egyptian\\player_color\\units\\anubite_icon.png"
                     );
-    addCardIntoDeck(0, 2,
+    addCardIntoDeck(1, 2,
                     "Minotaur", "Minotaur", "Minotaur",
                     "resources\\greek\\player_color\\units\\minotaur_icon.png"
                     );
-    addCardIntoDeck(0, 2,
+    addCardIntoDeck(1, 2,
                     "Centaur", "Centaur", "Centaur",
                     "resources\\greek\\player_color\\units\\centaur_icon.png"
                     );
-    addCardIntoDeck(0, 2,
+    addCardIntoDeck(1, 2,
                     "Wadjet", "Wadjet", "Wadjet",
                     "resources\\egyptian\\player_color\\units\\wadjet_icon.png"
                     );
 
-    addCardIntoDeck(0, 2,
+    addCardIntoDeck(1, 2,
                     "Hoplite", "Hoplite", "Hoplite",
                     "resources\\greek\\player_color\\units\\hoplite_icon.png"
                     );
-    addCardIntoDeck(0, 2,
+    addCardIntoDeck(1, 2,
                     "Spearman", "Spearman", "Spearman",
                     "resources\\egyptian\\player_color\\units\\spearman_icon.png"
                     );
-    addCardIntoDeck(0, 2,
+    addCardIntoDeck(1, 2,
                     "Axeman", "Axeman", "Axeman",
                     "resources\\egyptian\\player_color\\units\\axeman_icon.png"
                     );
 
-    addCardIntoDeck(0, 2,
+    addCardIntoDeck(1, 2,
                     "Toxotes", "Toxotes", "Toxotes",
                     "resources\\greek\\player_color\\units\\toxotes_icon.png"
                     );
-    addCardIntoDeck(0, 2,
+    addCardIntoDeck(1, 2,
                     "Slinger", "Slinger", "Slinger",
                     "resources\\egyptian\\player_color\\units\\slinger_icon.png"
+                    );
+    addCardIntoDeck(1, 2,
+                    "SentryTower", "Sentry Tower", "Sentry Tower",
+                    "resources\\shared\\static_color\\buildings\\sentry_tower_icon.png"
+                    );
+
+    addCardIntoDeck(2, 2,
+                    "SiegeCrossbow", "Siege Crossbow", "Siege Crossbow",
+                    "resources\\chinese\\player_color\\units\\siege_crossbow_icon.png"
+                    );
+    addCardIntoDeck(2, 2,
+                    "Peltast", "Peltast", "Peltast",
+                    "resources\\greek\\player_color\\units\\peltast_icon.png"
+                    );
+
+    addCardIntoDeck(3, 2,
+                    "Hydra", "Hydra", "Hydra",
+                    "resources\\greek\\player_color\\units\\hydra_icon.png"
+                    );
+    addCardIntoDeck(3, 2,
+                    "Colossus", "Colossus", "Colossus",
+                    "resources\\greek\\player_color\\units\\colossus_icon.png"
+                    );
+    addCardIntoDeck(3, 2,
+                    "Ballista", "Ballista", "Ballista",
+                    "resources\\norse\\player_color\\units\\ballista_icon.png"
                     );
 }

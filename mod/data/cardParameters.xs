@@ -28,7 +28,7 @@ class CardParameters {
         params.strings.add(titleText);
         params.strings.add(hoverText);
         m_params = params;
-        m_unitTypes = new int(MAX_SYNERGIES, -1);
+        m_unitTypes = new int(MAX_SYNERGIES + 1, -1);
     }
 
     int getIntData(){

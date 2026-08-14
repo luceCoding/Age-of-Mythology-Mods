@@ -16,6 +16,8 @@ class Shop {
     DeckData[] m_decks = default;
     DrawData[] m_currDraws = default;
     BenchData[] m_benches = default;
+    int[] m_totalShopExp = default;
+    int[] m_currShopLevel = default;
 
     void init(){
         m_decks = new DeckData(TOTAL_AGES);
@@ -23,6 +25,8 @@ class Shop {
         m_benches = new BenchData(cNumberPlayers + 1);
         g_selectedUUIDs = new int(cNumberPlayers + 1, -1);
         g_shopNeedsRefresh = new bool(cNumberPlayers + 1, false);
+        m_totalShopExp = new int(cNumberPlayers + 1, 0);
+        m_currShopLevel = new int(cNumberPlayers + 1, 0);
     }
 
     void addCardIntoDeck(ref CardData card){
@@ -184,7 +188,8 @@ class Shop {
         }
 
         for(int i = 0; i < emptySlots; i++) {
-            drawFromDeck(0, p);
+            int tier = getRandomTier(m_currShopLevel[p]);
+            drawFromDeck(tier, p);
         }
     }
 
@@ -215,7 +220,20 @@ class Shop {
     }
 
     void buyXP(int p = 0){
+        int currShopLevel = m_currShopLevel[p];
+        // Block buying XP if already at max level
+        if (currShopLevel >= MAX_SHOP_LEVEL) {
+            return;
+        }
+        m_totalShopExp[p] = m_totalShopExp[p] + 5;
+        if (currShopLevel < g_shopLevels.size()){
+            ShopLevel level = g_shopLevels[currShopLevel];
 
+            if (m_totalShopExp[p] >= level.m_expNeeded){
+                m_currShopLevel[p] = m_currShopLevel[p] + 1;
+            }
+        }
+        g_shopNeedsRefresh[p] = true;
     }
 
     void sell(int p = 0, int uuid = -1){
@@ -406,12 +424,23 @@ void renderShop(ref UiSystem system, int p = 1){
     renderBench(system, p);
 
     string[] buttonNames = new string(0, "");
-    buttonNames.add("DRAW");
     buttonNames.add("BUY XP");
+    buttonNames.add("DRAW");
     buttonNames.add("EXIT SHOP");
     float drawPosx = -0.55;
     float yOffset = 0.075;
     float drawPosYStart = -0.325;
+
+    int shopLevel = g_shop.m_currShopLevel[p];
+    if (shopLevel < MAX_SHOP_LEVEL && shopLevel < g_shopLevels.size()){
+        ShopLevel level = g_shopLevels[shopLevel];
+        minimapSafeDisplay(system, drawPosx, drawPosYStart + 0.1, 
+            "Level: " + shopLevel + "\n" + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded);
+    }
+    else {
+        minimapSafeDisplay(system, drawPosx, drawPosYStart + 0.1, 
+            "Level: " + MAX_SHOP_LEVEL + "\nMAX");
+    }
 
     float drawPosY = drawPosYStart;
     for(int i = 0; i < buttonNames.size(); i++) {
@@ -425,7 +454,7 @@ void renderShop(ref UiSystem system, int p = 1){
                         "",
                         EMPTY_PARAMETERS,
                         [](int p = 1, ref Parameters parameters) -> void {
-            g_shop.draw(p);
+            g_shop.buyXP(p);
         }
     );
     drawPosY = drawPosY - yOffset;
@@ -434,7 +463,7 @@ void renderShop(ref UiSystem system, int p = 1){
                         "",
                         EMPTY_PARAMETERS,
                         [](int p = 1, ref Parameters parameters) -> void {
-            g_shop.buyXP(p);
+            g_shop.draw(p);
         }
     );
     drawPosY = drawPosY - yOffset;

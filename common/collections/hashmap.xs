@@ -34,7 +34,7 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
             } else {
                 code("int keyInt = key;");
             }
-            code("int h = keyInt * 7324451;");
+            code("int h = (keyInt ^ (keyInt >> 16)) * 73244539;");
             code("if(h < 0){");
                 code("h = 0 - h;");
             code("}");

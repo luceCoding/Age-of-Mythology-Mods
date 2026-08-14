@@ -20,7 +20,7 @@ void defineHashSetDefinition(string type = "", string nameSuffix = ""){
             } else {
                 code("int keyInt = (int)value;");
             }
-            code("int h = keyInt * 7324451;");
+            code("int h = (keyInt ^ (keyInt >> 16)) * 73244539;");
             code("if(h < 0){");
                 code("h = 0 - h;");
             code("}");
