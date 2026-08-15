@@ -22,16 +22,17 @@ ShopLevel createShopLevel(int t1 = 0, int t2 = 0, int t3 = 0, int t4 = 0, int t5
 }
 
 void initializeShopLevels(){
-    g_shopLevels.add(createShopLevel(100,  0,  0,  0,  0, 10));
-    g_shopLevels.add(createShopLevel( 75, 25,  0,  0,  0, 25));
-    g_shopLevels.add(createShopLevel( 55, 30, 15,  0,  0, 45));
-    g_shopLevels.add(createShopLevel( 45, 33, 20,  2,  0, 70));
-    g_shopLevels.add(createShopLevel( 30, 40, 25,  5,  0, 100));
-    g_shopLevels.add(createShopLevel( 19, 30, 40, 10,  1, 135));
-    g_shopLevels.add(createShopLevel( 15, 20, 32, 30,  3, 175));
-    g_shopLevels.add(createShopLevel( 10, 17, 25, 33, 15, 220));
-    g_shopLevels.add(createShopLevel(  5, 10, 20, 40, 25, 270));
-    g_shopLevels.add(createShopLevel(  1,  2, 12, 50, 35, 325));
+    g_shopLevels.add(createShopLevel(100,  0,  0,  0,  0,  10));
+    g_shopLevels.add(createShopLevel( 80, 20,  0,  0,  0,  25));
+    g_shopLevels.add(createShopLevel( 65, 30,  5,  0,  0,  45));
+    g_shopLevels.add(createShopLevel( 50, 35, 15,  0,  0,  70));
+    g_shopLevels.add(createShopLevel( 38, 35, 25,  2,  0, 100));
+    g_shopLevels.add(createShopLevel( 26, 32, 35,  7,  0, 135));
+    g_shopLevels.add(createShopLevel( 18, 26, 40, 15,  1, 175));
+    g_shopLevels.add(createShopLevel( 12, 19, 40, 25,  4, 220));
+    g_shopLevels.add(createShopLevel(  7, 12, 33, 38, 10, 270));
+    g_shopLevels.add(createShopLevel(  3,  6, 25, 46, 20, 325));
+    g_shopLevels.add(createShopLevel(  1,  2, 12, 50, 35,   0));
 }
 
 int getRandomTier(int shopLevel = 0) {
@@ -42,6 +43,7 @@ int getRandomTier(int shopLevel = 0) {
     if (level >= g_shopLevels.size()) level = g_shopLevels.size() - 1;
 
     ShopLevel chances = g_shopLevels[level];
+    log(3, ""+chances.m_tier5Chance);
 
     int roll = xsRandInt(1, 100);
 

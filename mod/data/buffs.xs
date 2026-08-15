@@ -56,6 +56,8 @@ class Buff {
         } else if (m_buffType == BUFF_TYPE_PROTO_ACTION) {
             trModifyProtounitAction(targetProto, "HandAttack", p, m_puField, deltaVal, m_relativity);
             trModifyProtounitAction(targetProto, "RangedAttack", p, m_puField, deltaVal, m_relativity);
+            trModifyProtounitAction(targetProto, "BuildingAttack", p, m_puField, deltaVal, m_relativity);
+            trModifyProtounitAction(targetProto, "AntiWallAttack", p, m_puField, deltaVal, m_relativity);
         }
     }
 
@@ -67,12 +69,14 @@ class Buff {
             CardParameters param = params[i];
             if (m_synergyTypes.size() == 0){ // Apply to all
                 _executeCommand(param.getProtoUnit(), p, m_delta);
+                log(3, "Buffed all");
             }
             else{
                 for (int j = 0; j < m_synergyTypes.size(); j++) {
                     int synergyType = m_synergyTypes[j];
                     if (param.isASynergy(synergyType)){
                         _executeCommand(param.getProtoUnit(), p, m_delta);
+                        log(3, "Buffed " + synergyType);
                         break;
                     }
                 }

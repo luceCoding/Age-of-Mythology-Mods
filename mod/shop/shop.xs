@@ -39,7 +39,7 @@ class Shop {
     }
 
     int getDrawCost(int p = 0){
-        return m_currShopLevel[p] + 2;
+        return m_currShopLevel[p] + 10;
     }
 
     int getBuyXPCost(int p = 0){
@@ -150,7 +150,7 @@ class Shop {
         if (params.isHero()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 4);}
         if (params.isHealer()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 5);}
         if (params.isSiege()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 6);}
-        if (params.isBuilding()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 7);}
+        //if (params.isBuilding()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 7);}
         if (params.isSoldier()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 8);}
 
         // Cost
@@ -489,13 +489,29 @@ void renderShop(ref UiSystem system, int p = 1){
     float yOffset = 0.075;
     float drawPosYStart = -0.35;
 
+    int goldStockpiled = kbGetResourceAmount(p, kbGetResourceID("Gold"));
     int shopLevel = g_shop.m_currShopLevel[p];
+    ShopLevel level = g_shopLevels[shopLevel];
+    string shopChances = "I: " + level.m_tier1Chance + "%\n" +
+                        "II: " + level.m_tier2Chance + "%\n" +
+                        "III: " + level.m_tier3Chance + "%\n" +
+                        "IV: " + level.m_tier4Chance + "%\n" +
+                        "V: " + level.m_tier5Chance + "%";
     if (shopLevel < MAX_SHOP_LEVEL && shopLevel < g_shopLevels.size()){
-        ShopLevel level = g_shopLevels[shopLevel];
-        minimapSafeDisplay(system, drawPosx, drawPosYStart + 0.1, "Level: " + shopLevel + "\n" + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded);
+        minimapSafeDisplayWithHover(system, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
+                                    getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled + 
+                                    "\nLevel: " + shopLevel + "\n" + 
+                                    "XP: " + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded,
+                                    "Shop Level Drop Chances",
+                                    shopChances);
     }
     else {
-        minimapSafeDisplay(system, drawPosx, drawPosYStart + 0.1, "Level: " + MAX_SHOP_LEVEL + "\nMAX");
+        minimapSafeDisplayWithHover(system, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
+                                    getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled + 
+                                    "\nLevel: " + MAX_SHOP_LEVEL + 
+                                    "\nXP: MAX",
+                                    "Shop Level Drop Chances",
+                                    shopChances);
     }
 
     float drawPosY = drawPosYStart;
