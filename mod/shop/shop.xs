@@ -283,6 +283,7 @@ class Shop {
 
             if (m_totalShopExp[p] >= level.m_expNeeded){
                 m_currShopLevel[p] = m_currShopLevel[p] + 1;
+                m_totalShopExp[p] = 0;
                 trSoundsetPlayPlayer(p, "AotgBlessingRewardReceivedDivine");
                 g_shopNeedsRefresh[p] = true;
                 return;
@@ -493,16 +494,16 @@ void renderShop(ref UiSystem system, int p = 1){
     int shopLevel = g_shop.m_currShopLevel[p];
     ShopLevel level = g_shopLevels[shopLevel];
     string shopChances = "I: " + level.m_tier1Chance + "%\n" +
-                        "II: " + level.m_tier2Chance + "%\n" +
-                        "III: " + level.m_tier3Chance + "%\n" +
-                        "IV: " + level.m_tier4Chance + "%\n" +
-                        "V: " + level.m_tier5Chance + "%";
+                         "II: " + level.m_tier2Chance + "%\n" +
+                         "III: " + level.m_tier3Chance + "%\n" +
+                         "IV: " + level.m_tier4Chance + "%\n" +
+                         "V: " + level.m_tier5Chance + "%";
     if (shopLevel < MAX_SHOP_LEVEL && shopLevel < g_shopLevels.size()){
         minimapSafeDisplayWithHover(system, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
                                     getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled + 
                                     "\nLevel: " + shopLevel + "\n" + 
                                     "XP: " + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded,
-                                    "Shop Level Drop Chances",
+                                    "Shop Level Draw Chances",
                                     shopChances);
     }
     else {

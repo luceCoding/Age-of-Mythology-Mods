@@ -36,6 +36,7 @@ void generate()
     // mod/shop/shop.xs
     // mod/data/cardParametersData.xs
 
+    // mod/map/teams.xs
     // mod/map/units.xs
     // mod/shop/commands.xs
 

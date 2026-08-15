@@ -9,12 +9,14 @@ highFrequency
 active
 {
     trSetCanSeeAllyLOSInFFA(true);
+    trExecuteOnAI(cNumberPlayers-1, "scenarioDisableAI()");
     trExecuteOnAI(cNumberPlayers, "scenarioDisableAI()");
-    trAISetAttackResponseDistance(cNumberPlayers, 36.0);
+    //trAISetAttackResponseDistance(cNumberPlayers, 36.0);
     trDisablePopCapNotifications(true);
     trDisableConquestCheck(true);
     trSetCommunityObjectivesVisibility(false);
     initialiseUiSystem(false);
+    initializeTeams();
     initializeShopLevels();
     initializeSynergies();
     g_shop.init();
@@ -57,7 +59,8 @@ active
     }
     initPlayerData();
     initializeCardParametersMap();
-    createStartingUnits();
+    modifyPlayerData();
+    createShops();
     initPlayerCommands();
     xsDisableSelf();
 }
