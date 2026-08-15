@@ -22,7 +22,7 @@ class DeckData {
 
         // Shrink the array by 1 to remove the top card
         m_cardArray.resize(lastIndex); 
-        log(3, "Popped card from deck " + drawnCard.getUuid() + ", size: " + m_cardArray.size());
+        log(3, "Popped card from deck, size: " + m_cardArray.size());
         return drawnCard;
     }
 
@@ -43,7 +43,7 @@ class DeckData {
 
         // Pop the last card off the deck
         m_cardArray.resize(lastIndex);
-        log(3, "Popped card from deck " + drawnCard.getUuid() + ", size: " + m_cardArray.size());
+        log(3, "Popped card from deck, size: " + m_cardArray.size());
         return drawnCard;
     }
 

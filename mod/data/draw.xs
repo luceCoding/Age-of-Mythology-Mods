@@ -4,7 +4,6 @@ include "player.xs";
 
 class DrawData {
     CardData[] m_cardArray = default;
-    int m_cardCount = 0;
 
     int getSize(){
         if (m_cardArray.size() <= 0){
@@ -25,8 +24,7 @@ class DrawData {
                 int luck = player.getLuckBonus();
                 card.rerollRarity(luck);
                 m_cardArray[i] = card;
-                m_cardCount = m_cardCount + 1;
-                log(3, "Added card to draw " + card.getUuid() + ", slot: " + i + ", size: " + m_cardCount);
+                log(3, "Added card to draw " + card.getUuid() + ", slot: " + i);
                 return true;
             }
         }
@@ -68,10 +66,7 @@ class DrawData {
 
         CardData emptyCard;
         m_cardArray[index] = emptyCard;
-        if (m_cardCount > 0){
-            m_cardCount = m_cardCount - 1;
-        }
-        log(3, "Removed card from draw " + removedCard.getUuid() + ", slot: " + index + ", size: " + m_cardCount);
+        log(3, "Removed card from draw " + removedCard.getUuid() + ", slot: " + index);
         return removedCard;
     }
 

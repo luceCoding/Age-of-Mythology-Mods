@@ -1,8 +1,8 @@
 include "lib/rm_core.xs";
 
+const int MAX_UNIT_TYPES = 11;
 const string UNIT_TYPE_INFANTRY = "AbstractInfantry";
 const string UNIT_TYPE_ARCHER = "AbstractArcher";
-const string UNIT_TYPE_RANGED = "Ranged";
 const string UNIT_TYPE_CAVALRY = "AbstractCavalry";
 const string UNIT_TYPE_MYTH = "MythUnit";
 const string UNIT_TYPE_HERO = "HERO";
@@ -10,6 +10,8 @@ const string UNIT_TYPE_HEALER = "AbstractHealer";
 const string UNIT_TYPE_SIEGE = "AbstractSiegeWeapon";
 const string UNIT_TYPE_BUILDING = "Building";
 const string UNIT_TYPE_SOLDIER = "HumanSoldier";
+const string UNIT_TYPE_RANGED = "Ranged";
+const string UNIT_TYPE_MYTH_SIEGE = "MythUnitSiege";
 
 class CardParameters {
 
@@ -28,7 +30,7 @@ class CardParameters {
         params.strings.add(titleText);
         params.strings.add(hoverText);
         m_params = params;
-        m_unitTypes = new int(MAX_SYNERGIES + 1, -1);
+        m_unitTypes = new int(MAX_UNIT_TYPES + 1, -1);
     }
 
     int getIntData(){
@@ -104,12 +106,12 @@ class CardParameters {
     }
 
     bool isInfantry(){ return isUnitTypeCache(0, UNIT_TYPE_INFANTRY);}
-    bool isArcher(){ return isUnitTypeCache(1, UNIT_TYPE_ARCHER) || isUnitTypeCache(1, UNIT_TYPE_RANGED);}
+    bool isArcher(){ return (isUnitTypeCache(1, UNIT_TYPE_ARCHER) || isUnitTypeCache(9, UNIT_TYPE_RANGED));}
     bool isCavalry(){ return isUnitTypeCache(2, UNIT_TYPE_CAVALRY);}
     bool isMythUnit(){ return isUnitTypeCache(3, UNIT_TYPE_MYTH);}
     bool isHero(){ return isUnitTypeCache(4, UNIT_TYPE_HERO);}
     bool isHealer(){ return isUnitTypeCache(5, UNIT_TYPE_HEALER);}
-    bool isSiege(){ return isUnitTypeCache(6, UNIT_TYPE_SIEGE);}
+    bool isSiege(){ return (isUnitTypeCache(6, UNIT_TYPE_SIEGE) || isUnitTypeCache(10, UNIT_TYPE_MYTH_SIEGE));}
     bool isBuilding(){ return isUnitTypeCache(7, UNIT_TYPE_BUILDING);}
     bool isSoldier(){ return isUnitTypeCache(8, UNIT_TYPE_SOLDIER);}
 

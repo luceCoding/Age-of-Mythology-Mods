@@ -14,12 +14,14 @@ class CardData {
     int m_suit = -1;
     int m_rarity = 0;
     int m_luckBonus = 0;
+    int m_deckIndex = -1;
 
     void setCard(ref CardParameters params, int suit = -1){
         m_protoName = params.getProtoUnit();
         m_uuid = g_uuidCardCounter;
         g_uuidCardCounter = g_uuidCardCounter + 1;
         m_suit = suit;
+        m_deckIndex = params.getAge();
     }
 
     CardParameters getCardParameters(){
@@ -73,6 +75,10 @@ class CardData {
 
     int getUuid(){
         return m_uuid;
+    }
+
+    int getDeckIndex(){
+        return m_deckIndex;
     }
 
     int getSuit(){

@@ -89,11 +89,15 @@ void initializeCardParametersMap(){
                     "Slinger", "Slinger", "Slinger",
                     "resources\\egyptian\\player_color\\units\\slinger_icon.png"
                     );
-    addCardIntoDeck(1, 2,
-                    "SentryTower", "Sentry Tower", "Sentry Tower",
-                    "resources\\shared\\static_color\\buildings\\sentry_tower_icon.png"
-                    );
 
+    addCardIntoDeck(2, 2,
+                    "Behemoth", "Behemoth", "Behemoth",
+                    "resources\\atlantean\\player_color\\units\\behemoth_icon.png"
+                    );
+    addCardIntoDeck(2, 2,
+                    "Petrobolos", "Petrobolos", "Petrobolos",
+                    "resources\\greek\\player_color\\units\\petrobolos_icon.png"
+                    );
     addCardIntoDeck(2, 2,
                     "SiegeCrossbow", "Siege Crossbow", "Siege Crossbow",
                     "resources\\chinese\\player_color\\units\\siege_crossbow_icon.png"

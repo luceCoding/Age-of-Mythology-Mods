@@ -46,15 +46,18 @@ class Shop {
         return getDrawCost(p) * 2;
     }
 
-    void addCardIntoDeck(ref CardData card){
-        CardParameters params = card.getCardParameters();
-        int age = params.getAge();
-        DeckData deck = m_decks[age];
+    void addCardIntoDeck(ref CardData card, int deckIndex = -1){
+        if (deckIndex < 0 || deckIndex >= TOTAL_AGES) {
+            CardParameters params = card.getCardParameters();
+            deckIndex = params.getAge();
+        }
+
+        DeckData deck = m_decks[deckIndex];
         deck.addCard(card);
-        m_decks[age] = deck;
+        m_decks[deckIndex] = deck;
     }
 
-    void drawFromDeck(int d = 0, int p = 0){
+    bool drawFromDeck(int d = 0, int p = 0){
         DeckData deck = m_decks[d];
         DrawData currDraw = m_currDraws[p];
         CardData drawnCard = deck.drawRandomCard();
@@ -64,14 +67,17 @@ class Shop {
                 deck.addCard(drawnCard);
                 m_decks[d] = deck;
                 log(3, "Failed to draw a card for player " + p);
+                return false;
             }
             else {
                 m_decks[d] = deck;
                 m_currDraws[p] = currDraw;
                 g_shopNeedsRefresh[p] = true;
                 log(3, "Drew a card for player " + p);
+                return true;
             }
         }
+        return false;
     }
 
     void renderCard(ref UiSystem system, ref CardData currCard,
@@ -179,36 +185,51 @@ class Shop {
         }
     }
 
-    void draw(int p = 0){
+    void draw(int p = 0) {
+        int lockedCount = 0;
+        DrawData currDraw = m_currDraws[p];
+
+        // 1. Check if all slots are locked BEFORE charging the player
+        for (int i = 0; i < currDraw.getSize(); i++) {
+            CardData currCard = currDraw.getCard(i);
+            if (currCard.isNull() == false) {
+                if (currCard.isLocked()) {
+                    lockedCount = lockedCount + 1;
+                }
+            }
+        }
+
+        // Abort early if all available card slots are locked
+        if (lockedCount >= config_MAX_DRAWN_CARDS) {return;}
+
+        // 2. Charge the player only after passing validation
         if (purchase(getDrawCost(p), p) == false) {return;}
 
-        DrawData currDraw = m_currDraws[p];
-        for(int i = currDraw.getSize() - 1; i >= 0; i--) {
+        // 3. Remove non-locked cards and add them back to deck
+        for (int i = currDraw.getSize() - 1; i >= 0; i--) {
             CardData currCard = currDraw.getCard(i);
-            if (currCard.isNull() || currCard.isLocked()){
+            if (currCard.isNull() || currCard.isLocked()) {
                 continue;
             }
-
             CardData removedCard = currDraw.removeCard(i);
-            if (removedCard.getUuid() == g_selectedUUIDs[p]){
+            if (removedCard.getUuid() == g_selectedUUIDs[p]) {
                 g_selectedUUIDs[p] = -1; // Deselect card
             }
             if (removedCard.isNull() == false) {
-                addCardIntoDeck(removedCard);
+                addCardIntoDeck(removedCard, removedCard.getDeckIndex());
             }
         }
 
-        int emptySlots = 0;
-        for(int i = 0; i < currDraw.getSize(); i++) {
-            CardData currCard = currDraw.getCard(i);
-            if (currCard.isNull()){
-                emptySlots = emptySlots + 1;
-            }
-        }
+        // 4. Draw new cards for available slots
+        int numberOfCardsToDraw = config_MAX_DRAWN_CARDS - lockedCount;
+        int cardsDrew = 0;
 
-        for(int i = 0; i < emptySlots; i++) {
+        while (cardsDrew < numberOfCardsToDraw) {
             int tier = getRandomTier(m_currShopLevel[p]);
-            drawFromDeck(tier, p);
+            bool drew = drawFromDeck(tier, p);
+            if (drew) {
+                cardsDrew = cardsDrew + 1;
+            }
         }
         trSoundsetPlayPlayer(p, "AotgNextPage");
     }

@@ -35,10 +35,11 @@ void initializeShopLevels(){
 }
 
 int getRandomTier(int shopLevel = 0) {
-    // Clamp shop level directly between 0 and MAX_SHOP_LEVEL
+    // Clamp to the highest valid tier entry. The displayed shop level can reach MAX_SHOP_LEVEL,
     int level = shopLevel;
+    if (g_shopLevels.size() <= 0) return(4);
     if (level < 0) level = 0;
-    if (level > MAX_SHOP_LEVEL) level = MAX_SHOP_LEVEL;
+    if (level >= g_shopLevels.size()) level = g_shopLevels.size() - 1;
 
     ShopLevel chances = g_shopLevels[level];
 
