@@ -24,6 +24,7 @@ void generate()
     defineHashMapDefinition("string", "CardParameters", "", "");
     defineHashMapDefinition("int", "int", "", "");
     defineHashMapDefinition("string", "int", "0", "");
+    createTypedScheduler("scheduler", buildStringTypeArray());
 
     // mod/data/card.xs
     // mod/data/buffs.xs
@@ -36,7 +37,9 @@ void generate()
     // mod/shop/shop.xs
     // mod/data/cardParametersData.xs
 
+    // mod/map/lane.xs
     // mod/map/teams.xs
+    // mod/map/waves.xs
     // mod/map/units.xs
     // mod/shop/commands.xs
 

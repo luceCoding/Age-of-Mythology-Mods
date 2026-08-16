@@ -17,6 +17,7 @@ active
     trSetCommunityObjectivesVisibility(false);
     initialiseUiSystem(false);
     initializeTeams();
+    createAIBases();
     initializeShopLevels();
     initializeSynergies();
     g_shop.init();
@@ -74,6 +75,7 @@ active
         for(int p = 1; p <= cNumberPlayers; p = p + 1){
             openShop(p);
         }
+        startWaves();
         xsDisableSelf();
    }
 }
