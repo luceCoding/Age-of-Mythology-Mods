@@ -15,6 +15,8 @@ class CardData {
     int m_rarity = 0;
     int m_luckBonus = 0;
     int m_deckIndex = -1;
+    int m_deployedUnitId = -1;
+    int timeTillRespawn = 0;
 
     void setCard(ref CardParameters params, int suit = -1){
         m_protoName = params.getProtoUnit();
@@ -97,8 +99,13 @@ class CardData {
         return m_isLocked;
     }
 
-    void deploy(){
+    void deploy(int unitId = -1){
         m_isDeployed = true;
+        m_deployedUnitId = unitId;
+    }
+
+    int getDeployedUnitID(){
+        return m_deployedUnitId;
     }
 
     void withdraw(){

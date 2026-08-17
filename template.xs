@@ -1,6 +1,7 @@
 //// mod/config.xs
 //// common/nottud.xs
-//// common/collections/hashmap.xs
+//// common/collections/hashMap.xs
+//// common/collections/hashSet.xs
 
 void generate()
 {
@@ -31,7 +32,6 @@ void generate()
     // mod/data/cardParameters.xs
 
     defineHashMapDefinition("string", "CardParameters", "", "");
-    defineHashMapDefinition("int", "int", "", "");
     defineHashMapDefinition("string", "int", "0", "");
 
     // mod/data/card.xs

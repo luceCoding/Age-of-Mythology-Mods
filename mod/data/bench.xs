@@ -1,7 +1,6 @@
 include "lib/rm_core.xs";
 include "card.xs"
 
-IntToIntHashMap CardUUIDToUnitIDMap;
 StringToIntHashMap g_synergyHashMap;
 
 class BenchData {
@@ -115,29 +114,66 @@ class BenchData {
         }
     }
 
+    void spawnCard(ref CardData card, int shopId = -1, int p  = 0){
+        CardParameters params = card.getCardParameters();
+        string protoName = params.getProtoUnit();
+        vector position = trUnitGetPosition(shopId);
+        int unitID = trUnitCreate(protoName, position.x, position.y, position.z, xsRandFloat(0.0, 360.0), p, false);
+        card.deploy(unitID);
+        log(3, "Player " + p + " deployed " + protoName + " to shop " + shopId);
+    }
+
     void deployCard(int uuid = -1){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData card = m_cardArray[i];
             if (card.isNull() || card.isDeployed() || card.getUuid() != uuid) continue;
-            CardParameters params = card.getCardParameters();
-            string protoName = params.getProtoUnit();
-            vector position = trUnitGetPosition(m_playerShopId);
-            int unitID = trUnitCreate(protoName, position.x, position.y, position.z, xsRandFloat(0.0, 360.0), m_player, false);
-            CardUUIDToUnitIDMap.put(card.getUuid(), unitID);
+            spawnCard(card, m_playerShopId, m_player);
             card.applySuitBonus(m_player);
-            card.deploy();
             addSynergy(card, m_player);
             m_cardArray[i] = card;
             trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
-            log(3, "Player " + m_player + " deployed " + protoName + " to shop " + m_playerShopId);
         }
+    }
+
+    bool respawnDeployedCards(){
+        bool wasThereARespawn = false;
+        int currtime = xsGetTimeMS();
+
+        for(int i = 0; i < m_cardArray.size(); i++) {
+            CardData card = m_cardArray[i];
+            if (card.isNull() == true || card.isDeployed() == false) { continue; }
+            
+            int unitId = card.getDeployedUnitID();
+            xsSetContextPlayer(m_player);
+            trUnitSelectClear();
+            trUnitSelectByID(unitId);
+
+            if (trUnitDead()){
+                // 1. Timer hasn't been started yet: set the target timestamp
+                if (card.timeTillRespawn == 0) {
+                    int respawnTimeMS = 10000 + ((currtime / 60000) * 10000);
+                    card.timeTillRespawn = currtime + respawnTimeMS;
+                    m_cardArray[i] = card;
+                }
+                // 2. Current time reached or passed the target timestamp: Respawn!
+                else if (currtime >= card.timeTillRespawn) {
+                    spawnCard(card, m_playerShopId, m_player);
+                    trSoundsetPlayPlayer(m_player, "HeroRevive");
+                    card.timeTillRespawn = 0; // Reset timestamp so it can be used again next death
+                    m_cardArray[i] = card;
+                    wasThereARespawn = true;
+                }
+                // 3. currtime < card.timeTillRespawn: Still waiting for target time, do nothing.
+            }
+        }
+        return wasThereARespawn;
     }
 
     bool withdrawCard(int uuid = -1){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData cardToWithdraw = m_cardArray[i];
             if (!(cardToWithdraw.isNull()) && cardToWithdraw.isDeployed() && uuid == cardToWithdraw.getUuid()){
-                int unitID = CardUUIDToUnitIDMap.get(uuid);
+                int unitID = cardToWithdraw.getDeployedUnitID();
                 xsSetContextPlayer(m_player);
                 trUnitSelectClear();
                 trUnitSelectByID(unitID);
@@ -146,7 +182,6 @@ class BenchData {
                     float distance = kbUnitGetDistanceToPoint(unitID, shopLocation);
                     if (distance <= 10){
                         trUnitDestroy(true);
-                        trUnitSelectClear();
                         cardToWithdraw.resetSuitBonus(m_player);
                         cardToWithdraw.withdraw();
                         removeSynergy(cardToWithdraw, m_player);
@@ -157,10 +192,12 @@ class BenchData {
                     }
                     else {
                         trChatSendToPlayer(m_player, m_player, "Unit must be nearby your shop before it can be withdrawn.");
+                        trSoundsetPlayPlayer(m_player, "HardPopAlert");
                     }
                 }
                 else {
                     trChatSendToPlayer(m_player, m_player, "Unit must be alive before it can be withdrawn.");
+                    trSoundsetPlayPlayer(m_player, "HardPopAlert");
                 }
             }
         }

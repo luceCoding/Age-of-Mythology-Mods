@@ -6,7 +6,7 @@ include "data/cardParameters.xs";
 
 const int TOTAL_AGES = 5;
 const float SELL_MULTIPLIER = 0.8;
-const float UI_LEFT_BUFFER = 150;
+const float UI_LEFT_BUFFER = 50;
 
 void createButton(ref UiSystem system, float drawPosx = 0.0, float drawPosY = 0.0, string buttonName = ""){
     minimapSafeDisplay(system, drawPosx, drawPosY, getIconPathFormat("resources/front_end/Ornate_Buttons/BtnOrnate_Large_On.png", 128));
@@ -375,7 +375,7 @@ void renderBench(ref UiSystem system, int p = 1) {
     BenchData bench = g_shop.m_benches[p];
     CardData[] currCards = bench.getCards();
 
-    float propPosX = getLeftAnchorX(UI_LEFT_BUFFER, 128.0, p);
+    float propPosX = getLeftAnchorX(UI_LEFT_BUFFER + 100, 128.0, p);
     bench.renderSynergies(system, propPosX, 0.0, p);
 
     int totalCards = bench.getNumberOfCardsHeld();

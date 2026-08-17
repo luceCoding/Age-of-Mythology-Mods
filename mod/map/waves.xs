@@ -251,4 +251,14 @@ void startWaves(){
         g_T2BotLane.moveUnits();
         return true;
     });
+    scheduler.add(1000, [](int iterations = 1) -> bool {
+        for (int i = 1; i <= g_shop.m_benches.size()-2; i++){
+            BenchData bench = g_shop.m_benches[i];
+            bool wasRespawned = bench.respawnDeployedCards();
+            if (wasRespawned){
+                g_shop.m_benches[i] = bench;
+            }
+        }
+        return true;
+    });
 }
