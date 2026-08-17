@@ -2,8 +2,37 @@ include "lib/rm_core.xs";
 
 int c = cNumberPlayers;
 const int VERTICAL_UI_PIXELS = 1080;
+float[] playerScreenRatio = default;
 float[] playerScreenIconSizeCompensationValue = default;
 const string(int) EMPTY_COUNTER_TEXT = [](int p = 1) -> string { return ""; };
+
+const float SHIFT_SPEED = 0.000001;
+const float MAGIC_RATIO_FROM_CALCULATION = 17453.0;
+const float DEFAULT_SCREEN_RATIO = 16.0 / 9.0;
+
+const int BINARY_CONVERSION_DIGITS = 17;
+
+bool[] toBinaryBits(int value = 0){
+    bool[] binary = new bool(BINARY_CONVERSION_DIGITS, false);
+    int toTest = value;
+    for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
+        binary[i] = toTest % 2 == 1;
+        toTest = toTest / 2;
+    }
+    return binary;
+}
+
+int fromBinaryBits(ref bool[] binary){
+    int value = 0;
+    int toAdd = 1;
+    for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
+        if(binary[i]){
+            value = value + toAdd;
+        }
+        toAdd = toAdd * 2;
+    }
+    return value;
+}
 
 void selectSingle(int unitId = -1){
     trUnitSelectClear();
@@ -894,7 +923,7 @@ string minimapSafeSuffix(float posY = 0.0){
 }
 
 void minimapSafeDisplay(ref UiSystem system, float x = 0.0, float y = 0.0, string content = ""){
-    system.addDisplay(x, y, content + minimapSafeSuffix(y));
+    system.addDisplay(x, -0.5, content + minimapSafeSuffix(y));
 }
 
 void minimapSafeDisplayWithHover(ref UiSystem system, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = "", string rolloverName = "", string rolloverDescription = ""){
@@ -926,5 +955,105 @@ void setUiVisible(bool visible = true){
 }
 
 string getIconPathFormat(string iconPath = "", int size = 128){
-    return "<icon=(" + size + ")(" + iconPath + ")>";
+    return displayCompensatedIcon(size, size, iconPath);
+}
+
+void postRatioCalculation(){
+    cameraTrack.create(vector(10, 4, 10), 50, 45, 45);
+    cameraTrack.addWaypoint(1, vector(10, 4, 10), 50, 45, 45);
+    cameraTrack.play(true, 0);
+    setUiVisible(true);
+    trSetObscuredUnits(true);
+}
+
+void performProportionCalculation(){
+    setUiVisible(false);
+    cameraTrack.create(vector(0.5 * kbGetMapXSize(), -999.0, 0.5 * kbGetMapZSize()), 1.0, 90.0, 90.0, 1.0);
+    cameraTrack.addWaypoint(100000, vector(0.5 * kbGetMapXSize(), -999.0, 0.5 * kbGetMapZSize()), 1.0, 90.0, 90.0, 1.0);
+    cameraTrack.play();
+    scheduler.add(2000, [](int iterations = 1) -> bool {
+        float startX = 0.5 * kbGetMapXSize();
+        float posZ = 0.5 * kbGetMapZSize();
+        IntUnitDeletionTracker tracker;
+        for(int p = 1; p <= c; p++){
+            trPlayerModifyLOS(p, true, 0);
+        }
+        trProtoUnitSetFlag(0, UI_SYSTEM_UNIT, "VisibleUnderFog", true);
+        int objectToSee = trUnitCreateForced(UI_SYSTEM_UNIT, startX, -1000.0, posZ, 0, 0, true);
+        selectSingle(objectToSee);
+        trUnitSetScale(0.0, 0.0, 0.0);
+        int lastVisible = 0;
+        for(int i = 1; i <= 100000; i++){
+            trUnitReposition(startX + SHIFT_SPEED * i, -1000.0, posZ, true, true);
+            if(trUnitVisibleToPlayer()){
+                lastVisible = i;
+            }
+        }
+        trUnitDestroy();
+        trProtoUnitSetFlag(0, UI_SYSTEM_UNIT, "VisibleUnderFog", false);
+        for(int p = 1; p <= c; p++){
+            trPlayerModifyLOS(p, false, 0);
+        }
+        for(int p = 1; p <= c; p++){
+            int controlUnitId = trUnitCreateForced(UI_SYSTEM_UNIT, 0.5 * kbGetMapXSize(), 0.0, 0.5 * kbGetMapZSize(), 0, p);
+            tracker.controlUnits.add(controlUnitId);
+            for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
+                int unitId = trUnitCreateForced(UI_SYSTEM_UNIT, 0.5 * kbGetMapXSize(), 0.0, 0.5 * kbGetMapZSize(), 0, p);
+                tracker.units.add(unitId);
+            }
+            trUnitSelectClear();
+            if(p == trCurrentPlayer()){
+                trUnitSelectByID(tracker.controlUnits[p - 1]);
+                bool[] binary = toBinaryBits(lastVisible);
+                for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
+                    if(binary[i]){
+                        trUnitSelectByID(tracker.units[i + (p - 1) * BINARY_CONVERSION_DIGITS]);
+                    }
+                }
+                trUnitGameSelect(true);
+                trUnitSelectClear();
+                trExecuteConsoleCommand("uiDeleteSelectedUnit(true)");
+            }
+        }
+        schedulerWithIntUnitDeletionTracker.add(0, tracker, [](int iteration = 0, ref IntUnitDeletionTracker tracker) -> bool {
+            int[] controlUnits = tracker.controlUnits;
+            int[] units = tracker.units;
+            for(int p = 1; p <= c; p++){
+                selectSingle(controlUnits[p - 1]);
+                if(trUnitAlive() && trPlayerIsDefeatedOrResigned(p) == false && kbPlayerIsHuman(p)){
+                    return true;
+                }
+            }
+            playerScreenRatio.resize((c+1), 0.0);
+            playerScreenIconSizeCompensationValue.resize((c+1), 0.0);
+            for(int p = 1; p <= c; p++){
+                if(trPlayerIsDefeatedOrResigned(p) || kbPlayerIsHuman(p) == false){
+                    playerScreenRatio[p] = DEFAULT_SCREEN_RATIO;
+                    playerScreenIconSizeCompensationValue[p] = 1.0;
+                } else {
+                    bool[] binaryBits = new bool(BINARY_CONVERSION_DIGITS, false);
+                    for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
+                        int unitId = units[i + (p - 1) * BINARY_CONVERSION_DIGITS];
+                        selectSingle(unitId);
+                        binaryBits[i] = trUnitAlive() == false;
+                        trUnitDestroy();
+                    }
+                    int value = fromBinaryBits(binaryBits);
+                    playerScreenRatio[p] = xsIntToFloat(value) / MAGIC_RATIO_FROM_CALCULATION;
+                    playerScreenIconSizeCompensationValue[p] = max(1.0, DEFAULT_SCREEN_RATIO / playerScreenRatio[p]);
+                }
+            }
+            postRatioCalculation();
+            return false;
+        });
+        return false;
+    });
+}
+
+float getLeftAnchorX(float leftPixelBuffer = 0.0, float widthOfElement = 0.0, int p = 0){
+        return -0.5 * playerScreenRatio[p] + (leftPixelBuffer + widthOfElement) / 2.0 / VERTICAL_UI_PIXELS;
+}
+
+float getRightAnchorX(float rightPixelBuffer = 0.0, float widthOfElement = 0.0, int p = 0){
+        return 0.5 * playerScreenRatio[p] + (rightPixelBuffer + widthOfElement) / 2.0 / VERTICAL_UI_PIXELS;
 }

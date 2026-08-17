@@ -9,6 +9,15 @@ void generate()
     rmSetMapSize(configMapTileX, configMapTileZ);
     rmInitializeLand(cTerrainDefault, 5.00);
 
+    rmTriggerAddScriptLine("class IntUnitDeletionTracker {");
+        rmTriggerAddScriptLine("int[] controlUnits = default;");
+        rmTriggerAddScriptLine("int[] units = default;");
+    rmTriggerAddScriptLine("};");
+
+    createTypedScheduler("scheduler", buildStringTypeArray());
+    createTypedScheduler("schedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"));
+
+    // common/math.xs
     // common/logs.xs
     // mod/config.xs
     // common/ui.xs
@@ -24,7 +33,6 @@ void generate()
     defineHashMapDefinition("string", "CardParameters", "", "");
     defineHashMapDefinition("int", "int", "", "");
     defineHashMapDefinition("string", "int", "0", "");
-    createTypedScheduler("scheduler", buildStringTypeArray());
 
     // mod/data/card.xs
     // mod/data/buffs.xs

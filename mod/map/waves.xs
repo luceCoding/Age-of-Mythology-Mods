@@ -242,7 +242,7 @@ void startWaves(){
         spawnArmyWave();
         return true;
     });
-    scheduler.add(4001, [](int iterations = 1) -> bool {
+    scheduler.add(3109, [](int iterations = 1) -> bool {
         g_T1TopLane.moveUnits();
         g_T1MidLane.moveUnits();
         g_T1BotLane.moveUnits();

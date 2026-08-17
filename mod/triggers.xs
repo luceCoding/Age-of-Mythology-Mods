@@ -16,6 +16,7 @@ active
     trDisableConquestCheck(true);
     trSetCommunityObjectivesVisibility(false);
     initialiseUiSystem(false);
+    performProportionCalculation();
     initializeTeams();
     createAIBases();
     initializeShopLevels();
@@ -72,9 +73,6 @@ active
 {
    if ((((xsGetTime() - (cActivationTime / 1000)) >= 1) != false))
    {
-        for(int p = 1; p <= cNumberPlayers; p = p + 1){
-            openShop(p);
-        }
         startWaves();
         xsDisableSelf();
    }

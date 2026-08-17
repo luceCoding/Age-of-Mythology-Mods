@@ -6,6 +6,7 @@ include "data/cardParameters.xs";
 
 const int TOTAL_AGES = 5;
 const float SELL_MULTIPLIER = 0.8;
+const float UI_LEFT_BUFFER = 150;
 
 void createButton(ref UiSystem system, float drawPosx = 0.0, float drawPosY = 0.0, string buttonName = ""){
     minimapSafeDisplay(system, drawPosx, drawPosY, getIconPathFormat("resources/front_end/Ornate_Buttons/BtnOrnate_Large_On.png", 128));
@@ -374,7 +375,8 @@ void renderBench(ref UiSystem system, int p = 1) {
     BenchData bench = g_shop.m_benches[p];
     CardData[] currCards = bench.getCards();
 
-    bench.renderSynergies(system, -0.75, -0.2, p);
+    float propPosX = getLeftAnchorX(UI_LEFT_BUFFER, 128.0, p);
+    bench.renderSynergies(system, propPosX, 0.0, p);
 
     int totalCards = bench.getNumberOfCardsHeld();
     if (totalCards == 0) return;
@@ -486,7 +488,8 @@ void renderShop(ref UiSystem system, int p = 1){
     buttonNames.add("");
     buttonNames.add("");
     buttonNames.add("EXIT SHOP");
-    float drawPosx = -0.55;
+    float drawPosx = getLeftAnchorX(UI_LEFT_BUFFER, 128.0, p);
+    drawPosx = max(drawPosx, -0.55);
     float yOffset = 0.075;
     float drawPosYStart = -0.35;
 
@@ -572,6 +575,7 @@ void openShop(int p = 1){
 void refreshShop(int p = 1){
     if (g_shopNeedsRefresh[p] == true){
         UiSystem system = uiSystemArray[p];
+        if (system.uiActive == false) {return;}
         system.enter(false, true, 1000);
         if(trCurrentPlayer() == p){
             setUiVisible(false);
