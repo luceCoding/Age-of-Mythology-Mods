@@ -17,6 +17,7 @@ void generate()
 
     createTypedScheduler("scheduler", buildStringTypeArray());
     createTypedScheduler("schedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"));
+    createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
 
     // common/math.xs
     // common/logs.xs
@@ -50,6 +51,8 @@ void generate()
     // mod/map/teams.xs
     // mod/map/units.xs
     // mod/shop/commands.xs
+
+    // mod/income/gold.xs
 
     // mod/triggers.xs
 

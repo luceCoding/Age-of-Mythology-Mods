@@ -151,7 +151,7 @@ class BenchData {
             if (trUnitDead()){
                 // 1. Timer hasn't been started yet: set the target timestamp
                 if (card.timeTillRespawn == 0) {
-                    int respawnTimeMS = 10000 + ((currtime / 60000) * 10000);
+                    int respawnTimeMS = 10000 + (((currtime - g_timeMSGameStarted) / 60000) * 10000);
                     card.timeTillRespawn = currtime + respawnTimeMS;
                     m_cardArray[i] = card;
                 }

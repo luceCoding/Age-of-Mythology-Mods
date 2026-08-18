@@ -48,6 +48,18 @@ runImmediately
                     }
                 }
             }
+
+            if((kbUnitGetProtoUnitID(unitId) == kbGetUnitTypeID("GoldPile")) != false){
+                g_IncomeHandler.addGold(unitId);
+                if (owner != 0){
+                    trUnitSetScale(0.5, 0.5, 0.5);
+                    log(-1, trPlayerGetDiplomacy(owner, cNumberPlayers));
+                    if (trPlayerGetDiplomacy(owner, cNumberPlayers-1) == "enemy"){
+                        trUnitSetShading(2, 100);
+                    }
+                }
+            }
+
         });
         Search_lastTime = xsGetTimeMS();
     }
@@ -67,13 +79,15 @@ active
     xsDisableSelf();
 }
 
-rule FIRE_AFTER_1_SECOND_TRIGGER
+rule GAME_STARTS
 highFrequency
 active
 {
+    g_timeMSGameStarted = xsGetTimeMS();
    if ((((xsGetTime() - (cActivationTime / 1000)) >= 1) != false))
    {
         startRespawner();
+        startSchedulers();
         xsDisableSelf();
    }
 }

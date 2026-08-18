@@ -1,5 +1,6 @@
 int[] g_selectedUUIDs = default;
 bool[] g_shopNeedsRefresh = default;
+float g_timeMSGameStarted = 0.0;
 
 const int MAX_SYNERGIES = 9;
 
