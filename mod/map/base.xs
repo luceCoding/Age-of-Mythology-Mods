@@ -1,28 +1,4 @@
 // ==========================================
-// GLOBAL VECTOR WAYPOINT STORAGE
-// ==========================================
-vector[] g_T1ToT2TopLane = default; 
-vector[] g_T1ToT2MidLane = default; 
-vector[] g_T1ToT2BotLane = default; 
-
-// (Optional) You can still keep spawn variables if you need them for instant lookup, 
-// but they are now safely embedded at index 0 and 8 of the arrays.
-vector g_t1TopSpawn = cInvalidVector;
-vector g_t1MidSpawn = cInvalidVector;
-vector g_t1BotSpawn = cInvalidVector;
-vector g_t2TopSpawn = cInvalidVector;
-vector g_t2MidSpawn = cInvalidVector;
-vector g_t2BotSpawn = cInvalidVector;
-
-LaneManager g_T1TopLane;
-LaneManager g_T1MidLane;
-LaneManager g_T1BotLane;
-
-LaneManager g_T2TopLane;
-LaneManager g_T2MidLane;
-LaneManager g_T2BotLane;
-
-// ==========================================
 // HELPER FUNCTIONS
 // ==========================================
 int spawnBuilding(string protoName = "", float x = 0.0, float h = 0.0, float z = 0.0, float heading = 0.0, int player = 0, float scale = 0.0) {
@@ -37,7 +13,7 @@ int spawnBuilding(string protoName = "", float x = 0.0, float h = 0.0, float z =
 
 // ==========================================
 // MAP SETUP & WAYPOINT POPULATION
-// ==========================================
+// ==========================================a
 void createAIBases(){
     // --- Config & Proportions ---
     string unitFortress = "Fortress";
@@ -52,13 +28,10 @@ void createAIBases(){
     float team2Angle = 135.0;
 
     float fortOffset     = 0.13;
-    float sideEdgeMargin = 0.05;
+    float sideEdgeMargin = 0.09;
 
     float sideT3Step = 0.25; float sideT2Step = 0.45; float sideT1Step = 0.65;
     float midT3Step  = 0.225; float midT2Step  = 0.325; float midT1Step  = 0.425;
-
-    int aiTeamA = cNumberPlayers - 1;
-    int aiTeamB = cNumberPlayers;
 
     float mapX = configMapTileX * 2.0;
     float mapZ = configMapTileZ * 2.0;
@@ -200,65 +173,102 @@ void createAIBases(){
     g_T2BotLane.addPoint(bot0);
 }
 
-void spawnLaneArmy(ref LaneManager laneManager, int player = 0, vector spawnPos = cInvalidVector, vector destPos = cInvalidVector, float offsetX = 0.0, float offsetZ = 0.0) {
-    string currentUnit = "";
-    for (int i = 0; i < 6; i++) {
-        if (i < 2) {
-            currentUnit = "Hoplite";
-        } else if (i < 4) {
-            currentUnit = "Toxotes";
-        } else {
-            currentUnit = "Hippeus";
-        }
+// ==========================================
+// ARC WALL HELPER (Pure Degree-Based)
+// ==========================================
+void spawnArcSegment(float cx = 0.0, float cz = 0.0, float radius = 0.0, float startAngleDeg = 0.0, float endAngleDeg = 0.0, int player = 0) {
+    string wallProto = "WallConnector";
+    
+    float angleDiff = endAngleDeg - startAngleDeg;
+    
+    float absDiff = angleDiff;
+    if (absDiff < 0.0) {
+        absDiff = 0.0 - absDiff;
+    }
+    
+    // Arc length in meters = radius * angleInRadians
+    float arcLength = radius * (absDiff * 0.0174532925);
+    
+    float stepSize = 3.0; // Spacing between wall connectors
+    int steps = arcLength / stepSize;
+    if (steps <= 0) steps = 1;
 
-        int uId = trUnitCreate(currentUnit, spawnPos.x + offsetX, spawnPos.y, spawnPos.z + offsetZ, xsRandFloat(0.0, 360), player);
-        trUnitSelectClear();
-        trUnitSelectByID(uId);
-        trUnitMoveToPoint(destPos.x, destPos.y, destPos.z, -1, true);
-        laneManager.addUnit(uId);
+    float stepDeg = angleDiff / steps;
+
+    for (int i = 0; i <= steps; i++) {
+        float currentAngleDeg = startAngleDeg + (i * stepDeg);
+        
+        // cosDeg and sinDeg accept degrees directly
+        float x = cx + (radius * cosDeg(currentAngleDeg));
+        float z = cz + (radius * sinDeg(currentAngleDeg));
+
+        trUnitCreateForced(wallProto, x, configMapBaseHeight, z, 0.0, player);
     }
 }
 
 // ==========================================
-// WAVE EXECUTION & TRIGGER LOOP
+// BASE OUTERWALL GENERATOR
 // ==========================================
-void spawnArmyWave(){
-    int aiTeamA = cNumberPlayers - 1;
-    int aiTeamB = cNumberPlayers;
+void createBaseOuterwalls() {
+    
+    float mapX = configMapTileX * 2.0;
+    float mapZ = configMapTileZ * 2.0;
 
-    // Team 1 Waves
-    spawnLaneArmy(g_T1TopLane, aiTeamA, g_t1TopSpawn, g_T1ToT2TopLane[1], 7, 7);
-    spawnLaneArmy(g_T1MidLane, aiTeamA, g_t1MidSpawn, g_T1ToT2MidLane[1], 7, -7);
-    spawnLaneArmy(g_T1BotLane, aiTeamA, g_t1BotSpawn, g_T1ToT2BotLane[1], -7, -7);
+    float fortOffset = 0.13;
+    
+    // Base Fortresses
+    float t1FortX = mapX * fortOffset;          float t1FortZ = mapZ * (1.0 - fortOffset);
+    float t2FortX = mapX * (1.0 - fortOffset);  float t2FortZ = mapZ * fortOffset;
 
-    // Team 2 Waves
-    spawnLaneArmy(g_T2TopLane, aiTeamB, g_t2TopSpawn, g_T1ToT2TopLane[6], 7, 7);
-    spawnLaneArmy(g_T2MidLane, aiTeamB, g_t2MidSpawn, g_T1ToT2MidLane[6], -7, 7);
-    spawnLaneArmy(g_T2BotLane, aiTeamB, g_t2BotSpawn, g_T1ToT2BotLane[6], -7, -7);
-}
+    // ------------------------------------------
+    // TUNING CONTROLS
+    // ------------------------------------------
+    float baseRadius = 47.5; // Distance from Fortress to Outer Wall (meters)
+    float gapAngle   = 25.0; // Width of the gap at each lane exit (degrees)
+    float halfGap    = gapAngle * 0.5;
 
-void startWaves(){
-    scheduler.add(30000, [](int iterations = 1) -> bool {
-        spawnArmyWave();
-        return true;
-    });
-    scheduler.add(3109, [](int iterations = 1) -> bool {
-        g_T1TopLane.moveUnits();
-        g_T1MidLane.moveUnits();
-        g_T1BotLane.moveUnits();
-        g_T2TopLane.moveUnits();
-        g_T2MidLane.moveUnits();
-        g_T2BotLane.moveUnits();
-        return true;
-    });
-    scheduler.add(1000, [](int iterations = 1) -> bool {
-        for (int i = 1; i <= g_shop.m_benches.size()-2; i++){
-            BenchData bench = g_shop.m_benches[i];
-            bool wasRespawned = bench.respawnDeployedCards();
-            if (wasRespawned){
-                g_shop.m_benches[i] = bench;
-            }
-        }
-        return true;
-    });
+    // TEAM 1
+    float t1StartAngle = -135.0; // Bottom boundary
+    float t1EndAngle   = 45.0;   // Top boundary
+    float sideT3Step = 0.325; float midT3Step = 0.275; float sideEdgeMargin = 0.08;
+
+    // Exact T3 Tower coordinates
+    float t1TopT3X = mapX * sideT3Step;     float t1TopT3Z = mapZ * (1.0 - sideEdgeMargin);
+    float t1MidT3X = mapX * midT3Step;      float t1MidT3Z = mapZ * (1.0 - midT3Step);
+    float t1BotT3X = mapX * sideEdgeMargin; float t1BotT3Z = mapZ * (1.0 - sideT3Step);
+
+    // Calculate exact lane gate angles relative to Fort 1
+    float a1Bot = atan2Deg(t1BotT3Z - t1FortZ, t1BotT3X - t1FortX);
+    float a1Mid = atan2Deg(t1MidT3Z - t1FortZ, t1MidT3X - t1FortX);
+    float a1Top = atan2Deg(t1TopT3Z - t1FortZ, t1TopT3X - t1FortX);
+
+    // 180 Semicircle facing map center (-135 to +45)
+    spawnArcSegment(t1FortX, t1FortZ, baseRadius, t1StartAngle, a1Bot - halfGap, aiTeamA);
+    spawnArcSegment(t1FortX, t1FortZ, baseRadius, a1Bot + halfGap, a1Mid - halfGap, aiTeamA);
+    spawnArcSegment(t1FortX, t1FortZ, baseRadius, a1Mid + halfGap, a1Top - halfGap, aiTeamA);
+    spawnArcSegment(t1FortX, t1FortZ, baseRadius, a1Top + halfGap, t1EndAngle, aiTeamA);
+
+    // TEAM 2
+    float t2StartAngle = 45.0;  // Top boundary
+    float t2EndAngle   = 225.0; // Bottom boundary
+
+    float t2TopT3X = mapX * (1.0 - sideEdgeMargin); float t2TopT3Z = mapZ * sideT3Step;
+    float t2MidT3X = mapX * (1.0 - midT3Step);      float t2MidT3Z = mapZ * midT3Step;
+    float t2BotT3X = mapX * (1.0 - sideT3Step);     float t2BotT3Z = mapZ * sideEdgeMargin;
+
+    // Calculate exact lane gate angles relative to Fort 2
+    float a2Top = atan2Deg(t2TopT3Z - t2FortZ, t2TopT3X - t2FortX);
+    float a2Mid = atan2Deg(t2MidT3Z - t2FortZ, t2MidT3X - t2FortX);
+    float a2Bot = atan2Deg(t2BotT3Z - t2FortZ, t2BotT3X - t2FortX);
+
+    // Normalize negative angles to positive [0, 360] for sequential arc step
+    if (a2Top < 0.0) a2Top = a2Top + 360.0;
+    if (a2Mid < 0.0) a2Mid = a2Mid + 360.0;
+    if (a2Bot < 0.0) a2Bot = a2Bot + 360.0;
+
+    // 180 Semicircle facing map center (45 to 225)
+    spawnArcSegment(t2FortX, t2FortZ, baseRadius, t2StartAngle, a2Top - halfGap, aiTeamB);
+    spawnArcSegment(t2FortX, t2FortZ, baseRadius, a2Top + halfGap, a2Mid - halfGap, aiTeamB);
+    spawnArcSegment(t2FortX, t2FortZ, baseRadius, a2Mid + halfGap, a2Bot - halfGap, aiTeamB);
+    spawnArcSegment(t2FortX, t2FortZ, baseRadius, a2Bot + halfGap, t2EndAngle, aiTeamB);
 }

@@ -7,9 +7,6 @@ void initializeTeams(){
     int maxHumanPlayer = cNumberPlayers - 2;
     if (maxHumanPlayer < 1) return;
 
-    int aiTeamA = cNumberPlayers - 1;
-    int aiTeamB = cNumberPlayers;
-
     int teamACount = 0;
     int teamBCount = 0;
 

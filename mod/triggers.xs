@@ -19,6 +19,7 @@ active
     performProportionCalculation();
     initializeTeams();
     createAIBases();
+    createBaseOuterwalls();
     initializeShopLevels();
     initializeSynergies();
     g_shop.init();
@@ -59,7 +60,6 @@ active
     for(int p = 1; p <= cNumberPlayers; p = p + 1){
         trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
     }
-    initPlayerData();
     initializeCardParametersMap();
     modifyPlayerData();
     createShops();
@@ -73,7 +73,18 @@ active
 {
    if ((((xsGetTime() - (cActivationTime / 1000)) >= 1) != false))
    {
-        startWaves();
+        startRespawner();
+        xsDisableSelf();
+   }
+}
+
+rule FIRE_AFTER_60_SECONDS_TRIGGER
+highFrequency
+active
+{
+   if ((((xsGetTime() - (cActivationTime / 60000)) >= 1) != false))
+   {
+        startLanes();
         xsDisableSelf();
    }
 }

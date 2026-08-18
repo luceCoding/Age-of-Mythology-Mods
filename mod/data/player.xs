@@ -12,10 +12,3 @@ class PlayerData {
 };
 
 PlayerData[] g_PlayerDataArray = default;
-
-void initPlayerData(){
-    g_PlayerDataArray = new PlayerData(cNumberPlayers + 1);
-    for (int p = 0; p <= cNumberPlayers; p++) {
-        trPlayerModifyData(p, 0, -1, 999, 0); // Add population
-    }
-}

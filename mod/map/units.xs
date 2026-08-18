@@ -111,6 +111,14 @@ void modifyPlayerData(){
     for(int p = 1; p <= cNumberPlayers - 2; p++) {
         trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_X, 0.5, 3);
         trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_Z, 0.5, 3);
+        trProtounitRemoveCommand("Market", p, "Delete");
+        trProtounitRemoveCommand("Market", p, "MarketBuy1");
+        trProtounitRemoveCommand("Market", p, "MarketBuy2");
+        trProtounitRemoveCommand("Market", p, "MarketSell1");
+        trProtounitRemoveCommand("Market", p, "MarketSell2");
+        trProtounitRemoveTech("Market", p, 363); // Coinage
+        trProtoUnitSetFlag(p, "Market", "Invulnerable", true);
+        trPlayerModifyData(p, 0, -1, 999, 0); // Add population
     }
 
     // Last 2 AIs

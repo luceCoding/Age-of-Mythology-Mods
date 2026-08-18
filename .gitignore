@@ -1,3 +1,4 @@
 .vscode/*
 output.xs
 *trigtemp*.xs
+*.code-workspace

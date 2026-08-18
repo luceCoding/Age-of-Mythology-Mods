@@ -46,8 +46,8 @@ void generate()
     // mod/data/cardParametersData.xs
 
     // mod/map/lane.xs
+    // mod/map/base.xs
     // mod/map/teams.xs
-    // mod/map/waves.xs
     // mod/map/units.xs
     // mod/shop/commands.xs
 
