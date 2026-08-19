@@ -46,3 +46,5 @@ const int relativityABSOLUTE = 0;
 const int relativityASSIGN = 1;
 const int relativityPERCENT = 2;
 const int relativityBasePERCENT = 3;
+
+int g_shrineShopCost = 50;

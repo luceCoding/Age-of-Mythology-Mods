@@ -44,5 +44,45 @@ void initPlayerCommands(){
                                                             }
                                         );
         trProtounitAddTrain("Market", p, plantName, 0, 5);
+
+        plantName = preparePlant(p, cUnitTypePlantGreekShrub, 
+                                        "Open forge",
+                                        "Use your gold to add sockets at the forge.",
+                                        "resources\nature\relics\relic_anvil_icon.png",
+                                        [](int p = 1) -> void {
+                                                                openForge(p);
+                                                            }
+                                        );
+        trProtounitAddTrain("DwarvenForge", p, plantName, 0, 5);
+
+        plantName = preparePlant(p, cUnitTypePlantGreekGrass, 
+                                        "Open armory",
+                                        "Use your gold to add upgrades at the armory.",
+                                        "resources\nature\relics\relic_jewelry_icon.png",
+                                        [](int p = 1) -> void {
+                                                                openArmory(p);
+                                                            }
+                                        );
+        trProtounitAddTrain("DwarvenArmory", p, plantName, 0, 5);
+
+        plantName = preparePlant(p, cUnitTypePlantGreekWeeds, 
+                                        "Open forge",
+                                        "Use your gold to reroll rarities at the temple.",
+                                        "resources\nature\relics\relic_ankh_icon.png",
+                                        [](int p = 1) -> void {
+                                                                openTemple(p);
+                                                            }
+                                        );
+        trProtounitAddTrain("TempleOfTheGods", p, plantName, 0, 5);
+
+        plantName = preparePlant(p, cUnitTypePlantGreekFern, 
+                                        "Open forge",
+                                        "Use your gold to reroll rarities at the temple.",
+                                        "resources\nature\relics\relic_scroll_icon.png",
+                                        [](int p = 1) -> void {
+                                                                openShrine(p);
+                                                            }
+                                        );
+        trProtounitAddTrain("ShrineJapanese", p, plantName, 0, 5);
     }
 }

@@ -3,6 +3,8 @@ include "card.xs"
 
 StringToIntHashMap g_synergyHashMap;
 
+mutable bool purchase(int goldAmount = 0, int p = 0) { return false; }
+
 class BenchData {
     int m_player = -1;
     int m_playerShopId = -1;
@@ -202,6 +204,23 @@ class BenchData {
             }
         }
         trUnitSelectClear();
+        return false;
+    }
+
+    bool identifyCard(int uuid = -1, int p = 0){
+        for(int i = 0; i < m_cardArray.size(); i++) {
+            CardData card = m_cardArray[i];
+            if (!(card.isNull()) && (card.isIdentified() == false) && uuid == card.getUuid()){
+                if (purchase(g_shrineShopCost, p)){
+                    card.identify();
+                    g_shrineShopCost = g_shrineShopCost + 10;
+                    m_cardArray[i] = card;
+                    trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
+                    log(3, "Player " + m_player + " identified a card.");
+                    return true;
+                }
+            }
+        }
         return false;
     }
 

@@ -8,6 +8,7 @@ class CardData {
 
     bool m_isLocked = false;
     bool m_isDeployed = false;
+    bool m_isIdentified = true;
     string m_protoName = "";
     int m_count = 1;
     int m_uuid = -1;
@@ -24,6 +25,7 @@ class CardData {
         g_uuidCardCounter = g_uuidCardCounter + 1;
         m_suit = suit;
         m_deckIndex = params.getAge();
+        m_isIdentified = xsRandBool(0.85);
     }
 
     CardParameters getCardParameters(){
@@ -118,5 +120,13 @@ class CardData {
 
     bool isNull(){
         return m_uuid == -1;
+    }
+
+    bool isIdentified(){
+        return m_isIdentified;
+    }
+
+    void identify(){
+        m_isIdentified = true;
     }
 };

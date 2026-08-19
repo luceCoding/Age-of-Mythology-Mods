@@ -1055,5 +1055,5 @@ float getLeftAnchorX(float leftPixelBuffer = 0.0, float widthOfElement = 0.0, in
 }
 
 float getRightAnchorX(float rightPixelBuffer = 0.0, float widthOfElement = 0.0, int p = 0){
-        return 0.5 * playerScreenRatio[p] + (rightPixelBuffer + widthOfElement) / 2.0 / VERTICAL_UI_PIXELS;
+    return 0.5 * playerScreenRatio[p] - (rightPixelBuffer + widthOfElement) / 2.0 / VERTICAL_UI_PIXELS;
 }

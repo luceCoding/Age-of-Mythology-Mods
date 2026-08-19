@@ -53,7 +53,6 @@ runImmediately
                 g_IncomeHandler.addGold(unitId);
                 if (owner != 0){
                     trUnitSetScale(0.5, 0.5, 0.5);
-                    log(-1, trPlayerGetDiplomacy(owner, cNumberPlayers));
                     if (trPlayerGetDiplomacy(owner, cNumberPlayers-1) == "enemy"){
                         trUnitSetShading(2, 100);
                     }
@@ -73,6 +72,7 @@ active
         trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
     }
     initializeCardParametersMap();
+    spawnSymmetricNeutralBuildings();
     modifyPlayerData();
     createShops();
     initPlayerCommands();

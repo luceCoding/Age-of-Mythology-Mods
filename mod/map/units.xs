@@ -105,6 +105,22 @@ void modifyPlayerData(){
         trProtoUnitSetUnitType(p, "GoldPile", "NatureClass", false);
         trModifyProtounitData("GoldPile", p, puFIELD_LIFESPAN, 10, relativityASSIGN);
         trProtoUnitSetFlag(p, "GoldPile", "CorpseDecays", true);
+
+        trProtounitAssignAction("DwarvenForge", "ThePeachBlossomSpring", "AutoConvert", p);
+        trProtoUnitSetFlag(p, "DwarvenForge", "Invulnerable", true);
+        trProtounitRemoveCommand("DwarvenForge", p, "Delete");
+
+        trProtounitAssignAction("DwarvenArmory", "ThePeachBlossomSpring", "AutoConvert", p);
+        trProtoUnitSetFlag(p, "DwarvenArmory", "Invulnerable", true);
+        trProtounitRemoveCommand("DwarvenArmory", p, "Delete");
+
+        trProtounitAssignAction("TempleOfTheGods", "ThePeachBlossomSpring", "AutoConvert", p);
+        trProtoUnitSetFlag(p, "TempleOfTheGods", "Invulnerable", true);
+        trProtounitRemoveCommand("TempleOfTheGods", p, "Delete");
+
+        trProtounitAssignAction("ShrineJapanese", "ThePeachBlossomSpring", "AutoConvert", p);
+        trProtoUnitSetFlag(p, "ShrineJapanese", "Invulnerable", true);
+        trProtounitRemoveCommand("ShrineJapanese", p, "Delete");
     }
 
     // Only Humans

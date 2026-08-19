@@ -16,6 +16,8 @@ XS quirks:
 - If you want a float make sure all values when applying operations on it have a decimal in place. Having a (float / int) will result in a non-float value.
 - Accessing an array via myArray[0].foo() will error out. You must make a variable first before you can call foo().
 - Every time you make access a variable it will make a copy. Its actually a detriment to performance if your class is too big. It is better to keep classes small or use no classes access to avoid too many large copies.
+- Use mutable methods as placeholders to deal with the lack of abstract classes.
+- Can't use ref int as a parameter to access an array.
 
 Nottud's UI Notes:
 - Need looping trigger calling system.process().

@@ -8,6 +8,11 @@ const int TOTAL_AGES = 5;
 const float SELL_MULTIPLIER = 0.8;
 const float UI_LEFT_BUFFER = 50;
 
+const int SHOP_TYPE_SHRINE = 1;
+const int SHOP_TYPE_TEMPLE = 2;
+const int SHOP_TYPE_FORGE = 3;
+const int SHOP_TYPE_ARMORY = 4;
+
 void createButton(ref UiSystem system, float drawPosx = 0.0, float drawPosY = 0.0, string buttonName = ""){
     minimapSafeDisplay(system, drawPosx, drawPosY, getIconPathFormat("resources/front_end/Ornate_Buttons/BtnOrnate_Large_On.png", 128));
     minimapSafeDisplay(system, drawPosx, drawPosY + 0.05, buttonName);
@@ -28,6 +33,7 @@ class Shop {
     BenchData[] m_benches = default;
     int[] m_totalShopExp = default;
     int[] m_currShopLevel = default;
+    int[] m_shopTypeOpened = default;
 
     void init(){
         m_decks = new DeckData(TOTAL_AGES);
@@ -37,6 +43,7 @@ class Shop {
         g_shopNeedsRefresh = new bool(cNumberPlayers + 1, false);
         m_totalShopExp = new int(cNumberPlayers + 1, 0);
         m_currShopLevel = new int(cNumberPlayers + 1, 0);
+        m_shopTypeOpened = new int(cNumberPlayers + 1, 0);
     }
 
     int getDrawCost(int p = 0){
@@ -81,6 +88,18 @@ class Shop {
         return false;
     }
 
+    int getCost(ref CardData card, int p = 0){
+        CardParameters params = card.getCardParameters();
+        int cost = params.getCost();
+        if (card.isIdentified() == false){
+            cost = 10;
+        }
+        if (m_shopTypeOpened[p] == SHOP_TYPE_SHRINE){
+            cost = g_shrineShopCost;
+        }
+        return cost;
+    }
+
     void renderCard(ref UiSystem system, ref CardData currCard,
                     int p = 0, float posX = 0.0, float posY = 0.0, 
                     bool isBench = false){
@@ -95,20 +114,27 @@ class Shop {
         }
 
         CardParameters params = currCard.getCardParameters();
-        string iconPath = params.getIconPath();
         Parameters cardParams = createParametersCopy(params);
         cardParams.ints[0] = uuid;
         int mainIconSize = 128.0 * iconMultiplier;
 
-        int rarity = currCard.getRarity();
+        int rarity = -1;
+        if (currCard.isIdentified()){
+            rarity = currCard.getRarity();
+        }
         switch(rarity){
+            case 0: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unit.png", mainIconSize));
             case 1: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_special.png", mainIconSize));
             case 2: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unitcmd.png", mainIconSize));
             case 3: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_myth.png", mainIconSize));
             case 4: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_tech.png", mainIconSize));
-            default: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unit.png", mainIconSize));
+            default: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_cmd.png", mainIconSize));
         }
 
+        string iconPath = "resources/front_end/Lobby/Icon_Godicon_Random.png";
+        if (currCard.isIdentified()){
+            iconPath = params.getIconPath();
+        }
         minimapSafeClickable(system, 
                             posX, posY + 0.008 * iconMultiplier, 0.1, 0.12,
                             getIconPathFormat(iconPath, 112.0 * iconMultiplier),
@@ -119,6 +145,24 @@ class Shop {
                 log(3, "Player " + p + " clicked " + parameters.strings[3] + " " + parameters.ints[0]);
             }
         );
+
+        // Locked Icon
+        float lockedPosX = posX;
+        float lockedPoxY = posY + 0.025 * iconMultiplier;
+        if (currCard.isLocked()){
+            minimapSafeDisplay(system, lockedPosX, lockedPoxY, getIconPathFormat("resources/in_game/hud/Icon_Delete.png", 64 * iconMultiplier));
+        }
+
+        // Cost
+        if (currCard.isIdentified() && m_shopTypeOpened[p] == SHOP_TYPE_SHRINE) {return;}
+        int cost = getCost(currCard, p);
+        if (isBench && m_shopTypeOpened[p] == 0){
+            cost = cost * SELL_MULTIPLIER;
+        }
+        string costText = getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137>" + cost + "</color>";
+        minimapSafeDisplay(system, posX, posY + 0.13 * iconMultiplier, costText);
+
+        if (currCard.isIdentified() == false){return;}
 
         // Suit Icon
         int miniIconSize = 32.0 * iconMultiplier;
@@ -154,14 +198,6 @@ class Shop {
         //if (params.isBuilding()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 7);}
         if (params.isSoldier()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 8);}
 
-        // Cost
-        int cost = params.getCost();
-        if (isBench) {
-            cost = cost * SELL_MULTIPLIER;
-        }
-        string costText = getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137>" + cost + "</color>";
-        minimapSafeDisplay(system, posX, posY + 0.13 * iconMultiplier, costText);
-
         // Title
         string title = params.getTitle();
         // Color Tier
@@ -176,13 +212,6 @@ class Shop {
         // Deployed Icon
         if (isBench && currCard.isDeployed()){
             minimapSafeDisplay(system, posX, posY + 0.03, getIconPathFormat("resources/in_game/gamepad_contextual/cur_attac_building.png", 64 * iconMultiplier));
-        }
-
-        // Locked Icon
-        float lockedPosX = posX;
-        float lockedPoxY = posY + 0.025 * iconMultiplier;
-        if (currCard.isLocked()){
-            minimapSafeDisplay(system, lockedPosX, lockedPoxY, getIconPathFormat("resources/in_game/hud/Icon_Delete.png", 64 * iconMultiplier));
         }
     }
 
@@ -242,8 +271,7 @@ class Shop {
 
             CardData card = currDraw.getCardByUUID(uuid);
             if (card.isNull() == true){return;}
-            CardParameters params = card.getCardParameters();
-            int cost = params.getCost();
+            int cost = getCost(card, p);
             if (purchase(cost, p) == false){return;}
 
             CardData removedCard = currDraw.removeCardByUUID(uuid);
@@ -298,10 +326,12 @@ class Shop {
         BenchData bench = m_benches[p];
         CardData removedCard = bench.removeCardByUUID(uuid);
         if (removedCard.isNull() == false){
-                addCardIntoDeck(removedCard);
-                trSoundsetPlayPlayer(p, "TributeReceived");
-                g_selectedUUIDs[p] = -1; // Deselect card
-                g_shopNeedsRefresh[p] = true;
+            int goldAmount = getCost(removedCard, p);
+            addCardIntoDeck(removedCard);
+            trPlayerGrantResources(p, "Gold", goldAmount * SELL_MULTIPLIER);
+            trSoundsetPlayPlayer(p, "TributeReceived");
+            g_selectedUUIDs[p] = -1; // Deselect card
+            g_shopNeedsRefresh[p] = true;
         }
     }
 
@@ -314,6 +344,12 @@ class Shop {
     void withdraw(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         bench.withdrawCard(uuid);
+        g_shopNeedsRefresh[p] = true;
+    }
+
+    void identify(int p = 0, int uuid = -1){
+        BenchData bench = m_benches[p];
+        bench.identifyCard(uuid, p);
         g_shopNeedsRefresh[p] = true;
     }
 };
@@ -371,12 +407,63 @@ void renderDraws(ref UiSystem system, int p = 1) {
     }
 }
 
-void renderBench(ref UiSystem system, int p = 1) {
+void createShopCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){
+    if ((currCard.getUuid() == g_selectedUUIDs[p]) == false) { return; }
+    CardParameters params = currCard.getCardParameters();
+    float btnPosY = posY + 0.005; 
+
+    Parameters cardParams = createParametersCopy(params);
+    int uuid = currCard.getUuid();
+    cardParams.ints[0] = uuid;
+
+    if (currCard.isDeployed()){
+        minimapSafeClickable(system, 
+                            posX, btnPosY + 0.035, 0.1, 0.055,
+                            "",
+                            cardParams,
+                            [](int p = 1, ref Parameters parameters) -> void {
+                g_shop.withdraw(p, parameters.ints[0]);
+            }
+        );
+        createButton(system, posX, btnPosY, "WITHDRAW");
+    }
+    else {
+        minimapSafeClickable(system, 
+                            posX - 0.06, btnPosY + 0.035, 0.1, 0.055,
+                            "",
+                            cardParams,
+                            [](int p = 1, ref Parameters parameters) -> void {
+                g_shop.sell(p, parameters.ints[0]);
+            }
+        );
+        createButton(system, posX - 0.06, btnPosY, "SELL");
+        if (currCard.isIdentified()){
+            minimapSafeClickable(system, 
+                                posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
+                                "",
+                                cardParams,
+                                [](int p = 1, ref Parameters parameters) -> void {
+                    g_shop.deploy(p, parameters.ints[0]);
+                }
+            );
+            createButton(system, posX + 0.06, btnPosY, "DEPLOY");
+        }
+    }
+}
+
+mutable void createShrineCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){}
+mutable void createArmoryCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){}
+mutable void createTempleCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){}
+mutable void createForgeCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){}
+
+void renderBench(ref UiSystem system, int p = 1, int shopType = 0) {
     BenchData bench = g_shop.m_benches[p];
     CardData[] currCards = bench.getCards();
 
     float propPosX = getLeftAnchorX(UI_LEFT_BUFFER + 100, 128.0, p);
-    bench.renderSynergies(system, propPosX, 0.0, p);
+    if (shopType == 0){
+        bench.renderSynergies(system, propPosX, 0.0, p);
+    }
 
     int totalCards = bench.getNumberOfCardsHeld();
     if (totalCards == 0) return;
@@ -423,48 +510,13 @@ void renderBench(ref UiSystem system, int p = 1) {
 
         g_shop.renderCard(system, currCard, p, posX, posY + 0.1, true);
 
-        if (currCard.getUuid() == g_selectedUUIDs[p]) {
-            CardParameters params = currCard.getCardParameters();
-            int cost = params.getCost() * 0.75;
-            float btnPosY = posY + 0.005; 
-
-            Parameters cardParams = createParametersCopy(params);
-            int uuid = currCard.getUuid();
-            cardParams.ints[0] = uuid;
-
-            if (currCard.isDeployed()){
-                minimapSafeClickable(system, 
-                                    posX, btnPosY + 0.035, 0.1, 0.055,
-                                    "",
-                                    cardParams,
-                                    [](int p = 1, ref Parameters parameters) -> void {
-                        g_shop.withdraw(p, parameters.ints[0]);
-                    }
-                );
-                createButton(system, posX, btnPosY, "WITHDRAW");
-            }
-            else {
-                minimapSafeClickable(system, 
-                                    posX - 0.06, btnPosY + 0.035, 0.1, 0.055,
-                                    "",
-                                    cardParams,
-                                    [](int p = 1, ref Parameters parameters) -> void {
-                        g_shop.sell(p, parameters.ints[0]);
-                    }
-                );
-                minimapSafeClickable(system, 
-                                    posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
-                                    "",
-                                    cardParams,
-                                    [](int p = 1, ref Parameters parameters) -> void {
-                        g_shop.deploy(p, parameters.ints[0]);
-                    }
-                );
-                createButton(system, posX - 0.06, btnPosY, "SELL");
-                createButton(system, posX + 0.06, btnPosY, "DEPLOY");
-            }
+        switch(shopType){
+            case SHOP_TYPE_SHRINE: createShrineCardButtons(system, currCard, p, posX, posY);
+            case SHOP_TYPE_TEMPLE: createTempleCardButtons(system, currCard, p, posX, posY);
+            case SHOP_TYPE_FORGE: createForgeCardButtons(system, currCard, p, posX, posY);
+            case SHOP_TYPE_ARMORY: createArmoryCardButtons(system, currCard, p, posX, posY);
+            default: createShopCardButtons(system, currCard, p, posX, posY);
         }
-
         visibleIndex = visibleIndex + 1;
     }
 }
@@ -480,14 +532,24 @@ void closeShop(int p = 1){
     trSoundsetPlayPlayer(p, "UI_Latch");
 }
 
+void renderExitButton(ref UiSystem system, int p = 1, float drawPosx = 0.55, float drawPosY = -0.425) {
+    float drawPosx2 = getRightAnchorX(100, 128.0, p);
+    drawPosx = min(drawPosx, drawPosx2);
+    createButton(system, drawPosx, drawPosY, "EXIT");
+    minimapSafeClickable(system, 
+                        drawPosx, drawPosY + 0.035, 0.1, 0.055,
+                        "",
+                        EMPTY_PARAMETERS,
+                        [](int p = 1, ref Parameters parameters) -> void {
+            closeShop(p);
+        }
+    );
+}
+
 void renderShop(ref UiSystem system, int p = 1){
     renderDraws(system, p);
     renderBench(system, p);
 
-    string[] buttonNames = new string(0, "");
-    buttonNames.add("");
-    buttonNames.add("");
-    buttonNames.add("EXIT SHOP");
     float drawPosx = getLeftAnchorX(UI_LEFT_BUFFER, 128.0, p);
     drawPosx = max(drawPosx, -0.55);
     float yOffset = 0.075;
@@ -518,13 +580,9 @@ void renderShop(ref UiSystem system, int p = 1){
                                     shopChances);
     }
 
+    // Buy XP
     float drawPosY = drawPosYStart;
-    for(int i = 0; i < buttonNames.size(); i++) {
-        createButton(system, drawPosx, drawPosY, buttonNames[i]);
-        drawPosY = drawPosY - yOffset;
-    }
-
-    drawPosY = drawPosYStart;
+    createButton(system, drawPosx, drawPosY, "");
     minimapSafeClickable(system, 
                         drawPosx, drawPosY + 0.035, 0.1, 0.055,
                         "",
@@ -536,7 +594,9 @@ void renderShop(ref UiSystem system, int p = 1){
     minimapSafeDisplay(system, drawPosx, drawPosY + 0.03,
                        "BUY XP\n" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + "<color=0.729,0.557,0.137>" + g_shop.getBuyXPCost(p) + "</color>");
 
+    // Draw
     drawPosY = drawPosY - yOffset;
+    createButton(system, drawPosx, drawPosY, "");
     minimapSafeClickable(system, 
                         drawPosx, drawPosY + 0.035, 0.1, 0.055,
                         "",
@@ -548,46 +608,27 @@ void renderShop(ref UiSystem system, int p = 1){
     minimapSafeDisplay(system, drawPosx, drawPosY + 0.03,
                        "DRAW\n" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + "<color=0.729,0.557,0.137>" + g_shop.getDrawCost(p) + "</color>");
 
-    drawPosY = drawPosY - yOffset;
-    minimapSafeClickable(system, 
-                        drawPosx, drawPosY + 0.035, 0.1, 0.055,
-                        "",
-                        EMPTY_PARAMETERS,
-                        [](int p = 1, ref Parameters parameters) -> void {
-            closeShop(p);
-        }
-    );
+    // Exit Shop Button
+    renderExitButton(system, p);
+
     g_shopNeedsRefresh[p] = false;
 }
 
 void openShop(int p = 1){
     UiSystem system = uiSystemArray[p];
-    system.enter(false, true, 1000);
+    system.enter(false, true, 503);
     if(trCurrentPlayer() == p){
         setUiVisible(false);
         trSetObscuredUnits(false);
     }
+    g_shop.m_shopTypeOpened[p] = 0;
     renderShop(system, p);
     uiSystemArray[p] = system;
     trSoundsetPlayPlayer(p, "UI_Latch");
 }
 
-void refreshShop(int p = 1){
-    if (g_shopNeedsRefresh[p] == true){
-        UiSystem system = uiSystemArray[p];
-        if (system.uiActive == false) {return;}
-        system.enter(false, true, 1000);
-        if(trCurrentPlayer() == p){
-            setUiVisible(false);
-            trSetObscuredUnits(false);
-        }
-        renderShop(system, p);
-        uiSystemArray[p] = system;
-    }
-}
-
 void startRespawner(){
-    scheduler.add(1000, [](int iterations = 1) -> bool {
+    scheduler.add(1009, [](int iterations = 1) -> bool {
         for (int i = 1; i <= g_shop.m_benches.size()-2; i++){
             BenchData bench = g_shop.m_benches[i];
             bool wasRespawned = bench.respawnDeployedCards();

@@ -20,6 +20,7 @@ void generate()
     createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
 
     // common/math.xs
+    // common/shuffle.xs
     // common/logs.xs
     // mod/config.xs
     // common/ui.xs
@@ -44,15 +45,21 @@ void generate()
     // mod/data/draw.xs
 
     // mod/shop/shop.xs
+    // mod/shop/armory.xs
+    // mod/shop/forge.xs
+    // mod/shop/shrine.xs
+    // mod/shop/temple.xs
+    // mod/shop/refresh.xs
     // mod/data/cardParametersData.xs
 
     // mod/map/lane.xs
     // mod/map/base.xs
+    // mod/map/objectives.xs
     // mod/map/teams.xs
     // mod/map/units.xs
     // mod/shop/commands.xs
 
-    // mod/income/gold.xs
+    // mod/income/income.xs
 
     // mod/triggers.xs
 
