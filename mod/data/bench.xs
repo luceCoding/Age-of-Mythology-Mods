@@ -224,6 +224,29 @@ class BenchData {
         return false;
     }
 
+    bool rerollRarity(int uuid = -1, int p = 0){
+        for(int i = 0; i < m_cardArray.size(); i++) {
+            CardData card = m_cardArray[i];
+            if (!(card.isNull()) && card.isIdentified() && uuid == card.getUuid()){
+                if (purchase(g_templeShopCost, p)){
+                    int rarity = card.rerollRarity();
+                    g_templeShopCost = g_templeShopCost + 10;
+                    m_cardArray[i] = card;
+                    switch(rarity){
+                        case TIER_UNCOMMON: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
+                        case TIER_RARE: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedHeroic");
+                        case TIER_EPIC: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedMythic");
+                        case TIER_LEGENDARY: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedDivine");
+                        default: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedSimple");
+                    }
+                    log(3, "Player " + m_player + " rarity a card.");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     string getSynergyText(int synergyIndex = 0) {
         string text = "";
         SynergyData synergy = g_synergies[synergyIndex];

@@ -12,6 +12,7 @@ void addCardIntoDeck(int age = 0, int cost = 1,
     for(int i = 0; i < MAX_CARD_COPIES; i++) {
         CardData card;
         card.setCard(params, i);
+        card.rerollRarity(0);
         g_shop.addCardIntoDeck(card);
     }
 }

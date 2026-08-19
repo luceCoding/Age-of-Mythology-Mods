@@ -20,9 +20,6 @@ class DrawData {
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData currCard = m_cardArray[i];
             if (currCard.isNull()){
-                PlayerData player = g_PlayerDataArray[p];
-                int luck = player.getLuckBonus();
-                card.rerollRarity(luck);
                 m_cardArray[i] = card;
                 log(3, "Added card to draw " + card.getUuid() + ", slot: " + i);
                 return true;

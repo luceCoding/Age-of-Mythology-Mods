@@ -94,8 +94,12 @@ class Shop {
         if (card.isIdentified() == false){
             cost = 10;
         }
+        int shopType = m_shopTypeOpened[p];
         if (m_shopTypeOpened[p] == SHOP_TYPE_SHRINE){
             cost = g_shrineShopCost;
+        }
+        if (m_shopTypeOpened[p] == SHOP_TYPE_TEMPLE){
+            cost = g_templeShopCost;
         }
         return cost;
     }
@@ -350,6 +354,12 @@ class Shop {
     void identify(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         bench.identifyCard(uuid, p);
+        g_shopNeedsRefresh[p] = true;
+    }
+
+    void rerollRarity(int p = 0, int uuid = -1){
+        BenchData bench = m_benches[p];
+        bench.rerollRarity(uuid, p);
         g_shopNeedsRefresh[p] = true;
     }
 };

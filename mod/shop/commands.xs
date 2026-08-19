@@ -37,7 +37,7 @@ void initPlayerCommands(){
     for(int p = 0; p <= cNumberPlayers; p++) {
         string plantName = preparePlant(p, cUnitTypePlantGreekBush, 
                                         "Open shop",
-                                        "Use your gold to purchase cards at the shop.",
+                                        "Purchase cards.",
                                         "resources\shared\static_color\buildings\market_icon.png",
                                         [](int p = 1) -> void {
                                                                 openShop(p);
@@ -47,7 +47,7 @@ void initPlayerCommands(){
 
         plantName = preparePlant(p, cUnitTypePlantGreekShrub, 
                                         "Open forge",
-                                        "Use your gold to add sockets at the forge.",
+                                        "Add sockets to your cards.",
                                         "resources\nature\relics\relic_anvil_icon.png",
                                         [](int p = 1) -> void {
                                                                 openForge(p);
@@ -57,7 +57,7 @@ void initPlayerCommands(){
 
         plantName = preparePlant(p, cUnitTypePlantGreekGrass, 
                                         "Open armory",
-                                        "Use your gold to add upgrades at the armory.",
+                                        "Add upgrades to your cards.",
                                         "resources\nature\relics\relic_jewelry_icon.png",
                                         [](int p = 1) -> void {
                                                                 openArmory(p);
@@ -66,8 +66,8 @@ void initPlayerCommands(){
         trProtounitAddTrain("DwarvenArmory", p, plantName, 0, 5);
 
         plantName = preparePlant(p, cUnitTypePlantGreekWeeds, 
-                                        "Open forge",
-                                        "Use your gold to reroll rarities at the temple.",
+                                        "Open temple",
+                                        "Reroll rarities for your cards.",
                                         "resources\nature\relics\relic_ankh_icon.png",
                                         [](int p = 1) -> void {
                                                                 openTemple(p);
@@ -76,8 +76,8 @@ void initPlayerCommands(){
         trProtounitAddTrain("TempleOfTheGods", p, plantName, 0, 5);
 
         plantName = preparePlant(p, cUnitTypePlantGreekFern, 
-                                        "Open forge",
-                                        "Use your gold to reroll rarities at the temple.",
+                                        "Open shrine",
+                                        "Identify cards.",
                                         "resources\nature\relics\relic_scroll_icon.png",
                                         [](int p = 1) -> void {
                                                                 openShrine(p);

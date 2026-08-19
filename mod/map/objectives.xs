@@ -2,7 +2,7 @@ bool isSpotClearOfAI(float x = 0.0, float z = 0.0, float clearanceRadius = 0.0) 
     // Spawn temporary lure unit to anchor spatial query
     int tempUnitId = trUnitCreateForced("CinematicBlockWaypoint", x, configMapBaseHeight, z, -1, 0);
 
-    // Check count of alive AI buildings within radius
+    // Check count of alive buildings within radius
     int teamABuildings = kbUnitTypeCountInArea("Building", aiTeamA, cUnitStateAlive, tempUnitId, clearanceRadius);
     int teamBBuildings = kbUnitTypeCountInArea("Building", aiTeamB, cUnitStateAlive, tempUnitId, clearanceRadius);
 
@@ -80,10 +80,10 @@ void spawnSymmetricNeutralBuildings() {
 
     // Fallback: Use safe default coordinates past clearance if 100 attempts fail
     if (validSpotFound == false) {
-        spots[0] = center + Vector(105.2, configMapBaseHeight, 69.96);
-        spots[1] = center - Vector(150.79, configMapBaseHeight, 186.0);
-        spots[2] = center + Vector(185.0, configMapBaseHeight, 150.14);
-        spots[3] = center - Vector(70.99, configMapBaseHeight, 105.85);
+        spots[0] = Vector(105.2, configMapBaseHeight, 69.96);
+        spots[1] = Vector(150.79, configMapBaseHeight, 186.0);
+        spots[2] = Vector(185.0, configMapBaseHeight, 150.14);
+        spots[3] = Vector(70.99, configMapBaseHeight, 105.85);
     }
 
     string[] buildings = new string(4, "");

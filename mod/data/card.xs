@@ -33,7 +33,7 @@ class CardData {
     }
 
     int rerollRarity(int luckBonus = 0){
-        m_luckBonus = m_luckBonus + 1;
+        m_luckBonus = m_luckBonus + 5;
         m_rarity = rollLootTierWeighted(luckBonus + m_luckBonus);
         return m_rarity;
     }

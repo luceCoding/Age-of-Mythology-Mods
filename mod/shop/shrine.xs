@@ -14,7 +14,7 @@ void renderShrine(ref UiSystem system, int p = 1){
 }
 
 void createShrineCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){
-    if ((currCard.getUuid() == g_selectedUUIDs[p]) == false) { return; }
+    if ((currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.isIdentified()) { return; }
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
 
@@ -22,17 +22,15 @@ void createShrineCardButtons(ref UiSystem system, ref CardData currCard, int p =
     int uuid = currCard.getUuid();
     cardParams.ints[0] = uuid;
 
-    if (currCard.isIdentified() == false){
-        minimapSafeClickable(system, 
-                            posX, btnPosY + 0.035, 0.1, 0.055,
-                            "",
-                            cardParams,
-                            [](int p = 1, ref Parameters parameters) -> void {
-                g_shop.identify(p, parameters.ints[0]);
-            }
-        );
-        createButton(system, posX, btnPosY, "IDENTIFY");
-    }
+    minimapSafeClickable(system, 
+                        posX, btnPosY + 0.035, 0.1, 0.055,
+                        "",
+                        cardParams,
+                        [](int p = 1, ref Parameters parameters) -> void {
+            g_shop.identify(p, parameters.ints[0]);
+        }
+    );
+    createButton(system, posX, btnPosY, "IDENTIFY");
 }
 
 void openShrine(int p = 1){
