@@ -14,7 +14,7 @@ void renderShrine(ref UiSystem system, int p = 1){
 }
 
 void createShrineCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){
-    if ((currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.isIdentified()) { return; }
+    if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.isIdentified()) { return; }
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
 
@@ -40,6 +40,7 @@ void openShrine(int p = 1){
         setUiVisible(false);
         trSetObscuredUnits(false);
     }
+    g_selectedUUIDs[p] = -1; // Deselect card
     g_shop.m_shopTypeOpened[p] = SHOP_TYPE_SHRINE;
     renderShrine(system, p);
     uiSystemArray[p] = system;

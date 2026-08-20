@@ -49,3 +49,4 @@ const int relativityBasePERCENT = 3;
 
 int g_shrineShopCost = 50;
 int g_templeShopCost = 10;
+int g_armoryShopCost = 10;

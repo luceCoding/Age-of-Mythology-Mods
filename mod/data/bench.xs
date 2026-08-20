@@ -130,7 +130,7 @@ class BenchData {
             CardData card = m_cardArray[i];
             if (card.isNull() || card.isDeployed() || card.getUuid() != uuid) continue;
             spawnCard(card, m_playerShopId, m_player);
-            card.applySuitBonus(m_player);
+            card.applyUpgrades(m_player);
             addSynergy(card, m_player);
             m_cardArray[i] = card;
             trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
@@ -174,7 +174,7 @@ class BenchData {
     bool withdrawCard(int uuid = -1){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData cardToWithdraw = m_cardArray[i];
-            if (!(cardToWithdraw.isNull()) && cardToWithdraw.isDeployed() && uuid == cardToWithdraw.getUuid()){
+            if (uuid == cardToWithdraw.getUuid() && (!(cardToWithdraw.isNull())) && cardToWithdraw.isDeployed()){
                 int unitID = cardToWithdraw.getDeployedUnitID();
                 xsSetContextPlayer(m_player);
                 trUnitSelectClear();
@@ -184,7 +184,7 @@ class BenchData {
                     float distance = kbUnitGetDistanceToPoint(unitID, shopLocation);
                     if (distance <= 10){
                         trUnitDestroy(true);
-                        cardToWithdraw.resetSuitBonus(m_player);
+                        cardToWithdraw.resetUpgrades(m_player);
                         cardToWithdraw.withdraw();
                         removeSynergy(cardToWithdraw, m_player);
                         m_cardArray[i] = cardToWithdraw;
@@ -210,7 +210,7 @@ class BenchData {
     bool identifyCard(int uuid = -1, int p = 0){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData card = m_cardArray[i];
-            if (!(card.isNull()) && (card.isIdentified() == false) && uuid == card.getUuid()){
+            if (uuid == card.getUuid() && (!(card.isNull())) && (card.isIdentified() == false)){
                 if (purchase(g_shrineShopCost, p)){
                     card.identify();
                     g_shrineShopCost = g_shrineShopCost + 10;
@@ -227,7 +227,7 @@ class BenchData {
     bool rerollRarity(int uuid = -1, int p = 0){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData card = m_cardArray[i];
-            if (!(card.isNull()) && card.isIdentified() && uuid == card.getUuid()){
+            if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
                 if (purchase(g_templeShopCost, p)){
                     int rarity = card.rerollRarity();
                     g_templeShopCost = g_templeShopCost + 10;
@@ -241,6 +241,25 @@ class BenchData {
                     }
                     log(3, "Player " + m_player + " rarity a card.");
                     return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool addSocket(int uuid = -1, int p = 0){
+        for(int i = 0; i < m_cardArray.size(); i++) {
+            CardData card = m_cardArray[i];
+            if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
+                if (purchase(g_armoryShopCost, p)){
+                    bool hasSocketed = card.addSocket();
+                    if (hasSocketed){
+                        g_templeShopCost = g_templeShopCost + 10;
+                        m_cardArray[i] = card;
+                        trSoundsetPlayPlayer(m_player, "ArmorySelect");
+                        log(3, "Player " + m_player + " socketed a card.");
+                        return true;
+                    }
                 }
             }
         }

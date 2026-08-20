@@ -11,7 +11,12 @@ void addCardIntoDeck(int age = 0, int cost = 1,
     ProtoNameToCardParametersMap.put(protoName, params);
     for(int i = 0; i < MAX_CARD_COPIES; i++) {
         CardData card;
-        card.setCard(params, i);
+        switch(i){
+            case 1: card.setCard(params, puFIELD_PIERCE_ARMOR);
+            case 2: card.setCard(params, puFIELD_SHIELDS);
+            case 3: card.setCard(params, puFIELD_HITPOINTS);
+            default: card.setCard(params, puFIELD_HACK_ARMOR);
+        }
         card.rerollRarity(0);
         g_shop.addCardIntoDeck(card);
     }

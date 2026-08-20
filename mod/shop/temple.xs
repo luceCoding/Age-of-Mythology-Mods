@@ -14,7 +14,12 @@ void renderTemple(ref UiSystem system, int p = 1){
 }
 
 void createTempleCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){
-    if ((currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.isIdentified() == false || currCard.isDeployed()) { return; }
+    if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.isIdentified() == false) { return; }
+    if (currCard.isDeployed()) {
+        trChatSendToPlayer(p, p, "Unit must be withdrawn first to be socketed.");
+        trSoundsetPlayPlayer(p, "PopCapHit");
+        return;
+    }
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
 
@@ -41,6 +46,7 @@ void openTemple(int p = 1){
         setUiVisible(false);
         trSetObscuredUnits(false);
     }
+    g_selectedUUIDs[p] = -1; // Deselect card
     g_shop.m_shopTypeOpened[p] = SHOP_TYPE_TEMPLE;
     renderTemple(system, p);
     uiSystemArray[p] = system;

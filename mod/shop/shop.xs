@@ -23,7 +23,7 @@ bool purchase(int goldAmount = 0, int p = 0){
         trPlayerGrantResources(p, "Gold", -goldAmount);
         return true;
     }
-    trSoundsetPlayPlayer(1, "PopCapHit");
+    trSoundsetPlayPlayer(p, "PopCapHit");
     return false;
 }
 
@@ -95,11 +95,10 @@ class Shop {
             cost = 10;
         }
         int shopType = m_shopTypeOpened[p];
-        if (m_shopTypeOpened[p] == SHOP_TYPE_SHRINE){
-            cost = g_shrineShopCost;
-        }
-        if (m_shopTypeOpened[p] == SHOP_TYPE_TEMPLE){
-            cost = g_templeShopCost;
+        switch(shopType){
+            case SHOP_TYPE_SHRINE: cost = g_shrineShopCost;
+            case SHOP_TYPE_TEMPLE: cost = g_templeShopCost;
+            case SHOP_TYPE_ARMORY: cost = g_templeShopCost;
         }
         return cost;
     }
@@ -168,29 +167,34 @@ class Shop {
 
         if (currCard.isIdentified() == false){return;}
 
-        // Suit Icon
+        // Upgrade Icon
+        float miniIconYOffset = 0.03;
         int miniIconSize = 32.0 * iconMultiplier;
-        int suit = currCard.getSuit();
         float leftPosX = posX - 0.055 * iconMultiplier;
         float leftPosY = posY + 0.08 * iconMultiplier;
         float width = 0.025;
         float height = 0.025;
-        minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize));
-        switch(suit){
-            case 0: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
-                                                getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "");
-            case 1: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
-                                                getIconPathFormat("resources/in_game/stat_hack_dmg.png", miniIconSize), "Upgrade: Attack", "");
-            case 2: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
-                                                getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "");
-            case 3: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
-                                                getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize), "Upgrade: Pierce Armor", "");
+
+        int[] upgrades = currCard.getUpgrades();
+        for (int i = 0; i < upgrades.size(); i++) {
+            int upgrade = upgrades[i];
+            minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize));
+            switch(upgrade){
+                case puFIELD_HACK_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "");
+                case puFIELD_PIERCE_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                                                                       getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize), "Upgrade: Pierce Armor", "");
+                case puFIELD_CRUSH_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_crush_armor.png", miniIconSize), "Upgrade: Crush Armor", "");
+                case puFIELD_HITPOINTS: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "");
+                case puFIELD_SHIELDS: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize), "Upgrade: Shields", "");
+                case puFIELD_SPEED: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_speed.png", miniIconSize), "Upgrade: Shields", "");
+                case puFIELD_HP_REGEN: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp_regen.png", miniIconSize), "Upgrade: Shields", "");
+            }
+            leftPosY = leftPosY - miniIconYOffset * iconMultiplier; 
         }
 
         // Synergies
-        float miniIconYOffset = 0.03;
         float rightPosX = posX + 0.055 * iconMultiplier;
-        float rightPosY = leftPosY;
+        float rightPosY = posY + 0.08 * iconMultiplier;
 
         if (params.isInfantry()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 0);}
         if (params.isArcher()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 1);}
@@ -360,6 +364,12 @@ class Shop {
     void rerollRarity(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         bench.rerollRarity(uuid, p);
+        g_shopNeedsRefresh[p] = true;
+    }
+
+    void addSocket(int p = 0, int uuid = -1){
+        BenchData bench = m_benches[p];
+        bench.addSocket(uuid, p);
         g_shopNeedsRefresh[p] = true;
     }
 };
