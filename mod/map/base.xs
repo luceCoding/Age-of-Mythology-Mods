@@ -177,7 +177,7 @@ void createAIBases(){
 // ARC WALL HELPER (Pure Degree-Based)
 // ==========================================
 void spawnArcSegment(float cx = 0.0, float cz = 0.0, float radius = 0.0, float startAngleDeg = 0.0, float endAngleDeg = 0.0, int player = 0) {
-    string wallProto = "WallConnector";
+    string wallProto = "WallOfAtlantisConnector";
     
     float angleDiff = endAngleDeg - startAngleDeg;
     
@@ -202,7 +202,10 @@ void spawnArcSegment(float cx = 0.0, float cz = 0.0, float radius = 0.0, float s
         float x = cx + (radius * cosDeg(currentAngleDeg));
         float z = cz + (radius * sinDeg(currentAngleDeg));
 
-        trUnitCreateForced(wallProto, x, configMapBaseHeight, z, 0.0, player);
+        int wallId = trUnitCreateForced(wallProto, x, configMapBaseHeight, z, 0.0, player);
+        trUnitSelectClear();
+        selectSingle(wallId);
+        trUnitSetScale(1.2, 1.2, 1.2);
     }
 }
 

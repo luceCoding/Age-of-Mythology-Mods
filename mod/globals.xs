@@ -1,3 +1,11 @@
+const int configMapTileX = 128;
+const int configMapTileZ = 128;
+const int configMapBaseHeight = 4;
+const float configMapWaterLevel = -2.0;
+const float configMapWaterDepth = 3.0;
+const int config_MAX_DRAWN_CARDS = 5;
+const int MAX_CARDS_IN_BENCH = 20;
+
 int[] g_selectedUUIDs = default;
 bool[] g_shopNeedsRefresh = default;
 float g_timeMSGameStarted = 0.0;
@@ -62,3 +70,8 @@ const int UPGRADE_HP_REGEN = 6;
 const int UPGRADE_HACK_ATTACK = 7;
 const int UPGRADE_PIERCE_ATTACK = 8;
 const int UPGRADE_CRUSH_ATTACK = 9;
+
+const float GOLDPILE_LIFESPAN = 10.0;
+const float T1_CRATE_SPAWN_TIME = 90;
+const float T2_CRATE_SPAWN_TIME = 120.0;
+const float T3_CRATE_SPAWN_TIME = 150.0;

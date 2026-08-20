@@ -49,16 +49,17 @@ runImmediately
                 }
             }
 
-            if((kbUnitGetProtoUnitID(unitId) == kbGetUnitTypeID("GoldPile")) != false){
-                g_IncomeHandler.addGold(unitId);
-                if (owner != 0){
-                    trUnitSetScale(0.5, 0.5, 0.5);
-                    if (trPlayerGetDiplomacy(owner, cNumberPlayers-1) == "enemy"){
-                        trUnitSetShading(2, 100);
+            switch(protoUnit){
+                case 741: { // GoldPile
+                    g_IncomeHandler.addGold(unitId);
+                    if (owner != 0){
+                        trUnitSetScale(0.5, 0.5, 0.5);
+                        if (trPlayerGetDiplomacy(owner, cNumberPlayers-1) == "enemy"){
+                            trUnitSetShading(2, 100);
+                        }
                     }
                 }
             }
-
         });
         Search_lastTime = xsGetTimeMS();
     }
@@ -72,7 +73,7 @@ active
         trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
     }
     initializeCardParametersMap();
-    spawnSymmetricNeutralBuildings();
+    spawnSymmetricObjectives();
     modifyPlayerData();
     createShops();
     initPlayerCommands();
@@ -88,6 +89,18 @@ active
    {
         startRespawner();
         startSchedulers();
+        paintAllLanesCircular();
+
+        //generateCreepCamps("Argus", 4, 25.0, 20.0);
+        //generateCreepCamps("Dryad", 6, 25.0, 20.0);
+        //generateCreepCamps("Satyr", 10, 25.0, 20.0);
+
+        generateCreepCamps("Lure", 10, 25.0, 20.0);
+
+        generateCreepCamps("MiningCamp", 4, 25.0, 16.0);
+        generateCreepCamps("MiningCampJapanese", 6, 20.0, 12.0);
+        generateCreepCamps("Storehouse", 10, 15.0, 8.0);
+
         xsDisableSelf();
    }
 }

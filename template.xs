@@ -1,4 +1,4 @@
-//// mod/config.xs
+//// mod/globals.xs
 //// common/nottud.xs
 //// common/collections/hashMap.xs
 //// common/collections/hashSet.xs
@@ -19,16 +19,13 @@ void generate()
     createTypedScheduler("schedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"));
     createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
 
-    // common/math.xs
-    // common/shuffle.xs
+    // mod/globals.xs
     // common/logs.xs
-    // mod/config.xs
+    // common/math.xs
     // common/ui.xs
     // common/search.xs
     
     // mod/common/rng.xs
-
-    // mod/data/globals.xs
 
     // mod/shop/level.xs
     // mod/data/cardParameters.xs
@@ -51,14 +48,17 @@ void generate()
     // mod/shop/shrine.xs
     // mod/shop/temple.xs
     // mod/shop/refresh.xs
+    // mod/shop/commands.xs
     // mod/data/cardParametersData.xs
 
+    // mod/map/utils.xs
     // mod/map/lane.xs
     // mod/map/base.xs
     // mod/map/objectives.xs
     // mod/map/teams.xs
     // mod/map/units.xs
-    // mod/shop/commands.xs
+    // mod/map/terrain.xs
+    // mod/map/camps.xs
 
     // mod/income/income.xs
 

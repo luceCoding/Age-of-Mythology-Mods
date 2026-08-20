@@ -96,15 +96,8 @@ void modifyPlayerData(){
 
     // All players
     for(int p = 0; p <= cNumberPlayers; p++) {
-        trModifyProtounitData("GoldPile", p, puFIELD_OBSTRUCTION_X, 0.0, relativityASSIGN);
-        trModifyProtounitData("GoldPile", p, puFIELD_OBSTRUCTION_Z, 0.0, relativityASSIGN);
-        trProtoUnitSetFlag(p, "GoldPile", "ForceToNature", false);
-        trProtoUnitSetFlag(p, "GoldPile", "CollidesWithProjectiles", false);
-        trProtoUnitSetFlag(p, "GoldPile", "NonAutoFormedUnit", false);
-        trProtoUnitSetFlag(p, "GoldPile", "StartOnNoUpdate", false);
-        trProtoUnitSetUnitType(p, "GoldPile", "NatureClass", false);
-        trModifyProtounitData("GoldPile", p, puFIELD_LIFESPAN, 10, relativityASSIGN);
-        trProtoUnitSetFlag(p, "GoldPile", "CorpseDecays", true);
+        setAsPlaceholder("GoldPile", p);
+        trModifyProtounitData("GoldPile", p, puFIELD_LIFESPAN, GOLDPILE_LIFESPAN, relativityASSIGN);
 
         trProtounitAssignAction("DwarvenForge", "ThePeachBlossomSpring", "AutoConvert", p);
         trProtoUnitSetFlag(p, "DwarvenForge", "Invulnerable", true);
@@ -167,4 +160,13 @@ void modifyPlayerData(){
         trProtounitModifySpawnData("Hoplite", p, "GoldPile", 0, 1.0, 1, -1, 30);
         trProtounitModifySpawnData("Hippeus", p, "GoldPile", 0, 1.0, 1, -1, 30);
     }
+
+    // Only Gaia
+    setupCamp("Storehouse", "CinematicBlockStartPoint", T1_CRATE_SPAWN_TIME);
+    setupCamp("MiningCampJapanese", "CinematicBlockEndPoint", T2_CRATE_SPAWN_TIME);
+    setupCamp("MiningCamp", "CinematicBlockWaypoint", T3_CRATE_SPAWN_TIME);
+
+    //setupCamp("Satyr", "PathBlock1", T1_CRATE_SPAWN_TIME);
+    //setupCamp("Dryad", "PathBlock2", T2_CRATE_SPAWN_TIME);
+    //setupCamp("Argus", "PathBlock3", T3_CRATE_SPAWN_TIME);
 }
