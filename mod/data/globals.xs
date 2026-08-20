@@ -51,3 +51,14 @@ int g_shrineShopCost = 10;
 int g_templeShopCost = 10;
 int g_armoryShopCost = 10;
 int g_forgeShopCost = 10;
+
+const int UPGRADE_HACK_ARMOR = 0;
+const int UPGRADE_PIERCE_ARMOR = 1;
+const int UPGRADE_CRUSH_ARMOR = 2;
+const int UPGRADE_HITPOINTS = 3;
+const int UPGRADE_SHIELDS = 4;
+const int UPGRADE_SPEED = 5;
+const int UPGRADE_HP_REGEN = 6;
+const int UPGRADE_HACK_ATTACK = 7;
+const int UPGRADE_PIERCE_ATTACK = 8;
+const int UPGRADE_CRUSH_ATTACK = 9;

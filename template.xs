@@ -44,6 +44,7 @@ void generate()
     // mod/data/deck.xs
     // mod/data/draw.xs
 
+    // mod/shop/utils.xs
     // mod/shop/shop.xs
     // mod/shop/armory.xs
     // mod/shop/forge.xs

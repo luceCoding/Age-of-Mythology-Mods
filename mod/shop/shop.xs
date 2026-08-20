@@ -13,20 +13,6 @@ const int SHOP_TYPE_TEMPLE = 2;
 const int SHOP_TYPE_FORGE = 3;
 const int SHOP_TYPE_ARMORY = 4;
 
-void createButton(ref UiSystem system, float drawPosx = 0.0, float drawPosY = 0.0, string buttonName = ""){
-    minimapSafeDisplay(system, drawPosx, drawPosY, getIconPathFormat("resources/front_end/Ornate_Buttons/BtnOrnate_Large_On.png", 128));
-    minimapSafeDisplay(system, drawPosx, drawPosY + 0.05, buttonName);
-}
-
-bool purchase(int goldAmount = 0, int p = 0){
-    if (((kbGetResourceAmount(p, kbGetResourceID("Gold")) >= goldAmount) != false)){
-        trPlayerGrantResources(p, "Gold", -goldAmount);
-        return true;
-    }
-    trSoundsetPlayPlayer(p, "PopCapHit");
-    return false;
-}
-
 class Shop {
     DeckData[] m_decks = default;
     DrawData[] m_currDraws = default;
@@ -90,7 +76,7 @@ class Shop {
 
     int getCost(ref CardData card, int p = 0){
         CardParameters params = card.getCardParameters();
-        int cost = params.getCost();
+        int cost = estimateCardValue(card);
         if (card.isIdentified() == false){
             cost = 10;
         }
@@ -181,14 +167,21 @@ class Shop {
             int upgrade = upgrades[i];
             minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize));
             switch(upgrade){
-                case puFIELD_HACK_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "");
-                case puFIELD_PIERCE_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                case UPGRADE_HACK_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "");
+                case UPGRADE_PIERCE_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
                                                                        getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize), "Upgrade: Pierce Armor", "");
-                case puFIELD_CRUSH_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_crush_armor.png", miniIconSize), "Upgrade: Crush Armor", "");
-                case puFIELD_HITPOINTS: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "");
-                case puFIELD_SHIELDS: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize), "Upgrade: Shields", "");
-                case puFIELD_SPEED: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_speed.png", miniIconSize), "Upgrade: Shields", "");
-                case puFIELD_HP_REGEN: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp_regen.png", miniIconSize), "Upgrade: Shields", "");
+                case UPGRADE_CRUSH_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_crush_armor.png", miniIconSize), "Upgrade: Crush Armor", "");
+                case UPGRADE_HITPOINTS: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "");
+                case UPGRADE_SHIELDS: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize), "Upgrade: Shields", "");
+                case UPGRADE_SPEED: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_speed.png", miniIconSize), "Upgrade: Speed", "");
+                case UPGRADE_HP_REGEN: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                                                                   getIconPathFormat("resources/in_game/stat_hp_regen.png", miniIconSize), "Upgrade: Health Regeneration", "");
+                case UPGRADE_HACK_ATTACK: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                                                                      getIconPathFormat("resources/in_game/stat_hack_dmg.png", miniIconSize), "Upgrade: Hack Damage", "");
+                case UPGRADE_PIERCE_ATTACK: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                                                                        getIconPathFormat("resources/in_game/stat_pierce_dmg.png", miniIconSize), "Upgrade: Pierce Damage", "");
+                case UPGRADE_CRUSH_ATTACK: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                                                                       getIconPathFormat("resources/in_game/stat_crush_dmg.png", miniIconSize), "Upgrade: Crush Damage", "");
             }
             leftPosY = leftPosY - miniIconYOffset * iconMultiplier; 
         }
@@ -435,7 +428,7 @@ void renderDraws(ref UiSystem system, int p = 1) {
 }
 
 void createShopCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){
-    if ((currCard.getUuid() == g_selectedUUIDs[p]) == false) { return; }
+    if (currCard.getUuid() != g_selectedUUIDs[p]) { return; }
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
 
@@ -455,15 +448,16 @@ void createShopCardButtons(ref UiSystem system, ref CardData currCard, int p = 0
         createButton(system, posX, btnPosY, "WITHDRAW");
     }
     else {
+        float sellPosX = currCard.isIdentified() ? (posX - 0.06) : posX;
         minimapSafeClickable(system, 
-                            posX - 0.06, btnPosY + 0.035, 0.1, 0.055,
+                            sellPosX, btnPosY + 0.035, 0.1, 0.055,
                             "",
                             cardParams,
                             [](int p = 1, ref Parameters parameters) -> void {
                 g_shop.sell(p, parameters.ints[0]);
             }
         );
-        createButton(system, posX - 0.06, btnPosY, "SELL");
+        createButton(system, sellPosX, btnPosY, "SELL");
         if (currCard.isIdentified()){
             minimapSafeClickable(system, 
                                 posX + 0.06, btnPosY + 0.035, 0.1, 0.055,

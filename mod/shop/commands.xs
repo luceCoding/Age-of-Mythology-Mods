@@ -53,7 +53,7 @@ void initPlayerCommands(){
                                                                 openForge(p);
                                                             }
                                         );
-        trProtounitAddTrain("DwarvenForge", p, plantName, 1, 5);
+        trProtounitAddTrain("DwarvenForge", p, plantName, 0, 5);
 
         plantName = preparePlant(p, cUnitTypePlantGreekGrass, 
                                         "Open armory",
@@ -63,7 +63,7 @@ void initPlayerCommands(){
                                                                 openArmory(p);
                                                             }
                                         );
-        trProtounitAddTrain("DwarvenArmory", p, plantName, 2, 5);
+        trProtounitAddTrain("DwarvenArmory", p, plantName, 0, 5);
 
         plantName = preparePlant(p, cUnitTypePlantGreekWeeds, 
                                         "Open temple",
