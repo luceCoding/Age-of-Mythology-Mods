@@ -14,28 +14,40 @@ void renderArmory(ref UiSystem system, int p = 1){
 }
 
 void createArmoryCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){
-    if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.canSocket() == false || currCard.isIdentified() == false) { return; }
+    if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.isIdentified() == false) { return; }
     if (currCard.isDeployed()) {
-        trChatSendToPlayer(p, p, "Unit must be withdrawn first to be socketed.");
+        trChatSendToPlayer(p, p, "Unit must be withdrawn first to be upgraded.");
+        trUnitSelectClear();
+        trUnitSelectByID(currCard.getDeployedUnitID());
+        trUnitHighlight(8.0, true);
         trSoundsetPlayPlayer(p, "PopCapHit");
         return;
     }
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
 
-    Parameters cardParams = createParametersCopy(params);
-    int uuid = currCard.getUuid();
-    cardParams.ints[0] = uuid;
+    int count = currCard.getNumberOfSockets();
+    if (count > 0) {
+        float spacingX = 0.12; // Horizontal distance between button centers
+        float startX = posX - (((count - 1) * spacingX) * 0.5);
 
-    minimapSafeClickable(system, 
-                        posX, btnPosY + 0.035, 0.1, 0.055,
-                        "",
-                        cardParams,
-                        [](int p = 1, ref Parameters parameters) -> void {
-            g_shop.addSocket(p, parameters.ints[0]);
+        for (int i = 0; i < count; i++) {
+            float currentX = startX + (i * spacingX);
+            Parameters cardParams = createParametersCopy(params);
+            int uuid = currCard.getUuid();
+            cardParams.ints[0] = uuid;
+            cardParams.ints[1] = i;
+            minimapSafeClickable(system, 
+                                currentX, btnPosY + 0.035, 0.1, 0.055,
+                                "",
+                                cardParams,
+                                [](int p = 1, ref Parameters parameters) -> void {
+                                    g_shop.rerollUpgrade(p, parameters.ints[0], parameters.ints[1]);
+                                }
+            );
+            createButton(system, currentX, btnPosY, "UPGRADE " + (i + 1));
         }
-    );
-    createButton(system, posX, btnPosY, "ADD SOCKET");
+    }
 }
 
 void openArmory(int p = 1){

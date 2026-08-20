@@ -194,6 +194,9 @@ class BenchData {
                     }
                     else {
                         trChatSendToPlayer(m_player, m_player, "Unit must be nearby your shop before it can be withdrawn.");
+                        trUnitSelectClear();
+                        trUnitSelectByID(cardToWithdraw.getDeployedUnitID());
+                        trUnitHighlight(8.0, true);
                         trSoundsetPlayPlayer(m_player, "HardPopAlert");
                     }
                 }
@@ -251,15 +254,36 @@ class BenchData {
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData card = m_cardArray[i];
             if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
-                if (purchase(g_armoryShopCost, p)){
+                if (purchase(g_forgeShopCost, p)){
                     bool hasSocketed = card.addSocket();
                     if (hasSocketed){
-                        g_templeShopCost = g_templeShopCost + 10;
+                        g_forgeShopCost = g_forgeShopCost + 10;
                         m_cardArray[i] = card;
                         trSoundsetPlayPlayer(m_player, "ArmorySelect");
                         log(3, "Player " + m_player + " socketed a card.");
                         return true;
                     }
+                }
+            }
+        }
+        return false;
+    }
+
+    bool rerollUpgrade(int uuid = -1, int p = 0, int upgradeIdx = 0){
+        for(int i = 0; i < m_cardArray.size(); i++) {
+            CardData card = m_cardArray[i];
+            if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
+                if (purchase(g_armoryShopCost, p)){
+                    int upgrade = card.rerollUpgrade(upgradeIdx);
+                    if (upgrade == -1){
+                        errorLog("Player " + m_player + " failed to upgrade card.");
+                        return false;
+                    }
+                    g_armoryShopCost = g_armoryShopCost + 10;
+                    m_cardArray[i] = card;
+                    trSoundsetPlayPlayer(m_player, "ArmorySelect");
+                    log(3, "Player " + m_player + " socketed a card.");
+                    return true;
                 }
             }
         }

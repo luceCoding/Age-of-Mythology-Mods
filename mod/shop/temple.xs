@@ -17,6 +17,9 @@ void createTempleCardButtons(ref UiSystem system, ref CardData currCard, int p =
     if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.isIdentified() == false) { return; }
     if (currCard.isDeployed()) {
         trChatSendToPlayer(p, p, "Unit must be withdrawn first to be socketed.");
+        trUnitSelectClear();
+        trUnitSelectByID(currCard.getDeployedUnitID());
+        trUnitHighlight(8.0, true);
         trSoundsetPlayPlayer(p, "PopCapHit");
         return;
     }

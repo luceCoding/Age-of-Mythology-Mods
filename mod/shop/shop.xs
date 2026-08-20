@@ -98,7 +98,8 @@ class Shop {
         switch(shopType){
             case SHOP_TYPE_SHRINE: cost = g_shrineShopCost;
             case SHOP_TYPE_TEMPLE: cost = g_templeShopCost;
-            case SHOP_TYPE_ARMORY: cost = g_templeShopCost;
+            case SHOP_TYPE_FORGE: cost = g_forgeShopCost;
+            case SHOP_TYPE_ARMORY: cost = g_armoryShopCost;
         }
         return cost;
     }
@@ -370,6 +371,12 @@ class Shop {
     void addSocket(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         bench.addSocket(uuid, p);
+        g_shopNeedsRefresh[p] = true;
+    }
+
+    void rerollUpgrade(int p = 0, int uuid = -1, int upgradeIndex = 0){
+        BenchData bench = m_benches[p];
+        bench.rerollUpgrade(uuid, p, upgradeIndex);
         g_shopNeedsRefresh[p] = true;
     }
 };

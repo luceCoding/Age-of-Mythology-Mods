@@ -43,6 +43,21 @@ class CardData {
         return m_rarity;
     }
 
+    int rerollUpgrade(int upgradeSlot = 0){
+        if (upgradeSlot > m_upgrades.size()) {return -1;}
+        int rngUpgrade = xsRandInt(0, 6);
+        switch(rngUpgrade){
+            case 0: {m_upgrades[upgradeSlot] = puFIELD_HACK_ARMOR; return puFIELD_HACK_ARMOR;}
+            case 1: {m_upgrades[upgradeSlot] = puFIELD_PIERCE_ARMOR; return puFIELD_PIERCE_ARMOR;}
+            case 2: {m_upgrades[upgradeSlot] = puFIELD_CRUSH_ARMOR; return puFIELD_CRUSH_ARMOR;}
+            case 3: {m_upgrades[upgradeSlot] = puFIELD_HITPOINTS; return puFIELD_HITPOINTS;}
+            case 4: {m_upgrades[upgradeSlot] = puFIELD_SHIELDS; return puFIELD_SHIELDS;}
+            case 5: {m_upgrades[upgradeSlot] = puFIELD_SPEED; return puFIELD_SPEED;}
+            case 6: {m_upgrades[upgradeSlot] = puFIELD_HP_REGEN; return puFIELD_HP_REGEN;}
+        }
+        return -1;
+    }
+
     void applyUpgrade(ref int p, ref int puFIELD, int sign = 1){
         float absDelta = (1.0 + m_rarity) / 100 * sign;
 
@@ -167,5 +182,9 @@ class CardData {
 
     bool canSocket(){
         return m_upgrades.size() < MAX_SOCKETS_PER_CARD;
+    }
+
+    int getNumberOfSockets(){
+        return m_upgrades.size();
     }
 };
