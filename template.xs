@@ -57,7 +57,8 @@ void generate()
     // mod/map/objectives.xs
     // mod/map/teams.xs
     // mod/map/units.xs
-    // mod/map/terrain.xs
+    // mod/map/roads.xs
+    // mod/map/trees.xs
     // mod/map/camps.xs
 
     // mod/income/income.xs

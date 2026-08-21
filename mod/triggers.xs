@@ -17,6 +17,7 @@ active
     trSetCommunityObjectivesVisibility(false);
     initialiseUiSystem(false);
     performProportionCalculation();
+    initializeGlobals();
     initializeTeams();
     createAIBases();
     createBaseOuterwalls();
@@ -90,17 +91,7 @@ active
         startRespawner();
         startSchedulers();
         paintAllLanesCircular();
-
-        //generateCreepCamps("Argus", 4, 25.0, 20.0);
-        //generateCreepCamps("Dryad", 6, 25.0, 20.0);
-        //generateCreepCamps("Satyr", 10, 25.0, 20.0);
-
-        generateCreepCamps("Lure", 10, 25.0, 20.0);
-
-        generateCreepCamps("MiningCamp", 4, 25.0, 16.0);
-        generateCreepCamps("MiningCampJapanese", 6, 20.0, 12.0);
-        generateCreepCamps("Storehouse", 10, 15.0, 8.0);
-
+        generateAllCamps();
         xsDisableSelf();
    }
 }

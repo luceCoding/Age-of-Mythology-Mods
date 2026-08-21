@@ -114,6 +114,34 @@ void modifyPlayerData(){
         trProtounitAssignAction("ShrineJapanese", "ThePeachBlossomSpring", "AutoConvert", p);
         trProtoUnitSetFlag(p, "ShrineJapanese", "Invulnerable", true);
         trProtounitRemoveCommand("ShrineJapanese", p, "Delete");
+
+        trForbidProtounit(p, "CaravanAtlantean");
+        trForbidProtounit(p, "CaravanAztec");
+        trForbidProtounit(p, "CaravanChinese");
+        trForbidProtounit(p, "CaravanEgyptian");
+        trForbidProtounit(p, "CaravanGreek");
+        trForbidProtounit(p, "CaravanJapanese");
+        trForbidProtounit(p, "CaravanNorse");
+
+        trPlayerAllowBonusUnitSpawning(p, false);
+        trPlayerEnableCombatXP(p, false);
+        trPlayerAllowShades(p, false);
+        trPlayerAllowStartingUnitsSpawning(p, false);
+        trTechSetStatus(p, cTechPharaohFirstSpawn, cTechStatusUnobtainable);
+        trPlayerEnableTimeshift(p, false);
+        trPlayerEnablePartisans(p, false);
+        trPlayerEnableBuildingChain(p, false);
+        trPlayerKillAllGodPowers(p);
+
+        int food = kbGetResourceAmount(p, kbGetResourceID("Food"));
+        int wood = kbGetResourceAmount(p, kbGetResourceID("Wood"));
+        int gold = kbGetResourceAmount(p, kbGetResourceID("Gold"));
+        int favor = kbGetResourceAmount(p, kbGetResourceID("Favor"));
+        trPlayerGrantResources(p, "Food", -food);
+        trPlayerGrantResources(p, "Wood", -wood);
+        trPlayerGrantResources(p, "Gold", -gold);
+        trPlayerGrantResources(p, "Favor", -favor);
+        trPlayerGrantResources(p, "Gold", STARTING_GOLD);
     }
 
     // Only Humans
@@ -133,38 +161,58 @@ void modifyPlayerData(){
     // Last 2 AIs
     for(int p = cNumberPlayers - 1; p <= cNumberPlayers; p++) {
         trTechSetStatus(p, 373, 2); // Watch Tower
-        trModifyProtounitData("SentryTower", p, puFIELD_HITPOINTS, 1000, relativityASSIGN);
+        trModifyProtounitData("SentryTower", p, puFIELD_HITPOINTS, 2000, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_DIVINE, 10, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
-        trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_N_PROJECTILES, 1, relativityASSIGN);
-        trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_DISPLAY_PROJ, 1, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
+        trModifyProtounitData("SentryTower", p, 5, 0, 1); // Max contained
 
-        trModifyProtounitData("MirrorTower", p, puFIELD_HITPOINTS, 2000, relativityASSIGN);
+        trModifyProtounitData("MirrorTower", p, puFIELD_HITPOINTS, 4000, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
-        trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_DIVINE, 20, relativityASSIGN);
+        trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_DIVINE, 40, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_RANGE, 18, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
 
-        trModifyProtounitData("StatueOfLightning", p, puFIELD_HITPOINTS, 3000, relativityASSIGN);
-        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_DIVINE, 30, relativityASSIGN);
+        trModifyProtounitData("StatueOfLightning", p, puFIELD_HITPOINTS, 8000, relativityASSIGN);
+        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_DIVINE, 60, relativityASSIGN);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
 
-        trModifyProtounitData("Fortress", p, puFIELD_HITPOINTS, 10000, relativityASSIGN);
+        trModifyProtounitData("Fortress", p, puFIELD_HITPOINTS, 24000, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_DIVINE, 40, relativityASSIGN);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_DIVINE, 80, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
 
         trProtounitModifySpawnData("Toxotes", p, "GoldPile", 0, 1.0, 1, -1, 30);
         trProtounitModifySpawnData("Hoplite", p, "GoldPile", 0, 1.0, 1, -1, 30);
         trProtounitModifySpawnData("Hippeus", p, "GoldPile", 0, 1.0, 1, -1, 30);
+
+        trPlayerSetCiv(p, "Zeus");
     }
 
     // Only Gaia
     setupCamp("Storehouse", "CinematicBlockStartPoint", T1_CRATE_SPAWN_TIME);
     setupCamp("MiningCampJapanese", "CinematicBlockEndPoint", T2_CRATE_SPAWN_TIME);
     setupCamp("MiningCamp", "CinematicBlockWaypoint", T3_CRATE_SPAWN_TIME);
+
+    trProtoUnitSetFlag(0, "Storehouse", "ObscuredByUnits", true);
+    trProtoUnitSetFlag(0, "MiningCampJapanese", "ObscuredByUnits", true);
+    trProtoUnitSetFlag(0, "MiningCamp", "ObscuredByUnits", true);
+
+    for (int k = 0; k < g_shopTypes.size(); k++) {
+        string shopType = g_shopTypes[k];
+        trModifyProtounitData(shopType, 0, puFIELD_OBSTRUCTION_X, 2.5, relativityASSIGN);
+        trModifyProtounitData(shopType, 0, puFIELD_OBSTRUCTION_Z, 2.5, relativityASSIGN);
+        trProtoUnitSetFlag(0, shopType, "ObscuredByUnits", true);
+    }
+
+    trModifyProtounitData("MiningCampJapanese", 0, puFIELD_HITPOINTS, 2, relativityBasePERCENT);
+    trModifyProtounitData("MiningCampJapanese", 0, puFIELD_HACK_ARMOR, 1.3, relativityBasePERCENT);
+    trModifyProtounitData("MiningCampJapanese", 0, puFIELD_CRUSH_ARMOR, 0.2, relativityABSOLUTE);
+
+    trModifyProtounitData("MiningCamp", 0, puFIELD_HITPOINTS, 4, relativityBasePERCENT);
+    trModifyProtounitData("MiningCamp", 0, puFIELD_HACK_ARMOR, 1.5, relativityBasePERCENT);
+    trModifyProtounitData("MiningCamp", 0, puFIELD_CRUSH_ARMOR, 0.4, relativityABSOLUTE);
 
     //setupCamp("Satyr", "PathBlock1", T1_CRATE_SPAWN_TIME);
     //setupCamp("Dryad", "PathBlock2", T2_CRATE_SPAWN_TIME);

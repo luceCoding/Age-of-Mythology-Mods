@@ -6,8 +6,8 @@ void spawnSymmetricObjectives() {
     // Offsets scaled to map size:
     // A = distance towards Team 1 / Team 2 along the lane axis
     // B = distance deep into Top / Bottom jungle
-    float A = mapX * 0.125; 
-    float B = mapX * 0.14; 
+    float A = mapX * 0.09; 
+    float B = mapX * 0.13; 
 
     vector[] spots = new vector(4, cInvalidVector);
 
@@ -23,16 +23,12 @@ void spawnSymmetricObjectives() {
     // 4. Bottom-Left Red Circle (Team 1 Lower Jungle - Mirrored Pair 2)
     spots[3] = center + Vector(-A - B, 0.0, A - B);
 
-    string[] buildings = new string(4, "");
-    buildings[0] = "DwarvenForge";
-    buildings[1] = "DwarvenArmory";
-    buildings[2] = "TempleOfTheGods";
-    buildings[3] = "ShrineJapanese";
-
     int offset = xsRandInt(4);
-    for (int k = 0; k < buildings.size(); k++) {
-        int buildingIdx = (k + offset) % buildings.size();
+    for (int k = 0; k < g_shopTypes.size(); k++) {
+        int buildingIdx = (k + offset) % g_shopTypes.size();
         Vector v = spots[k];
-        trUnitCreateForced(buildings[buildingIdx], v.x, configMapBaseHeight, v.z, 0.0, 0);
+        int unidId = trUnitCreateForced(g_shopTypes[buildingIdx], v.x, configMapBaseHeight, v.z, 0.0, 0);
+        selectSingle(unidId);
+        trUnitSetScale(0.75, 0.75, 0.75);
     }
 }

@@ -92,15 +92,32 @@ void generateCreepCamps(string creepName = "", int targetTotalCamps = 20, float 
 
         // 5. Verify AI/Building Clearance
         if (isAreaClearOf("Building", p1.x, p1.z, clearanceRadius) && isAreaClearOf("Building", p2.x, p2.z, clearanceRadius)) {
-            trUnitCreateForced(creepName, p1.x, configMapBaseHeight, p1.z, -1, 0);
+            int unitId = trUnitCreateForced(creepName, p1.x, configMapBaseHeight, p1.z, -1, 0);
             trUnitCreateForced(creepName, p2.x, configMapBaseHeight, p2.z, -1, 0);
+
+            float rdmRadius = xsRandFloat(10.0, 12.0);
+            int nTrees = xsRandInt(15, 30);
+            float rdmArc = xsRandFloat(200.0, 300.0);
+            spawnTreeCoveForUnit(unitId, rdmRadius, rdmArc, nTrees, g_treeTypes);
 
             spawnedCamps[spawnedCount] = p1;
             spawnedCount++;
             spawnedCamps[spawnedCount] = p2;
             spawnedCount++;
-
+            
             targetPairsPlaced++;
         }
     }
+}
+
+void generateAllCamps(){
+    //generateCreepCamps("Argus", 4, 25.0, 20.0);
+    //generateCreepCamps("Dryad", 6, 25.0, 20.0);
+    //generateCreepCamps("Satyr", 10, 25.0, 20.0);
+
+    generateCreepCamps("Lure", 10, 25.0, 20.0);
+
+    generateCreepCamps("MiningCamp", 4, 25.0, 12.0);
+    generateCreepCamps("MiningCampJapanese", 6, 20.0, 12.0);
+    generateCreepCamps("Storehouse", 10, 15.0, 12.0);
 }

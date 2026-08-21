@@ -75,3 +75,26 @@ const float GOLDPILE_LIFESPAN = 10.0;
 const float T1_CRATE_SPAWN_TIME = 90;
 const float T2_CRATE_SPAWN_TIME = 120.0;
 const float T3_CRATE_SPAWN_TIME = 150.0;
+
+const int STARTING_GOLD = 300;
+
+string[] g_shopTypes = default;
+string[] g_roadTypes = default;
+string[] g_treeTypes = default;
+
+void initializeGlobals(){
+    g_shopTypes = new string(4, "");
+    g_shopTypes[0] = "DwarvenForge";
+    g_shopTypes[1] = "DwarvenArmory";
+    g_shopTypes[2] = "TempleOfTheGods";
+    g_shopTypes[3] = "ShrineJapanese";
+
+    g_roadTypes.add("Greek Road 1");
+
+    g_treeTypes.add("TreeOak");
+    g_treeTypes.add("TreeOakAutumn");
+    g_treeTypes.add("TreeOakRound");
+    g_treeTypes.add("TreePine");
+    g_treeTypes.add("TreePineDead");
+
+}

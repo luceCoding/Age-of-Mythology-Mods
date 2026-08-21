@@ -28,7 +28,7 @@ void createAIBases(){
     float team2Angle = 135.0;
 
     float fortOffset     = 0.13;
-    float sideEdgeMargin = 0.09;
+    float sideEdgeMargin = 0.11;
 
     float sideT3Step = 0.25; float sideT2Step = 0.45; float sideT1Step = 0.65;
     float midT3Step  = 0.225; float midT2Step  = 0.325; float midT1Step  = 0.425;
@@ -230,10 +230,12 @@ void createBaseOuterwalls() {
     float gapAngle   = 25.0; // Width of the gap at each lane exit (degrees)
     float halfGap    = gapAngle * 0.5;
 
-    // TEAM 1
+    // TEAM 1 (Primary Base Orientations)
     float t1StartAngle = -135.0; // Bottom boundary
     float t1EndAngle   = 45.0;   // Top boundary
-    float sideT3Step = 0.325; float midT3Step = 0.275; float sideEdgeMargin = 0.08;
+    float sideT3Step = 0.325;
+    float midT3Step = 0.275;
+    float sideEdgeMargin = 0.11;
 
     // Exact T3 Tower coordinates
     float t1TopT3X = mapX * sideT3Step;     float t1TopT3Z = mapZ * (1.0 - sideEdgeMargin);
@@ -252,8 +254,8 @@ void createBaseOuterwalls() {
     spawnArcSegment(t1FortX, t1FortZ, baseRadius, a1Top + halfGap, t1EndAngle, aiTeamA);
 
     // TEAM 2
-    float t2StartAngle = 45.0;  // Top boundary
-    float t2EndAngle   = 225.0; // Bottom boundary
+    float t2StartAngle = t1StartAngle + 180.0;
+    float t2EndAngle   = t1EndAngle + 180.0;
 
     float t2TopT3X = mapX * (1.0 - sideEdgeMargin); float t2TopT3Z = mapZ * sideT3Step;
     float t2MidT3X = mapX * (1.0 - midT3Step);      float t2MidT3Z = mapZ * midT3Step;
