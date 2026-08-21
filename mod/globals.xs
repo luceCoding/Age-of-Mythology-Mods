@@ -10,6 +10,9 @@ int[] g_selectedUUIDs = default;
 bool[] g_shopNeedsRefresh = default;
 float g_timeMSGameStarted = 0.0;
 
+const int MAX_SOCKETS_PER_CARD = 3;
+int g_uuidCardCounter = 0;
+
 const int MAX_SYNERGIES = 9;
 
 const int SYNERGY_INDEX_INFANTRY = 0;
@@ -26,6 +29,7 @@ const int SYNERGY_INDEX_TITAN = 10;
 
 const int puFIELD_HITPOINTS = 0;
 const int puFIELD_SPEED = 1;
+const int puFIELD_LOS = 2;
 const int puFIELD_LIFESPAN = 8;
 const int puFIELD_RECHARGE = 9;
 const int puFIELD_SHIELDS = 12;
@@ -50,6 +54,8 @@ const int puFIELD_ACTION_CRUSH = 15;
 const int puFIELD_ACTION_DIVINE = 16;
 const int puFIELD_ACTION_DISPLAY_PROJ = 18;
 
+const int puFIELD_ACTION_UNITTYPE_DMG_BONUS = 0;
+
 const int relativityABSOLUTE = 0;
 const int relativityASSIGN = 1;
 const int relativityPERCENT = 2;
@@ -71,12 +77,17 @@ const int UPGRADE_HACK_ATTACK = 7;
 const int UPGRADE_PIERCE_ATTACK = 8;
 const int UPGRADE_CRUSH_ATTACK = 9;
 
-const float GOLDPILE_LIFESPAN = 10.0;
-const float T1_CRATE_SPAWN_TIME = 90;
+const float GOLDPILE_LIFESPAN = 20.0;
+const float T1_CRATE_SPAWN_TIME = 90.0;
 const float T2_CRATE_SPAWN_TIME = 120.0;
 const float T3_CRATE_SPAWN_TIME = 150.0;
+const float T1_CAMP_SPAWN_TIME = 120.0;
+const float T2_CAMP_SPAWN_TIME = 180.0;
+const float T3_CAMP_SPAWN_TIME = 240.0;
 
 const int STARTING_GOLD = 300;
+const float CATCHUP_GOLD_DIFF = 0.9;
+const float CATCHUP_GOLD_MECHANIC = 1.1;
 
 string[] g_shopTypes = default;
 string[] g_roadTypes = default;

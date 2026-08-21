@@ -2,7 +2,7 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
     string returnStatementToUse = (defaultReturnValue == "") ? getDefaultReturnStatement(toType) : ("return " + defaultReturnValue + ";");
     rmTriggerAddScriptLine("class "+getTypeTitle(fromType)+"To"+getTypeTitle(toType)+nameSuffix+"HashMap {");
         rmTriggerAddScriptLine("bool initialised = false;");
-        rmTriggerAddScriptLine("int capacity = 16;");
+        rmTriggerAddScriptLine("int capacity = 64;");
         rmTriggerAddScriptLine("int count = 0;");
         rmTriggerAddScriptLine("bool[] occupied = default;");
         rmTriggerAddScriptLine(fromType+"[] keys = default;");
@@ -31,12 +31,20 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
             } else if (fromType == "bool") {
                 rmTriggerAddScriptLine("int keyInt = 0;");
                 rmTriggerAddScriptLine("if(key){ keyInt = 1; }");
-            } else {
+            } else if (fromType == "int" || fromType == "float") {
                 rmTriggerAddScriptLine("int keyInt = key;");
+            } else if (fromType == "vector") {
+                rmTriggerAddScriptLine("int keyInt = key.x + key.y + key.z;");
+            } else {
+                // Non-primitive class type: extract integer UUID from m_uuid member variable
+                rmTriggerAddScriptLine("int keyInt = key.m_uuid;");
             }
             rmTriggerAddScriptLine("int h = (keyInt ^ (keyInt >> 16)) * 73244539;");
             rmTriggerAddScriptLine("if(h < 0){");
                 rmTriggerAddScriptLine("h = 0 - h;");
+            rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("if(h < 0){");
+                rmTriggerAddScriptLine("h = 2147483647;"); // Prevent INT_MIN overflow
             rmTriggerAddScriptLine("}");
             rmTriggerAddScriptLine("return h % capacity;");
         rmTriggerAddScriptLine("}");
@@ -150,9 +158,9 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
                 rmTriggerAddScriptLine("count--;");
                 rmTriggerAddScriptLine("int targetSlot = findSlot(rehashKey);");
                 rmTriggerAddScriptLine("if(targetSlot >= 0){");
-                    rmTriggerAddScriptLine("occupied[targetSlot] = true;");
-                    rmTriggerAddScriptLine("keys[targetSlot] = rehashKey;");
-                    rmTriggerAddScriptLine("values[targetSlot] = rehashValue;");
+                rmTriggerAddScriptLine("occupied[targetSlot] = true;");
+                rmTriggerAddScriptLine("keys[targetSlot] = rehashKey;");
+                rmTriggerAddScriptLine("values[targetSlot] = rehashValue;");
                     rmTriggerAddScriptLine("count++;");
                 rmTriggerAddScriptLine("}");
                 rmTriggerAddScriptLine("nextSlot = nextSlot + 1;");

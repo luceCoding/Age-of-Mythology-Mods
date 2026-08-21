@@ -1,8 +1,6 @@
 include "cardParameters.xs";
 include "rng.xs";
 
-const int MAX_SOCKETS_PER_CARD = 3;
-int g_uuidCardCounter = 0;
 StringToCardParametersHashMap ProtoNameToCardParametersMap;
 
 class CardData {

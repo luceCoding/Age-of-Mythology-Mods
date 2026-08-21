@@ -22,16 +22,16 @@ ShopLevel createShopLevel(int t1 = 0, int t2 = 0, int t3 = 0, int t4 = 0, int t5
 }
 
 void initializeShopLevels(){
-    g_shopLevels.add(createShopLevel(100,  0,  0,  0,  0,  10));
-    g_shopLevels.add(createShopLevel( 80, 20,  0,  0,  0,  15));
-    g_shopLevels.add(createShopLevel( 65, 30,  5,  0,  0,  20));
-    g_shopLevels.add(createShopLevel( 50, 35, 15,  0,  0,  25));
-    g_shopLevels.add(createShopLevel( 38, 35, 25,  2,  0,  30));
-    g_shopLevels.add(createShopLevel( 26, 32, 35,  7,  0,  35));
-    g_shopLevels.add(createShopLevel( 18, 26, 40, 15,  1,  40));
-    g_shopLevels.add(createShopLevel( 12, 19, 40, 25,  4,  45));
-    g_shopLevels.add(createShopLevel(  7, 12, 33, 38, 10,  50));
-    g_shopLevels.add(createShopLevel(  3,  6, 25, 46, 20,  55));
+    g_shopLevels.add(createShopLevel(100,  0,  0,  0,  0,  15));
+    g_shopLevels.add(createShopLevel( 80, 20,  0,  0,  0,  20));
+    g_shopLevels.add(createShopLevel( 65, 30,  5,  0,  0,  25));
+    g_shopLevels.add(createShopLevel( 50, 35, 15,  0,  0,  30));
+    g_shopLevels.add(createShopLevel( 38, 35, 25,  2,  0,  35));
+    g_shopLevels.add(createShopLevel( 26, 32, 35,  7,  0,  40));
+    g_shopLevels.add(createShopLevel( 18, 26, 40, 15,  1,  45));
+    g_shopLevels.add(createShopLevel( 12, 19, 40, 25,  4,  50));
+    g_shopLevels.add(createShopLevel(  7, 12, 33, 38, 10,  55));
+    g_shopLevels.add(createShopLevel(  3,  6, 25, 46, 20,  60));
     g_shopLevels.add(createShopLevel(  1,  2, 12, 50, 35,   0));
 }
 

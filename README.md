@@ -18,6 +18,7 @@ XS quirks:
 - Every time you make access a variable it will make a copy. Its actually a detriment to performance if your class is too big. It is better to keep classes small or use no classes access to avoid too many large copies.
 - Use mutable methods as placeholders to deal with the lack of abstract classes.
 - Can't use ref int as a parameter to access an array.
+- Ran into a quirky bug of not finding keys in my hash map when resizing the array, implementation was correct. Having the capacity too slow, ie. 16 had issues, but changing it to something higher even tho it would still resize regardless elevates but does not fix the problem entirely.
 
 Nottud's UI Notes:
 - Need looping trigger calling system.process().

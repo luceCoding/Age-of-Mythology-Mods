@@ -97,6 +97,7 @@ void modifyPlayerData(){
     // All players
     for(int p = 0; p <= cNumberPlayers; p++) {
         setAsPlaceholder("GoldPile", p);
+        trProtoUnitSetFlag(p, "GoldPile", "ObscuredByUnits", true);
         trModifyProtounitData("GoldPile", p, puFIELD_LIFESPAN, GOLDPILE_LIFESPAN, relativityASSIGN);
 
         trProtounitAssignAction("DwarvenForge", "ThePeachBlossomSpring", "AutoConvert", p);
@@ -156,6 +157,13 @@ void modifyPlayerData(){
         trProtounitRemoveTech("Market", p, 363); // Coinage
         trProtoUnitSetFlag(p, "Market", "Invulnerable", true);
         trPlayerModifyData(p, 0, -1, 999, 0); // Add population
+        trTechSetStatus(p, 406, 2); // Ring of the Nibelung
+        trForbidProtounit(p, "WallConnector");
+
+        string[] protoNames = ProtoNameToCardParametersMap.getKeys();
+        for (int i=0; i<protoNames.size(); i++){
+            setAsCardUnit(protoNames[i], p);
+        }
     }
 
     // Last 2 AIs
@@ -166,44 +174,46 @@ void modifyPlayerData(){
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_DIVINE, 10, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
-        trModifyProtounitData("SentryTower", p, 5, 0, 1); // Max contained
+        setupAsTower("SentryTower", p);
 
         trModifyProtounitData("MirrorTower", p, puFIELD_HITPOINTS, 4000, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_DIVINE, 40, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_RANGE, 18, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
+        setupAsTower("MirrorTower", p);
 
         trModifyProtounitData("StatueOfLightning", p, puFIELD_HITPOINTS, 8000, relativityASSIGN);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_DIVINE, 60, relativityASSIGN);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
+        trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0, relativityASSIGN);
+        setupAsTower("StatueOfLightning", p);
 
         trModifyProtounitData("Fortress", p, puFIELD_HITPOINTS, 24000, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_DIVINE, 80, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
+        setupAsTower("Fortress", p);
+        trProtoUnitSetIcon("Fortress", p, "", "ui\minimap\minimap_wonder");
 
-        trProtounitModifySpawnData("Toxotes", p, "GoldPile", 0, 1.0, 1, -1, 30);
-        trProtounitModifySpawnData("Hoplite", p, "GoldPile", 0, 1.0, 1, -1, 30);
-        trProtounitModifySpawnData("Hippeus", p, "GoldPile", 0, 1.0, 1, -1, 30);
+        trProtounitModifySpawnData("Toxotes", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
+        trProtounitModifySpawnData("Hoplite", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
+        trProtounitModifySpawnData("Hippeus", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
 
         trPlayerSetCiv(p, "Zeus");
     }
 
     // Only Gaia
-    setupCamp("Storehouse", "CinematicBlockStartPoint", T1_CRATE_SPAWN_TIME);
-    setupCamp("MiningCampJapanese", "CinematicBlockEndPoint", T2_CRATE_SPAWN_TIME);
-    setupCamp("MiningCamp", "CinematicBlockWaypoint", T3_CRATE_SPAWN_TIME);
-
-    trProtoUnitSetFlag(0, "Storehouse", "ObscuredByUnits", true);
-    trProtoUnitSetFlag(0, "MiningCampJapanese", "ObscuredByUnits", true);
-    trProtoUnitSetFlag(0, "MiningCamp", "ObscuredByUnits", true);
+    setupAutoRespawn("Storehouse", "CinematicBlockStartPoint", T1_CRATE_SPAWN_TIME);
+    setupAutoRespawn("MiningCampJapanese", "CinematicBlockEndPoint", T2_CRATE_SPAWN_TIME);
+    setupAutoRespawn("MiningCamp", "CinematicBlockWaypoint", T3_CRATE_SPAWN_TIME);
+    trProtoUnitSetIcon("Storehouse", 0, "", "ui\minimap\minimap_gold");
+    trProtoUnitSetIcon("MiningCampJapanese", 0, "", "ui\minimap\minimap_gold");
+    trProtoUnitSetIcon("MiningCamp", 0, "", "ui\minimap\minimap_gold");
 
     for (int k = 0; k < g_shopTypes.size(); k++) {
         string shopType = g_shopTypes[k];
-        trModifyProtounitData(shopType, 0, puFIELD_OBSTRUCTION_X, 2.5, relativityASSIGN);
-        trModifyProtounitData(shopType, 0, puFIELD_OBSTRUCTION_Z, 2.5, relativityASSIGN);
-        trProtoUnitSetFlag(0, shopType, "ObscuredByUnits", true);
+        setupAsSharedShop(shopType);
     }
 
     trModifyProtounitData("MiningCampJapanese", 0, puFIELD_HITPOINTS, 2, relativityBasePERCENT);
@@ -214,7 +224,7 @@ void modifyPlayerData(){
     trModifyProtounitData("MiningCamp", 0, puFIELD_HACK_ARMOR, 1.5, relativityBasePERCENT);
     trModifyProtounitData("MiningCamp", 0, puFIELD_CRUSH_ARMOR, 0.4, relativityABSOLUTE);
 
-    //setupCamp("Satyr", "PathBlock1", T1_CRATE_SPAWN_TIME);
-    //setupCamp("Dryad", "PathBlock2", T2_CRATE_SPAWN_TIME);
-    //setupCamp("Argus", "PathBlock3", T3_CRATE_SPAWN_TIME);
+    setupCreepCamp("Satyr", "RockGreekSmall", "RockGreekTiny", 10);
+    setupCreepCamp("Tzitzimitl", "RockGreekMedium", "RockHadesTiny", 10);
+    setupCreepCamp("Argus", "RockGreekLarge", "RockEgyptTiny", 10);
 }

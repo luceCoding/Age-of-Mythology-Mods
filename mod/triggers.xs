@@ -56,9 +56,21 @@ runImmediately
                     if (owner != 0){
                         trUnitSetScale(0.5, 0.5, 0.5);
                         if (trPlayerGetDiplomacy(owner, cNumberPlayers-1) == "enemy"){
-                            trUnitSetShading(2, 100);
+                            trUnitSetShading(7, 100);
                         }
                     }
+                }
+                case cUnitTypeSatyr: {
+                    selectSingle(unitId);
+                    trUnitSetStance("Defensive");
+                }
+                case cUnitTypeTzitzimitl: {
+                    selectSingle(unitId);
+                    trUnitSetStance("Defensive");
+                }
+                case cUnitTypeArgus: {
+                    selectSingle(unitId);
+                    trUnitSetStance("Defensive");
                 }
             }
         });
@@ -70,14 +82,12 @@ rule FIRE_SECOND_TRIGGER
 highFrequency
 active
 {
-    for(int p = 1; p <= cNumberPlayers; p = p + 1){
-        trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
-    }
     initializeCardParametersMap();
     spawnSymmetricObjectives();
     modifyPlayerData();
     createShops();
     initPlayerCommands();
+    trHideScoreboard();
     xsDisableSelf();
 }
 
@@ -88,7 +98,7 @@ active
     g_timeMSGameStarted = xsGetTimeMS();
    if ((((xsGetTime() - (cActivationTime / 1000)) >= 1) != false))
    {
-        startRespawner();
+        startShopTimers();
         startSchedulers();
         paintAllLanesCircular();
         generateAllCamps();
@@ -96,11 +106,11 @@ active
    }
 }
 
-rule FIRE_AFTER_60_SECONDS_TRIGGER
+rule FIRE_AFTER_30_SECONDS_TRIGGER
 highFrequency
 active
 {
-   if ((((xsGetTime() - (cActivationTime / 60000)) >= 1) != false))
+   if ((((xsGetTime() - (cActivationTime / 1000)) >= 30) != false))
    {
         startLanes();
         xsDisableSelf();
@@ -118,4 +128,18 @@ active
         entry.handler(p, entry.parameters);
         refreshShop(p);
     }
+}
+
+rule DEV_MODE
+highFrequency
+active
+{
+   if ((((xsGetTime() - (cActivationTime / 60000)) >= 1) != false))
+   {
+        for(int p = 1; p <= cNumberPlayers; p = p + 1){
+            //trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
+            trPlayerGrantResources(p, "Gold", 99099);
+        }
+        xsDisableSelf();
+   }
 }

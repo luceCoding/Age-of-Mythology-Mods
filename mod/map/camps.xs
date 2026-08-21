@@ -44,7 +44,7 @@ void generateCreepCamps(string creepName = "", int targetTotalCamps = 20, float 
     int targetPairs = targetTotalCamps / 2;
     float minInterCampDist = 25.0;
     float minBaseDist = 50.0; 
-    float mapMargin = 3.0;
+    float mapMargin = 5.0;
 
     vector team1Base = g_t1TopSpawn;
     vector team2Base = g_t2TopSpawn;
@@ -111,13 +111,11 @@ void generateCreepCamps(string creepName = "", int targetTotalCamps = 20, float 
 }
 
 void generateAllCamps(){
-    //generateCreepCamps("Argus", 4, 25.0, 20.0);
-    //generateCreepCamps("Dryad", 6, 25.0, 20.0);
-    //generateCreepCamps("Satyr", 10, 25.0, 20.0);
-
-    generateCreepCamps("Lure", 10, 25.0, 20.0);
+    generateCreepCamps("RockGreekLarge", 4, 25.0, 20.0);
+    generateCreepCamps("RockGreekMedium", 6, 25.0, 20.0);
+    generateCreepCamps("RockGreekSmall", 10, 25.0, 20.0);
 
     generateCreepCamps("MiningCamp", 4, 25.0, 12.0);
     generateCreepCamps("MiningCampJapanese", 6, 20.0, 12.0);
-    generateCreepCamps("Storehouse", 10, 15.0, 12.0);
+    generateCreepCamps("Storehouse", 10, 20.0, 12.0);
 }

@@ -33,7 +33,7 @@ class Shop {
     }
 
     int getDrawCost(int p = 0){
-        return m_currShopLevel[p] + 10;
+        return (m_currShopLevel[p] * 5) + 10;
     }
 
     int getBuyXPCost(int p = 0){
@@ -78,7 +78,7 @@ class Shop {
         CardParameters params = card.getCardParameters();
         int cost = estimateCardValue(card);
         if (card.isIdentified() == false){
-            cost = 10;
+            cost = 50;
         }
         int shopType = m_shopTypeOpened[p];
         switch(shopType){
@@ -648,7 +648,7 @@ void openShop(int p = 1){
     trSoundsetPlayPlayer(p, "UI_Latch");
 }
 
-void startRespawner(){
+void startShopTimers(){
     scheduler.add(1009, [](int iterations = 1) -> bool {
         for (int i = 1; i <= g_shop.m_benches.size()-2; i++){
             BenchData bench = g_shop.m_benches[i];
@@ -656,6 +656,16 @@ void startRespawner(){
             if (wasRespawned){
                 g_shop.m_benches[i] = bench;
             }
+        }
+        return true;
+    });
+    scheduler.add(30000, [](int iterations = 1) -> bool {
+        g_shrineShopCost = max(g_shrineShopCost - 5, 10);
+        g_templeShopCost = max(g_templeShopCost - 5, 10);
+        g_armoryShopCost = max(g_armoryShopCost - 5, 10);
+        g_forgeShopCost = max(g_forgeShopCost - 5, 10);
+        for (int p=1; p<=cNumberPlayers-2; p++){
+            g_shopNeedsRefresh[p] = true;
         }
         return true;
     });

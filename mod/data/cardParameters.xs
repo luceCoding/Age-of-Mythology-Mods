@@ -5,7 +5,7 @@ const string UNIT_TYPE_INFANTRY = "AbstractInfantry";
 const string UNIT_TYPE_ARCHER = "AbstractArcher";
 const string UNIT_TYPE_CAVALRY = "AbstractCavalry";
 const string UNIT_TYPE_MYTH = "MythUnit";
-const string UNIT_TYPE_HERO = "HERO";
+const string UNIT_TYPE_HERO = "Hero";
 const string UNIT_TYPE_HEALER = "AbstractHealer";
 const string UNIT_TYPE_SIEGE = "AbstractSiegeWeapon";
 const string UNIT_TYPE_BUILDING = "Building";
@@ -16,6 +16,7 @@ const string UNIT_TYPE_MYTH_SIEGE = "MythUnitSiege";
 class CardParameters {
 
     Parameters m_params;
+    int m_uuid = -1;
     int[] m_unitTypes = default;
 
     void setCardParameters(int age = 0, int cost = 1,
@@ -31,6 +32,8 @@ class CardParameters {
         params.strings.add(hoverText);
         m_params = params;
         m_unitTypes = new int(MAX_UNIT_TYPES + 1, -1);
+        m_uuid = g_uuidCardCounter;
+        g_uuidCardCounter = g_uuidCardCounter + 1;
     }
 
     int getIntData(){
