@@ -29,11 +29,11 @@ void setupAutoRespawn(string campUnitType = "", string placeholderUnitType = "",
     trProtoUnitSetFlag(0, campUnitType, "ObscuredByUnits", true);
 }
 
-void setupAsSharedShop(string shopUnitType = ""){
-    trModifyProtounitData(shopUnitType, 0, puFIELD_OBSTRUCTION_X, 2.5, relativityASSIGN);
-    trModifyProtounitData(shopUnitType, 0, puFIELD_OBSTRUCTION_Z, 2.5, relativityASSIGN);
-    trProtoUnitSetFlag(0, shopUnitType, "ObscuredByUnits", true);
-    trProtoUnitSetIcon(shopUnitType, 0, "", "ui\minimap\minimap_highlighted_item");
+void setupAsSharedShop(string shopUnitType = "", int p = 0){
+    trModifyProtounitData(shopUnitType, p, puFIELD_OBSTRUCTION_X, 2.5, relativityASSIGN);
+    trModifyProtounitData(shopUnitType, p, puFIELD_OBSTRUCTION_Z, 2.5, relativityASSIGN);
+    trProtoUnitSetFlag(p, shopUnitType, "ObscuredByUnits", true);
+    trProtoUnitSetIcon(shopUnitType, p, "", "ui\minimap\minimap_highlighted_item");
 }
 
 void setupAsAttackable(string unitType = "", int p = 0){

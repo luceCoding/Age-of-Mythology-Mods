@@ -92,7 +92,7 @@ active
    if ((((xsGetTime() - (cActivationTime / 1000)) >= 1) != false))
    {
         startShopTimers();
-        startSchedulers();
+        startIncome();
         paintAllLanesCircular();
         generateAllCamps();
         xsDisableSelf();
@@ -130,8 +130,8 @@ active
    if ((((xsGetTime() - (cActivationTime / 60000)) >= 1) != false))
    {
         for(int p = 1; p <= cNumberPlayers; p = p + 1){
-            //trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
-            trPlayerGrantResources(p, "Gold", 99099);
+            trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
+            trPlayerGrantResources(p, "Gold", 99999);
         }
         xsDisableSelf();
    }

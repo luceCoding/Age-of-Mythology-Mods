@@ -4,14 +4,7 @@ include "data/bench.xs";
 include "data/card.xs";
 include "data/cardParameters.xs";
 
-const int TOTAL_AGES = 5;
-const float SELL_MULTIPLIER = 0.8;
-const float UI_LEFT_BUFFER = 50;
-
-const int SHOP_TYPE_SHRINE = 1;
-const int SHOP_TYPE_TEMPLE = 2;
-const int SHOP_TYPE_FORGE = 3;
-const int SHOP_TYPE_ARMORY = 4;
+IntToIntHashMap ShopTypeToUnitIDMap;
 
 class Shop {
     DeckData[] m_decks = default;
@@ -29,7 +22,7 @@ class Shop {
         g_shopNeedsRefresh = new bool(cNumberPlayers + 1, false);
         m_totalShopExp = new int(cNumberPlayers + 1, 0);
         m_currShopLevel = new int(cNumberPlayers + 1, 0);
-        m_shopTypeOpened = new int(cNumberPlayers + 1, 0);
+        m_shopTypeOpened = new int(cNumberPlayers + 1, DEFAULT_SHOP_TYPE);
     }
 
     int getDrawCost(int p = 0){
@@ -146,7 +139,7 @@ class Shop {
         // Cost
         if (currCard.isIdentified() && m_shopTypeOpened[p] == SHOP_TYPE_SHRINE) {return;}
         int cost = getCost(currCard, p);
-        if (isBench && m_shopTypeOpened[p] == 0){
+        if (isBench && m_shopTypeOpened[p] == DEFAULT_SHOP_TYPE){
             cost = cost * SELL_MULTIPLIER;
         }
         string costText = getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137>" + cost + "</color>";
@@ -280,7 +273,7 @@ class Shop {
             if (removedCard.isNull() == false){
                 removedCard.unlockCard();
                 bench.addCard(removedCard);
-                trSoundsetPlayPlayer(1, "StorehouseSelect");
+                trSoundsetPlayPlayer(p, "StorehouseSelect");
                 g_selectedUUIDs[p] = -1; // Deselect card
                 g_shopNeedsRefresh[p] = true;
             }
@@ -482,7 +475,7 @@ void renderBench(ref UiSystem system, int p = 1, int shopType = 0) {
     CardData[] currCards = bench.getCards();
 
     float propPosX = getLeftAnchorX(UI_LEFT_BUFFER + 100, 128.0, p);
-    if (shopType == 0){
+    if (shopType == DEFAULT_SHOP_TYPE){
         bench.renderSynergies(system, propPosX, 0.0, p);
     }
 
@@ -532,6 +525,7 @@ void renderBench(ref UiSystem system, int p = 1, int shopType = 0) {
         g_shop.renderCard(system, currCard, p, posX, posY + 0.1, true);
 
         switch(shopType){
+            case DEFAULT_SHOP_TYPE: createShopCardButtons(system, currCard, p, posX, posY);
             case SHOP_TYPE_SHRINE: createShrineCardButtons(system, currCard, p, posX, posY);
             case SHOP_TYPE_TEMPLE: createTempleCardButtons(system, currCard, p, posX, posY);
             case SHOP_TYPE_FORGE: createForgeCardButtons(system, currCard, p, posX, posY);
@@ -569,7 +563,7 @@ void renderExitButton(ref UiSystem system, int p = 1, float drawPosx = 0.55, flo
 
 void renderShop(ref UiSystem system, int p = 1){
     renderDraws(system, p);
-    renderBench(system, p);
+    renderBench(system, p, DEFAULT_SHOP_TYPE);
 
     float drawPosx = getLeftAnchorX(UI_LEFT_BUFFER, 128.0, p);
     drawPosx = max(drawPosx, -0.55);
@@ -642,13 +636,28 @@ void openShop(int p = 1){
         setUiVisible(false);
         trSetObscuredUnits(false);
     }
-    g_shop.m_shopTypeOpened[p] = 0;
+    g_shop.m_shopTypeOpened[p] = DEFAULT_SHOP_TYPE;
     renderShop(system, p);
     uiSystemArray[p] = system;
     trSoundsetPlayPlayer(p, "UI_Latch");
 }
 
+void autoCloseOtherShops(){
+    for (int p = 1; p <= cNumberPlayers-2; p++){
+        int shopType = g_shop.m_shopTypeOpened[p];
+        if (shopType == DEFAULT_SHOP_TYPE) { continue; }
+        int shopUnitId = ShopTypeToUnitIDMap.get(shopType);
+        selectSingle(shopUnitId);
+        if (trUnitIsOwnedBy(p) == false){ 
+            closeShop(p);
+        }
+    }
+}
+
 void startShopTimers(){
+
+    // Shop respawner
+    // Auto close shops
     scheduler.add(1009, [](int iterations = 1) -> bool {
         for (int i = 1; i <= g_shop.m_benches.size()-2; i++){
             BenchData bench = g_shop.m_benches[i];
@@ -657,13 +666,16 @@ void startShopTimers(){
                 g_shop.m_benches[i] = bench;
             }
         }
+        autoCloseOtherShops();
         return true;
     });
-    scheduler.add(30000, [](int iterations = 1) -> bool {
-        g_shrineShopCost = max(g_shrineShopCost - 5, 10);
-        g_templeShopCost = max(g_templeShopCost - 5, 10);
-        g_armoryShopCost = max(g_armoryShopCost - 5, 10);
-        g_forgeShopCost = max(g_forgeShopCost - 5, 10);
+
+    // Reduce shop costs over time
+    scheduler.add(SHOP_COST_REDUCTION_MS_INTERVAL, [](int iterations = 1) -> bool {
+        g_shrineShopCost = max(g_shrineShopCost - SHOP_COST_REDUCTION, 10);
+        g_templeShopCost = max(g_templeShopCost - SHOP_COST_REDUCTION, 10);
+        g_armoryShopCost = max(g_armoryShopCost - SHOP_COST_REDUCTION, 10);
+        g_forgeShopCost = max(g_forgeShopCost - SHOP_COST_REDUCTION, 10);
         for (int p=1; p<=cNumberPlayers-2; p++){
             g_shopNeedsRefresh[p] = true;
         }

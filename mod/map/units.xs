@@ -144,6 +144,11 @@ void modifyPlayerData(){
         trPlayerGrantResources(p, "Favor", -favor);
         trPlayerGrantResources(p, "Gold", STARTING_GOLD);
 
+        for (int k = 0; k < g_shopTypes.size(); k++) {
+            string shopType = g_shopTypes[k];
+            setupAsSharedShop(shopType, p);
+        }
+
         // For card synergies
         trProtoUnitSetUnitType(p, "Tanuki", "AbstractHealer", true);
     }
@@ -174,27 +179,27 @@ void modifyPlayerData(){
         trTechSetStatus(p, 373, 2); // Watch Tower
         trModifyProtounitData("SentryTower", p, puFIELD_HITPOINTS, 2000, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
-        trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_DIVINE, 10, relativityASSIGN);
+        trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_DIVINE, 20, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
         setupAsTower("SentryTower", p);
 
         trModifyProtounitData("MirrorTower", p, puFIELD_HITPOINTS, 4000, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
-        trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_DIVINE, 40, relativityASSIGN);
+        trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_DIVINE, 50, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_RANGE, 18, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
         setupAsTower("MirrorTower", p);
 
         trModifyProtounitData("StatueOfLightning", p, puFIELD_HITPOINTS, 8000, relativityASSIGN);
-        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_DIVINE, 60, relativityASSIGN);
+        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_DIVINE, 70, relativityASSIGN);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
         trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0, relativityASSIGN);
         setupAsTower("StatueOfLightning", p);
 
         trModifyProtounitData("Fortress", p, puFIELD_HITPOINTS, 24000, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_DIVINE, 80, relativityASSIGN);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_DIVINE, 90, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
         setupAsTower("Fortress", p);
         trProtoUnitSetIcon("Fortress", p, "", "ui\minimap\minimap_wonder");
@@ -214,11 +219,6 @@ void modifyPlayerData(){
     trProtoUnitSetIcon("MiningCampJapanese", 0, "", "ui\minimap\minimap_gold");
     trProtoUnitSetIcon("MiningCamp", 0, "", "ui\minimap\minimap_gold");
 
-    for (int k = 0; k < g_shopTypes.size(); k++) {
-        string shopType = g_shopTypes[k];
-        setupAsSharedShop(shopType);
-    }
-
     trModifyProtounitData("MiningCampJapanese", 0, puFIELD_HITPOINTS, 2, relativityBasePERCENT);
     trModifyProtounitData("MiningCampJapanese", 0, puFIELD_HACK_ARMOR, 1.3, relativityBasePERCENT);
     trModifyProtounitData("MiningCampJapanese", 0, puFIELD_CRUSH_ARMOR, 0.2, relativityABSOLUTE);
@@ -231,6 +231,6 @@ void modifyPlayerData(){
         string creepCampTypes = g_creepCampTypes[i];
         trModifyProtounitData(creepCampTypes, 0, puFIELD_LOS, 8, relativityASSIGN);
         trProtounitModifySpawnData(creepCampTypes, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-        trProtoUnitSetFlag(p, creepCampTypes, "ObscuredByUnits", true);
+        trProtoUnitSetFlag(0, creepCampTypes, "ObscuredByUnits", true);
     }
 }

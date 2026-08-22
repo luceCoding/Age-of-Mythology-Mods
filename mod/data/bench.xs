@@ -14,7 +14,7 @@ class BenchData {
     void init(int p = -1, int shopId = -1){
         m_player = p;
         m_playerShopId = shopId;
-        m_synergyCounter = new int(8, 0);
+        m_synergyCounter = new int(MAX_SYNERGIES, 0);
     }
     
     int getPlayerShopID(){

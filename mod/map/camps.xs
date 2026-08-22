@@ -141,7 +141,7 @@ void generateAllCamps(){
         g_creepCamps.add(creepCamp);
     }
 
-    scheduler.add(1000, [](int iterations = 1) -> bool {
+    scheduler.add(1013, [](int iterations = 1) -> bool {
         for(int i = 0; i < g_creepCamps.size(); i++){
             CreepCamp creepCamp = g_creepCamps[i];
             creepCamp.processCamp();

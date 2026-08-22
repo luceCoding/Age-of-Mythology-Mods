@@ -61,11 +61,6 @@ const int relativityASSIGN = 1;
 const int relativityPERCENT = 2;
 const int relativityBasePERCENT = 3;
 
-int g_shrineShopCost = 10;
-int g_templeShopCost = 10;
-int g_armoryShopCost = 10;
-int g_forgeShopCost = 10;
-
 const int UPGRADE_HACK_ARMOR = 0;
 const int UPGRADE_PIERCE_ARMOR = 1;
 const int UPGRADE_CRUSH_ARMOR = 2;
@@ -76,6 +71,24 @@ const int UPGRADE_HP_REGEN = 6;
 const int UPGRADE_HACK_ATTACK = 7;
 const int UPGRADE_PIERCE_ATTACK = 8;
 const int UPGRADE_CRUSH_ATTACK = 9;
+
+const int TOTAL_AGES = 5;
+const float SELL_MULTIPLIER = 0.8;
+const float UI_LEFT_BUFFER = 50;
+
+const int DEFAULT_SHOP_TYPE = -1;
+const int SHOP_TYPE_SHRINE = 0;
+const int SHOP_TYPE_FORGE = 1;
+const int SHOP_TYPE_TEMPLE = 2;
+const int SHOP_TYPE_ARMORY = 3;
+
+const int SHOP_COST_REDUCTION = 5;
+const int SHOP_COST_REDUCTION_MS_INTERVAL = 30000;
+int g_shrineShopCost = 10;
+int g_templeShopCost = 10;
+int g_armoryShopCost = 10;
+int g_forgeShopCost = 10;
+
 
 const float GOLDPILE_LIFESPAN = 20.0;
 
@@ -90,20 +103,20 @@ const float T3_CAMP_SPAWN_TIME = 240.0;
 const int STARTING_GOLD = 300;
 const float CATCHUP_GOLD_DIFF = 0.9;
 const float CATCHUP_GOLD_MECHANIC = 1.1;
+const float SHARED_GOLD_COEFFICIENT = 0.25;
 
 string[] g_shopTypes = default;
 string[] g_roadTypes = default;
 string[] g_treeTypes = default;
-
 string[] g_creepCampPlaceholderTypes = default;
 string[] g_creepCampTypes = default;
 
 void initializeGlobals(){
     g_shopTypes = new string(4, "");
-    g_shopTypes[0] = "DwarvenForge";
-    g_shopTypes[1] = "DwarvenArmory";
-    g_shopTypes[2] = "TempleOfTheGods";
-    g_shopTypes[3] = "ShrineJapanese";
+    g_shopTypes[SHOP_TYPE_FORGE] = "DwarvenForge";
+    g_shopTypes[SHOP_TYPE_ARMORY] = "DwarvenArmory";
+    g_shopTypes[SHOP_TYPE_TEMPLE] = "TempleOfTheGods";
+    g_shopTypes[SHOP_TYPE_SHRINE] = "ShrineJapanese";
 
     g_roadTypes.add("Greek Road 1"); // first element is always primary road
     g_roadTypes.add("Greek Road 2");

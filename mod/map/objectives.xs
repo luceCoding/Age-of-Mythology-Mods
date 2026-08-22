@@ -30,5 +30,6 @@ void spawnSymmetricObjectives() {
         int unidId = trUnitCreateForced(g_shopTypes[buildingIdx], v.x, configMapBaseHeight, v.z, 0.0, 0);
         selectSingle(unidId);
         trUnitSetScale(0.75, 0.75, 0.75);
+        ShopTypeToUnitIDMap.put(buildingIdx, unidId);
     }
 }

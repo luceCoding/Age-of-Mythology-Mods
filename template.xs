@@ -32,6 +32,7 @@ void generate()
 
     defineHashMapDefinition("string", "CardParameters", "", "");
     defineHashMapDefinition("string", "int", "0", "");
+    defineHashMapDefinition("int", "int", "0", "");
 
     // mod/data/card.xs
     // mod/data/buffs.xs

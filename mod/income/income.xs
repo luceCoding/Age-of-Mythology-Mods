@@ -34,12 +34,27 @@ class IncomeHandler {
                         goldAmount = goldAmount * CATCHUP_GOLD_MECHANIC;
                     }
 
+                    // 1. Grant the full gold amount to the collecting player
                     trPlayerGrantResources(p, "gold", goldAmount);
-                    if (pTeam == 1){
-                        team1_gold = team1_gold + goldAmount;
+                    
+                    int totalGoldGenerated = goldAmount; // Track total wealth added to the team
+                    int sharedAmount = goldAmount * SHARED_GOLD_COEFFICIENT; // Shared gold
+
+                    // 2. Loop to find and reward teammates
+                    for(int ally = 1; ally < cNumberPlayers-2; ally++) {
+                        if (ally == p) { continue; } // Skip the player who picked it up
+                        
+                        if (g_finalTeam[ally] == pTeam) {
+                            trPlayerGrantResources(ally, "gold", sharedAmount);
+                            totalGoldGenerated = totalGoldGenerated + sharedAmount;
+                        }
                     }
-                    else {
-                        team2_gold = team2_gold + goldAmount;
+
+                    // 3. Update team trackers with the combined total wealth generated
+                    if (pTeam == 1){
+                        team1_gold = team1_gold + totalGoldGenerated;
+                    } else {
+                        team2_gold = team2_gold + totalGoldGenerated;
                     }
                     trSoundsetPlayPlayer(p, "TributeReceived");
                     trUnitDestroy();
@@ -52,7 +67,7 @@ class IncomeHandler {
 
 IncomeHandler g_IncomeHandler;
 
-void startSchedulers(){
+void startIncome(){
     scheduler.add(307, [](int iterations = 1) -> bool {
         g_IncomeHandler.processGold();
         return true;
