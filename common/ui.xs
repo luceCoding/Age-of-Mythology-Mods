@@ -1,1059 +1,623 @@
-include "lib/rm_core.xs";
+// Custom UI building
 
-int c = cNumberPlayers;
-const int VERTICAL_UI_PIXELS = 1080;
-float[] playerScreenRatio = default;
-float[] playerScreenIconSizeCompensationValue = default;
-const string(int) EMPTY_COUNTER_TEXT = [](int p = 1) -> string { return ""; };
+rmTriggerAddScriptLine("const string UI_SYSTEM_UNIT = \"Crate\";");
+rmTriggerAddScriptLine("const string UI_SYSTEM_UNIT2 = \"CrateSmall\";");
+rmTriggerAddScriptLine("const float UI_SYSTEM_SMALL_SCALE_MULTIPLIER = 1.355;");
+rmTriggerAddScriptLine("const float UI_SYSTEM_LOOK_DISTANCE = 57.0;");
+rmTriggerAddScriptLine("const float UI_SYSTEM_OFFSCREEN_Z = 1000.0;");
+rmTriggerAddScriptLine("string(int, ref Parameters) EMPTY_DYNAMIC_UI_CONTENT = [](int pToUse = 1, ref Parameters parametersToUse) -> string { return \"\"; };");
 
-const float SHIFT_SPEED = 0.000001;
-const float MAGIC_RATIO_FROM_CALCULATION = 17453.0;
-const float DEFAULT_SCREEN_RATIO = 16.0 / 9.0;
+rmTriggerAddScriptLine("class UiEntryParameterised {");
+    rmTriggerAddScriptLine("Parameters parameters;");
+    rmTriggerAddScriptLine("void(int, ref Parameters) handler = [](int p = 1, ref Parameters parametersToUse) -> void {};");
+rmTriggerAddScriptLine("};");
 
-const int BINARY_CONVERSION_DIGITS = 17;
+rmTriggerAddScriptLine("class UiEntryStringParameterised {");
+    rmTriggerAddScriptLine("Parameters parameters;");
+    rmTriggerAddScriptLine("string(int, ref Parameters) getContent = EMPTY_DYNAMIC_UI_CONTENT;");
+rmTriggerAddScriptLine("};");
 
-bool[] toBinaryBits(int value = 0){
-    bool[] binary = new bool(BINARY_CONVERSION_DIGITS, false);
-    int toTest = value;
-    for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
-        binary[i] = toTest % 2 == 1;
-        toTest = toTest / 2;
-    }
-    return binary;
-}
+createTypedPlayerSizingArray("int", "uiEntryOnTopOfArray");
+createTypedPlayerSizingArray("float", "uiEntryXArray");
+createTypedPlayerSizingArray("float", "uiEntryYArray");
+createTypedPlayerSizingArray("float", "uiEntryWidthArray");
+createTypedPlayerSizingArray("float", "uiEntryHeightArray");
+createTypedPlayerSizingArray("string", "uiEntryContentArray");
+createTypedPlayerSizingArray("string", "uiEntryRolloverNameArray");
+createTypedPlayerSizingArray("string", "uiEntryRolloverDescriptionArray");
+createTypedPlayerSizingArray("int", "uiEntryUnitArray");
+createTypedPlayerSizingArray("int", "uiEntryUnitDataIndexArray");
+createTypedPlayerSizingArray("int", "uiEntryRolloverDataIndexArray");
+createTypedPlayerSizingArray("int", "uiEntryClickableDataIndexArray");
+createTypedPlayerSizingArray("UiEntryParameterised", "uiEntryClickableHandlerArray");
+createTypedPlayerSizingArray("int", "uiEntryUnitDataIndexInClickableArray");
+createTypedPlayerSizingArray("int", "uiEntryOuterIndexInClickableArray");
+createTypedPlayerSizingArray("int", "uiEntryDynamicDataIndexArray");
+createTypedPlayerSizingArray("UiEntryStringParameterised", "uiEntryDynamicGetContentWrapperArray");
+createTypedPlayerSizingArray("int", "uiEntryLastTimeArray");
+createTypedPlayerSizingArray("int", "uiEntryFrequencyArray");
+createTypedPlayerSizingArray("int", "uiEntryOuterIndexInDynamicArray");
 
-int fromBinaryBits(ref bool[] binary){
-    int value = 0;
-    int toAdd = 1;
-    for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
-        if(binary[i]){
-            value = value + toAdd;
-        }
-        toAdd = toAdd * 2;
-    }
-    return value;
-}
+rmTriggerAddScriptLine("bool uiSystemDebug = false;");
+rmTriggerAddScriptLine("vector[] uiSystemLookAtArray = default;");
+rmTriggerAddScriptLine("vector[] uiSystemLookAtForCameraArray = default;");
+rmTriggerAddScriptLine("vector[] uiSystemCameraPositionArray = default;");
+rmTriggerAddScriptLine("float[] uiSystemLookAtDistanceArray = default;");
+rmTriggerAddScriptLine("float[] uiSystemLookAtHeadingArray = default;");
+rmTriggerAddScriptLine("float[] uiSystemLookAtTiltArray = default;");
+rmTriggerAddScriptLine("float[] uiSystemLookAtFovArray = default;");
+rmTriggerAddScriptLine("vector[] uiSystemXAxisDirectionArray = default;");
+rmTriggerAddScriptLine("vector[] uiSystemYAxisDirectionArray = default;");
+rmTriggerAddScriptLine("bool[] uiSystemActiveArray = default;");
+rmTriggerAddScriptLine("bool[] uiSystemDisableClickArray = default;");
+rmTriggerAddScriptLine("bool[] uiSystemDeletableFlagsToRevertArray = default;");
+rmTriggerAddScriptLine("bool[] uiSystemSelectableFlagsToRevertArray = default;");
+rmTriggerAddScriptLine("int[] uiSystemAvailableIdArray = default;");
+rmTriggerAddScriptLine("int uiSystemNextId = 0;");
+rmTriggerAddScriptLine("int uiSystemCacheSize = 0;");
+rmTriggerAddScriptLine("vector[] uiSystemPositionCacheArray = default;");
+rmTriggerAddScriptLine("string[] uiSystemContentCacheArray = default;");
+rmTriggerAddScriptLine("int[] uiSystemIdCacheArray = default;");
+rmTriggerAddScriptLine("bool[] uiSystemCacheUsedArray = default;");
+rmTriggerAddScriptLine("vector[] uiSystemPositionWorkingCacheArray = default;");
+rmTriggerAddScriptLine("string[] uiSystemContentWorkingCacheArray = default;");
+rmTriggerAddScriptLine("int[] uiSystemIdWorkingCacheArray = default;");
+rmTriggerAddScriptLine("bool[] uiSystemIdWorkingCacheMissArray = default;");
+rmTriggerAddScriptLine("int[] uiSystemRelicTechArray = default;");
+rmTriggerAddScriptLine("int[] uiSystemClickedIndexArray = default;");
+rmTriggerAddScriptLine("int[] uiSystemThrottleClickArray = default;");
 
-void selectSingle(int unitId = -1){
-    trUnitSelectClear();
-    trUnitSelectByID(unitId);
-}
+rmTriggerAddScriptLine("void _uiSystemApplyCameraPosition(int p = 1){");
+    rmTriggerAddScriptLine("if(trCurrentPlayer() == p){");
+        rmTriggerAddScriptLine("cameraTrack.create(uiSystemLookAtForCameraArray[p], uiSystemLookAtDistanceArray[p], uiSystemLookAtHeadingArray[p], uiSystemLookAtTiltArray[p], uiSystemLookAtFovArray[p]);");
+        rmTriggerAddScriptLine("cameraTrack.addWaypoint(1000000000, uiSystemLookAtForCameraArray[p], uiSystemLookAtDistanceArray[p], uiSystemLookAtHeadingArray[p], uiSystemLookAtTiltArray[p], uiSystemLookAtFovArray[p]);");
+        rmTriggerAddScriptLine("cameraTrack.play();");
+    rmTriggerAddScriptLine("}");
+rmTriggerAddScriptLine("}");
 
-string[] string2Array(string string0 = "", string string1 = ""){
-    string[] arrayToMake = new string(2, "");
-    arrayToMake[0] = string0;
-    arrayToMake[1] = string1;
-    return arrayToMake;
-}
+rmTriggerAddScriptLine("void setUiSystemCameraPosition(int p = 1, vector dest = cOriginVector, float distance = 0.0, float heading = 0.0, float tilt = 0.0, float fov = 40.0){");
+    rmTriggerAddScriptLine("uiSystemLookAtForCameraArray[p] = dest;");
+    rmTriggerAddScriptLine("uiSystemLookAtDistanceArray[p] = distance;");
+    rmTriggerAddScriptLine("uiSystemLookAtHeadingArray[p] = heading;");
+    rmTriggerAddScriptLine("uiSystemLookAtTiltArray[p] = tilt;");
+    rmTriggerAddScriptLine("uiSystemLookAtFovArray[p] = fov;");
+    rmTriggerAddScriptLine("float cameraH = degToRad(heading);");
+    rmTriggerAddScriptLine("float cameraT = degToRad(tilt);");
+    rmTriggerAddScriptLine("float cameraSinH = sin(cameraH);");
+    rmTriggerAddScriptLine("float cameraCosH = cos(cameraH);");
+    rmTriggerAddScriptLine("float cameraSinT = sin(cameraT);");
+    rmTriggerAddScriptLine("float cameraCosT = cos(cameraT);");
+    rmTriggerAddScriptLine("float cameraPosX = 0.0+dest.x-cameraCosH*cameraCosT*distance;");
+    rmTriggerAddScriptLine("float cameraPosY = cameraSinT*distance+dest.y;");
+    rmTriggerAddScriptLine("float cameraPosZ = 0.0+dest.z-cameraSinH*cameraCosT*distance;");
+    rmTriggerAddScriptLine("uiSystemCameraPositionArray[p] = vector(cameraPosX, cameraPosY, cameraPosZ);");
+    rmTriggerAddScriptLine("float canvasDistance = (tan(degToRad(0.5)) * UI_SYSTEM_LOOK_DISTANCE) / tan(degToRad(0.5 * fov));");
+    rmTriggerAddScriptLine("float canvasDistanceFromLookPoint = -canvasDistance + distance;");
+    rmTriggerAddScriptLine("float canvasPosX = 0.0+dest.x-cameraCosH*cameraCosT*canvasDistanceFromLookPoint;");
+    rmTriggerAddScriptLine("float canvasPosY = cameraSinT*canvasDistanceFromLookPoint+dest.y;");
+    rmTriggerAddScriptLine("float canvasPosZ = 0.0+dest.z-cameraSinH*cameraCosT*canvasDistanceFromLookPoint;");
+    rmTriggerAddScriptLine("uiSystemLookAtArray[p] = vector(canvasPosX, canvasPosY, canvasPosZ);");
+    rmTriggerAddScriptLine("uiSystemXAxisDirectionArray[p] = vector(cameraSinH, 0.0, -cameraCosH);");
+    rmTriggerAddScriptLine("uiSystemYAxisDirectionArray[p] = vector(cameraSinT * cameraCosH, cameraCosT, cameraSinT * cameraSinH);");
+    rmTriggerAddScriptLine("if(uiSystemActiveArray[p]){");
+        rmTriggerAddScriptLine("_uiSystemApplyCameraPosition(p);");
+    rmTriggerAddScriptLine("}");
+rmTriggerAddScriptLine("}");
 
-void cameraLookAt(vector dest = cOriginVector, float distance = 0.0, float heading = 0.0, float tilt = 0.0){
-    float cameraH = cPi * heading / 180.0;
-    float cameraT = cPi * tilt / 180.0;
-    float cameraSinH = sin(cameraH);
-    float cameraCosH = cos(cameraH);
-    float cameraSinT = sin(cameraT);
-    float cameraCosT = cos(cameraT);
-    float cameraPosX = 0.0+dest.x-cameraCosH*cameraCosT*distance;
-    float cameraPosY = cameraSinT*distance+dest.y;
-    float cameraPosZ = 0.0+dest.z-cameraSinH*cameraCosT*distance;
-    vector cameraCameraPos = vector(cameraPosX, cameraPosY, cameraPosZ);
-    vector cameraCameraMx = vector(cameraCosH*cameraCosT, 0.0-cameraSinT, cameraSinH*cameraCosT);
-    vector cameraCameraMy = vector(cameraCosH*cameraSinT, cameraCosT, cameraSinH*cameraSinT);
-    vector cameraCameraMz = vector(cameraSinH, 0, 0.0-cameraCosH);
-    trCameraCut(cameraCameraPos, cameraCameraMx, cameraCameraMy, cameraCameraMz);
-}
+rmTriggerAddScriptLine("void enterUiSystem(int p = 1, bool disableClick = false){");
+    rmTriggerAddScriptLine("uiSystemDisableClickArray[p] = disableClick;");
+    rmTriggerAddScriptLine("if(uiSystemActiveArray[p] == false){");
+        rmTriggerAddScriptLine("uiSystemActiveArray[p] = true;");
+        rmTriggerAddScriptLine("int deleteableOffset = p * cNumberProtoUnits;");
+        rmTriggerAddScriptLine("for(int i = 0; i < cNumberProtoUnits; i++){");
+            rmTriggerAddScriptLine("bool deleteable = kbPlayerGetProtoStatFlag(p, i, cProtoUnitFlagDeleteable);");
+            rmTriggerAddScriptLine("uiSystemDeletableFlagsToRevertArray[deleteableOffset + i] = deleteable;");
+            rmTriggerAddScriptLine("if(deleteable){");
+                rmTriggerAddScriptLine("trProtoUnitSetFlag(p, kbProtoUnitGetName(i), \"Deleteable\", false);");
+            rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("if(trCurrentPlayer() == p){");
+            rmTriggerAddScriptLine("int offset = 0;");
+            rmTriggerAddScriptLine("for(int q = 0; q <= cNumberPlayers; q++){");
+                rmTriggerAddScriptLine("for(int i = 0; i < cNumberProtoUnits; i++){");
+                    rmTriggerAddScriptLine("bool selectable = kbPlayerGetProtoStatFlag(q, i, cProtoUnitFlagSelectable);");
+                    rmTriggerAddScriptLine("uiSystemSelectableFlagsToRevertArray[i + offset] = selectable;");
+                    rmTriggerAddScriptLine("if(selectable){");
+                        rmTriggerAddScriptLine("trProtoUnitSetFlag(q, kbProtoUnitGetName(i), \"Selectable\", false);");
+                    rmTriggerAddScriptLine("}");
+                rmTriggerAddScriptLine("}");
+                rmTriggerAddScriptLine("offset = offset + cNumberProtoUnits;");
+            rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("trProtoUnitSetFlag(p, UI_SYSTEM_UNIT, \"Deleteable\", true);");
+        rmTriggerAddScriptLine("trProtoUnitSetFlag(p, UI_SYSTEM_UNIT2, \"Deleteable\", true);");
+        rmTriggerAddScriptLine("trProtoUnitSetFlag(p, UI_SYSTEM_UNIT, \"Selectable\", true);");
+        rmTriggerAddScriptLine("trProtoUnitSetFlag(p, UI_SYSTEM_UNIT2, \"Selectable\", true);");
+        rmTriggerAddScriptLine("vector lookAt = uiSystemLookAtArray[p];");
+        rmTriggerAddScriptLine("int tempToSelect = trUnitCreateForced(UI_SYSTEM_UNIT, lookAt.x, lookAt.y, lookAt.z, 0, p);");
+        rmTriggerAddScriptLine("selectSingle(tempToSelect);");
+        rmTriggerAddScriptLine("if (trCurrentPlayer() == p){");
+            rmTriggerAddScriptLine("trUnitGameSelect(true);");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("trUnitDestroy();");
+        rmTriggerAddScriptLine("_uiSystemApplyCameraPosition(p);");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("int unitCount = uiEntryUnitArraySize(p);");
+    rmTriggerAddScriptLine("for(int i = 0; i < unitCount; i++){");
+        rmTriggerAddScriptLine("selectSingle(uiEntryUnitArrayGet(p, i));");
+        rmTriggerAddScriptLine("trUnitDestroy();");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("uiEntryOnTopOfArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryXArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryYArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryWidthArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryHeightArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryContentArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryRolloverNameArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryRolloverDescriptionArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryUnitArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryUnitDataIndexArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryRolloverDataIndexArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryClickableDataIndexArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryClickableHandlerArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryUnitDataIndexInClickableArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryOuterIndexInClickableArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryDynamicDataIndexArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryDynamicGetContentWrapperArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryLastTimeArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryFrequencyArrayClear(p);");
+    rmTriggerAddScriptLine("uiEntryOuterIndexInDynamicArrayClear(p);");
+rmTriggerAddScriptLine("}");
 
-class CameraTrack {
-    int createIndex = 0;
-    int trackIndex = -1;
-    bool initialised = false;
-    int count = 0;
-    int[] timeArray = default;
-    vector[] destArray = default;
-    float[] distanceArray = default;
-    float[] headingArray = default;
-    float[] tiltArray = default;
-    float[] fovArray = default;
-    void initialise(){
-        initialised = true;
-        timeArray = new int(10, 0);
-        destArray = new vector(10, cOriginVector);
-        distanceArray = new float(10, 0.0);
-        headingArray = new float(10, 0.0);
-        tiltArray = new float(10, 0.0);
-        fovArray = new float(10, 0.0);
-    }
-    void addWaypoint(int time = 0, vector dest = cOriginVector, float distance = 0.0, float heading = 0.0, float tilt = 0.0, float fov = 40.0){
-        if(!initialised){
-            initialise();
-        }
-        if(count == timeArray.size()){
-            timeArray.resize(2 * timeArray.size(), 0);
-            destArray.resize(2 * destArray.size(), cOriginVector);
-            distanceArray.resize(2 * distanceArray.size(), 0.0);
-            headingArray.resize(2 * headingArray.size(), 0.0);
-            tiltArray.resize(2 * tiltArray.size(), 0.0);
-            fovArray.resize(2 * fovArray.size(), 0.0);
-        }
-        timeArray[count] = time;
-        destArray[count] = dest;
-        distanceArray[count] = distance;
-        headingArray[count] = heading;
-        tiltArray[count] = tilt;
-        fovArray[count] = fov;
-        count++;
-    }
-    void create(vector dest = cOriginVector, float distance = 0.0, float heading = 0.0, float tilt = 0.0, float fov = 40.0){
-        count = 0;
-        addWaypoint(0, dest, distance, heading, tilt, fov);
-    }
-    void play(bool blend = false, int blendTime = 5000){
-        if(!initialised){
-            initialise();
-        }
-        float duration = timeArray[count - 1];
-        trackIndex = trCameraTrackCreate("Track_"+createIndex, duration);
-        for(int i = 0; i < count; i++){
-            float cameraH = cPi * headingArray[i] / 180.0;
-            float cameraT = cPi * tiltArray[i] / 180.0;
-            float cameraSinH = sin(cameraH);
-            float cameraCosH = cos(cameraH);
-            float cameraSinT = sin(cameraT);
-            float cameraCosT = cos(cameraT);
-            vector dest = destArray[i];
-            float cameraPosX = 0.0+dest.x-cameraCosH*cameraCosT*distanceArray[i];
-            float cameraPosY = cameraSinT*distanceArray[i]+dest.y;
-            float cameraPosZ = 0.0+dest.z-cameraSinH*cameraCosT*distanceArray[i];
-            vector cameraCameraPos = vector(cameraPosX, cameraPosY, cameraPosZ);
-            vector cameraCameraMx = vector(cameraCosH*cameraCosT, 0.0-cameraSinT, cameraSinH*cameraCosT);
-            vector cameraCameraMy = vector(cameraCosH*cameraSinT, cameraCosT, cameraSinH*cameraSinT);
-            vector cameraCameraMz = vector(cameraSinH, 0, 0.0-cameraCosH);
-            int waypointIndex = trCameraTrackAddWaypoint(trackIndex, cameraCameraPos, cameraCameraMx, cameraCameraMy, cameraCameraMz, fovArray[i]);
-            trCameraTrackWaypointSetTime(trackIndex, waypointIndex, timeArray[i]);
-        }
-        trCameraTrackLoad("Track_"+createIndex);
-        trCameraTrackPlay(-1, -1, blend, blendTime);
-        createIndex++;
-    }
-};
+rmTriggerAddScriptLine("int _uiSystemGetAvailableId(){");
+    rmTriggerAddScriptLine("int size = uiSystemAvailableIdArray.size();");
+    rmTriggerAddScriptLine("if(size > 0){");
+        rmTriggerAddScriptLine("int id = uiSystemAvailableIdArray[size - 1];");
+        rmTriggerAddScriptLine("uiSystemAvailableIdArray.removeIndex(size - 1);");
+        rmTriggerAddScriptLine("return id;");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("int id = uiSystemNextId;");
+    rmTriggerAddScriptLine("uiSystemNextId++;");
+    rmTriggerAddScriptLine("return id;");
+rmTriggerAddScriptLine("}");
 
-CameraTrack cameraTrack;
+rmTriggerAddScriptLine("void postEnterUiSystem(int p = 1, int swapOutTime = 1){");
+    rmTriggerAddScriptLine("Parameters parameters = createParameters();");
+    rmTriggerAddScriptLine("parameters.ints.add(p);");
+    rmTriggerAddScriptLine("if(p == trCurrentPlayer()){");
+        rmTriggerAddScriptLine("int count = uiEntryXArraySize(p);");
+        rmTriggerAddScriptLine("if(count > uiSystemPositionWorkingCacheArray.size()){");
+            rmTriggerAddScriptLine("uiSystemPositionWorkingCacheArray.resize(count, cOriginVector);");
+            rmTriggerAddScriptLine("uiSystemContentWorkingCacheArray.resize(count, \"\");");
+            rmTriggerAddScriptLine("uiSystemIdWorkingCacheArray.resize(count, -1);");
+            rmTriggerAddScriptLine("uiSystemIdWorkingCacheMissArray.resize(count, false);");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("for(int i = 0; i < count; i++){");
+            rmTriggerAddScriptLine("vector promptLocation = uiSystemLookAtArray[p] + uiSystemXAxisDirectionArray[p] * uiEntryXArrayGet(p, i) + uiSystemYAxisDirectionArray[p] * uiEntryYArrayGet(p, i);");
+            rmTriggerAddScriptLine("vector directionVector = xsVectorNormalize(promptLocation - uiSystemCameraPositionArray[p]);");
+            rmTriggerAddScriptLine("vector finalLocation = uiSystemLookAtArray[p] + directionVector * 100000000.0;");
+            rmTriggerAddScriptLine("string content = uiEntryContentArrayGet(p, i);");
+            rmTriggerAddScriptLine("int id = -1;");
+            rmTriggerAddScriptLine("int onTopOfId = uiEntryOnTopOfArrayGet(p, i);");
+            rmTriggerAddScriptLine("if(onTopOfId < 0 || uiSystemIdWorkingCacheMissArray[onTopOfId] == false){");
+                rmTriggerAddScriptLine("for(int j = 0; j < uiSystemCacheSize; j++){");
+                    rmTriggerAddScriptLine("if(uiSystemCacheUsedArray[j] == false && uiSystemPositionCacheArray[j] == finalLocation && uiSystemContentCacheArray[j] == content){");
+                        rmTriggerAddScriptLine("uiSystemCacheUsedArray[j] = true;");
+                        rmTriggerAddScriptLine("id = uiSystemIdCacheArray[j];");
+                        rmTriggerAddScriptLine("break;");
+                    rmTriggerAddScriptLine("}");
+                rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("if(id < 0){");
+                rmTriggerAddScriptLine("id = _uiSystemGetAvailableId();");
+                rmTriggerAddScriptLine("if(content != \"\"){");
+                    rmTriggerAddScriptLine("trWorldSpacePromptArea(\"UiSystem\" + id, finalLocation, \"<icon=(1,10000)(0)>\n\" + content, cOriginVector, false);");
+                rmTriggerAddScriptLine("}");
+                rmTriggerAddScriptLine("uiSystemIdWorkingCacheMissArray[i] = true;");
+            rmTriggerAddScriptLine("} else {");
+                rmTriggerAddScriptLine("uiSystemIdWorkingCacheMissArray[i] = false;");
+            rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("uiSystemPositionWorkingCacheArray[i] = finalLocation;");
+            rmTriggerAddScriptLine("uiSystemContentWorkingCacheArray[i] = content;");
+            rmTriggerAddScriptLine("uiSystemIdWorkingCacheArray[i] = id;");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("for(int i = uiSystemCacheSize - 1; i >= 0; i--){");
+            rmTriggerAddScriptLine("if(uiSystemCacheUsedArray[i] == false){");
+                rmTriggerAddScriptLine("if(swapOutTime > 0){");
+                    rmTriggerAddScriptLine("parameters.ints.add(uiSystemIdCacheArray[i]);");
+                rmTriggerAddScriptLine("} else {");
+                    rmTriggerAddScriptLine("int id = uiSystemIdCacheArray[i];");
+                    rmTriggerAddScriptLine("trWorldSpacePromptHide(\"UiSystem\" + id);");
+                    rmTriggerAddScriptLine("uiSystemAvailableIdArray.add(id);");
+                rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("if(count > uiSystemPositionCacheArray.size()){");
+            rmTriggerAddScriptLine("uiSystemPositionCacheArray.resize(count, cOriginVector);");
+            rmTriggerAddScriptLine("uiSystemContentCacheArray.resize(count, \"\");");
+            rmTriggerAddScriptLine("uiSystemIdCacheArray.resize(count, -1);");
+            rmTriggerAddScriptLine("uiSystemCacheUsedArray.resize(count, false);");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("uiSystemCacheSize = count;");
+        rmTriggerAddScriptLine("for(int i = 0; i < count; i++){");
+            rmTriggerAddScriptLine("uiSystemPositionCacheArray[i] = uiSystemPositionWorkingCacheArray[i];");
+            rmTriggerAddScriptLine("uiSystemContentCacheArray[i] = uiSystemContentWorkingCacheArray[i];");
+            rmTriggerAddScriptLine("uiSystemIdCacheArray[i] = uiSystemIdWorkingCacheArray[i];");
+            rmTriggerAddScriptLine("uiSystemCacheUsedArray[i] = false;");
+        rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("if(swapOutTime > 0){");
+        rmTriggerAddScriptLine("schedulerWithParameters.add(swapOutTime, parameters, [](int iteration = 1, ref Parameters parameters) -> bool {");
+            rmTriggerAddScriptLine("if(parameters.ints[0] == trCurrentPlayer()){");
+                rmTriggerAddScriptLine("int intParamCount = parameters.ints.size();");
+                rmTriggerAddScriptLine("for(int i = 1; i < intParamCount; i++){");
+                    rmTriggerAddScriptLine("int id = parameters.ints[i];");
+                    rmTriggerAddScriptLine("trWorldSpacePromptHide(\"UiSystem\" + id);");
+                    rmTriggerAddScriptLine("uiSystemAvailableIdArray.add(id);");
+                rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("return false;");
+        rmTriggerAddScriptLine("});");
+    rmTriggerAddScriptLine("}");
+rmTriggerAddScriptLine("}");
 
-class Parameters {
-    bool[] bools = default;
-    int[] ints = default;
-    float[] floats = default;
-    string[] strings = default;
-    vector[] vectors = default;
-};
+rmTriggerAddScriptLine("void exitUiSystem(int p = 1, bool normaliseCamera = false, float fov = 40.0){");
+    rmTriggerAddScriptLine("if(uiSystemActiveArray[p]){");
+        rmTriggerAddScriptLine("uiSystemActiveArray[p] = false;");
+        rmTriggerAddScriptLine("vector lookAt = uiSystemLookAtArray[p];");
+        rmTriggerAddScriptLine("int tempToSelect = trUnitCreateForced(UI_SYSTEM_UNIT, lookAt.x, lookAt.y, lookAt.z, 0, p);");
+        rmTriggerAddScriptLine("selectSingle(tempToSelect);");
+        rmTriggerAddScriptLine("if (trCurrentPlayer() == p){");
+            rmTriggerAddScriptLine("trUnitGameSelect(true);");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("trUnitDestroy();");
+        rmTriggerAddScriptLine("int deleteableOffset = p * cNumberProtoUnits;");
+        rmTriggerAddScriptLine("for(int i = 0; i < cNumberProtoUnits; i++){");
+            rmTriggerAddScriptLine("bool deleteable = uiSystemDeletableFlagsToRevertArray[deleteableOffset + i];");
+            rmTriggerAddScriptLine("if(deleteable){");
+                rmTriggerAddScriptLine("trProtoUnitSetFlag(p, kbProtoUnitGetName(i), \"Deleteable\", true);");
+            rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("if(trCurrentPlayer() == p){");
+            rmTriggerAddScriptLine("int offset = 0;");
+            rmTriggerAddScriptLine("for(int q = 0; q <= cNumberPlayers; q++){");
+                rmTriggerAddScriptLine("for(int i = 0; i < cNumberProtoUnits; i++){");
+                    rmTriggerAddScriptLine("bool selectable = uiSystemSelectableFlagsToRevertArray[i + offset];");
+                    rmTriggerAddScriptLine("if(selectable){");
+                        rmTriggerAddScriptLine("trProtoUnitSetFlag(q, kbProtoUnitGetName(i), \"Selectable\", true);");
+                    rmTriggerAddScriptLine("}");
+                rmTriggerAddScriptLine("}");
+                rmTriggerAddScriptLine("offset = offset + cNumberProtoUnits;");
+            rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("if(trCurrentPlayer() == p){");
+            rmTriggerAddScriptLine("if(normaliseCamera){");
+                rmTriggerAddScriptLine("cameraTrack.create(uiSystemLookAtForCameraArray[p], uiSystemLookAtDistanceArray[p], uiSystemLookAtHeadingArray[p], uiSystemLookAtTiltArray[p], uiSystemLookAtFovArray[p]);");
+                rmTriggerAddScriptLine("cameraTrack.addWaypoint(1, uiSystemLookAtForCameraArray[p], uiSystemLookAtDistanceArray[p], uiSystemLookAtHeadingArray[p], uiSystemLookAtTiltArray[p], uiSystemLookAtFovArray[p]);");
+                rmTriggerAddScriptLine("cameraTrack.play(true, 0);");
+            rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("for(int i = uiSystemCacheSize - 1; i >= 0; i--){");
+                rmTriggerAddScriptLine("int id = uiSystemIdCacheArray[i];");
+                rmTriggerAddScriptLine("trWorldSpacePromptHide(\"UiSystem\" + id);");
+                rmTriggerAddScriptLine("uiSystemAvailableIdArray.add(id);");
+            rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("uiSystemCacheSize = 0;");
+        rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("int unitCount = uiEntryUnitArraySize(p);");
+        rmTriggerAddScriptLine("for(int i = 0; i < unitCount; i++){");
+            rmTriggerAddScriptLine("selectSingle(uiEntryUnitArrayGet(p, i));");
+            rmTriggerAddScriptLine("trUnitDestroy();");
+        rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("}");
+rmTriggerAddScriptLine("}");
 
-const Parameters EMPTY_PARAMETERS;
-
-Parameters createParameters(){
-    Parameters parameters;
-    return parameters;
-}
-
-const string UI_SYSTEM_UNIT = "Crate";
-const string UI_SYSTEM_UNIT2 = "CrateSmall";
-const float UI_SYSTEM_SMALL_SCALE_MULTIPLIER = 1.355;
-const float UI_SYSTEM_LOOK_DISTANCE = 57.0;
-const float UI_SYSTEM_OFFSCREEN_Z = 1000.0;
-string(int, ref Parameters) EMPTY_DYNAMIC_UI_CONTENT = [](int pToUse = 1, ref Parameters parametersToUse) -> string { return ""; };
-
-int[] uiRelicTechArray = default;
-
-class UiEntry {
-    string unitType = "";
-    bool clickable = false;
-    bool hoverable = false;
-    float x = 0.0;
-    float y = 0.0;
-    float width = 0.0;
-    float height = 0.0;
-    string(int, ref Parameters) getContent = EMPTY_DYNAMIC_UI_CONTENT;
-    string(int, ref Parameters) getRolloverName = EMPTY_DYNAMIC_UI_CONTENT;
-    string(int, ref Parameters) getRolloverDescription = EMPTY_DYNAMIC_UI_CONTENT;
-    string content = "";
-    string rolloverName = "";
-    string rolloverDescription = "";
-    bool showBackground = false;
-    Parameters parameters;
-    void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {};
-    int[] clickableUnitArray = default;
-    int id = -1;
-    int rolloverId = -1;
-    bool dynamic = false;
-
-    void destroyUnits(int p = 1) {
-        for (int i = 0; i < clickableUnitArray.size(); i++) {
-            selectSingle(clickableUnitArray[i]);
-            trUnitDestroy();
-        }
-        clickableUnitArray.resize(0, -1);
-    }
-
-    void destroyPrompt(int p = 1, int page = 0) {
-        if (trCurrentPlayer() == p) {
-            trWorldSpacePromptHide("UiSystem" + id + "Page" + page);
-        }
-    }
-
-    void show(int p = 1, vector lookAt = cOriginVector, vector xAxisDirection = cOriginVector, vector yAxisDirection = cOriginVector, float lookAtHeading = 0.0, float lookAtTilt = 0.0, int page = 0, bool fakeShow = false, bool debug = false, bool disableClick = false, vector cameraPosition = cOriginVector) {
-        if (dynamic) {
-            content = getContent(p, parameters);
-        }
-        string adjustedContent = (showBackground && content != "") ? content : ("<icon=(1,10000)(0)>\n" + content);
-        if (fakeShow) {
-            if (trCurrentPlayer() == p && adjustedContent != "") {
-                trWorldSpacePromptArea("UiSystem" + id + "Page" + page, lookAt + xAxisDirection * x + yAxisDirection * (y + UI_SYSTEM_OFFSCREEN_Z), adjustedContent, cOriginVector, showBackground);
-            }
-            return;
-        }
-        if (trCurrentPlayer() == p && adjustedContent != "") {
-            vector promptLocation = lookAt + xAxisDirection * x + yAxisDirection * y;
-            vector directionVector = xsVectorNormalize(promptLocation - cameraPosition);
-            trWorldSpacePromptArea("UiSystem" + id + "Page" + page, cameraPosition + directionVector * 100000000.0, adjustedContent, cOriginVector, showBackground);
-        }
-        if (hoverable) {
-            trTechHideEffects(uiRelicTechArray[rolloverId], p, true);
-            if (dynamic) {
-                rolloverName = getRolloverName(p, parameters);
-            }
-            trTechSetStringID(uiRelicTechArray[rolloverId], p, rolloverName + "<color=0,0,0>", cXSTechEffectDisplayName);
-            if (dynamic) {
-                rolloverDescription = getRolloverDescription(p, parameters);
-            }
-            trTechSetStringID(uiRelicTechArray[rolloverId], p, "</color>\n" + rolloverDescription, cXSTechEffectRollover);
-        }
-        if (clickable || hoverable) {
-            vector pos = lookAt + xAxisDirection * x + yAxisDirection * (y + height / 2.0);
-            int unit = trUnitCreateForced(unitType, pos.x, pos.y, pos.z, 0, p);
-            selectSingle(unit);
-            if (!debug) {
-                trUnitChangeProtoUnit(unitType, false, true);
-                trUnitSetShading(3, 1000.0);
-            }
-            if (hoverable) {
-                trUnitSetScale(UI_SYSTEM_SMALL_SCALE_MULTIPLIER * height, 0.001, UI_SYSTEM_SMALL_SCALE_MULTIPLIER * width);
-            } else {
-                trUnitSetScale(height, 0.001, width);
-            }
-            trUnitRotateZ(lookAtTilt - 90, true);
-            trUnitRotateY(-lookAtHeading - 180, true);
-            if (!clickable || disableClick) {
-                trUnitSetFlag(cUnitFlagIsUnbuilding, true);
-            }
-            trRelicForce(unit, hoverable ? kbTechGetName(uiRelicTechArray[rolloverId]) : "");
-            clickableUnitArray.add(unit);
-        }
-    }
-
-    void refresh(int p = 1, vector lookAt = cOriginVector, vector xAxisDirection = cOriginVector, vector yAxisDirection = cOriginVector, float lookAtHeading = 0.0, float lookAtTilt = 0.0, bool debug = false, bool disableClick = false) {
-        for (int i = 0; i < clickableUnitArray.size(); i++) {
-            selectSingle(clickableUnitArray[i]);
-            trUnitDestroy();
-        }
-        clickableUnitArray.resize(0, -1);
-        if (clickable || hoverable) {
-            vector pos = lookAt + xAxisDirection * x + yAxisDirection * (y + height / 2.0);
-            int unit = trUnitCreateForced(unitType, pos.x, pos.y, pos.z, 0, p);
-            selectSingle(unit);
-            if (!debug) {
-                trUnitChangeProtoUnit(unitType, false, true);
-                trUnitSetShading(3, 1000.0);
-            }
-            if (hoverable) {
-                trUnitSetScale(UI_SYSTEM_SMALL_SCALE_MULTIPLIER * height, 0.001, UI_SYSTEM_SMALL_SCALE_MULTIPLIER * width);
-            } else {
-                trUnitSetScale(height, 0.001, width);
-            }
-            trUnitRotateZ(lookAtTilt - 90, true);
-            trUnitRotateY(-lookAtHeading - 180, true);
-            if (!clickable || disableClick) {
-                trUnitSetFlag(cUnitFlagIsUnbuilding, true);
-            }
-            trRelicForce(unit, hoverable ? kbTechGetName(uiRelicTechArray[rolloverId]) : "");
-            clickableUnitArray.add(unit);
-        }
-    }
-
-    bool dynamicUpdate(int p = 1, vector lookAt = cOriginVector, vector xAxisDirection = cOriginVector, vector yAxisDirection = cOriginVector, float lookAtHeading = 0.0, float lookAtTilt = 0.0, int page = 0, vector cameraPosition = cOriginVector) {
-        if (dynamic == false) {
-            return false;
-        }
-        string newContent = getContent(p, parameters);
-        if (newContent != content) {
-            content = newContent;
-            string adjustedContent = (showBackground && content != "") ? content : ("<icon=(1,10000)(0)>\n" + content);
-            if (trCurrentPlayer() == p) {
-                if (adjustedContent != "") {
-                    vector promptLocation = lookAt + xAxisDirection * x + yAxisDirection * y;
-                    vector directionVector = xsVectorNormalize(promptLocation - cameraPosition);
-                    trWorldSpacePromptArea("UiSystem" + id + "Page" + page, cameraPosition + directionVector * 100000000.0, adjustedContent, cOriginVector, showBackground);
-                } else {
-                    trWorldSpacePromptHide("UiSystem" + id + "Page" + page);
-                }
-            }
-        }
-        if (hoverable) {
-            string newRolloverName = getRolloverName(p, parameters);
-            if (newRolloverName != rolloverName) {
-                rolloverName = newRolloverName;
-                trTechSetStringID(uiRelicTechArray[rolloverId], p, rolloverName + "<color=0,0,0>", cXSTechEffectDisplayName);
-            }
-            string newRolloverDescription = getRolloverDescription(p, parameters);
-            if (newRolloverDescription != rolloverDescription) {
-                rolloverDescription = newRolloverDescription;
-                trTechSetStringID(uiRelicTechArray[rolloverId], p, "</color>\n" + rolloverDescription, cXSTechEffectRollover);
-            }
-        }
-        return true;
-    }
-};
-
-UiEntry DUMMY_ENTRY;
-
-class UiSystemPage {
-    int page = 0;
-    int realShow = -1;
-    int delayDestroy = -1;
-    UiEntry[] uiEntryArray = default;
+rmTriggerAddScriptLine("void _uiSystemRefreshUiUnit(int p = 1, int index = 0){");
+    rmTriggerAddScriptLine("int unitDataIndex = uiEntryUnitDataIndexArrayGet(p, index);");
+    rmTriggerAddScriptLine("int rolloverDataIndex = uiEntryRolloverDataIndexArrayGet(p, index);");
+    rmTriggerAddScriptLine("int clickableDataIndex = uiEntryClickableDataIndexArrayGet(p, index);");
+    rmTriggerAddScriptLine("selectSingle(uiEntryUnitArrayGet(p, unitDataIndex));");
+    rmTriggerAddScriptLine("trUnitDestroy();");
     
-    bool process(int p = 1, vector lookAt = cOriginVector, vector xAxisDirection = cOriginVector, vector yAxisDirection = cOriginVector, float lookAtHeading = 0.0, float lookAtTilt = 0.0, 
-            bool debug = false, bool disableClick = false, vector cameraPosition = cOriginVector){
-        bool isShowingToReturn = false;
-        if(realShow >= 0 && xsGetTimeMS() > realShow){
-            isShowingToReturn = true;
-            realShow = -1;
-            for(int i = 0; i < uiEntryArray.size(); i++){
-                UiEntry entry = uiEntryArray[i];
-                entry.show(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, page, false, debug, disableClick, cameraPosition);
-            }
-        }
-        if(delayDestroy >= 0 && xsGetTimeMS() > delayDestroy){
-            delayDestroy = -1;
-            for(int i = 0; i < uiEntryArray.size(); i++){
-                UiEntry entry = uiEntryArray[i];
-                entry.destroyPrompt(p, page);
-            }
-            uiEntryArray.resize(0);
-        }
-        return isShowingToReturn;
-    }
-    
-    void requestDestroy(int p = 1, bool fromExit = false){
-        for(int i = 0; i < uiEntryArray.size(); i++){
-            UiEntry entry = uiEntryArray[i];
-            entry.destroyUnits(p);
-            if(fromExit){
-                entry.destroyPrompt(p, page);
-            }
-        }
-        if(fromExit){
-            realShow = -1;
-        } else {
-            delayDestroy = xsGetTimeMS();
-        }
-    }
-    
-    void dynamicUpdate(int p = 1, vector lookAt = cOriginVector, vector xAxisDirection = cOriginVector, vector yAxisDirection = cOriginVector, float lookAtHeading = 0.0, float lookAtTilt = 0.0, 
-            vector cameraPosition = cOriginVector){
-        for(int i = 0; i < uiEntryArray.size(); i++){
-            UiEntry entry = uiEntryArray[i];
-            if(entry.dynamicUpdate(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, page, cameraPosition)){
-                uiEntryArray[i] = entry;
-            }
-        }
-    }
-};
+    rmTriggerAddScriptLine("bool hoverable = rolloverDataIndex >= 0;");
+    rmTriggerAddScriptLine("string unitType = hoverable ? UI_SYSTEM_UNIT2 : UI_SYSTEM_UNIT;");
+    rmTriggerAddScriptLine("vector lookAt = uiSystemLookAtArray[p];");
+    rmTriggerAddScriptLine("float width = uiEntryWidthArrayGet(p, unitDataIndex);");
+    rmTriggerAddScriptLine("float height = uiEntryHeightArrayGet(p, unitDataIndex);");
+    rmTriggerAddScriptLine("vector pos = lookAt + uiSystemXAxisDirectionArray[p] * uiEntryXArrayGet(p, index) + uiSystemYAxisDirectionArray[p] * (uiEntryYArrayGet(p, index) + height / 2.0);");
+    rmTriggerAddScriptLine("int unit = trUnitCreateForced(unitType, pos.x, pos.y, pos.z, 0, p);");
+    rmTriggerAddScriptLine("selectSingle(unit);");
+    rmTriggerAddScriptLine("if(!uiSystemDebug){");
+        rmTriggerAddScriptLine("trUnitChangeProtoUnit(unitType, false, true);");
+        rmTriggerAddScriptLine("trUnitSetShading(cShaderBurning, 1000.0);");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("if(hoverable){");
+        rmTriggerAddScriptLine("trUnitSetScale(UI_SYSTEM_SMALL_SCALE_MULTIPLIER * height, 0.004, UI_SYSTEM_SMALL_SCALE_MULTIPLIER * width);");
+    rmTriggerAddScriptLine("} else {");
+        rmTriggerAddScriptLine("trUnitSetScale(height, 0.004, width);");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("trUnitRotateZ(uiSystemLookAtTiltArray[p] - 90, true);");
+    rmTriggerAddScriptLine("trUnitRotateY(-uiSystemLookAtHeadingArray[p] - 180, true);");
+    rmTriggerAddScriptLine("if(clickableDataIndex < 0 || uiSystemDisableClickArray[p]){");
+        rmTriggerAddScriptLine("trUnitSetFlag(cUnitFlagIsUnbuilding, true);");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("if(hoverable){");
+        rmTriggerAddScriptLine("trRelicForce(unit, kbTechGetName(uiSystemRelicTechArray[rolloverDataIndex]));");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("uiEntryUnitArraySet(p, unitDataIndex, unit);");
+rmTriggerAddScriptLine("}");
 
-class UiSystem {
-    int p = 1;
-    bool debug = false;
-    vector lookAt = cOriginVector;
-    vector lookAtForCamera = cOriginVector;
-    vector cameraPosition = cOriginVector;
-    float lookAtDistance = UI_SYSTEM_LOOK_DISTANCE;
-    float lookAtHeading = 90.0;
-    float lookAtTilt = 90.0;
-    float lookAtFov = 1.0;
-    vector xAxisDirection = vector(1.0, 0.0, 0.0);
-    vector yAxisDirection = vector(0.0, 0.0, 1.0);
-    bool uiActive = false;
-    bool disableClick = false;
-    int[] deletableFlagsToRevert = default;
-    bool[] selectableFlagsToRevert = default;
-    int rolloverCount = 0;
-    UiSystemPage page0;
-    UiSystemPage page1;
-    UiSystemPage page2;
-    int addPage = 0;
-    int showingPage = 0;
-    bool staticView = false;
-    int checkDynamicFrequency = -1;
-    int checkDynamicLastTime = -1;
+rmTriggerAddScriptLine("void _uiSystemRefreshUiTech(int p = 1, int index = 0){");
+    rmTriggerAddScriptLine("int rolloverDataIndex = uiEntryRolloverDataIndexArrayGet(p, index);");
+    rmTriggerAddScriptLine("int relicTech = uiSystemRelicTechArray[rolloverDataIndex];");
+    rmTriggerAddScriptLine("trTechHideEffects(relicTech, p, true);");
+    rmTriggerAddScriptLine("trTechSetStringID(relicTech, p, uiEntryRolloverNameArrayGet(p, rolloverDataIndex) + \"<color=0,0,0>\", cXSTechEffectDisplayName);");
+    rmTriggerAddScriptLine("trTechSetStringID(relicTech, p, \"</color>\n\" + uiEntryRolloverDescriptionArrayGet(p, rolloverDataIndex), cXSTechEffectRollover);");
+rmTriggerAddScriptLine("}");
+
+rmTriggerAddScriptLine("void _uiSystemAddDisplay(int p = 1, float x = 0.0, float y = 0.0, string content = \"\", int onTopOf = -1){");
+    rmTriggerAddScriptLine("uiEntryOnTopOfArrayAdd(p, onTopOf);");
+    rmTriggerAddScriptLine("uiEntryXArrayAdd(p, x);");
+    rmTriggerAddScriptLine("uiEntryYArrayAdd(p, y);");
+    rmTriggerAddScriptLine("uiEntryContentArrayAdd(p, content);");
+rmTriggerAddScriptLine("}");
+
+rmTriggerAddScriptLine("void _uiSystemAddUnit(int p = 1, float width = 0.0, float height = 0.0){");
+    rmTriggerAddScriptLine("uiEntryUnitDataIndexArrayAdd(p, uiEntryUnitArraySize(p));");
+    rmTriggerAddScriptLine("uiEntryWidthArrayAdd(p, width);");
+    rmTriggerAddScriptLine("uiEntryHeightArrayAdd(p, height);");
+    rmTriggerAddScriptLine("uiEntryUnitArrayAdd(p, -1);");
+rmTriggerAddScriptLine("}");
+
+rmTriggerAddScriptLine("void _uiSystemAddRollover(int p = 1, string rolloverName = \"\", string rolloverDescription = \"\"){");
+    rmTriggerAddScriptLine("uiEntryRolloverDataIndexArrayAdd(p, uiEntryRolloverNameArraySize(p));");
+    rmTriggerAddScriptLine("uiEntryRolloverNameArrayAdd(p, rolloverName);");
+    rmTriggerAddScriptLine("uiEntryRolloverDescriptionArrayAdd(p, rolloverDescription);");
+rmTriggerAddScriptLine("}");
+
+rmTriggerAddScriptLine("void _uiSystemAddClickable(int p = 1, ref Parameters parameters, void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}){");
+    rmTriggerAddScriptLine("int outerIndex = uiEntryClickableDataIndexArrayAdd(p, uiEntryClickableHandlerArraySize(p));");
+    rmTriggerAddScriptLine("UiEntryParameterised wrapperHandler;");
+    rmTriggerAddScriptLine("wrapperHandler.parameters = parameters;");
+    rmTriggerAddScriptLine("wrapperHandler.handler = handler;");
+    rmTriggerAddScriptLine("uiEntryClickableHandlerArrayAdd(p, wrapperHandler);");
+    rmTriggerAddScriptLine("int unitDataIndex = uiEntryUnitDataIndexArrayGet(p, outerIndex);");
+    rmTriggerAddScriptLine("uiEntryUnitDataIndexInClickableArrayAdd(p, unitDataIndex);");
+    rmTriggerAddScriptLine("uiEntryOuterIndexInClickableArrayAdd(p, outerIndex);");
+rmTriggerAddScriptLine("}");
+
+rmTriggerAddScriptLine("void _uiSystemAddDynamic(int p = 1, int frequency = 0, string(int, ref Parameters) getContent = EMPTY_DYNAMIC_UI_CONTENT, ref Parameters parameters){");
+    rmTriggerAddScriptLine("int outerIndex = uiEntryDynamicDataIndexArrayAdd(p, uiEntryFrequencyArraySize(p));");
+    rmTriggerAddScriptLine("UiEntryStringParameterised getDisplayWrapper;");
+    rmTriggerAddScriptLine("getDisplayWrapper.parameters = parameters;");
+    rmTriggerAddScriptLine("getDisplayWrapper.getContent = getContent;");
+    rmTriggerAddScriptLine("uiEntryDynamicGetContentWrapperArrayAdd(p, getDisplayWrapper);");
+    rmTriggerAddScriptLine("uiEntryLastTimeArrayAdd(p, xsGetTimeMS());");
+    rmTriggerAddScriptLine("uiEntryFrequencyArrayAdd(p, frequency);");
+    rmTriggerAddScriptLine("uiEntryOuterIndexInDynamicArrayAdd(p, outerIndex);");
+rmTriggerAddScriptLine("}");
+
+rmTriggerAddScriptLine("int uiSystemAddDisplay(int p = 1, float x = 0.0, float y = 0.0, string content = \"\", int onTopOf = -1){");
+    rmTriggerAddScriptLine("int outerIndex = uiEntryXArraySize(p);");
+    rmTriggerAddScriptLine("_uiSystemAddDisplay(p, x, y, content, onTopOf);");
     
-    void initialise(int pToUse = 1, bool debugToUse = false){
-        p = pToUse;
-        debug = debugToUse;
-        page0.page = 0;
-        page1.page = 1;
-        page2.page = 2;
-    }
+    rmTriggerAddScriptLine("uiEntryUnitDataIndexArrayAdd(p, -1);");
+    rmTriggerAddScriptLine("uiEntryRolloverDataIndexArrayAdd(p, -1);");
+    rmTriggerAddScriptLine("uiEntryClickableDataIndexArrayAdd(p, -1);");
+    rmTriggerAddScriptLine("uiEntryDynamicDataIndexArrayAdd(p, -1);");
+    rmTriggerAddScriptLine("return outerIndex;");
+rmTriggerAddScriptLine("}");
+
+rmTriggerAddScriptLine("int uiSystemAddDisplayWithHover(int p = 1, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = \"\", string rolloverName = \"\", string rolloverDescription = \"\", int onTopOf = -1){");
+    rmTriggerAddScriptLine("int outerIndex = uiEntryXArraySize(p);");
+    rmTriggerAddScriptLine("_uiSystemAddDisplay(p, x, y, content, onTopOf);");
     
-    void setCameraPosition(vector dest = cOriginVector, float distance = 0.0, float heading = 0.0, float tilt = 0.0, float fov = 40.0){
-        lookAtForCamera = dest;
-        lookAtDistance = distance;
-        lookAtHeading = heading;
-        lookAtTilt = tilt;
-        lookAtFov = fov;
-        float cameraH = degToRad(heading);
-        float cameraT = degToRad(tilt);
-        float cameraSinH = sin(cameraH);
-        float cameraCosH = cos(cameraH);
-        float cameraSinT = sin(cameraT);
-        float cameraCosT = cos(cameraT);
-        float cameraPosX = 0.0+dest.x-cameraCosH*cameraCosT*distance;
-        float cameraPosY = cameraSinT*distance+dest.y;
-        float cameraPosZ = 0.0+dest.z-cameraSinH*cameraCosT*distance;
-        cameraPosition = vector(cameraPosX, cameraPosY, cameraPosZ);
-        float canvasDistance = (tan(degToRad(0.5)) * UI_SYSTEM_LOOK_DISTANCE) / tan(degToRad(0.5 * fov));
-        float canvasDistanceFromLookPoint = -canvasDistance + distance;
-        float canvasPosX = 0.0+dest.x-cameraCosH*cameraCosT*canvasDistanceFromLookPoint;
-        float canvasPosY = cameraSinT*canvasDistanceFromLookPoint+dest.y;
-        float canvasPosZ = 0.0+dest.z-cameraSinH*cameraCosT*canvasDistanceFromLookPoint;
-        lookAt = vector(canvasPosX, canvasPosY, canvasPosZ);
-        xAxisDirection = vector(cameraSinH, 0.0, -cameraCosH);
-        yAxisDirection = vector(cameraSinT * cameraCosH, cameraCosT, cameraSinT * cameraSinH);
-        if(uiActive && trCurrentPlayer() == p){
-            cameraTrack.create(lookAtForCamera, lookAtDistance, lookAtHeading, lookAtTilt, lookAtFov);
-            cameraTrack.addWaypoint(1000000000, lookAtForCamera, lookAtDistance, lookAtHeading, lookAtTilt, lookAtFov);
-            cameraTrack.play();
-        }
-    }
+    rmTriggerAddScriptLine("_uiSystemAddUnit(p, width, height);");
+    rmTriggerAddScriptLine("_uiSystemAddRollover(p, rolloverName, rolloverDescription);");
+    rmTriggerAddScriptLine("uiEntryClickableDataIndexArrayAdd(p, -1);");
+    rmTriggerAddScriptLine("uiEntryDynamicDataIndexArrayAdd(p, -1);");
     
-    void enter(bool disableClickToUse = false, bool staticViewToUse = false, int checkDynamicFrequencyToUse = -1){
-        staticView = staticViewToUse;
-        checkDynamicFrequency = checkDynamicFrequencyToUse;
-        checkDynamicLastTime = xsGetTimeMS();
-        if(uiActive == false){
-            uiActive = true;
-            for(int i = 0; i < cNumberProtoUnits; i++){
-                bool deletable = kbPlayerGetProtoStatFlag(p, i, cProtoUnitFlagDeleteable);
-                if(deletable){
-                    deletableFlagsToRevert.add(i);
-                    trProtoUnitSetFlag(p, kbProtoUnitGetName(i), "Deleteable", false);
-                }
-            }
-            if(trCurrentPlayer() == p){
-                selectableFlagsToRevert.resize(cNumberProtoUnits * (cNumberPlayers + 1), false);
-                int offset = 0;
-                for(int q = 0; q <= cNumberPlayers; q++){
-                    for(int i = 0; i < cNumberProtoUnits; i++){
-                        bool selectable = kbPlayerGetProtoStatFlag(q, i, cProtoUnitFlagSelectable);
-                        selectableFlagsToRevert[i + offset] = selectable;
-                        if(selectable){
-                            trProtoUnitSetFlag(q, kbProtoUnitGetName(i), "Selectable", false);
-                        }
-                    }
-                    offset = offset + cNumberProtoUnits;
-                }
-            }
-            trProtoUnitSetFlag(p, UI_SYSTEM_UNIT, "Deleteable", true);
-            trProtoUnitSetFlag(p, UI_SYSTEM_UNIT2, "Deleteable", true);
-            trProtoUnitSetFlag(p, UI_SYSTEM_UNIT, "Selectable", true);
-            trProtoUnitSetFlag(p, UI_SYSTEM_UNIT2, "Selectable", true);
-            int tempToSelect = trUnitCreateForced(UI_SYSTEM_UNIT, lookAt.x, lookAt.y, lookAt.z, 0, p);
-            selectSingle(tempToSelect);
-            if (trCurrentPlayer() == p){
-                trUnitGameSelect(true);
-            }
-            trUnitDestroy();
-            if(trCurrentPlayer() == p){
-                cameraTrack.create(lookAtForCamera, lookAtDistance, lookAtHeading, lookAtTilt, lookAtFov);
-                cameraTrack.addWaypoint(1000000000, lookAtForCamera, lookAtDistance, lookAtHeading, lookAtTilt, lookAtFov);
-                cameraTrack.play();
-            }
-        }
-        disableClick = disableClickToUse;
-        if(showingPage == 0) {
-            page0.requestDestroy(p, false);
-        } else if(showingPage == 1) {
-            page1.requestDestroy(p, false);
-        } else {
-            page2.requestDestroy(p, false);
-        }
-        rolloverCount = 0;
-        if(addPage == 0){
-            addPage = 1;
-            page1.realShow = xsGetTimeMS();
-        } else if(addPage == 1) {
-            addPage = 2;
-            page2.realShow = xsGetTimeMS();
-        } else {
-            addPage = 0;
-            page0.realShow = xsGetTimeMS();
-        }
-    }
+    rmTriggerAddScriptLine("_uiSystemRefreshUiTech(p, outerIndex);");
+    rmTriggerAddScriptLine("_uiSystemRefreshUiUnit(p, outerIndex);");
+    rmTriggerAddScriptLine("return outerIndex;");
+rmTriggerAddScriptLine("}");
+
+rmTriggerAddScriptLine("int uiSystemAddClickable(int p = 1, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = \"\", ");
+        rmTriggerAddScriptLine("ref Parameters parameters, void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}, int onTopOf = -1){");
+    rmTriggerAddScriptLine("int outerIndex = uiEntryXArraySize(p);");
+    rmTriggerAddScriptLine("_uiSystemAddDisplay(p, x, y, content, onTopOf);");
     
-    void exit(bool normaliseCamera = false, float fov = 40.0){
-        if(uiActive == true){
-            uiActive = false;
-            int tempToSelect = trUnitCreateForced(UI_SYSTEM_UNIT, lookAt.x, lookAt.y, lookAt.z, 0, p);
-            selectSingle(tempToSelect);
-            if (trCurrentPlayer() == p){
-                trUnitGameSelect(true);
-            }
-            trUnitDestroy();
-            for(int i = 0; i < deletableFlagsToRevert.size(); i++){
-                trProtoUnitSetFlag(p, kbProtoUnitGetName(deletableFlagsToRevert[i]), "Deleteable", true);
-            }
-            deletableFlagsToRevert.clear();
-            if(trCurrentPlayer() == p){
-                int offset = 0;
-                for(int q = 0; q <= cNumberPlayers; q++){
-                    for(int i = 0; i < cNumberProtoUnits; i++){
-                        bool selectable = selectableFlagsToRevert[i + offset];
-                        if(selectable){
-                            trProtoUnitSetFlag(q, kbProtoUnitGetName(i), "Selectable", true);
-                        }
-                    }
-                    offset = offset + cNumberProtoUnits;
-                }
-                selectableFlagsToRevert.clear();
-            }
-            if(trCurrentPlayer() == p){
-                if(normaliseCamera){
-                    cameraTrack.create(lookAtForCamera, lookAtDistance, lookAtHeading, lookAtTilt, fov);
-                    cameraTrack.addWaypoint(1, lookAtForCamera, lookAtDistance, lookAtHeading, lookAtTilt, fov);
-                    cameraTrack.play(true, 0);
-                }
-            }
-            page0.requestDestroy(p, true);
-            page1.requestDestroy(p, true);
-            page2.requestDestroy(p, true);
-        }
-    }
+    rmTriggerAddScriptLine("_uiSystemAddUnit(p, width, height);");
+    rmTriggerAddScriptLine("uiEntryRolloverDataIndexArrayAdd(p, -1);");
+    rmTriggerAddScriptLine("_uiSystemAddClickable(p, parameters, handler);");
+    rmTriggerAddScriptLine("uiEntryDynamicDataIndexArrayAdd(p, -1);");
     
-    void addDisplay(float x = 0.0, float y = 0.0, string content = "", bool showBackground = false){
-        UiEntry entry;
-        entry.unitType = UI_SYSTEM_UNIT;
-        entry.clickable = false;
-        entry.hoverable = false;
-        entry.x = x;
-        entry.y = y;
-        entry.content = content;
-        entry.showBackground = showBackground;
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.size();
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.size();
-        } else {
-            entry.id = page2.uiEntryArray.size();
-        }
-        entry.show(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, addPage, true, debug, disableClick, cameraPosition);
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.add(entry);
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.add(entry);
-        } else {
-            entry.id = page2.uiEntryArray.add(entry);
-        }
-    }
+    rmTriggerAddScriptLine("_uiSystemRefreshUiUnit(p, outerIndex);");
+    rmTriggerAddScriptLine("return outerIndex;");
+rmTriggerAddScriptLine("}");
+
+rmTriggerAddScriptLine("int uiSystemAddClickableWithHover(int p = 1, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = \"\", string rolloverName = \"\", string rolloverDescription = \"\", ");
+        rmTriggerAddScriptLine("ref Parameters parameters, void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}, int onTopOf = -1){");
+    rmTriggerAddScriptLine("int outerIndex = uiEntryXArraySize(p);");
+    rmTriggerAddScriptLine("_uiSystemAddDisplay(p, x, y, content, onTopOf);");
     
-    void addDisplayWithHover(float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = "", string rolloverName = "", string rolloverDescription = "", bool showBackground = false){
-        UiEntry entry;
-        entry.unitType = UI_SYSTEM_UNIT2;
-        entry.clickable = false;
-        entry.hoverable = true;
-        entry.x = x;
-        entry.y = y;
-        entry.width = width;
-        entry.height = height;
-        entry.content = content;
-        entry.rolloverName = rolloverName;
-        entry.rolloverDescription = rolloverDescription;
-        entry.showBackground = showBackground;
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.size();
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.size();
-        } else {
-            entry.id = page2.uiEntryArray.size();
-        }
-        entry.rolloverId = rolloverCount;
-        rolloverCount++;
-        entry.show(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, addPage, true, debug, disableClick, cameraPosition);
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.add(entry);
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.add(entry);
-        } else {
-            entry.id = page2.uiEntryArray.add(entry);
-        }
-    }
+    rmTriggerAddScriptLine("_uiSystemAddUnit(p, width, height);");
+    rmTriggerAddScriptLine("_uiSystemAddRollover(p, rolloverName, rolloverDescription);");
+    rmTriggerAddScriptLine("_uiSystemAddClickable(p, parameters, handler);");
+    rmTriggerAddScriptLine("uiEntryDynamicDataIndexArrayAdd(p, -1);");
     
-    void addClickable(float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = "", ref Parameters parameters, 
-            void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}, bool showBackground = false){
-        UiEntry entry;
-        entry.unitType = UI_SYSTEM_UNIT;
-        entry.clickable = true;
-        entry.hoverable = false;
-        entry.x = x;
-        entry.y = y;
-        entry.width = width;
-        entry.height = height;
-        entry.content = content;
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.size();
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.size();
-        } else {
-            entry.id = page2.uiEntryArray.size();
-        }
-        entry.parameters = parameters;
-        entry.handler = handler;
-        entry.showBackground = showBackground;
-        entry.show(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, addPage, true, debug, disableClick, cameraPosition);
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.add(entry);
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.add(entry);
-        } else {
-            entry.id = page2.uiEntryArray.add(entry);
-        }
-    }
+    rmTriggerAddScriptLine("_uiSystemRefreshUiTech(p, outerIndex);");
+    rmTriggerAddScriptLine("_uiSystemRefreshUiUnit(p, outerIndex);");
+    rmTriggerAddScriptLine("return outerIndex;");
+rmTriggerAddScriptLine("}");
+
+rmTriggerAddScriptLine("int uiSystemAddDisplayDynamic(int p = 1, float x = 0.0, float y = 0.0, int frequency = 0, string(int, ref Parameters) getContent = EMPTY_DYNAMIC_UI_CONTENT, ref Parameters parameters, int onTopOf = -1){");
+    rmTriggerAddScriptLine("int outerIndex = uiEntryXArraySize(p);");
+    rmTriggerAddScriptLine("string content = (p == trCurrentPlayer()) ? getContent(p, parameters) : \"\";");
+    rmTriggerAddScriptLine("_uiSystemAddDisplay(p, x, y, content, onTopOf);");
     
-    void addClickableWithHover(float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = "", string rolloverName = "", string rolloverDescription = "", ref Parameters parameters, 
-            void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}, bool showBackground = false){
-        UiEntry entry;
-        entry.unitType = UI_SYSTEM_UNIT2;
-        entry.clickable = true;
-        entry.hoverable = true;
-        entry.x = x;
-        entry.y = y;
-        entry.width = width;
-        entry.height = height;
-        entry.content = content;
-        entry.rolloverName = rolloverName;
-        entry.rolloverDescription = rolloverDescription;
-        entry.parameters = parameters;
-        entry.handler = handler;
-        entry.showBackground = showBackground;
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.size();
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.size();
-        } else {
-            entry.id = page2.uiEntryArray.size();
-        }
-        entry.rolloverId = rolloverCount;
-        rolloverCount++;
-        entry.show(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, addPage, true, debug, disableClick, cameraPosition);
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.add(entry);
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.add(entry);
-        } else {
-            entry.id = page2.uiEntryArray.add(entry);
-        }
-    }
-    
-    void addDisplayDynamic(float x = 0.0, float y = 0.0, string(int, ref Parameters) getContent = EMPTY_DYNAMIC_UI_CONTENT, ref Parameters parameters, bool showBackground = false){
-        UiEntry entry;
-        entry.dynamic = true;
-        entry.unitType = UI_SYSTEM_UNIT;
-        entry.clickable = false;
-        entry.hoverable = false;
-        entry.x = x;
-        entry.y = y;
-        entry.getContent = getContent;
-        entry.parameters = parameters;
-        entry.showBackground = showBackground;
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.size();
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.size();
-        } else {
-            entry.id = page2.uiEntryArray.size();
-        }
-        entry.show(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, addPage, true, debug, disableClick, cameraPosition);
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.add(entry);
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.add(entry);
-        } else {
-            entry.id = page2.uiEntryArray.add(entry);
-        }
-    }
-    
-    void addDisplayWithHoverDynamic(float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string(int, ref Parameters) getContent = EMPTY_DYNAMIC_UI_CONTENT, 
-            string(int, ref Parameters) getRolloverName = EMPTY_DYNAMIC_UI_CONTENT, string(int, ref Parameters) getRolloverDescription = EMPTY_DYNAMIC_UI_CONTENT, ref Parameters parameters, bool showBackground = false){
-        UiEntry entry;
-        entry.dynamic = true;
-        entry.unitType = UI_SYSTEM_UNIT2;
-        entry.clickable = false;
-        entry.hoverable = true;
-        entry.x = x;
-        entry.y = y;
-        entry.width = width;
-        entry.height = height;
-        entry.getContent = getContent;
-        entry.getRolloverName = getRolloverName;
-        entry.getRolloverDescription = getRolloverDescription;
-        entry.parameters = parameters;
-        entry.showBackground = showBackground;
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.size();
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.size();
-        } else {
-            entry.id = page2.uiEntryArray.size();
-        }
-        entry.rolloverId = rolloverCount;
-        rolloverCount++;
-        entry.show(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, addPage, true, debug, disableClick, cameraPosition);
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.add(entry);
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.add(entry);
-        } else {
-            entry.id = page2.uiEntryArray.add(entry);
-        }
-    }
-    
-    void addClickableDynamic(float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string(int, ref Parameters) getContent = EMPTY_DYNAMIC_UI_CONTENT, ref Parameters parameters, 
-            void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}, bool showBackground = false){
-        UiEntry entry;
-        entry.dynamic = true;
-        entry.unitType = UI_SYSTEM_UNIT;
-        entry.clickable = true;
-        entry.hoverable = false;
-        entry.x = x;
-        entry.y = y;
-        entry.width = width;
-        entry.height = height;
-        entry.getContent = getContent;
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.size();
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.size();
-        } else {
-            entry.id = page2.uiEntryArray.size();
-        }
-        entry.parameters = parameters;
-        entry.handler = handler;
-        entry.showBackground = showBackground;
-        entry.show(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, addPage, true, debug, disableClick, cameraPosition);
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.add(entry);
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.add(entry);
-        } else {
-            entry.id = page2.uiEntryArray.add(entry);
-        }
-    }
-    
-    void addClickableWithHoverDynamic(float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string(int, ref Parameters) getContent = EMPTY_DYNAMIC_UI_CONTENT, 
-            string(int, ref Parameters) getRolloverName = EMPTY_DYNAMIC_UI_CONTENT, string(int, ref Parameters) getRolloverDescription = EMPTY_DYNAMIC_UI_CONTENT, ref Parameters parameters, 
-            void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}, bool showBackground = false){
-        UiEntry entry;
-        entry.dynamic = true;
-        entry.unitType = UI_SYSTEM_UNIT2;
-        entry.clickable = true;
-        entry.hoverable = true;
-        entry.x = x;
-        entry.y = y;
-        entry.width = width;
-        entry.height = height;
-        entry.getContent = getContent;
-        entry.getRolloverName = getRolloverName;
-        entry.getRolloverDescription = getRolloverDescription;
-        entry.parameters = parameters;
-        entry.handler = handler;
-        entry.showBackground = showBackground;
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.size();
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.size();
-        } else {
-            entry.id = page2.uiEntryArray.size();
-        }
-        entry.rolloverId = rolloverCount;
-        rolloverCount++;
-        entry.show(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, addPage, true, debug, disableClick, cameraPosition);
-        if(addPage == 0){
-            entry.id = page0.uiEntryArray.add(entry);
-        } else if(addPage == 1) {
-            entry.id = page1.uiEntryArray.add(entry);
-        } else {
-            entry.id = page2.uiEntryArray.add(entry);
-        }
-    }
-    
-    UiEntry process(){
-        if(page0.process(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, debug, disableClick, cameraPosition)){
-            showingPage = 0;
-        }
-        if(page1.process(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, debug, disableClick, cameraPosition)){
-            showingPage = 1;
-        }
-        if(page2.process(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, debug, disableClick, cameraPosition)){
-            showingPage = 2;
-        }
-        if(uiActive){
-            int clickedEntryIndex = -1;
-            bool validClick = true;
-            UiEntry[] uiEntryArray = showingPage == 0 ? page0.uiEntryArray : (showingPage == 1 ? page1.uiEntryArray : page2.uiEntryArray);
-            for(int i = 0; i < uiEntryArray.size(); i++){
-                UiEntry entry = uiEntryArray[i];
-                int[] clickableUnitArray = entry.clickableUnitArray;
-                for(int j = 0; j < clickableUnitArray.size(); j++){
-                    selectSingle(clickableUnitArray[j]);
-                    if(trUnitAlive() == false){
-                        if(clickedEntryIndex == -1){
-                            clickedEntryIndex = i;
-                        } else if(clickedEntryIndex != i){
-                            validClick = false;
-                        }
-                    }
-                }
-            }
-            if(validClick == false){
-                for(int i = 0; i < uiEntryArray.size(); i++){
-                    UiEntry entry = uiEntryArray[i];
-                    entry.refresh(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, debug, disableClick);
-                    uiEntryArray[i] = entry;
-                }
-            } else if(clickedEntryIndex >= 0){
-                if(staticView){
-                    // Force update next frame
-                    checkDynamicLastTime = xsGetTimeMS() - checkDynamicFrequency;
-                    for(int i = 0; i < uiEntryArray.size(); i++){
-                        UiEntry entry = uiEntryArray[i];
-                        entry.refresh(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, debug, disableClick);
-                        uiEntryArray[i] = entry;
-                    }
-                } else {
-                    if(showingPage == 0) {
-                        page0.requestDestroy(p, false);
-                    } else if(showingPage == 1) {
-                        page1.requestDestroy(p, false);
-                    } else {
-                        page2.requestDestroy(p, false);
-                    }
-                }
-                rolloverCount = 0;
-                UiEntry entry = uiEntryArray[clickedEntryIndex];
-                return entry;
-            }
-            if(validClick == false || clickedEntryIndex < 0){
-                int currentTime = xsGetTimeMS();
-                if(checkDynamicFrequency >= 0 && currentTime >= checkDynamicLastTime + checkDynamicFrequency){
-                    checkDynamicLastTime = currentTime;
-                    if(showingPage == 0) {
-                        page0.dynamicUpdate(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, cameraPosition);
-                    } else if(showingPage == 1) {
-                        page1.dynamicUpdate(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, cameraPosition);
-                    } else {
-                        page2.dynamicUpdate(p, lookAt, xAxisDirection, yAxisDirection, lookAtHeading, lookAtTilt, cameraPosition);
-                    }
-                }
-            }
-            if(trCurrentPlayer() == p && (trUnitTypeIsSelected(UI_SYSTEM_UNIT, true) || trUnitTypeIsSelected(UI_SYSTEM_UNIT2, true))){
-                trExecuteConsoleCommand("uiDeleteSelectedUnit(true)");
-            }
-        }
-        return DUMMY_ENTRY;
-    }
-};
+    rmTriggerAddScriptLine("uiEntryUnitDataIndexArrayAdd(p, -1);");
+    rmTriggerAddScriptLine("uiEntryRolloverDataIndexArrayAdd(p, -1);");
+    rmTriggerAddScriptLine("uiEntryClickableDataIndexArrayAdd(p, -1);");
+    rmTriggerAddScriptLine("_uiSystemAddDynamic(p, frequency, getContent, parameters);");
+    rmTriggerAddScriptLine("return outerIndex;");
+rmTriggerAddScriptLine("}");
 
-UiSystem[] uiSystemArray = default;
+rmTriggerAddScriptLine("void _processUiSystems(){");
+    rmTriggerAddScriptLine("int currentTime = xsGetTimeMS();");
+    rmTriggerAddScriptLine("for(int p = 1; p <= "+cNumberPlayers+"; p++){");
+        rmTriggerAddScriptLine("uiSystemClickedIndexArray[p] = -1;");
+        rmTriggerAddScriptLine("if(uiSystemActiveArray[p]){");
+            rmTriggerAddScriptLine("int dynamicCount = uiEntryLastTimeArraySize(p);");
+            rmTriggerAddScriptLine("for(int i = 0; i < dynamicCount; i++){");
+                rmTriggerAddScriptLine("int frequency = uiEntryFrequencyArrayGet(p, i);");
+                rmTriggerAddScriptLine("int lastTime = uiEntryLastTimeArrayGet(p, i);");
+                rmTriggerAddScriptLine("if(currentTime - frequency >= lastTime){");
+                    rmTriggerAddScriptLine("uiEntryLastTimeArraySet(p, i, currentTime);");
+                    rmTriggerAddScriptLine("if(p == trCurrentPlayer()){");
+                        rmTriggerAddScriptLine("UiEntryStringParameterised getContentWrapper = uiEntryDynamicGetContentWrapperArrayGet(p, i);");
+                        rmTriggerAddScriptLine("Parameters parameters = getContentWrapper.parameters;");
+                        rmTriggerAddScriptLine("string(int, ref Parameters) getContent = getContentWrapper.getContent;");
+                        rmTriggerAddScriptLine("string newContent = getContent(p, parameters);");
+                        rmTriggerAddScriptLine("int outerIndex = uiEntryOuterIndexInDynamicArrayGet(p, i);");
+                        rmTriggerAddScriptLine("if(newContent != uiEntryContentArrayGet(p, outerIndex)){");
+                            rmTriggerAddScriptLine("uiEntryContentArraySet(p, outerIndex, newContent);");
+                            rmTriggerAddScriptLine("uiSystemContentCacheArray[outerIndex] = newContent;");
+                            rmTriggerAddScriptLine("if(newContent != \"\"){");
+                                rmTriggerAddScriptLine("trWorldSpacePromptArea(\"UiSystem\" + uiSystemIdCacheArray[outerIndex], uiSystemPositionWorkingCacheArray[outerIndex], ");
+                                        rmTriggerAddScriptLine("\"<icon=(1,10000)(0)>\n\" + newContent, cOriginVector, false);");
+                            rmTriggerAddScriptLine("} else {");
+                                rmTriggerAddScriptLine("trWorldSpacePromptHide(\"UiSystem\" + uiSystemIdCacheArray[outerIndex]);");
+                            rmTriggerAddScriptLine("}");
+                        rmTriggerAddScriptLine("}");
+                    rmTriggerAddScriptLine("}");
+                rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("int clickedEntryIndex = -1;");
+            rmTriggerAddScriptLine("bool validClick = true;");
+            rmTriggerAddScriptLine("int count = uiEntryUnitDataIndexInClickableArraySize(p);");
+            rmTriggerAddScriptLine("for(int i = 0; i < count; i++){");
+                rmTriggerAddScriptLine("int unitDataIndex = uiEntryUnitDataIndexInClickableArrayGet(p, i);");
+                rmTriggerAddScriptLine("int unitId = uiEntryUnitArrayGet(p, unitDataIndex);");
+                rmTriggerAddScriptLine("selectSingle(unitId);");
+                rmTriggerAddScriptLine("if(trUnitAlive() == false){");
+                    rmTriggerAddScriptLine("uiSystemThrottleClickArray[p] = 0;");
+                    rmTriggerAddScriptLine("if(clickedEntryIndex == -1){");
+                        rmTriggerAddScriptLine("clickedEntryIndex = i;");
+                    rmTriggerAddScriptLine("} else {");
+                        rmTriggerAddScriptLine("validClick = false;");
+                    rmTriggerAddScriptLine("}");
+                    rmTriggerAddScriptLine("_uiSystemRefreshUiUnit(p, uiEntryOuterIndexInClickableArrayGet(p, i));");
+                rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("if(validClick && clickedEntryIndex >= 0){");
+                rmTriggerAddScriptLine("uiSystemClickedIndexArray[p] = clickedEntryIndex;");
+            rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("if(trCurrentPlayer() == p && (trUnitTypeIsSelected(UI_SYSTEM_UNIT, true) || trUnitTypeIsSelected(UI_SYSTEM_UNIT2, true))){");
+                rmTriggerAddScriptLine("if(xsGetTimeMS() >= uiSystemThrottleClickArray[p]){");
+                    rmTriggerAddScriptLine("uiSystemThrottleClickArray[p] = xsGetTimeMS() + 500;");
+                    rmTriggerAddScriptLine("trExecuteConsoleCommand(\"uiDeleteSelectedUnit(true)\");");
+                rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("}");
+        rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("for(int p = 1; p <= "+cNumberPlayers+"; p++){");
+        rmTriggerAddScriptLine("int index = uiSystemClickedIndexArray[p];");
+        rmTriggerAddScriptLine("if(index >= 0){");
+            rmTriggerAddScriptLine("UiEntryParameterised wrapperHandler = uiEntryClickableHandlerArrayGet(p, index);");
+            rmTriggerAddScriptLine("Parameters parameters = wrapperHandler.parameters;");
+            rmTriggerAddScriptLine("void(int, ref Parameters) handler = wrapperHandler.handler;");
+            rmTriggerAddScriptLine("handler(p, parameters);");
+        rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("}");
+rmTriggerAddScriptLine("}");
 
-void initialiseUiSystem(bool debug = false){
-    for(int i = 0; i < cNumberTechs; i++){
-        string tech = kbTechGetName(i);
-        if(xsStringStartsWith(tech, "Relic", true) && xsStringEndsWith(tech, "Respawn", true) == false){
-            uiRelicTechArray.add(i);
-        }
-    }
-    uiSystemArray.resize(cNumberPlayers + 1);
-    string[] systemUnits = string2Array(UI_SYSTEM_UNIT, UI_SYSTEM_UNIT2);
-    for(int p = 1; p <= cNumberPlayers; p++){
-        UiSystem uiSystem = uiSystemArray[p];
-        uiSystem.initialise(p, debug);
-        uiSystem.setCameraPosition(vector(0.5 * kbGetMapXSize(), -10100.0, 0.5 * kbGetMapZSize()), 100.0, 45.0, 89.0, 40.0);
-        uiSystemArray[p] = uiSystem;
-        for(int i_systemUnits = 0; i_systemUnits < systemUnits.size(); i_systemUnits++){
-            string systemUnit = systemUnits[i_systemUnits];
-            trProtoUnitSetFlag(p, systemUnit, "Collideable", false);
-            trProtoUnitSetFlag(p, systemUnit, "ForceDeleteable", true);
-            trProtoUnitSetFlag(p, systemUnit, "Invulnerable", true);
-            trProtoUnitSetFlag(p, systemUnit, "InvulnerableToAreaDamage", true);
-            trProtoUnitSetFlag(p, systemUnit, "DontMarkExtraFog", true);
-            trProtoUnitSetFlag(p, systemUnit, "VisibleUnderFog", true);
-            trProtoUnitSetFlag(p, systemUnit, "ForceToNature", false);
-            trProtoUnitSetFlag(p, systemUnit, "TieToGround", false);
-            trProtoUnitSetFlag(p, systemUnit, "Selectable", true);
-            trProtoUnitSetFlag(p, systemUnit, "Deleteable", true);
-            trProtoUnitSetFlag(p, systemUnit, "FadeInOnBuild", !debug);
-            trProtoUnitSetFlag(p, systemUnit, "HasLOS", true);
-            trProtoUnitSetFlag(p, systemUnit, "ObscuredByUnits", true);
-            trProtoUnitSetUnitType(p, systemUnit, "Building", true);
-            if(p != trCurrentPlayer()){
-                trProtoUnitSetFlag(p, systemUnit, "OnlyInEditor", true);
-            }
-            trModifyProtounitData(systemUnit, p, cXSProtoEffectBuildPoints, 100000, cXSRelativityAssign);
-            trModifyProtounitData(systemUnit, p, cXSProtoEffectLOS, debug ? 5.0 : 0.0, cXSRelativityAssign);
-        }
-        trProtoUnitSetFlag(p, UI_SYSTEM_UNIT2, "Relic", true);
-    }
-}
+rmTriggerAddScriptLine("void initialiseUiSystems(bool debug = false){");
+    rmTriggerAddScriptLine("uiSystemDebug = debug;");
+    rmTriggerAddScriptLine("uiSystemLookAtArray.resize("+(cNumberPlayers+1)+", cOriginVector);");
+    rmTriggerAddScriptLine("uiSystemLookAtForCameraArray.resize("+(cNumberPlayers+1)+", cOriginVector);");
+    rmTriggerAddScriptLine("uiSystemCameraPositionArray.resize("+(cNumberPlayers+1)+", cOriginVector);");
+    rmTriggerAddScriptLine("uiSystemLookAtDistanceArray.resize("+(cNumberPlayers+1)+", UI_SYSTEM_LOOK_DISTANCE);");
+    rmTriggerAddScriptLine("uiSystemLookAtHeadingArray.resize("+(cNumberPlayers+1)+", 90.0);");
+    rmTriggerAddScriptLine("uiSystemLookAtTiltArray.resize("+(cNumberPlayers+1)+", 90.0);");
+    rmTriggerAddScriptLine("uiSystemLookAtFovArray.resize("+(cNumberPlayers+1)+", 40.0);");
+    rmTriggerAddScriptLine("uiSystemXAxisDirectionArray.resize("+(cNumberPlayers+1)+", vector(1.0, 0.0, 0.0));");
+    rmTriggerAddScriptLine("uiSystemYAxisDirectionArray.resize("+(cNumberPlayers+1)+", vector(0.0, 0.0, 1.0));");
+    rmTriggerAddScriptLine("uiSystemActiveArray.resize("+(cNumberPlayers+1)+", false);");
+    rmTriggerAddScriptLine("uiSystemDisableClickArray.resize("+(cNumberPlayers+1)+", false);");
+    rmTriggerAddScriptLine("uiSystemDeletableFlagsToRevertArray.resize("+(cNumberPlayers+1)+" * cNumberProtoUnits, false);");
+    rmTriggerAddScriptLine("uiSystemSelectableFlagsToRevertArray.resize("+(cNumberPlayers+1)+" * cNumberProtoUnits, false);");
+    rmTriggerAddScriptLine("uiSystemClickedIndexArray.resize("+(cNumberPlayers+1)+", -1);");
+    rmTriggerAddScriptLine("uiSystemThrottleClickArray.resize("+(cNumberPlayers+1)+", 0);");
+    rmTriggerAddScriptLine("for(int p = 1; p <= "+cNumberPlayers+"; p++){");
+        rmTriggerAddScriptLine("setUiSystemCameraPosition(p, vector(0.5 * kbGetMapXSize(), -10100.0, 0.5 * kbGetMapZSize()), 100.0, 45.0, 89.0, 40.0);");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("for(int i = 0; i < cNumberTechs; i++){");
+        rmTriggerAddScriptLine("string tech = kbTechGetName(i);");
+        rmTriggerAddScriptLine("if(xsStringStartsWith(tech, \"Relic\", true) && xsStringEndsWith(tech, \"Respawn\", true) == false){");
+            rmTriggerAddScriptLine("uiSystemRelicTechArray.add(i);");
+        rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("string[] systemUnits = string2Array(UI_SYSTEM_UNIT, UI_SYSTEM_UNIT2);");
+    rmTriggerAddScriptLine("for(int p = 1; p <= "+cNumberPlayers+"; p++){");
+        forEachStart("string", "systemUnit", "systemUnits");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"Collideable\", false);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"ForceDeleteable\", true);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"Invulnerable\", true);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"InvulnerableToAreaDamage\", true);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"DontMarkExtraFog\", true);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"VisibleUnderFog\", true);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"ForceToNature\", false);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"TieToGround\", false);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"Selectable\", true);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"Deleteable\", true);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"FadeInOnBuild\", !debug);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"HasLOS\", true);");
+            rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"ObscuredByUnits\", true);");
+            rmTriggerAddScriptLine("trProtoUnitSetUnitType(p, systemUnit, \"Building\", true);");
+            rmTriggerAddScriptLine("if(p != trCurrentPlayer()){");
+                rmTriggerAddScriptLine("trProtoUnitSetFlag(p, systemUnit, \"OnlyInEditor\", true);");
+            rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("trModifyProtounitData(systemUnit, p, cXSProtoEffectBuildPoints, 100000, cXSRelativityAssign);");
+            rmTriggerAddScriptLine("trModifyProtounitData(systemUnit, p, cXSProtoEffectLOS, debug ? 5.0 : 0.0, cXSRelativityAssign);");
+        forEachEnd();
+        rmTriggerAddScriptLine("trProtoUnitSetFlag(p, UI_SYSTEM_UNIT2, \"Relic\", true);");
+    rmTriggerAddScriptLine("}");
+    rmTriggerAddScriptLine("scheduler.add(1, [](int iteration = 0) -> bool {");
+        rmTriggerAddScriptLine("_processUiSystems();");
+        rmTriggerAddScriptLine("return true;");
+    rmTriggerAddScriptLine("});");
+rmTriggerAddScriptLine("}");
 
-string displayCompensatedIcon(int width = 1, int height = 1, string icon = "0"){
-    float compensationValue = playerScreenIconSizeCompensationValue[trCurrentPlayer()];
-    int correctedWidth = round(compensationValue * width);
-    int correctedHeight = round(compensationValue * height);
-    return "<icon=("+correctedWidth+","+correctedHeight+")("+icon+")>";
-}
+// UI helper methods
 
-string minimapSafeSuffix(float posY = 0.0){
-    return "\n" + displayCompensatedIcon(1, xsFloatToInt(round((posY + 0.5) * VERTICAL_UI_PIXELS)));
-}
+rmTriggerAddScriptLine("string displayCompensatedIcon(int width = 1, int height = 1, string icon = \"0\"){");
+    rmTriggerAddScriptLine("float compensationValue = playerScreenIconSizeCompensationValue[trCurrentPlayer()];");
+    rmTriggerAddScriptLine("int correctedWidth = round(compensationValue * width);");
+    rmTriggerAddScriptLine("int correctedHeight = round(compensationValue * height);");
+    rmTriggerAddScriptLine("return \"<icon=(\"+correctedWidth+\",\"+correctedHeight+\")(\"+icon+\")>\";");
+rmTriggerAddScriptLine("}");
 
-void minimapSafeDisplay(ref UiSystem system, float x = 0.0, float y = 0.0, string content = ""){
-    system.addDisplay(x, -0.5, content + minimapSafeSuffix(y));
-}
+rmTriggerAddScriptLine("string minimapSafeSuffix(float posY = 0.0){");
+    rmTriggerAddScriptLine("return \"\n\" + displayCompensatedIcon(1, xsFloatToInt(round((posY + 0.5) * VERTICAL_UI_PIXELS)));");
+rmTriggerAddScriptLine("}");
 
-void minimapSafeDisplayWithHover(ref UiSystem system, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = "", string rolloverName = "", string rolloverDescription = ""){
-    minimapSafeDisplay(system, x, y, content);
-    system.addDisplayWithHover(x, y, width, height, "", rolloverName, rolloverDescription);
-}
+rmTriggerAddScriptLine("int minimapSafeDisplay(int p = 1, float x = 0.0, float y = 0.0, string content = \"\", int onTopOf = -1){");
+    rmTriggerAddScriptLine("return uiSystemAddDisplay(p, x, -0.5, content + minimapSafeSuffix(y), onTopOf);");
+rmTriggerAddScriptLine("}");
 
-void minimapSafeClickable(ref UiSystem system, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = "", ref Parameters parameters, 
-            void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}){
-    minimapSafeDisplay(system, x, y, content);
-    system.addClickable(x, y, width, height, "", parameters, handler);
-}
+rmTriggerAddScriptLine("int minimapSafeDisplayWithHover(int p = 1, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = \"\", string rolloverName = \"\", string rolloverDescription = \"\", int onTopOf = -1){");
+    rmTriggerAddScriptLine("uiSystemAddDisplayWithHover(p, x, y, width, height, \"\", rolloverName, rolloverDescription);");
+    rmTriggerAddScriptLine("return minimapSafeDisplay(p, x, y, content, onTopOf);");
+rmTriggerAddScriptLine("}");
 
-void minimapSafeClickableWithHover(ref UiSystem system, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = "", string rolloverName = "", string rolloverDescription = "", ref Parameters parameters, 
-            void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}){
-    minimapSafeDisplay(system, x, y, content);
-    system.addClickableWithHover(x, y, width, height, "", rolloverName, rolloverDescription, parameters, handler);
-}
+rmTriggerAddScriptLine("int minimapSafeClickable(int p = 1, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = \"\", ref Parameters parameters, ");
+            rmTriggerAddScriptLine("void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}, int onTopOf = -1){");
+    rmTriggerAddScriptLine("uiSystemAddClickable(p, x, y, width, height, \"\", parameters, handler);");
+    rmTriggerAddScriptLine("return minimapSafeDisplay(p, x, y, content, onTopOf);");
+rmTriggerAddScriptLine("}");
 
-void setUiVisible(bool visible = true){
-    if(visible){
-        trExecuteConsoleCommand("gadgetReal(AGameMinimap)");
-    } else {
-        trExecuteConsoleCommand("gadgetUnreal(AGameMinimap)");
-    }
-    for(int i = 0; i <= 6; i++){
-        trUIPanelVisibility(i, visible);
-    }
-}
-
-string getIconPathFormat(string iconPath = "", int size = 128){
-    return displayCompensatedIcon(size, size, iconPath);
-}
-
-void postRatioCalculation(){
-    cameraTrack.create(vector(10, 4, 10), 50, 45, 45);
-    cameraTrack.addWaypoint(1, vector(10, 4, 10), 50, 45, 45);
-    cameraTrack.play(true, 0);
-    setUiVisible(true);
-    trSetObscuredUnits(true);
-}
-
-void performProportionCalculation(){
-    setUiVisible(false);
-    cameraTrack.create(vector(0.5 * kbGetMapXSize(), -999.0, 0.5 * kbGetMapZSize()), 1.0, 90.0, 90.0, 1.0);
-    cameraTrack.addWaypoint(100000, vector(0.5 * kbGetMapXSize(), -999.0, 0.5 * kbGetMapZSize()), 1.0, 90.0, 90.0, 1.0);
-    cameraTrack.play();
-    scheduler.add(2000, [](int iterations = 1) -> bool {
-        float startX = 0.5 * kbGetMapXSize();
-        float posZ = 0.5 * kbGetMapZSize();
-        IntUnitDeletionTracker tracker;
-        for(int p = 1; p <= c; p++){
-            trPlayerModifyLOS(p, true, 0);
-        }
-        trProtoUnitSetFlag(0, UI_SYSTEM_UNIT, "VisibleUnderFog", true);
-        int objectToSee = trUnitCreateForced(UI_SYSTEM_UNIT, startX, -1000.0, posZ, 0, 0, true);
-        selectSingle(objectToSee);
-        trUnitSetScale(0.0, 0.0, 0.0);
-        int lastVisible = 0;
-        for(int i = 1; i <= 100000; i++){
-            trUnitReposition(startX + SHIFT_SPEED * i, -1000.0, posZ, true, true);
-            if(trUnitVisibleToPlayer()){
-                lastVisible = i;
-            }
-        }
-        trUnitDestroy();
-        trProtoUnitSetFlag(0, UI_SYSTEM_UNIT, "VisibleUnderFog", false);
-        for(int p = 1; p <= c; p++){
-            trPlayerModifyLOS(p, false, 0);
-        }
-        for(int p = 1; p <= c; p++){
-            int controlUnitId = trUnitCreateForced(UI_SYSTEM_UNIT, 0.5 * kbGetMapXSize(), 0.0, 0.5 * kbGetMapZSize(), 0, p);
-            tracker.controlUnits.add(controlUnitId);
-            for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
-                int unitId = trUnitCreateForced(UI_SYSTEM_UNIT, 0.5 * kbGetMapXSize(), 0.0, 0.5 * kbGetMapZSize(), 0, p);
-                tracker.units.add(unitId);
-            }
-            trUnitSelectClear();
-            if(p == trCurrentPlayer()){
-                trUnitSelectByID(tracker.controlUnits[p - 1]);
-                bool[] binary = toBinaryBits(lastVisible);
-                for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
-                    if(binary[i]){
-                        trUnitSelectByID(tracker.units[i + (p - 1) * BINARY_CONVERSION_DIGITS]);
-                    }
-                }
-                trUnitGameSelect(true);
-                trUnitSelectClear();
-                trExecuteConsoleCommand("uiDeleteSelectedUnit(true)");
-            }
-        }
-        schedulerWithIntUnitDeletionTracker.add(0, tracker, [](int iteration = 0, ref IntUnitDeletionTracker tracker) -> bool {
-            int[] controlUnits = tracker.controlUnits;
-            int[] units = tracker.units;
-            for(int p = 1; p <= c; p++){
-                selectSingle(controlUnits[p - 1]);
-                if(trUnitAlive() && trPlayerIsDefeatedOrResigned(p) == false && kbPlayerIsHuman(p)){
-                    return true;
-                }
-            }
-            playerScreenRatio.resize((c+1), 0.0);
-            playerScreenIconSizeCompensationValue.resize((c+1), 0.0);
-            for(int p = 1; p <= c; p++){
-                if(trPlayerIsDefeatedOrResigned(p) || kbPlayerIsHuman(p) == false){
-                    playerScreenRatio[p] = DEFAULT_SCREEN_RATIO;
-                    playerScreenIconSizeCompensationValue[p] = 1.0;
-                } else {
-                    bool[] binaryBits = new bool(BINARY_CONVERSION_DIGITS, false);
-                    for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
-                        int unitId = units[i + (p - 1) * BINARY_CONVERSION_DIGITS];
-                        selectSingle(unitId);
-                        binaryBits[i] = trUnitAlive() == false;
-                        trUnitDestroy();
-                    }
-                    int value = fromBinaryBits(binaryBits);
-                    playerScreenRatio[p] = xsIntToFloat(value) / MAGIC_RATIO_FROM_CALCULATION;
-                    playerScreenIconSizeCompensationValue[p] = max(1.0, DEFAULT_SCREEN_RATIO / playerScreenRatio[p]);
-                }
-            }
-            postRatioCalculation();
-            return false;
-        });
-        return false;
-    });
-}
-
-float getLeftAnchorX(float leftPixelBuffer = 0.0, float widthOfElement = 0.0, int p = 0){
-        return -0.5 * playerScreenRatio[p] + (leftPixelBuffer + widthOfElement) / 2.0 / VERTICAL_UI_PIXELS;
-}
-
-float getRightAnchorX(float rightPixelBuffer = 0.0, float widthOfElement = 0.0, int p = 0){
-    return 0.5 * playerScreenRatio[p] - (rightPixelBuffer + widthOfElement) / 2.0 / VERTICAL_UI_PIXELS;
-}
+rmTriggerAddScriptLine("int minimapSafeClickableWithHover(int p = 1, float x = 0.0, float y = 0.0, float width = 0.0, float height = 0.0, string content = \"\", string rolloverName = \"\", string rolloverDescription = \"\", ref Parameters parameters, ");
+            rmTriggerAddScriptLine("void(int, ref Parameters) handler = [](int pToUse = 1, ref Parameters parametersToUse) -> void {}, int onTopOf = -1){");
+    rmTriggerAddScriptLine("uiSystemAddClickableWithHover(p, x, y, width, height, \"\", rolloverName, rolloverDescription, parameters, handler);");
+    rmTriggerAddScriptLine("return minimapSafeDisplay(p, x, y, content, onTopOf);");
+rmTriggerAddScriptLine("}");

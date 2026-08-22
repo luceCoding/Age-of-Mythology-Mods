@@ -1,6 +1,6 @@
-void createButton(ref UiSystem system, float drawPosx = 0.0, float drawPosY = 0.0, string buttonName = ""){
-    minimapSafeDisplay(system, drawPosx, drawPosY, getIconPathFormat("resources/front_end/Ornate_Buttons/BtnOrnate_Large_On.png", 128));
-    minimapSafeDisplay(system, drawPosx, drawPosY + 0.05, buttonName);
+void createButton(int p = 0, float drawPosx = 0.0, float drawPosY = 0.0, string buttonName = ""){
+    minimapSafeDisplay(p, drawPosx, drawPosY, getIconPathFormat("resources/front_end/Ornate_Buttons/BtnOrnate_Large_On.png", 128));
+    minimapSafeDisplay(p, drawPosx, drawPosY + 0.05, buttonName);
 }
 
 bool purchase(int goldAmount = 0, int p = 0){

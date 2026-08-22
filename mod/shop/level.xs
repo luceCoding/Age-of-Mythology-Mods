@@ -43,7 +43,6 @@ int getRandomTier(int shopLevel = 0) {
     if (level >= g_shopLevels.size()) level = g_shopLevels.size() - 1;
 
     ShopLevel chances = g_shopLevels[level];
-    log(3, ""+chances.m_tier5Chance);
 
     int roll = xsRandInt(1, 100);
 

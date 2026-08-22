@@ -330,7 +330,7 @@ class BenchData {
         return text;
     }
 
-    void renderSynergies(ref UiSystem system, float posX = 0.0, float posY = 0.0, int p = 1) {
+    void renderSynergies(float posX = 0.0, float posY = 0.0, int p = 1) {
         float width = 0.1;
         float height = 0.025;
         float posYOffset = 0.035;
@@ -359,8 +359,8 @@ class BenchData {
             int idx = sortedIndices[i];
             if (m_synergyCounter[idx] > 0) {
                 SynergyData synergy = g_synergies[idx];
-                //minimapSafeDisplay(system, posX + 0.0825, posY + 0.005, m_synergyCounter[idx] + " : " + getSynergyText(idx));
-                renderSynergyIcon(system, posX, posY, posYOffset, width, height, 32, idx, false, " " + m_synergyCounter[idx] + " : " + getSynergyText(idx),);
+                //minimapSafeDisplay(p, posX + 0.0825, posY + 0.005, m_synergyCounter[idx] + " : " + getSynergyText(idx));
+                renderSynergyIcon(p, posX, posY, posYOffset, width, height, 32, idx, false, " " + m_synergyCounter[idx] + " : " + getSynergyText(idx));
             }
         }
     }

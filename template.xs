@@ -5,6 +5,7 @@
 
 void generate()
 {
+
     rmSetProgress(0.0);
 
     rmSetMapSize(configMapTileX, configMapTileZ);
@@ -22,7 +23,11 @@ void generate()
     // mod/globals.xs
     // common/logs.xs
     // common/math.xs
-    // common/ui.xs
+    // common/preUi.xs
+    createTypedScheduler("schedulerWithParameters", buildStringTypeArray("Parameters"));
+    //// common/ui.xs
+    // common/postUi.xs
+
     // common/search.xs
     
     // mod/common/rng.xs

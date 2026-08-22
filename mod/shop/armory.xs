@@ -1,19 +1,19 @@
-void renderArmory(ref UiSystem system, int p = 1){
-    renderBench(system, p, SHOP_TYPE_ARMORY);
-    renderExitButton(system, p);
+void renderArmory(int p = 1){
+    renderBench(p, SHOP_TYPE_ARMORY);
+    renderExitButton(p);
 
     float drawPosx = getLeftAnchorX(UI_LEFT_BUFFER, 128.0, p);
     drawPosx = max(drawPosx, -0.55);
     float drawPosYStart = -0.35;
 
     int goldStockpiled = kbGetResourceAmount(p, kbGetResourceID("Gold"));
-    minimapSafeDisplay(system, drawPosx - 0.015, drawPosYStart + 0.1, 
+    minimapSafeDisplay(p, drawPosx - 0.015, drawPosYStart + 0.1, 
                         getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled);
 
     g_shopNeedsRefresh[p] = false;
 }
 
-void createArmoryCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){
+void createArmoryCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){
     if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.isIdentified() == false) { return; }
     if (currCard.isDeployed()) {
         trChatSendToPlayer(p, p, "Unit must be withdrawn first to be upgraded.");
@@ -37,7 +37,7 @@ void createArmoryCardButtons(ref UiSystem system, ref CardData currCard, int p =
             int uuid = currCard.getUuid();
             cardParams.ints[0] = uuid;
             cardParams.ints[1] = i;
-            minimapSafeClickable(system, 
+            minimapSafeClickable(p, 
                                 currentX, btnPosY + 0.035, 0.1, 0.055,
                                 "",
                                 cardParams,
@@ -45,21 +45,22 @@ void createArmoryCardButtons(ref UiSystem system, ref CardData currCard, int p =
                                     g_shop.rerollUpgrade(p, parameters.ints[0], parameters.ints[1]);
                                 }
             );
-            createButton(system, currentX, btnPosY, "UPGRADE " + (i + 1));
+            createButton(p, currentX, btnPosY, "UPGRADE " + (i + 1));
         }
     }
 }
 
 void openArmory(int p = 1){
-    UiSystem system = uiSystemArray[p];
-    system.enter(false, true, 503);
+    enterUiSystem(p);
     if(trCurrentPlayer() == p){
         setUiVisible(false);
         trSetObscuredUnits(false);
     }
     g_selectedUUIDs[p] = -1; // Deselect card
     g_shop.m_shopTypeOpened[p] = SHOP_TYPE_ARMORY;
-    renderArmory(system, p);
-    uiSystemArray[p] = system;
-    trSoundsetPlayPlayer(p, "UI_Latch");
+    renderArmory(p);
+    postEnterUiSystem(p);
+    if (trCurrentPlayer() == p){
+        trSoundPlayPaused("ui\latch.wav");
+    }
 }

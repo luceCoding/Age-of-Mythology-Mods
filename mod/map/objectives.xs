@@ -23,7 +23,7 @@ void spawnSymmetricObjectives() {
     // 4. Bottom-Left Red Circle (Team 1 Lower Jungle - Mirrored Pair 2)
     spots[3] = center + Vector(-A - B, 0.0, A - B);
 
-    int offset = xsRandInt(4);
+    int offset = xsRandInt(0, g_shopTypes.size()-1);
     for (int k = 0; k < g_shopTypes.size(); k++) {
         int buildingIdx = (k + offset) % g_shopTypes.size();
         Vector v = spots[k];

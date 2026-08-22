@@ -8,18 +8,19 @@ class SynergyData {
 
 SynergyData[] g_synergies = default;
 
-void renderSynergyIcon(ref UiSystem system, float posX = 0.0, ref float posY, float posYOffset = 0.0, float width = 0.0, float height = 0.0, 
+void renderSynergyIcon(int p = 0, float posX = 0.0, ref float posY, float posYOffset = 0.0, float width = 0.0, float height = 0.0, 
                        int iconSize = 32, int synergyIndex = 0,
                        bool showBackground = true,
-                       string content = ""
+                       string content = "", int uiElementTopOf = -1
                        ){
     SynergyData synergy = g_synergies[synergyIndex];
+    int uiBackgroundElement = uiElementTopOf;
     if (showBackground){
-        minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", iconSize));
+        uiBackgroundElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", iconSize), uiBackgroundElement);
     }
-    minimapSafeDisplayWithHover(system, posX, posY, width, height, getIconPathFormat(synergy.m_icon, iconSize) + content, 
+    minimapSafeDisplayWithHover(p, posX, posY, width, height, getIconPathFormat(synergy.m_icon, iconSize) + content, 
                                 synergy.m_rolloverName,
-                                synergy.m_rolloverDescription);
+                                synergy.m_rolloverDescription, uiBackgroundElement);
     posY = posY - posYOffset;
 }
 

@@ -15,7 +15,7 @@ active
     trDisablePopCapNotifications(true);
     trDisableConquestCheck(true);
     trSetCommunityObjectivesVisibility(false);
-    initialiseUiSystem(false);
+    initialiseUiSystems(false);
     performProportionCalculation();
     initializeGlobals();
     initializeTeams();
@@ -114,11 +114,7 @@ rule LOOPING_TRIGGER
 highFrequency
 active
 {
-    for(int p = 1; p <= cNumberPlayers; p++){
-        UiSystem system = uiSystemArray[p];
-        UiEntry entry = system.process();
-        uiSystemArray[p] = system;
-        entry.handler(p, entry.parameters);
+    for(int p = 1; p <= cNumberPlayers-2; p++){
         refreshShop(p);
     }
 }

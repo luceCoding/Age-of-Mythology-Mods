@@ -83,7 +83,7 @@ class Shop {
         return cost;
     }
 
-    void renderCard(ref UiSystem system, ref CardData currCard,
+    void renderCard(ref CardData currCard,
                     int p = 0, float posX = 0.0, float posY = 0.0, 
                     bool isBench = false){
         int additionalSize = 0;
@@ -105,20 +105,21 @@ class Shop {
         if (currCard.isIdentified()){
             rarity = currCard.getRarity();
         }
+        int uiRarityElement = -1;
         switch(rarity){
-            case 0: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unit.png", mainIconSize));
-            case 1: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_special.png", mainIconSize));
-            case 2: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unitcmd.png", mainIconSize));
-            case 3: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_myth.png", mainIconSize));
-            case 4: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_tech.png", mainIconSize));
-            default: minimapSafeDisplay(system, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_cmd.png", mainIconSize));
+            case 0: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unit.png", mainIconSize));
+            case 1: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_special.png", mainIconSize));
+            case 2: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unitcmd.png", mainIconSize));
+            case 3: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_myth.png", mainIconSize));
+            case 4: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_tech.png", mainIconSize));
+            default: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_cmd.png", mainIconSize));
         }
 
         string iconPath = "resources/front_end/Lobby/Icon_Godicon_Random.png";
         if (currCard.isIdentified()){
             iconPath = params.getIconPath();
         }
-        minimapSafeClickable(system, 
+        int uiMainIconElement = minimapSafeClickable(p, 
                             posX, posY + 0.008 * iconMultiplier, 0.1, 0.12,
                             getIconPathFormat(iconPath, 112.0 * iconMultiplier),
                             cardParams,
@@ -126,14 +127,14 @@ class Shop {
                 g_selectedUUIDs[p] = parameters.ints[0];
                 g_shopNeedsRefresh[p] = true;
                 log(3, "Player " + p + " clicked " + parameters.strings[3] + " " + parameters.ints[0]);
-            }
+            }, uiRarityElement
         );
 
         // Locked Icon
         float lockedPosX = posX;
         float lockedPoxY = posY + 0.025 * iconMultiplier;
         if (currCard.isLocked()){
-            minimapSafeDisplay(system, lockedPosX, lockedPoxY, getIconPathFormat("resources/in_game/hud/Icon_Delete.png", 64 * iconMultiplier));
+            minimapSafeDisplay(p, lockedPosX, lockedPoxY, getIconPathFormat("resources/in_game/hud/Icon_Delete.png", 64 * iconMultiplier));
         }
 
         // Cost
@@ -143,7 +144,7 @@ class Shop {
             cost = cost * SELL_MULTIPLIER;
         }
         string costText = getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137>" + cost + "</color>";
-        minimapSafeDisplay(system, posX, posY + 0.13 * iconMultiplier, costText);
+        minimapSafeDisplay(p, posX, posY + 0.13 * iconMultiplier, costText);
 
         if (currCard.isIdentified() == false){return;}
 
@@ -158,22 +159,22 @@ class Shop {
         int[] upgrades = currCard.getUpgrades();
         for (int i = 0; i < upgrades.size(); i++) {
             int upgrade = upgrades[i];
-            minimapSafeDisplay(system, leftPosX, leftPosY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize));
+            minimapSafeDisplay(p, leftPosX, leftPosY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize));
             switch(upgrade){
-                case UPGRADE_HACK_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "");
-                case UPGRADE_PIERCE_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                case UPGRADE_HACK_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "");
+                case UPGRADE_PIERCE_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
                                                                        getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize), "Upgrade: Pierce Armor", "");
-                case UPGRADE_CRUSH_ARMOR: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_crush_armor.png", miniIconSize), "Upgrade: Crush Armor", "");
-                case UPGRADE_HITPOINTS: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "");
-                case UPGRADE_SHIELDS: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize), "Upgrade: Shields", "");
-                case UPGRADE_SPEED: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_speed.png", miniIconSize), "Upgrade: Speed", "");
-                case UPGRADE_HP_REGEN: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                case UPGRADE_CRUSH_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_crush_armor.png", miniIconSize), "Upgrade: Crush Armor", "");
+                case UPGRADE_HITPOINTS: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "");
+                case UPGRADE_SHIELDS: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize), "Upgrade: Shields", "");
+                case UPGRADE_SPEED: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_speed.png", miniIconSize), "Upgrade: Speed", "");
+                case UPGRADE_HP_REGEN: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
                                                                    getIconPathFormat("resources/in_game/stat_hp_regen.png", miniIconSize), "Upgrade: Health Regeneration", "");
-                case UPGRADE_HACK_ATTACK: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                case UPGRADE_HACK_ATTACK: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
                                                                       getIconPathFormat("resources/in_game/stat_hack_dmg.png", miniIconSize), "Upgrade: Hack Damage", "");
-                case UPGRADE_PIERCE_ATTACK: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                case UPGRADE_PIERCE_ATTACK: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
                                                                         getIconPathFormat("resources/in_game/stat_pierce_dmg.png", miniIconSize), "Upgrade: Pierce Damage", "");
-                case UPGRADE_CRUSH_ATTACK: minimapSafeDisplayWithHover(system, leftPosX, leftPosY, width, height, 
+                case UPGRADE_CRUSH_ATTACK: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
                                                                        getIconPathFormat("resources/in_game/stat_crush_dmg.png", miniIconSize), "Upgrade: Crush Damage", "");
             }
             leftPosY = leftPosY - miniIconYOffset * iconMultiplier; 
@@ -183,15 +184,15 @@ class Shop {
         float rightPosX = posX + 0.055 * iconMultiplier;
         float rightPosY = posY + 0.08 * iconMultiplier;
 
-        if (params.isInfantry()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 0);}
-        if (params.isArcher()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 1);}
-        if (params.isCavalry()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 2);}
-        if (params.isMythUnit()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 3);}
-        if (params.isHero()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 4);}
-        if (params.isHealer()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 5);}
-        if (params.isSiege()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 6);}
-        //if (params.isBuilding()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 7);}
-        if (params.isSoldier()){renderSynergyIcon(system, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 8);}
+        if (params.isInfantry()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 0, true, "", uiMainIconElement);}
+        if (params.isArcher()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 1, true, "", uiMainIconElement);}
+        if (params.isCavalry()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 2, true, "", uiMainIconElement);}
+        if (params.isMythUnit()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 3, true, "", uiMainIconElement);}
+        if (params.isHero()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 4, true, "", uiMainIconElement);}
+        if (params.isHealer()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 5, true, "", uiMainIconElement);}
+        if (params.isSiege()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 6, true, "", uiMainIconElement);}
+        //if (params.isBuilding()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 7, true, "", uiMainIconElement);}
+        if (params.isSoldier()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 8, true, "", uiMainIconElement);}
 
         // Title
         string title = params.getTitle();
@@ -202,11 +203,11 @@ class Shop {
             case 3: title = "<color=0.60,0.00,0.73>" + title + "</color>";
             case 4: title = "<color=0.71,0.58,0.00>" + title + "</color>";
         }
-        minimapSafeDisplay(system, posX, posY + 0.116 * iconMultiplier, title);
+        minimapSafeDisplay(p, posX, posY + 0.116 * iconMultiplier, title);
 
         // Deployed Icon
         if (isBench && currCard.isDeployed()){
-            minimapSafeDisplay(system, posX, posY + 0.03, getIconPathFormat("resources/in_game/gamepad_contextual/cur_attac_building.png", 64 * iconMultiplier));
+            minimapSafeDisplay(p, posX, posY + 0.03, getIconPathFormat("resources/in_game/gamepad_contextual/cur_attac_building.png", 64 * iconMultiplier));
         }
     }
 
@@ -369,7 +370,7 @@ class Shop {
 
 Shop g_shop;
 
-void renderDraws(ref UiSystem system, int p = 1) {
+void renderDraws(int p = 1) {
     DrawData currDraw = g_shop.m_currDraws[p];
     CardData[] currCards = currDraw.m_cardArray;
     int cardCount = currCards.size();
@@ -387,7 +388,7 @@ void renderDraws(ref UiSystem system, int p = 1) {
             continue;
         }
 
-        g_shop.renderCard(system, currCard, p, posX, posY);
+        g_shop.renderCard(currCard, p, posX, posY);
         if (currCard.getUuid() == g_selectedUUIDs[p]) {
             CardParameters params = currCard.getCardParameters();
             int cost = params.getCost() * 0.75;
@@ -397,7 +398,7 @@ void renderDraws(ref UiSystem system, int p = 1) {
             int uuid = currCard.getUuid();
             cardParams.ints[0] = uuid;
 
-            minimapSafeClickable(system, 
+            minimapSafeClickable(p, 
                                 posX - 0.06, btnPosY + 0.035, 0.1, 0.055,
                                 "",
                                 cardParams,
@@ -405,7 +406,7 @@ void renderDraws(ref UiSystem system, int p = 1) {
                     g_shop.buy(p, parameters.ints[0]);
                 }
             );
-            minimapSafeClickable(system, 
+            minimapSafeClickable(p, 
                                 posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
                                 "",
                                 cardParams,
@@ -413,14 +414,14 @@ void renderDraws(ref UiSystem system, int p = 1) {
                     g_shop.lock(p, parameters.ints[0]);
                 }
             );
-            createButton(system, posX - 0.06, btnPosY, "BUY");
-            createButton(system, posX + 0.06, btnPosY, "(UN)LOCK");
+            createButton(p, posX - 0.06, btnPosY, "BUY");
+            createButton(p, posX + 0.06, btnPosY, "(UN)LOCK");
         }
         posX = posX + offsetX;
     }
 }
 
-void createShopCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){
+void createShopCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){
     if (currCard.getUuid() != g_selectedUUIDs[p]) { return; }
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
@@ -430,7 +431,7 @@ void createShopCardButtons(ref UiSystem system, ref CardData currCard, int p = 0
     cardParams.ints[0] = uuid;
 
     if (currCard.isDeployed()){
-        minimapSafeClickable(system, 
+        minimapSafeClickable(p, 
                             posX, btnPosY + 0.035, 0.1, 0.055,
                             "",
                             cardParams,
@@ -438,11 +439,11 @@ void createShopCardButtons(ref UiSystem system, ref CardData currCard, int p = 0
                 g_shop.withdraw(p, parameters.ints[0]);
             }
         );
-        createButton(system, posX, btnPosY, "WITHDRAW");
+        createButton(p, posX, btnPosY, "WITHDRAW");
     }
     else {
         float sellPosX = currCard.isIdentified() ? (posX - 0.06) : posX;
-        minimapSafeClickable(system, 
+        minimapSafeClickable(p, 
                             sellPosX, btnPosY + 0.035, 0.1, 0.055,
                             "",
                             cardParams,
@@ -450,9 +451,9 @@ void createShopCardButtons(ref UiSystem system, ref CardData currCard, int p = 0
                 g_shop.sell(p, parameters.ints[0]);
             }
         );
-        createButton(system, sellPosX, btnPosY, "SELL");
+        createButton(p, sellPosX, btnPosY, "SELL");
         if (currCard.isIdentified()){
-            minimapSafeClickable(system, 
+            minimapSafeClickable(p, 
                                 posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
                                 "",
                                 cardParams,
@@ -460,23 +461,23 @@ void createShopCardButtons(ref UiSystem system, ref CardData currCard, int p = 0
                     g_shop.deploy(p, parameters.ints[0]);
                 }
             );
-            createButton(system, posX + 0.06, btnPosY, "DEPLOY");
+            createButton(p, posX + 0.06, btnPosY, "DEPLOY");
         }
     }
 }
 
-mutable void createShrineCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){}
-mutable void createArmoryCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){}
-mutable void createTempleCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){}
-mutable void createForgeCardButtons(ref UiSystem system, ref CardData currCard, int p = 0, ref float posX, ref float posY){}
+mutable void createShrineCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){}
+mutable void createArmoryCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){}
+mutable void createTempleCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){}
+mutable void createForgeCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){}
 
-void renderBench(ref UiSystem system, int p = 1, int shopType = 0) {
+void renderBench(int p = 1, int shopType = 0) {
     BenchData bench = g_shop.m_benches[p];
     CardData[] currCards = bench.getCards();
 
     float propPosX = getLeftAnchorX(UI_LEFT_BUFFER + 100, 128.0, p);
     if (shopType == DEFAULT_SHOP_TYPE){
-        bench.renderSynergies(system, propPosX, 0.0, p);
+        bench.renderSynergies(propPosX, 0.0, p);
     }
 
     int totalCards = bench.getNumberOfCardsHeld();
@@ -522,36 +523,36 @@ void renderBench(ref UiSystem system, int p = 1, int shopType = 0) {
         // Vertical position (top row is positive Y, moving down per row)
         float posY = startY - (rowIndex * offsetY);
 
-        g_shop.renderCard(system, currCard, p, posX, posY + 0.1, true);
+        g_shop.renderCard(currCard, p, posX, posY + 0.1, true);
 
         switch(shopType){
-            case DEFAULT_SHOP_TYPE: createShopCardButtons(system, currCard, p, posX, posY);
-            case SHOP_TYPE_SHRINE: createShrineCardButtons(system, currCard, p, posX, posY);
-            case SHOP_TYPE_TEMPLE: createTempleCardButtons(system, currCard, p, posX, posY);
-            case SHOP_TYPE_FORGE: createForgeCardButtons(system, currCard, p, posX, posY);
-            case SHOP_TYPE_ARMORY: createArmoryCardButtons(system, currCard, p, posX, posY);
-            default: createShopCardButtons(system, currCard, p, posX, posY);
+            case DEFAULT_SHOP_TYPE: createShopCardButtons(currCard, p, posX, posY);
+            case SHOP_TYPE_SHRINE: createShrineCardButtons(currCard, p, posX, posY);
+            case SHOP_TYPE_TEMPLE: createTempleCardButtons(currCard, p, posX, posY);
+            case SHOP_TYPE_FORGE: createForgeCardButtons(currCard, p, posX, posY);
+            case SHOP_TYPE_ARMORY: createArmoryCardButtons(currCard, p, posX, posY);
+            default: createShopCardButtons(currCard, p, posX, posY);
         }
         visibleIndex = visibleIndex + 1;
     }
 }
 
 void closeShop(int p = 1){
-    UiSystem system = uiSystemArray[p];
-    system.exit(true);
+    exitUiSystem(p, true);
     if(trCurrentPlayer() == p){
         setUiVisible(true);
         trSetObscuredUnits(true);
     }
-    uiSystemArray[p] = system;
-    trSoundsetPlayPlayer(p, "UI_Latch");
+    if (trCurrentPlayer() == p){
+        trSoundPlayPaused("ui\latch.wav");
+    }
 }
 
-void renderExitButton(ref UiSystem system, int p = 1, float drawPosx = 0.55, float drawPosY = -0.425) {
+void renderExitButton(int p = 1, float drawPosx = 0.55, float drawPosY = -0.425) {
     float drawPosx2 = getRightAnchorX(100, 128.0, p);
     drawPosx = min(drawPosx, drawPosx2);
-    createButton(system, drawPosx, drawPosY, "EXIT");
-    minimapSafeClickable(system, 
+    createButton(p, drawPosx, drawPosY, "EXIT");
+    minimapSafeClickable(p, 
                         drawPosx, drawPosY + 0.035, 0.1, 0.055,
                         "",
                         EMPTY_PARAMETERS,
@@ -561,9 +562,9 @@ void renderExitButton(ref UiSystem system, int p = 1, float drawPosx = 0.55, flo
     );
 }
 
-void renderShop(ref UiSystem system, int p = 1){
-    renderDraws(system, p);
-    renderBench(system, p, DEFAULT_SHOP_TYPE);
+void renderShop(int p = 1){
+    renderDraws(p);
+    renderBench(p, DEFAULT_SHOP_TYPE);
 
     float drawPosx = getLeftAnchorX(UI_LEFT_BUFFER, 128.0, p);
     drawPosx = max(drawPosx, -0.55);
@@ -579,7 +580,7 @@ void renderShop(ref UiSystem system, int p = 1){
                          "IV: " + level.m_tier4Chance + "%\n" +
                          "V: " + level.m_tier5Chance + "%";
     if (shopLevel < MAX_SHOP_LEVEL && shopLevel < g_shopLevels.size()){
-        minimapSafeDisplayWithHover(system, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
+        minimapSafeDisplayWithHover(p, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
                                     getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled + 
                                     "\nLevel: " + shopLevel + "\n" + 
                                     "XP: " + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded,
@@ -587,7 +588,7 @@ void renderShop(ref UiSystem system, int p = 1){
                                     shopChances);
     }
     else {
-        minimapSafeDisplayWithHover(system, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
+        minimapSafeDisplayWithHover(p, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
                                     getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled + 
                                     "\nLevel: " + MAX_SHOP_LEVEL + 
                                     "\nXP: MAX",
@@ -597,8 +598,8 @@ void renderShop(ref UiSystem system, int p = 1){
 
     // Buy XP
     float drawPosY = drawPosYStart;
-    createButton(system, drawPosx, drawPosY, "");
-    minimapSafeClickable(system, 
+    createButton(p, drawPosx, drawPosY, "");
+    minimapSafeClickable(p, 
                         drawPosx, drawPosY + 0.035, 0.1, 0.055,
                         "",
                         EMPTY_PARAMETERS,
@@ -606,13 +607,13 @@ void renderShop(ref UiSystem system, int p = 1){
             g_shop.buyXP(p);
         }
     );
-    minimapSafeDisplay(system, drawPosx, drawPosY + 0.03,
+    minimapSafeDisplay(p, drawPosx, drawPosY + 0.03,
                        "BUY XP\n" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + "<color=0.729,0.557,0.137>" + g_shop.getBuyXPCost(p) + "</color>");
 
     // Draw
     drawPosY = drawPosY - yOffset;
-    createButton(system, drawPosx, drawPosY, "");
-    minimapSafeClickable(system, 
+    createButton(p, drawPosx, drawPosY, "");
+    minimapSafeClickable(p, 
                         drawPosx, drawPosY + 0.035, 0.1, 0.055,
                         "",
                         EMPTY_PARAMETERS,
@@ -620,26 +621,27 @@ void renderShop(ref UiSystem system, int p = 1){
             g_shop.draw(p);
         }
     );
-    minimapSafeDisplay(system, drawPosx, drawPosY + 0.03,
+    minimapSafeDisplay(p, drawPosx, drawPosY + 0.03,
                        "DRAW\n" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + "<color=0.729,0.557,0.137>" + g_shop.getDrawCost(p) + "</color>");
 
     // Exit Shop Button
-    renderExitButton(system, p);
+    renderExitButton(p);
 
     g_shopNeedsRefresh[p] = false;
 }
 
 void openShop(int p = 1){
-    UiSystem system = uiSystemArray[p];
-    system.enter(false, true, 503);
+    enterUiSystem(p);
     if(trCurrentPlayer() == p){
         setUiVisible(false);
         trSetObscuredUnits(false);
     }
     g_shop.m_shopTypeOpened[p] = DEFAULT_SHOP_TYPE;
-    renderShop(system, p);
-    uiSystemArray[p] = system;
-    trSoundsetPlayPlayer(p, "UI_Latch");
+    renderShop(p);
+    postEnterUiSystem(p);
+    if (trCurrentPlayer() == p){
+        trSoundPlayPaused("ui\latch.wav");
+    }
 }
 
 void autoCloseOtherShops(){
