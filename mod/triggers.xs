@@ -48,6 +48,7 @@ runImmediately
                         apply(owner);
                     }
                 }
+                return;
             }
 
             switch(protoUnit){
@@ -60,15 +61,7 @@ runImmediately
                         }
                     }
                 }
-                case cUnitTypeSatyr: {
-                    selectSingle(unitId);
-                    trUnitSetStance("Defensive");
-                }
-                case cUnitTypeTzitzimitl: {
-                    selectSingle(unitId);
-                    trUnitSetStance("Defensive");
-                }
-                case cUnitTypeArgus: {
+                default: {
                     selectSingle(unitId);
                     trUnitSetStance("Defensive");
                 }

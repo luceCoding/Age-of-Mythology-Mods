@@ -59,6 +59,7 @@ void generate()
     // mod/map/units.xs
     // mod/map/roads.xs
     // mod/map/trees.xs
+    // mod/map/creepCamp.xs
     // mod/map/camps.xs
 
     // mod/income/income.xs

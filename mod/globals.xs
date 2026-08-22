@@ -78,9 +78,11 @@ const int UPGRADE_PIERCE_ATTACK = 8;
 const int UPGRADE_CRUSH_ATTACK = 9;
 
 const float GOLDPILE_LIFESPAN = 20.0;
+
 const float T1_CRATE_SPAWN_TIME = 90.0;
 const float T2_CRATE_SPAWN_TIME = 120.0;
 const float T3_CRATE_SPAWN_TIME = 150.0;
+
 const float T1_CAMP_SPAWN_TIME = 120.0;
 const float T2_CAMP_SPAWN_TIME = 180.0;
 const float T3_CAMP_SPAWN_TIME = 240.0;
@@ -93,6 +95,9 @@ string[] g_shopTypes = default;
 string[] g_roadTypes = default;
 string[] g_treeTypes = default;
 
+string[] g_creepCampPlaceholderTypes = default;
+string[] g_creepCampTypes = default;
+
 void initializeGlobals(){
     g_shopTypes = new string(4, "");
     g_shopTypes[0] = "DwarvenForge";
@@ -100,7 +105,9 @@ void initializeGlobals(){
     g_shopTypes[2] = "TempleOfTheGods";
     g_shopTypes[3] = "ShrineJapanese";
 
-    g_roadTypes.add("Greek Road 1");
+    g_roadTypes.add("Greek Road 1"); // first element is always primary road
+    g_roadTypes.add("Greek Road 2");
+    g_roadTypes.add("Greek Road 3");
 
     g_treeTypes.add("TreeOak");
     g_treeTypes.add("TreeOakAutumn");
@@ -108,4 +115,11 @@ void initializeGlobals(){
     g_treeTypes.add("TreePine");
     g_treeTypes.add("TreePineDead");
 
+    g_creepCampPlaceholderTypes.add("Tent");
+    g_creepCampPlaceholderTypes.add("Lure");
+    g_creepCampPlaceholderTypes.add("RocTent");
+
+    g_creepCampTypes.add("Satyr");
+    g_creepCampTypes.add("NemeanLion");
+    g_creepCampTypes.add("Argus");
 }

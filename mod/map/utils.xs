@@ -62,6 +62,6 @@ void setupCreepCamp(string creepCampUnitType = "", string initialPlaceholder = "
     trProtoUnitSetFlag(0, initialPlaceholder, "KBTracked", true);
     trProtoUnitSetUnitType(0, initialPlaceholder, "Building", true);
     trProtounitModifySpawnData(initialPlaceholder, 0, creepCampUnitType, 0, 1.0, 1, -1, -1);
-    trModifyProtounitData(initialPlaceholder, 0, puFIELD_LIFESPAN, respawnTime, relativityASSIGN);
+    trModifyProtounitData(initialPlaceholder, 0, puFIELD_LIFESPAN, respawnTime + 60, relativityASSIGN);
     setupAutoRespawn(creepCampUnitType, primaryPlaceholder, respawnTime);
 }

@@ -26,7 +26,7 @@ void paintRoadSegmentOrganic(
         curr.x = curr.x + offsetX;
         curr.z = curr.z + offsetZ;
 
-        string selectedTerrain = "Greek Road 1";
+        string selectedTerrain = g_roadTypes[0];
         if (terrainNames.size() > 0) {
             selectedTerrain = terrainNames[xsRandInt(0, terrainNames.size() - 1)];
         }
@@ -80,13 +80,7 @@ void applyRoadSegmentPatches(
 void paintAllLanesCircular(float roadRadius = 8.0) {
     // Primary road textures
     string[] roadTerrains = new string(1, "");
-    roadTerrains[0] = "Greek Road 1";
-
-    // Patchy spot textures (overgrowth, dirt, cracks)
-    string[] patchTerrains = new string(3, "");
-    patchTerrains[0] = "Greek Road 1";
-    patchTerrains[1] = "Greek Road 2";
-    patchTerrains[2] = "Greek Road 3";
+    roadTerrains[0] = g_roadTypes[0];
 
     // Pass 1: Paint all base roads completely
     for (int i = 0; i < 7; i++) {
@@ -97,8 +91,8 @@ void paintAllLanesCircular(float roadRadius = 8.0) {
 
     // Pass 2: Layer patches on top of the finished base roads
     for (int j = 0; j < 7; j++) {
-        applyRoadSegmentPatches(g_T1ToT2MidLane[j], g_T1ToT2MidLane[j+1], roadRadius, patchTerrains, roadRadius + 4.0, 0.60);
-        applyRoadSegmentPatches(g_T1ToT2TopLane[j], g_T1ToT2TopLane[j+1], roadRadius, patchTerrains, roadRadius + 4.0, 0.60);
-        applyRoadSegmentPatches(g_T1ToT2BotLane[j], g_T1ToT2BotLane[j+1], roadRadius, patchTerrains, roadRadius + 4.0, 0.60);
+        applyRoadSegmentPatches(g_T1ToT2MidLane[j], g_T1ToT2MidLane[j+1], roadRadius, g_roadTypes, roadRadius + 4.0, 0.60);
+        applyRoadSegmentPatches(g_T1ToT2TopLane[j], g_T1ToT2TopLane[j+1], roadRadius, g_roadTypes, roadRadius + 4.0, 0.60);
+        applyRoadSegmentPatches(g_T1ToT2BotLane[j], g_T1ToT2BotLane[j+1], roadRadius, g_roadTypes, roadRadius + 4.0, 0.60);
     }
 }

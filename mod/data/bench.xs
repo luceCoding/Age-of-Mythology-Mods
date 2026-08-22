@@ -146,10 +146,7 @@ class BenchData {
             if (card.isNull() == true || card.isDeployed() == false) { continue; }
             
             int unitId = card.getDeployedUnitID();
-            xsSetContextPlayer(m_player);
-            trUnitSelectClear();
-            trUnitSelectByID(unitId);
-
+            selectSingle(unitId);
             if (trUnitDead()){
                 // 1. Timer hasn't been started yet: set the target timestamp
                 if (card.timeTillRespawn == 0) {

@@ -143,6 +143,9 @@ void modifyPlayerData(){
         trPlayerGrantResources(p, "Gold", -gold);
         trPlayerGrantResources(p, "Favor", -favor);
         trPlayerGrantResources(p, "Gold", STARTING_GOLD);
+
+        // For card synergies
+        trProtoUnitSetUnitType(p, "Tanuki", "AbstractHealer", true);
     }
 
     // Only Humans
@@ -224,7 +227,10 @@ void modifyPlayerData(){
     trModifyProtounitData("MiningCamp", 0, puFIELD_HACK_ARMOR, 1.5, relativityBasePERCENT);
     trModifyProtounitData("MiningCamp", 0, puFIELD_CRUSH_ARMOR, 0.4, relativityABSOLUTE);
 
-    setupCreepCamp("Satyr", "RockGreekSmall", "RockGreekTiny", 10);
-    setupCreepCamp("Tzitzimitl", "RockGreekMedium", "RockHadesTiny", 10);
-    setupCreepCamp("Argus", "RockGreekLarge", "RockEgyptTiny", 10);
+    for (int i = 0; i < g_creepCampTypes.size(); i++) {
+        string creepCampTypes = g_creepCampTypes[i];
+        trModifyProtounitData(creepCampTypes, 0, puFIELD_LOS, 8, relativityASSIGN);
+        trProtounitModifySpawnData(creepCampTypes, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
+        trProtoUnitSetFlag(p, creepCampTypes, "ObscuredByUnits", true);
+    }
 }
