@@ -75,8 +75,6 @@ vector[] g_T1ToT2TopLane = default;
 vector[] g_T1ToT2MidLane = default; 
 vector[] g_T1ToT2BotLane = default; 
 
-// (Optional) You can still keep spawn variables if you need them for instant lookup, 
-// but they are now safely embedded at index 0 and 8 of the arrays.
 vector g_t1TopSpawn = cInvalidVector;
 vector g_t1MidSpawn = cInvalidVector;
 vector g_t1BotSpawn = cInvalidVector;
@@ -92,22 +90,31 @@ LaneManager g_T2TopLane;
 LaneManager g_T2MidLane;
 LaneManager g_T2BotLane;
 
+int g_laneCounter = 1;
+
 void spawnLaneArmy(ref LaneManager laneManager, int player = 0, vector spawnPos = cInvalidVector, vector destPos = cInvalidVector, float offsetX = 0.0, float offsetZ = 0.0) {
     string currentUnit = "";
-    for (int i = 0; i < 6; i++) {
+    int nUnits = 5;
+    
+    if (g_laneCounter % HERO_WAVE == 0) { // Every 5 waves
+        nUnits = 7; 
+    }
+    for (int i = 0; i < nUnits; i++) {
         if (i < 2) {
             currentUnit = "Hoplite";
         } else if (i < 4) {
-            currentUnit = "Toxotes";
-        } else {
             currentUnit = "Hippeus";
+        } else if (i < 5) {
+            currentUnit = "Toxotes";
+        } else if (i < 6) {
+            currentUnit = "Cyclops";
+        } else {
+            currentUnit = "Heracles";
         }
-
-        int uId = trUnitCreate(currentUnit, spawnPos.x + offsetX, spawnPos.y, spawnPos.z + offsetZ, xsRandFloat(0.0, 360), player);
-        trUnitSelectClear();
-        trUnitSelectByID(uId);
+        int unitId = trUnitCreate(currentUnit, spawnPos.x + offsetX, spawnPos.y, spawnPos.z + offsetZ, xsRandFloat(0.0, 360), player);
+        selectSingle(unitId);
         trUnitMoveToPoint(destPos.x, destPos.y, destPos.z, -1, true);
-        laneManager.addUnit(uId);
+        laneManager.addUnit(unitId);
     }
 }
 
@@ -115,7 +122,6 @@ void spawnLaneArmy(ref LaneManager laneManager, int player = 0, vector spawnPos 
 // WAVE EXECUTION & TRIGGER LOOP
 // ==========================================
 void spawnLane(){
-    
     // Team 1 Waves
     spawnLaneArmy(g_T1TopLane, aiTeamA, g_t1TopSpawn, g_T1ToT2TopLane[1], 7, 7);
     spawnLaneArmy(g_T1MidLane, aiTeamA, g_t1MidSpawn, g_T1ToT2MidLane[1], 7, -7);
@@ -125,6 +131,7 @@ void spawnLane(){
     spawnLaneArmy(g_T2TopLane, aiTeamB, g_t2TopSpawn, g_T1ToT2TopLane[6], 7, 7);
     spawnLaneArmy(g_T2MidLane, aiTeamB, g_t2MidSpawn, g_T1ToT2MidLane[6], -7, 7);
     spawnLaneArmy(g_T2BotLane, aiTeamB, g_t2BotSpawn, g_T1ToT2BotLane[6], -7, -7);
+    g_laneCounter = g_laneCounter + 1;
 }
 
 void startLanes(){

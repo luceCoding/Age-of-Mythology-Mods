@@ -31,6 +31,8 @@ void generate()
     // common/search.xs
     
     // mod/common/rng.xs
+    
+    // mod/mutables.xs
 
     // mod/shop/level.xs
     // mod/data/cardParameters.xs
@@ -67,6 +69,7 @@ void generate()
     // mod/map/trees.xs
     // mod/map/creepCamp.xs
     // mod/map/camps.xs
+    // mod/map/capture.xs
 
     // mod/income/income.xs
 

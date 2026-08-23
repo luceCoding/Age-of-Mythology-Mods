@@ -68,6 +68,18 @@ void initializeCardParametersMap(){
                     "WarriorPriest", "Warrior Priest", "WarriorPriest",
                     "resources/aztec/player_color/units/warrior_priest_icon.png"
                     );
+    addCardIntoDeck(0, 75,
+                    "Spearman", "Spearman", "Spearman",
+                    "resources/egyptian/player_color/units/spearman_icon.png"
+                    );
+    addCardIntoDeck(0, 70,
+                    "Axeman", "Axeman", "Axeman",
+                    "resources/egyptian/player_color/units/axeman_icon.png"
+                    );
+    addCardIntoDeck(0, 70,
+                    "Slinger", "Slinger", "Slinger",
+                    "resources/egyptian/player_color/units/slinger_icon.png"
+                    );
 
     addCardIntoDeck(1, 90,
                     "Hoplite", "Hoplite", "Hoplite",
@@ -90,18 +102,6 @@ void initializeCardParametersMap(){
                     "resources/greek/player_color/units/minotaur_icon.png"
                     );
 
-    addCardIntoDeck(1, 75,
-                    "Spearman", "Spearman", "Spearman",
-                    "resources/egyptian/player_color/units/spearman_icon.png"
-                    );
-    addCardIntoDeck(1, 70,
-                    "Axeman", "Axeman", "Axeman",
-                    "resources/egyptian/player_color/units/axeman_icon.png"
-                    );
-    addCardIntoDeck(1, 70,
-                    "Slinger", "Slinger", "Slinger",
-                    "resources/egyptian/player_color/units/slinger_icon.png"
-                    );
     addCardIntoDeck(1, 165,
                     "Wadjet", "Wadjet", "Wadjet",
                     "resources/egyptian/player_color/units/wadjet_icon.png"

@@ -4,6 +4,7 @@ void(int)[] applyArray = default;
 };
 
 PlayerCommands[] playerCommandsArray = default;
+string[] plantNames = default;
 int COMMAND_TYPE = cUnitTypeLegendHero;
 string COMMAND_TYPE_NAME = "LegendHero";
 
@@ -32,8 +33,14 @@ string preparePlant(int p = 1, int plantType = -1,
     return plantName;
 }
 
-void initPlayerCommands(){
-    playerCommandsArray.resize(cNumberPlayers + 1);
+void removeShopCommands(int p = 0, string shopType = ""){
+    for(int i = 0; i < plantNames.size(); i++) {
+        string plantName = plantNames[i];
+        trProtounitRemoveTrain(shopType, p, plantName);
+    }
+}
+
+void addMarketCommands(){
     for(int p = 0; p <= cNumberPlayers; p++) {
         string plantName = preparePlant(p, cUnitTypePlantGreekBush, 
                                         "Open shop",
@@ -44,8 +51,13 @@ void initPlayerCommands(){
                                                             }
                                         );
         trProtounitAddTrain("Market", p, plantName, 0, 5);
+    }
+}
 
-        plantName = preparePlant(p, cUnitTypePlantGreekShrub, 
+void addForgeCommands(){
+    int plantType = cUnitTypePlantGreekShrub;
+    for(int p = 0; p <= cNumberPlayers; p++) {
+        string plantName = preparePlant(p, plantType, 
                                         "Open forge",
                                         "Add sockets to your cards.",
                                         "resources\nature\relics\relic_anvil_icon.png",
@@ -54,8 +66,14 @@ void initPlayerCommands(){
                                                             }
                                         );
         trProtounitAddTrain("DwarvenForge", p, plantName, 0, 5);
+    }
+    plantNames.add(kbProtoUnitGetName(plantType));
+}
 
-        plantName = preparePlant(p, cUnitTypePlantGreekGrass, 
+void addArmoryCommands(){
+    int plantType = cUnitTypePlantGreekGrass;
+    for(int p = 0; p <= cNumberPlayers; p++) {
+        string plantName = preparePlant(p, plantType, 
                                         "Open armory",
                                         "Add upgrades to your cards.",
                                         "resources\nature\relics\relic_jewelry_icon.png",
@@ -64,8 +82,14 @@ void initPlayerCommands(){
                                                             }
                                         );
         trProtounitAddTrain("DwarvenArmory", p, plantName, 0, 5);
+    }
+    plantNames.add(kbProtoUnitGetName(plantType));
+}
 
-        plantName = preparePlant(p, cUnitTypePlantGreekWeeds, 
+void addTempleCommands(){
+    int plantType = cUnitTypePlantGreekWeeds;
+    for(int p = 0; p <= cNumberPlayers; p++) {
+        string plantName = preparePlant(p, plantType, 
                                         "Open temple",
                                         "Reroll rarities for your cards.",
                                         "resources\nature\relics\relic_ankh_icon.png",
@@ -74,9 +98,15 @@ void initPlayerCommands(){
                                                             }
                                         );
         trProtounitAddTrain("TempleOfTheGods", p, plantName, 0, 5);
+    }
+    plantNames.add(kbProtoUnitGetName(plantType));
+}
 
-        plantName = preparePlant(p, cUnitTypePlantGreekFern, 
-                                        "Open shrine",
+void addShrineCommands(){
+    int plantType = cUnitTypePlantGreekFern;
+    for(int p = 0; p <= cNumberPlayers; p++) {
+        string plantName = preparePlant(p, plantType, 
+                                        "Open library",
                                         "Identify cards.",
                                         "resources\nature\relics\relic_scroll_icon.png",
                                         [](int p = 1) -> void {
@@ -85,4 +115,10 @@ void initPlayerCommands(){
                                         );
         trProtounitAddTrain("ShrineJapanese", p, plantName, 0, 5);
     }
+    plantNames.add(kbProtoUnitGetName(plantType));
+}
+
+void initPlayerCommands(){
+    playerCommandsArray.resize(cNumberPlayers + 1);
+    addMarketCommands();
 }

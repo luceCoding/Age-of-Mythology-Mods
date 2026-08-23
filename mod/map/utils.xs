@@ -36,32 +36,9 @@ void setupAsSharedShop(string shopUnitType = "", int p = 0){
     trProtoUnitSetIcon(shopUnitType, p, "", "ui\minimap\minimap_highlighted_item");
 }
 
-void setupAsAttackable(string unitType = "", int p = 0){
-    trProtoUnitSetUnitType(p, unitType, "Building", true);
-    trProtoUnitSetUnitType(p, unitType, "EmbellishmentClass", false);
-    trProtoUnitSetUnitType(p, unitType, "LogicalTypeHandUnitsAttack", true);
-    trProtoUnitSetUnitType(p, unitType, "LogicalTypeRangedUnitsAttack", true);
-
-    trProtoUnitSetFlag(p, unitType, "Selectable", true);
-
-    //trProtoUnitSetFlag(p, unitType, "StartOnNoUpdate", false);
-    //trProtoUnitSetFlag(p, unitType, "AutoFormedUnit", true);
-    trModifyProtounitData(unitType, p, puFIELD_HITPOINTS, 100, relativityASSIGN);
-}
-
 void setupAsTower(string unitType = "", int p = 0){
     trProtoUnitSetFlag(p, unitType, "VisibleUnderFog", true);
     trProtoUnitSetIcon(unitType, p, "", "ui\minimap\minimap_village_center");
     trModifyProtounitData(unitType, p, 5, 0, 1); // Max contained
     trModifyProtounitData(unitType, p, puFIELD_LOS, 18, relativityASSIGN);
-}
-
-void setupCreepCamp(string creepCampUnitType = "", string initialPlaceholder = "", string primaryPlaceholder = "", int respawnTime = 0){
-    setAsPlaceholder(initialPlaceholder, 0);
-    trProtoUnitSetFlag(0, initialPlaceholder, "NotKBTracked", false);
-    trProtoUnitSetFlag(0, initialPlaceholder, "KBTracked", true);
-    trProtoUnitSetUnitType(0, initialPlaceholder, "Building", true);
-    trProtounitModifySpawnData(initialPlaceholder, 0, creepCampUnitType, 0, 1.0, 1, -1, -1);
-    trModifyProtounitData(initialPlaceholder, 0, puFIELD_LIFESPAN, respawnTime + 60, relativityASSIGN);
-    setupAutoRespawn(creepCampUnitType, primaryPlaceholder, respawnTime);
 }

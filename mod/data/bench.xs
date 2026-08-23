@@ -121,6 +121,16 @@ class BenchData {
         string protoName = params.getProtoUnit();
         vector position = trUnitGetPosition(shopId);
         int unitID = trUnitCreate(protoName, position.x, position.y, position.z, xsRandFloat(0.0, 360.0), p, false);
+        string displayName = kbProtoUnitGetDisplayName(p, kbProtoUnitGetID(card.getProtoName()));
+        switch(card.getRarity()){
+            case 1: displayName = displayName + " (Green Rarity)";
+            case 2: displayName = displayName + " (Blue Rarity)";
+            case 3: displayName = displayName + " (Purple Rarity)";
+            case 4: displayName = displayName + " (Gold Rarity)";
+            default: displayName = displayName + " (White Rarity)";
+        }
+        selectSingle(unitID);
+        trUnitChangeName(displayName);
         card.deploy(unitID);
         log(3, "Player " + p + " deployed " + protoName + " to shop " + shopId);
     }
@@ -150,7 +160,7 @@ class BenchData {
             if (trUnitDead()){
                 // 1. Timer hasn't been started yet: set the target timestamp
                 if (card.timeTillRespawn == 0) {
-                    int respawnTimeMS = 10000 + (((currtime - g_timeMSGameStarted) / 60000) * 10000);
+                    int respawnTimeMS = RESPAWN_TIME_MS_BASE + (((currtime - g_timeMSGameStarted) / 60000) * 10000);
                     card.timeTillRespawn = currtime + respawnTimeMS;
                     m_cardArray[i] = card;
                 }
@@ -173,9 +183,7 @@ class BenchData {
             CardData cardToWithdraw = m_cardArray[i];
             if (uuid == cardToWithdraw.getUuid() && (!(cardToWithdraw.isNull())) && cardToWithdraw.isDeployed()){
                 int unitID = cardToWithdraw.getDeployedUnitID();
-                xsSetContextPlayer(m_player);
-                trUnitSelectClear();
-                trUnitSelectByID(unitID);
+                selectSingle(unitID);
                 if (trUnitDead() == false){
                     vector shopLocation = kbUnitGetPosition(m_playerShopId);
                     float distance = kbUnitGetDistanceToPoint(unitID, shopLocation);
@@ -191,8 +199,7 @@ class BenchData {
                     }
                     else {
                         trChatSendToPlayer(m_player, m_player, "Unit must be nearby your shop before it can be withdrawn.");
-                        trUnitSelectClear();
-                        trUnitSelectByID(cardToWithdraw.getDeployedUnitID());
+                        selectSingle(cardToWithdraw.getDeployedUnitID());
                         trUnitHighlight(8.0, true);
                         trSoundsetPlayPlayer(m_player, "HardPopAlert");
                     }
@@ -203,7 +210,6 @@ class BenchData {
                 }
             }
         }
-        trUnitSelectClear();
         return false;
     }
 

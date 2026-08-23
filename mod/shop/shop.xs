@@ -19,7 +19,6 @@ class Shop {
         m_currDraws = new DrawData(cNumberPlayers + 1);
         m_benches = new BenchData(cNumberPlayers + 1);
         g_selectedUUIDs = new int(cNumberPlayers + 1, -1);
-        g_shopNeedsRefresh = new bool(cNumberPlayers + 1, false);
         m_totalShopExp = new int(cNumberPlayers + 1, 0);
         m_currShopLevel = new int(cNumberPlayers + 1, 0);
         m_shopTypeOpened = new int(cNumberPlayers + 1, DEFAULT_SHOP_TYPE);
@@ -59,7 +58,7 @@ class Shop {
             else {
                 m_decks[d] = deck;
                 m_currDraws[p] = currDraw;
-                g_shopNeedsRefresh[p] = true;
+                refreshShop(p);
                 log(3, "Drew a card for player " + p);
                 return true;
             }
@@ -125,7 +124,7 @@ class Shop {
                             cardParams,
                             [](int p = 1, ref Parameters parameters) -> void {
                 g_selectedUUIDs[p] = parameters.ints[0];
-                g_shopNeedsRefresh[p] = true;
+                refreshShop(p);
                 log(3, "Player " + p + " clicked " + parameters.strings[3] + " " + parameters.ints[0]);
             }, uiRarityElement
         );
@@ -159,23 +158,23 @@ class Shop {
         int[] upgrades = currCard.getUpgrades();
         for (int i = 0; i < upgrades.size(); i++) {
             int upgrade = upgrades[i];
-            minimapSafeDisplay(p, leftPosX, leftPosY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize));
+            int uiIconBackgroundElement = minimapSafeDisplay(p, leftPosX, leftPosY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize), uiMainIconElement);
             switch(upgrade){
-                case UPGRADE_HACK_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "");
+                case UPGRADE_HACK_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "", uiIconBackgroundElement);
                 case UPGRADE_PIERCE_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
                                                                        getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize), "Upgrade: Pierce Armor", "");
-                case UPGRADE_CRUSH_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_crush_armor.png", miniIconSize), "Upgrade: Crush Armor", "");
-                case UPGRADE_HITPOINTS: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "");
-                case UPGRADE_SHIELDS: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize), "Upgrade: Shields", "");
-                case UPGRADE_SPEED: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_speed.png", miniIconSize), "Upgrade: Speed", "");
+                case UPGRADE_CRUSH_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_crush_armor.png", miniIconSize), "Upgrade: Crush Armor", "", uiIconBackgroundElement);
+                case UPGRADE_HITPOINTS: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "", uiIconBackgroundElement);
+                case UPGRADE_SHIELDS: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize), "Upgrade: Shields", "", uiIconBackgroundElement);
+                case UPGRADE_SPEED: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_speed.png", miniIconSize), "Upgrade: Speed", "", uiIconBackgroundElement);
                 case UPGRADE_HP_REGEN: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                                   getIconPathFormat("resources/in_game/stat_hp_regen.png", miniIconSize), "Upgrade: Health Regeneration", "");
+                                                                   getIconPathFormat("resources/in_game/stat_hp_regen.png", miniIconSize), "Upgrade: Health Regeneration", "", uiIconBackgroundElement);
                 case UPGRADE_HACK_ATTACK: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                                      getIconPathFormat("resources/in_game/stat_hack_dmg.png", miniIconSize), "Upgrade: Hack Damage", "");
+                                                                      getIconPathFormat("resources/in_game/stat_hack_dmg.png", miniIconSize), "Upgrade: Hack Damage", "", uiIconBackgroundElement);
                 case UPGRADE_PIERCE_ATTACK: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                                        getIconPathFormat("resources/in_game/stat_pierce_dmg.png", miniIconSize), "Upgrade: Pierce Damage", "");
+                                                                        getIconPathFormat("resources/in_game/stat_pierce_dmg.png", miniIconSize), "Upgrade: Pierce Damage", "", uiIconBackgroundElement);
                 case UPGRADE_CRUSH_ATTACK: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                                       getIconPathFormat("resources/in_game/stat_crush_dmg.png", miniIconSize), "Upgrade: Crush Damage", "");
+                                                                       getIconPathFormat("resources/in_game/stat_crush_dmg.png", miniIconSize), "Upgrade: Crush Damage", "", uiIconBackgroundElement);
             }
             leftPosY = leftPosY - miniIconYOffset * iconMultiplier; 
         }
@@ -238,6 +237,7 @@ class Shop {
                 continue;
             }
             CardData removedCard = currDraw.removeCard(i);
+            m_currDraws[p] = currDraw;
             if (removedCard.getUuid() == g_selectedUUIDs[p]) {
                 g_selectedUUIDs[p] = -1; // Deselect card
             }
@@ -271,12 +271,13 @@ class Shop {
             if (purchase(cost, p) == false){return;}
 
             CardData removedCard = currDraw.removeCardByUUID(uuid);
+            m_currDraws[p] = currDraw;
             if (removedCard.isNull() == false){
                 removedCard.unlockCard();
                 bench.addCard(removedCard);
                 trSoundsetPlayPlayer(p, "StorehouseSelect");
                 g_selectedUUIDs[p] = -1; // Deselect card
-                g_shopNeedsRefresh[p] = true;
+                refreshShop(p);
             }
         }
     }
@@ -289,9 +290,10 @@ class Shop {
                 currCard.toggleLock();
                 trSoundsetPlayPlayer(p, "TradingPostSelect");
                 currDraw.m_cardArray[i] = currCard;
-                g_shopNeedsRefresh[p] = true;
+                refreshShop(p);
             }
         }
+        m_currDraws[p] = currDraw;
     }
 
     void buyXP(int p = 0){
@@ -310,12 +312,12 @@ class Shop {
                 m_currShopLevel[p] = m_currShopLevel[p] + 1;
                 m_totalShopExp[p] = 0;
                 trSoundsetPlayPlayer(p, "AotgBlessingRewardReceivedDivine");
-                g_shopNeedsRefresh[p] = true;
+                refreshShop(p);
                 return;
             }
         }
         trSoundsetPlayPlayer(p, "AotgNodeSelectAvailable");
-        g_shopNeedsRefresh[p] = true;
+        refreshShop(p);
     }
 
     void sell(int p = 0, int uuid = -1){
@@ -327,44 +329,51 @@ class Shop {
             trPlayerGrantResources(p, "Gold", goldAmount * SELL_MULTIPLIER);
             trSoundsetPlayPlayer(p, "TributeReceived");
             g_selectedUUIDs[p] = -1; // Deselect card
-            g_shopNeedsRefresh[p] = true;
+            m_benches[p] = bench;
+            refreshShop(p);
         }
     }
 
     void deploy(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         bench.deployCard(uuid);
-        g_shopNeedsRefresh[p] = true;
+        m_benches[p] = bench;
+        refreshShop(p);
     }
 
     void withdraw(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         bench.withdrawCard(uuid);
-        g_shopNeedsRefresh[p] = true;
+        m_benches[p] = bench;
+        refreshShop(p);
     }
 
     void identify(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         bench.identifyCard(uuid, p);
-        g_shopNeedsRefresh[p] = true;
+        m_benches[p] = bench;
+        refreshShop(p);
     }
 
     void rerollRarity(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         bench.rerollRarity(uuid, p);
-        g_shopNeedsRefresh[p] = true;
+        m_benches[p] = bench;
+        refreshShop(p);
     }
 
     void addSocket(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         bench.addSocket(uuid, p);
-        g_shopNeedsRefresh[p] = true;
+        m_benches[p] = bench;
+        refreshShop(p);
     }
 
     void rerollUpgrade(int p = 0, int uuid = -1, int upgradeIndex = 0){
         BenchData bench = m_benches[p];
         bench.rerollUpgrade(uuid, p, upgradeIndex);
-        g_shopNeedsRefresh[p] = true;
+        m_benches[p] = bench;
+        refreshShop(p);
     }
 };
 
@@ -538,14 +547,14 @@ void renderBench(int p = 1, int shopType = 0) {
 }
 
 void closeShop(int p = 1){
+    if (uiSystemActiveArray[p] == false) {return;}
     exitUiSystem(p, true);
     if(trCurrentPlayer() == p){
         setUiVisible(true);
         trSetObscuredUnits(true);
+        trSoundPlayPaused("ui\latch.wav"); //TODO: Fix looping close?
     }
-    if (trCurrentPlayer() == p){
-        trSoundPlayPaused("ui\latch.wav");
-    }
+    g_shop.m_shopTypeOpened[p] = SHOP_TYPE_CLOSED;
 }
 
 void renderExitButton(int p = 1, float drawPosx = 0.55, float drawPosY = -0.425) {
@@ -571,7 +580,6 @@ void renderShop(int p = 1){
     float yOffset = 0.075;
     float drawPosYStart = -0.35;
 
-    int goldStockpiled = kbGetResourceAmount(p, kbGetResourceID("Gold"));
     int shopLevel = g_shop.m_currShopLevel[p];
     ShopLevel level = g_shopLevels[shopLevel];
     string shopChances = "I: " + level.m_tier1Chance + "%\n" +
@@ -579,9 +587,13 @@ void renderShop(int p = 1){
                          "III: " + level.m_tier3Chance + "%\n" +
                          "IV: " + level.m_tier4Chance + "%\n" +
                          "V: " + level.m_tier5Chance + "%";
+    uiSystemAddDisplayDynamic(p, drawPosx - 0.015, drawPosYStart + 0.15, 1259, [](int p = 1, ref Parameters parameters) -> string { 
+                int goldStockpiled = kbGetResourceAmount(p, kbGetResourceID("Gold"));
+                return getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled; 
+            }, EMPTY_PARAMETERS
+        );
     if (shopLevel < MAX_SHOP_LEVEL && shopLevel < g_shopLevels.size()){
         minimapSafeDisplayWithHover(p, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
-                                    getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled + 
                                     "\nLevel: " + shopLevel + "\n" + 
                                     "XP: " + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded,
                                     "Shop Level Draw Chances",
@@ -589,7 +601,6 @@ void renderShop(int p = 1){
     }
     else {
         minimapSafeDisplayWithHover(p, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
-                                    getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled + 
                                     "\nLevel: " + MAX_SHOP_LEVEL + 
                                     "\nXP: MAX",
                                     "Shop Level Drop Chances",
@@ -626,8 +637,14 @@ void renderShop(int p = 1){
 
     // Exit Shop Button
     renderExitButton(p);
+}
 
-    g_shopNeedsRefresh[p] = false;
+void hideWorldPrompts(int p = 1){
+    if (trCurrentPlayer() != p){ return; }
+    int[] shopIds = ShopTypeToUnitIDMap.getValues();
+    for (int i = 0; i < shopIds.size(); i++){
+        trWorldSpacePromptHide(""+shopIds[i]);
+    }
 }
 
 void openShop(int p = 1){
@@ -638,6 +655,7 @@ void openShop(int p = 1){
     }
     g_shop.m_shopTypeOpened[p] = DEFAULT_SHOP_TYPE;
     renderShop(p);
+    hideWorldPrompts(p);
     postEnterUiSystem(p);
     if (trCurrentPlayer() == p){
         trSoundPlayPaused("ui\latch.wav");
@@ -645,13 +663,14 @@ void openShop(int p = 1){
 }
 
 void autoCloseOtherShops(){
-    for (int p = 1; p <= cNumberPlayers-2; p++){
+    for (int p = 1; p < cNumberPlayers-2; p++){
         int shopType = g_shop.m_shopTypeOpened[p];
-        if (shopType == DEFAULT_SHOP_TYPE) { continue; }
+        if (shopType == DEFAULT_SHOP_TYPE || shopType == SHOP_TYPE_CLOSED) { continue; }
         int shopUnitId = ShopTypeToUnitIDMap.get(shopType);
         selectSingle(shopUnitId);
         if (trUnitIsOwnedBy(p) == false){ 
-            closeShop(p);
+            log(-1, "Should not see this message");
+            closeShop(p); //TODO: Fix looping close?
         }
     }
 }
@@ -668,7 +687,6 @@ void startShopTimers(){
                 g_shop.m_benches[i] = bench;
             }
         }
-        autoCloseOtherShops();
         return true;
     });
 
@@ -679,7 +697,7 @@ void startShopTimers(){
         g_armoryShopCost = max(g_armoryShopCost - SHOP_COST_REDUCTION, 10);
         g_forgeShopCost = max(g_forgeShopCost - SHOP_COST_REDUCTION, 10);
         for (int p=1; p<=cNumberPlayers-2; p++){
-            g_shopNeedsRefresh[p] = true;
+            refreshShop(p);
         }
         return true;
     });

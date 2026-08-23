@@ -82,9 +82,9 @@ void createShops(){
 
         // Spawn and scale market
         int shopId = trUnitCreateForced("Market", spawnX, configMapBaseHeight, spawnZ, xsRandFloat(0.0, 360.0), p);
-        trUnitSelectClear();
-        trUnitSelectByID(shopId);
+        selectSingle(shopId);
         trUnitSetScale(0.5, 0.5, 0.5);
+        trUnitChangeName("Card Shop");
 
         BenchData bench = g_shop.m_benches[p];
         bench.init(p, shopId);
@@ -96,26 +96,20 @@ void modifyPlayerData(){
 
     // All players
     for(int p = 0; p <= cNumberPlayers; p++) {
+        trTechSetStatus(p, 2, 2); // Classical Ages
+        trTechSetStatus(p, 90, 2);
+        trTechSetStatus(p, 184, 2);
+        trTechSetStatus(p, 20, 2);
+        trTechSetStatus(p, 509, 2);
+        trTechSetStatus(p, 626, 2);
+        //trTechSetStatus(p, 275, 2); // Atlantean Age causing extra upgrades?
+        trTechSetStatus(p, 751, 2);
+
         setAsPlaceholder("GoldPile", p);
         trProtoUnitSetFlag(p, "GoldPile", "ObscuredByUnits", true);
         trModifyProtounitData("GoldPile", p, puFIELD_LIFESPAN, GOLDPILE_LIFESPAN, relativityASSIGN);
 
-        trProtounitAssignAction("DwarvenForge", "ThePeachBlossomSpring", "AutoConvert", p);
-        trProtoUnitSetFlag(p, "DwarvenForge", "Invulnerable", true);
-        trProtounitRemoveCommand("DwarvenForge", p, "Delete");
-
-        trProtounitAssignAction("DwarvenArmory", "ThePeachBlossomSpring", "AutoConvert", p);
-        trProtoUnitSetFlag(p, "DwarvenArmory", "Invulnerable", true);
-        trProtounitRemoveCommand("DwarvenArmory", p, "Delete");
-
-        trProtounitAssignAction("TempleOfTheGods", "ThePeachBlossomSpring", "AutoConvert", p);
-        trProtoUnitSetFlag(p, "TempleOfTheGods", "Invulnerable", true);
-        trProtounitRemoveCommand("TempleOfTheGods", p, "Delete");
-
-        trProtounitAssignAction("ShrineJapanese", "ThePeachBlossomSpring", "AutoConvert", p);
-        trProtoUnitSetFlag(p, "ShrineJapanese", "Invulnerable", true);
-        trProtounitRemoveCommand("ShrineJapanese", p, "Delete");
-
+        // Forbid
         trForbidProtounit(p, "CaravanAtlantean");
         trForbidProtounit(p, "CaravanAztec");
         trForbidProtounit(p, "CaravanChinese");
@@ -147,6 +141,16 @@ void modifyPlayerData(){
         for (int k = 0; k < g_shopTypes.size(); k++) {
             string shopType = g_shopTypes[k];
             setupAsSharedShop(shopType, p);
+            int shopId = ShopTypeToUnitIDMap.get(k);
+            selectSingle(shopId);
+            switch(k){
+                case SHOP_TYPE_FORGE: trUnitChangeName("Forge (Add Sockets)");
+                case SHOP_TYPE_ARMORY: trUnitChangeName("Armory (Roll Upgrades)");
+                case SHOP_TYPE_TEMPLE: trUnitChangeName("Temple (Roll Rarities)");
+                case SHOP_TYPE_SHRINE: trUnitChangeName("Library (Identification)");
+            }
+            trProtoUnitSetFlag(p, shopType, "Invulnerable", true);
+            trProtounitRemoveCommand(shopType, p, "Delete");
         }
 
         // For card synergies
@@ -154,7 +158,7 @@ void modifyPlayerData(){
     }
 
     // Only Humans
-    for(int p = 1; p <= cNumberPlayers - 2; p++) {
+    for(int p = 1; p < cNumberPlayers - 2; p++) {
         trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_X, 0.5, 3);
         trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_Z, 0.5, 3);
         trProtounitRemoveCommand("Market", p, "Delete");
@@ -163,10 +167,29 @@ void modifyPlayerData(){
         trProtounitRemoveCommand("Market", p, "MarketSell1");
         trProtounitRemoveCommand("Market", p, "MarketSell2");
         trProtounitRemoveTech("Market", p, 363); // Coinage
+        trProtounitRemoveTech("Market", p, 582); // Silk Road
         trProtoUnitSetFlag(p, "Market", "Invulnerable", true);
         trPlayerModifyData(p, 0, -1, 999, 0); // Add population
-        trTechSetStatus(p, 406, 2); // Ring of the Nibelung
         trForbidProtounit(p, "WallConnector");
+        trTechSetStatus(p, 406, 2); // Ring of the Nibelung, gold trickle
+
+        trTechRemove(p, "Armory", 383);
+        trTechRemove(p, "Armory", 386);
+        trTechRemove(p, "Armory", 380);
+        trTechRemove(p, "Armory", 390);
+        trProtounitRemoveTech("DwarvenArmory", 1, 389);
+        trTechRemove(p, "Market", 361); // Tax Collectors
+
+        // Hide teammates's gold
+        if (trCurrentPlayer() == p){
+            int currTeam = g_finalTeam[p];
+            for (int p2 = 1; p2 < cNumberPlayers; p2++) {
+                int otherTeam = g_finalTeam[p2];
+                if (currTeam == otherTeam){
+                    trProtoUnitSetFlag(p2, "GoldPile", "OnlyInEditor", true);
+                }
+            }
+        }
 
         string[] protoNames = ProtoNameToCardParametersMap.getKeys();
         for (int i=0; i<protoNames.size(); i++){
@@ -177,6 +200,8 @@ void modifyPlayerData(){
     // Last 2 AIs
     for(int p = cNumberPlayers - 1; p <= cNumberPlayers; p++) {
         trTechSetStatus(p, 373, 2); // Watch Tower
+        trTechSetStatus(p, 378, 2); // Boiling Oil
+
         trModifyProtounitData("SentryTower", p, puFIELD_HITPOINTS, 2000, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_DIVINE, 20, relativityASSIGN);
@@ -192,22 +217,25 @@ void modifyPlayerData(){
         setupAsTower("MirrorTower", p);
 
         trModifyProtounitData("StatueOfLightning", p, puFIELD_HITPOINTS, 8000, relativityASSIGN);
-        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_DIVINE, 70, relativityASSIGN);
+        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_DIVINE, 60, relativityASSIGN);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
-        trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0, relativityASSIGN);
+        trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 1, relativityASSIGN);
         setupAsTower("StatueOfLightning", p);
 
         trModifyProtounitData("Fortress", p, puFIELD_HITPOINTS, 24000, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_DIVINE, 90, relativityASSIGN);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_DIVINE, 70, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
         setupAsTower("Fortress", p);
         trProtoUnitSetIcon("Fortress", p, "", "ui\minimap\minimap_wonder");
+        // For win condition
+        trProtounitModifySpawnData("Fortress", p, "FlyingPurpleHippo", 0, 1.0, 1, -1, -1);
 
-        trProtounitModifySpawnData("Toxotes", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
         trProtounitModifySpawnData("Hoplite", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
         trProtounitModifySpawnData("Hippeus", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-
+        trProtounitModifySpawnData("Toxotes", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
+        trProtounitModifySpawnData("Cyclops", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
+        trProtounitModifySpawnData("Heracles", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
         trPlayerSetCiv(p, "Zeus");
     }
 

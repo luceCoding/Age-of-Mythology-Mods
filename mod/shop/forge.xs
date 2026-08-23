@@ -9,8 +9,6 @@ void renderForge(int p = 1){
     int goldStockpiled = kbGetResourceAmount(p, kbGetResourceID("Gold"));
     minimapSafeDisplay(p, drawPosx - 0.015, drawPosYStart + 0.1, 
                         getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled);
-
-    g_shopNeedsRefresh[p] = false;
 }
 
 void createForgeCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){
@@ -50,6 +48,7 @@ void openForge(int p = 1){
     g_selectedUUIDs[p] = -1; // Deselect card
     g_shop.m_shopTypeOpened[p] = SHOP_TYPE_FORGE;
     renderForge(p);
+    hideWorldPrompts(p);
     postEnterUiSystem(p);
     if (trCurrentPlayer() == p){
         trSoundPlayPaused("ui\latch.wav");

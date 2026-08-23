@@ -3,17 +3,14 @@ const int configMapTileZ = 128;
 const int configMapBaseHeight = 4;
 const float configMapWaterLevel = -2.0;
 const float configMapWaterDepth = 3.0;
-const int config_MAX_DRAWN_CARDS = 5;
-const int MAX_CARDS_IN_BENCH = 20;
 
 int[] g_selectedUUIDs = default;
-bool[] g_shopNeedsRefresh = default;
 float g_timeMSGameStarted = 0.0;
 
-const int MAX_SOCKETS_PER_CARD = 3;
 int g_uuidCardCounter = 0;
-
+const int MAX_SOCKETS_PER_CARD = 3;
 const int MAX_SYNERGIES = 9;
+const int HERO_WAVE = 5;
 
 const int SYNERGY_INDEX_INFANTRY = 0;
 const int SYNERGY_INDEX_RANGED = 1;
@@ -75,12 +72,15 @@ const int UPGRADE_CRUSH_ATTACK = 9;
 const int TOTAL_AGES = 5;
 const float SELL_MULTIPLIER = 0.8;
 const float UI_LEFT_BUFFER = 50;
+const int config_MAX_DRAWN_CARDS = 5;
+const int MAX_CARDS_IN_BENCH = 20;
 
+const int SHOP_TYPE_CLOSED = -2;
 const int DEFAULT_SHOP_TYPE = -1;
-const int SHOP_TYPE_SHRINE = 0;
-const int SHOP_TYPE_FORGE = 1;
-const int SHOP_TYPE_TEMPLE = 2;
-const int SHOP_TYPE_ARMORY = 3;
+const int SHOP_TYPE_FORGE = 0;
+const int SHOP_TYPE_SHRINE = 1;
+const int SHOP_TYPE_ARMORY = 2;
+const int SHOP_TYPE_TEMPLE = 3;
 
 const int SHOP_COST_REDUCTION = 5;
 const int SHOP_COST_REDUCTION_MS_INTERVAL = 30000;
@@ -88,7 +88,6 @@ int g_shrineShopCost = 10;
 int g_templeShopCost = 10;
 int g_armoryShopCost = 10;
 int g_forgeShopCost = 10;
-
 
 const float GOLDPILE_LIFESPAN = 20.0;
 
@@ -104,6 +103,8 @@ const int STARTING_GOLD = 300;
 const float CATCHUP_GOLD_DIFF = 0.9;
 const float CATCHUP_GOLD_MECHANIC = 1.1;
 const float SHARED_GOLD_COEFFICIENT = 0.25;
+
+const int RESPAWN_TIME_MS_BASE = 5000;
 
 string[] g_shopTypes = default;
 string[] g_roadTypes = default;

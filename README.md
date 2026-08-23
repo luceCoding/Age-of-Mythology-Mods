@@ -20,6 +20,7 @@ XS quirks:
 - Can't use ref int as a parameter to access an array.
 - Ran into a quirky bug of not finding keys in my hash map when resizing the array, implementation was correct. Having the capacity too slow, ie. 16 had issues, but changing it to something higher even tho it would still resize regardless elevates but does not fix the problem entirely.
 - Class instance bug, same object is created when used within an array. Workaround this by making a function that creates a new instance of said class.
+- When accessing an array and manipulating it. You must set the object back into the array else you will get oos errors.
 
 Nottud's UI Notes:
 - Need looping trigger calling system.process().

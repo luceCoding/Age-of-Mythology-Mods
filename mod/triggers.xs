@@ -9,8 +9,11 @@ highFrequency
 active
 {
     trSetCanSeeAllyLOSInFFA(true);
-    trExecuteOnAI(cNumberPlayers-1, "scenarioDisableAI()");
-    trExecuteOnAI(cNumberPlayers, "scenarioDisableAI()");
+    for (int p=1; p <= cNumberPlayers; p++){
+        if (!(kbPlayerIsHuman(p))){
+            trExecuteOnAI(p, "scenarioDisableAI()");
+        }
+    }
     //trAISetAttackResponseDistance(cNumberPlayers, 36.0);
     trDisablePopCapNotifications(true);
     trDisableConquestCheck(true);
@@ -56,14 +59,19 @@ runImmediately
                     g_IncomeHandler.addGold(unitId);
                     if (owner != 0){
                         trUnitSetScale(0.5, 0.5, 0.5);
-                        if (trPlayerGetDiplomacy(owner, cNumberPlayers-1) == "enemy"){
-                            trUnitSetShading(7, 100);
-                        }
                     }
                 }
-                default: {
-                    selectSingle(unitId);
-                    trUnitSetStance("Defensive");
+                case cUnitTypeFlyingPurpleHippo: {
+                    int losingTeam = g_finalTeam[owner];
+                    log(-1, ""+owner+" "+losingTeam);
+                    for (int p = 1; p < cNumberPlayers; p++) {
+                        if (g_finalTeam[p] == losingTeam) {
+                            trPlayerSetDefeated(p);
+                        } else {
+                            trPlayerSetWon(p, false);
+                        }
+                    }
+                    trEndGame();
                 }
             }
         });
@@ -95,6 +103,7 @@ active
         startIncome();
         paintAllLanesCircular();
         generateAllCamps();
+        startCapturePoints();
         xsDisableSelf();
    }
 }
@@ -110,15 +119,6 @@ active
    }
 }
 
-rule LOOPING_TRIGGER
-highFrequency
-active
-{
-    for(int p = 1; p <= cNumberPlayers-2; p++){
-        refreshShop(p);
-    }
-}
-
 rule DEV_MODE
 highFrequency
 active
@@ -126,8 +126,9 @@ active
    if ((((xsGetTime() - (cActivationTime / 60000)) >= 1) != false))
    {
         for(int p = 1; p <= cNumberPlayers; p = p + 1){
-            trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
+            //trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
             trPlayerGrantResources(p, "Gold", 99999);
+            //trGodPowerGrant(p, "MeteorSPC", 99, 0, false, false);
         }
         xsDisableSelf();
    }
