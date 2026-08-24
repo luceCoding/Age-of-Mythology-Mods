@@ -104,6 +104,9 @@ const float CATCHUP_GOLD_DIFF = 0.9;
 const float CATCHUP_GOLD_MECHANIC = 1.1;
 const float SHARED_GOLD_COEFFICIENT = 0.25;
 
+const float SHARED_SHOP_CAPTURE_RADIUS = 10.0;
+const float SHARED_SHOP_CAPTURE_TIME = 20;
+
 const int RESPAWN_TIME_MS_BASE = 5000;
 
 string[] g_shopTypes = default;

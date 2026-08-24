@@ -5,6 +5,8 @@
 
 void generate()
 {
+    // mod/globals.xs
+    // mod/mutables.xs
 
     rmSetProgress(0.0);
 
@@ -20,7 +22,6 @@ void generate()
     createTypedScheduler("schedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"));
     createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
 
-    // mod/globals.xs
     // common/logs.xs
     // common/math.xs
     // common/preUi.xs
@@ -32,8 +33,6 @@ void generate()
     
     // mod/common/rng.xs
     
-    // mod/mutables.xs
-
     // mod/shop/level.xs
     // mod/data/cardParameters.xs
 

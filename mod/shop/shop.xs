@@ -547,8 +547,9 @@ void renderBench(int p = 1, int shopType = 0) {
     }
 }
 
-void closeShop(int p = 1){
+void closeShop(int p = 1, int shopType = SHOP_TYPE_CLOSED){
     if (uiSystemActiveArray[p] == false) {return;}
+    if (shopType != SHOP_TYPE_CLOSED && g_shop.m_shopTypeOpened[p] != shopType) {return;}
     exitUiSystem(p, true);
     if(trCurrentPlayer() == p){
         setUiVisible(true);
@@ -645,33 +646,6 @@ void hideWorldPrompts(int p = 1){
     int[] shopIds = ShopTypeToUnitIDMap.getValues();
     for (int i = 0; i < shopIds.size(); i++){
         trWorldSpacePromptHide(""+shopIds[i]);
-    }
-}
-
-void openShop(int p = 1){
-    enterUiSystem(p);
-    if(trCurrentPlayer() == p){
-        setUiVisible(false);
-        trSetObscuredUnits(false);
-    }
-    g_shop.m_shopTypeOpened[p] = DEFAULT_SHOP_TYPE;
-    renderShop(p);
-    hideWorldPrompts(p);
-    postEnterUiSystem(p);
-    if (trCurrentPlayer() == p){
-        trSoundPlayPaused("ui\latch.wav");
-    }
-}
-
-void autoCloseOtherShops(){
-    for (int p = 1; p < cNumberPlayers-2; p++){
-        int shopType = g_shop.m_shopTypeOpened[p];
-        if (shopType == DEFAULT_SHOP_TYPE || shopType == SHOP_TYPE_CLOSED) { continue; }
-        int shopUnitId = ShopTypeToUnitIDMap.get(shopType);
-        selectSingle(shopUnitId);
-        if (trUnitIsOwnedBy(p) == false){ 
-            closeShop(p); //TODO: Fix looping close?
-        }
     }
 }
 

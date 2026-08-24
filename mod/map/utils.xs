@@ -32,6 +32,7 @@ void setupAutoRespawn(string campUnitType = "", string placeholderUnitType = "",
 void setupAsSharedShop(string shopUnitType = "", int p = 0){
     trModifyProtounitData(shopUnitType, p, puFIELD_OBSTRUCTION_X, 2.5, relativityASSIGN);
     trModifyProtounitData(shopUnitType, p, puFIELD_OBSTRUCTION_Z, 2.5, relativityASSIGN);
+    trModifyProtounitData(shopUnitType, p, puFIELD_LOS, SHARED_SHOP_CAPTURE_RADIUS, relativityASSIGN);
     trProtoUnitSetFlag(p, shopUnitType, "ObscuredByUnits", true);
     trProtoUnitSetFlag(p, shopUnitType, "VisibleUnderFog", true);
     trProtoUnitSetIcon(shopUnitType, p, "", "ui\minimap\minimap_highlighted_item");

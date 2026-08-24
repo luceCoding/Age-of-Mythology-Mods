@@ -15,6 +15,10 @@ void postRatioCalculation(){
     cameraTrack.play(true, 0);
     setUiVisible(true);
     trSetObscuredUnits(true);
+    scheduler.add(1000, [](int iterations = 1) -> bool {
+        startGame();
+        return false;
+    });
 }
 
 void performProportionCalculation(){

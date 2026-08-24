@@ -3,6 +3,31 @@ include "config.xs";
 include "data/player.xs"
 include "common/ui.xs"
 
+void startGame(){
+    initializeGlobals();
+    initializeTeams();
+    modifyPlayerData();
+
+    createAIBases();
+    createBaseOuterwalls();
+    spawnSymmetricObjectives();
+
+    g_shop.init();
+    initializeCardParametersMap();
+    initializeShopLevels();
+    initializeSynergies();
+
+    createShops();
+    initPlayerCommands();
+    trHideScoreboard();
+
+    startShopTimers();
+    startIncome();
+    paintAllLanesCircular();
+    generateAllCamps();
+    startCapturePoints();
+}
+
 rule FIRE_FIRST_IMMEDIATELY_TRIGGER
 runImmediately
 highFrequency
@@ -20,47 +45,7 @@ active
     trSetCommunityObjectivesVisibility(false);
     initialiseUiSystems(false);
     performProportionCalculation();
-
-    initializeGlobals();
-    initializeTeams();
-    modifyPlayerData();
-
-    createAIBases();
-    createBaseOuterwalls();
-    spawnSymmetricObjectives();
-
-    g_shop.init();
-    initializeCardParametersMap();
-    initializeShopLevels();
-    initializeSynergies();
-
     xsDisableSelf();
-}
-
-rule FIRE_SECOND_TRIGGER
-highFrequency
-active
-{
-    createShops();
-    initPlayerCommands();
-    trHideScoreboard();
-    xsDisableSelf();
-}
-
-rule GAME_STARTS
-highFrequency
-active
-{
-    g_timeMSGameStarted = xsGetTimeMS();
-   if ((((xsGetTime() - (cActivationTime / 1000)) >= 1) != false))
-   {
-        startShopTimers();
-        startIncome();
-        paintAllLanesCircular();
-        generateAllCamps();
-        startCapturePoints();
-        xsDisableSelf();
-   }
 }
 
 rule FIRE_AFTER_30_SECONDS_TRIGGER
@@ -120,19 +105,4 @@ runImmediately
         });
         Search_lastTime = xsGetTimeMS();
     }
-}
-
-rule DEV_MODE
-highFrequency
-active
-{
-   if ((((xsGetTime() - (cActivationTime / 60000)) >= 1) != false))
-   {
-        for(int p = 1; p <= cNumberPlayers; p = p + 1){
-            //trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
-            trPlayerGrantResources(p, "Gold", 99999);
-            //trGodPowerGrant(p, "MeteorSPC", 99, 0, false, false);
-        }
-        xsDisableSelf();
-   }
 }

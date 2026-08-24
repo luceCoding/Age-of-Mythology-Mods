@@ -32,17 +32,5 @@ void createShrineCardButtons(ref CardData currCard, int p = 0, ref float posX, r
 }
 
 void openShrine(int p = 1){
-    enterUiSystem(p);
-    if(trCurrentPlayer() == p){
-        setUiVisible(false);
-        trSetObscuredUnits(false);
-    }
-    g_selectedUUIDs[p] = -1; // Deselect card
-    g_shop.m_shopTypeOpened[p] = SHOP_TYPE_SHRINE;
-    renderShrine(p);
-    hideWorldPrompts(p);
-    postEnterUiSystem(p);
-    if (trCurrentPlayer() == p){
-        trSoundPlayPaused("ui\latch.wav");
-    }
+    openShopType(p, SHOP_TYPE_SHRINE);
 }

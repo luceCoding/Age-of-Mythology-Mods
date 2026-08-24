@@ -121,7 +121,7 @@ class CapturePoint {
             m_captureTimer = m_captureTimer - 1;
             
             showWorldSpacePrompt("Capturing..." + m_captureTimer + "s");
-            closeShop(owner);
+            closeShop(owner, m_shopType);
             removeShopCommands(owner, g_shopTypes[m_shopType]);
             m_commandsRemoved = true; 
             
@@ -139,7 +139,7 @@ class CapturePoint {
         // 2. CONTESTED / ATTEMPTING TO CAPTURE WHILE BLOCKED: Freeze timer state
         if (contested == true || (enemyCount > 0 && ownerPresent == true)) {
             showWorldSpacePrompt("Contested...");
-            closeShop(owner);
+            closeShop(owner, m_shopType);
             removeShopCommands(owner, g_shopTypes[m_shopType]);
             m_commandsRemoved = true; 
             return; 
@@ -171,7 +171,7 @@ class CapturePoint {
                 int newTeammateOwner = getDominantPlayer(m_captureableUnitId, m_radius, false);
                 if (newTeammateOwner != -1) {
                     // Close shop and strip commands from the old owner before converting
-                    closeShop(owner);
+                    closeShop(owner, m_shopType);
                     removeShopCommands(owner, g_shopTypes[m_shopType]);
                     
                     selectSingle(m_captureableUnitId);
@@ -208,10 +208,10 @@ CapturePoint g_templeCapturePoint;
 CapturePoint g_forgeCapturePoint;
 
 void startCapturePoints(){
-    g_armoryCapturePoint.init(ShopTypeToUnitIDMap.get(SHOP_TYPE_ARMORY), SHOP_TYPE_ARMORY, 10, 12);
-    g_shrineCapturePoint.init(ShopTypeToUnitIDMap.get(SHOP_TYPE_SHRINE), SHOP_TYPE_SHRINE, 10, 12);
-    g_templeCapturePoint.init(ShopTypeToUnitIDMap.get(SHOP_TYPE_TEMPLE), SHOP_TYPE_TEMPLE, 10, 12);
-    g_forgeCapturePoint.init(ShopTypeToUnitIDMap.get(SHOP_TYPE_FORGE), SHOP_TYPE_FORGE, 10, 12);
+    g_armoryCapturePoint.init(ShopTypeToUnitIDMap.get(SHOP_TYPE_ARMORY), SHOP_TYPE_ARMORY, SHARED_SHOP_CAPTURE_TIME, SHARED_SHOP_CAPTURE_RADIUS);
+    g_shrineCapturePoint.init(ShopTypeToUnitIDMap.get(SHOP_TYPE_SHRINE), SHOP_TYPE_SHRINE, SHARED_SHOP_CAPTURE_TIME, SHARED_SHOP_CAPTURE_RADIUS);
+    g_templeCapturePoint.init(ShopTypeToUnitIDMap.get(SHOP_TYPE_TEMPLE), SHOP_TYPE_TEMPLE, SHARED_SHOP_CAPTURE_TIME, SHARED_SHOP_CAPTURE_RADIUS);
+    g_forgeCapturePoint.init(ShopTypeToUnitIDMap.get(SHOP_TYPE_FORGE), SHOP_TYPE_FORGE, SHARED_SHOP_CAPTURE_TIME, SHARED_SHOP_CAPTURE_RADIUS);
 
     scheduler.add(1013, [](int iterations = 1) -> bool {
         g_armoryCapturePoint.processCapturePoint();
