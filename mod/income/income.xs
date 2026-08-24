@@ -10,8 +10,7 @@ class IncomeHandler {
     void processGold(){
         for (int i = 0; i < m_goldUnitIDs.size(); i++) {
             int goldUnitId = m_goldUnitIDs[i];
-            trUnitSelectClear();
-            trUnitSelectByID(goldUnitId);
+            selectSingle(goldUnitId);
             if (trUnitDead() == true){
                 int lastIndex = m_goldUnitIDs.size() - 1;
                 m_goldUnitIDs[i] = m_goldUnitIDs[lastIndex];

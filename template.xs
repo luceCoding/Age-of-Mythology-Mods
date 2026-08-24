@@ -57,7 +57,6 @@ void generate()
     // mod/shop/temple.xs
     // mod/shop/refresh.xs
     // mod/shop/commands.xs
-    // mod/data/cardParametersData.xs
 
     // mod/map/utils.xs
     // mod/map/lane.xs
@@ -72,6 +71,9 @@ void generate()
     // mod/map/capture.xs
 
     // mod/income/income.xs
+
+    // mod/factory/deckFactory.xs
+    // mod/factory/synergyFactory.xs
 
     // mod/triggers.xs
 

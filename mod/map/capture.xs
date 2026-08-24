@@ -170,9 +170,14 @@ class CapturePoint {
             if (ownerPresent == false && enemyCount == 0 && teamCount > 0) {
                 int newTeammateOwner = getDominantPlayer(m_captureableUnitId, m_radius, false);
                 if (newTeammateOwner != -1) {
+                    // Close shop and strip commands from the old owner before converting
+                    closeShop(owner);
+                    removeShopCommands(owner, g_shopTypes[m_shopType]);
+                    
                     selectSingle(m_captureableUnitId);
                     trUnitConvert(newTeammateOwner);
                     owner = newTeammateOwner; 
+                    m_commandsRemoved = true; // Trigger command re-addition for the new teammate
                 }
             }
 

@@ -30,10 +30,7 @@ class DrawData {
     }
 
     CardData getCard(int index = 0){
-        if (m_cardArray.size() <= 0){
-            m_cardArray = new CardData(config_MAX_DRAWN_CARDS);
-        }
-        if (index < 0 || index >= m_cardArray.size()) {
+        if (m_cardArray.size() <= 0 || index < 0 || index >= m_cardArray.size()) {
             CardData emptyCard;
             return emptyCard;
         }

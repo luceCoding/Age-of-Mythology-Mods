@@ -27,17 +27,6 @@ class BenchData {
         return true;
     }
 
-    CardData getCardWithUUID(int uuid = -1){
-        for(int i = 0; i < m_cardArray.size(); i++) {
-            CardData card = m_cardArray[i];
-            if (card.getUuid() == uuid){
-                return card;
-            }
-        }
-        CardData emptyCard;
-        return emptyCard;
-    }
-
     CardData removeCardByUUID(int uuid = -1){        
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData currCard = m_cardArray[i];
@@ -68,8 +57,10 @@ class BenchData {
     void incrementSynergyAndApplyBuff(int index = 0, int p = 0){
         m_synergyCounter[index] = m_synergyCounter[index] + 1;
         SynergyData synergy = g_synergies[index];
-        Buff buff = synergy.m_buffs[m_synergyCounter[index]];
-        buff.applyBuff(p);
+        if (m_synergyCounter[index] < synergy.m_buffs.size()){
+            Buff buff = synergy.m_buffs[m_synergyCounter[index]]; // Index error?
+            buff.applyBuff(p);
+        }
     }
 
     void addSynergy(CardData card, int p = 0){
@@ -92,8 +83,10 @@ class BenchData {
 
     void decrementSynergyAndResetBuff(int index = 0, int p = 0){
         SynergyData synergy = g_synergies[index];
-        Buff buff = synergy.m_buffs[m_synergyCounter[index]];
-        buff.resetBuff(p);
+        if (m_synergyCounter[index] < synergy.m_buffs.size()){
+            Buff buff = synergy.m_buffs[m_synergyCounter[index]]; // Index error?
+            buff.resetBuff(p);
+        }
         m_synergyCounter[index] = m_synergyCounter[index] - 1;
     }
 

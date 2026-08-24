@@ -9,7 +9,7 @@ float g_timeMSGameStarted = 0.0;
 
 int g_uuidCardCounter = 0;
 const int MAX_SOCKETS_PER_CARD = 3;
-const int MAX_SYNERGIES = 9;
+const int MAX_SYNERGIES = 11;
 const int HERO_WAVE = 5;
 
 const int SYNERGY_INDEX_INFANTRY = 0;

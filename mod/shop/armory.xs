@@ -15,8 +15,7 @@ void createArmoryCardButtons(ref CardData currCard, int p = 0, ref float posX, r
     if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.isIdentified() == false) { return; }
     if (currCard.isDeployed()) {
         trChatSendToPlayer(p, p, "Unit must be withdrawn first to be upgraded.");
-        trUnitSelectClear();
-        trUnitSelectByID(currCard.getDeployedUnitID());
+        selectSingle();
         trUnitHighlight(8.0, true);
         trSoundsetPlayPlayer(p, "PopCapHit");
         return;

@@ -30,9 +30,7 @@ class LaneManager {
 
         for (int i = 0; i < m_unitIds.size(); i++){
             int unitID = m_unitIds[i];
-            trUnitSelectClear();
-            trUnitSelectByID(unitID);
-
+            selectSingle(unitID);
             // Remove dead units
             if (trUnitDead()){
                 int lastIndex = m_unitIds.size() - 1;

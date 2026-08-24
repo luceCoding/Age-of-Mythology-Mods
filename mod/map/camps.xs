@@ -5,7 +5,6 @@ bool isAreaClearOf(string unitType = "Building", float x = 0.0, float z = 0.0, f
     int teamABuildings = kbUnitTypeCountInArea(unitType, aiTeamA, cUnitStateAlive, tempUnitId, clearanceRadius);
     int teamBBuildings = kbUnitTypeCountInArea(unitType, aiTeamB, cUnitStateAlive, tempUnitId, clearanceRadius);
 
-    trUnitSelectClear();
     selectSingle(tempUnitId);
     trUnitDestroy();
 

@@ -47,8 +47,10 @@ class Shop {
         DeckData deck = m_decks[d];
         DrawData currDraw = m_currDraws[p];
         CardData drawnCard = deck.drawRandomCard();
+        m_decks[d] = deck;
         if (drawnCard.isNull() == false){
             bool hasAddedCard = currDraw.addCard(drawnCard, p);
+            m_currDraws[p] = currDraw;
             if (hasAddedCard == false){
                 deck.addCard(drawnCard);
                 m_decks[d] = deck;
@@ -56,8 +58,6 @@ class Shop {
                 return false;
             }
             else {
-                m_decks[d] = deck;
-                m_currDraws[p] = currDraw;
                 refreshShop(p);
                 log(3, "Drew a card for player " + p);
                 return true;
@@ -275,6 +275,7 @@ class Shop {
             if (removedCard.isNull() == false){
                 removedCard.unlockCard();
                 bench.addCard(removedCard);
+                m_benches[p] = bench;
                 trSoundsetPlayPlayer(p, "StorehouseSelect");
                 g_selectedUUIDs[p] = -1; // Deselect card
                 refreshShop(p);
@@ -323,13 +324,13 @@ class Shop {
     void sell(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         CardData removedCard = bench.removeCardByUUID(uuid);
+        m_benches[p] = bench;
         if (removedCard.isNull() == false){
             int goldAmount = getCost(removedCard, p);
-            addCardIntoDeck(removedCard);
+            addCardIntoDeck(removedCard, removedCard.getDeckIndex());
             trPlayerGrantResources(p, "Gold", goldAmount * SELL_MULTIPLIER);
             trSoundsetPlayPlayer(p, "TributeReceived");
             g_selectedUUIDs[p] = -1; // Deselect card
-            m_benches[p] = bench;
             refreshShop(p);
         }
     }
@@ -669,7 +670,6 @@ void autoCloseOtherShops(){
         int shopUnitId = ShopTypeToUnitIDMap.get(shopType);
         selectSingle(shopUnitId);
         if (trUnitIsOwnedBy(p) == false){ 
-            log(-1, "Should not see this message");
             closeShop(p); //TODO: Fix looping close?
         }
     }

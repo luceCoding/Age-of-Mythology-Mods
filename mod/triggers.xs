@@ -20,14 +20,58 @@ active
     trSetCommunityObjectivesVisibility(false);
     initialiseUiSystems(false);
     performProportionCalculation();
+
     initializeGlobals();
     initializeTeams();
+    modifyPlayerData();
+
     createAIBases();
     createBaseOuterwalls();
+    spawnSymmetricObjectives();
+
+    g_shop.init();
+    initializeCardParametersMap();
     initializeShopLevels();
     initializeSynergies();
-    g_shop.init();
+
     xsDisableSelf();
+}
+
+rule FIRE_SECOND_TRIGGER
+highFrequency
+active
+{
+    createShops();
+    initPlayerCommands();
+    trHideScoreboard();
+    xsDisableSelf();
+}
+
+rule GAME_STARTS
+highFrequency
+active
+{
+    g_timeMSGameStarted = xsGetTimeMS();
+   if ((((xsGetTime() - (cActivationTime / 1000)) >= 1) != false))
+   {
+        startShopTimers();
+        startIncome();
+        paintAllLanesCircular();
+        generateAllCamps();
+        startCapturePoints();
+        xsDisableSelf();
+   }
+}
+
+rule FIRE_AFTER_30_SECONDS_TRIGGER
+highFrequency
+active
+{
+   if ((((xsGetTime() - (cActivationTime / 1000)) >= 30) != false))
+   {
+        startLanes();
+        xsDisableSelf();
+   }
 }
 
 rule _Search
@@ -63,7 +107,6 @@ runImmediately
                 }
                 case cUnitTypeFlyingPurpleHippo: {
                     int losingTeam = g_finalTeam[owner];
-                    log(-1, ""+owner+" "+losingTeam);
                     for (int p = 1; p < cNumberPlayers; p++) {
                         if (g_finalTeam[p] == losingTeam) {
                             trPlayerSetDefeated(p);
@@ -77,46 +120,6 @@ runImmediately
         });
         Search_lastTime = xsGetTimeMS();
     }
-}
-
-rule FIRE_SECOND_TRIGGER
-highFrequency
-active
-{
-    initializeCardParametersMap();
-    spawnSymmetricObjectives();
-    modifyPlayerData();
-    createShops();
-    initPlayerCommands();
-    trHideScoreboard();
-    xsDisableSelf();
-}
-
-rule GAME_STARTS
-highFrequency
-active
-{
-    g_timeMSGameStarted = xsGetTimeMS();
-   if ((((xsGetTime() - (cActivationTime / 1000)) >= 1) != false))
-   {
-        startShopTimers();
-        startIncome();
-        paintAllLanesCircular();
-        generateAllCamps();
-        startCapturePoints();
-        xsDisableSelf();
-   }
-}
-
-rule FIRE_AFTER_30_SECONDS_TRIGGER
-highFrequency
-active
-{
-   if ((((xsGetTime() - (cActivationTime / 1000)) >= 30) != false))
-   {
-        startLanes();
-        xsDisableSelf();
-   }
 }
 
 rule DEV_MODE

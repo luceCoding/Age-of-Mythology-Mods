@@ -17,7 +17,28 @@ class CardParameters {
 
     Parameters m_params;
     int m_uuid = -1;
-    int[] m_unitTypes = default;
+    bool[] m_unitTypes = default;
+
+    string getProtoUnit(){
+        if (m_params.strings.size() < 1){
+            return "";
+        }
+        return m_params.strings[1];
+    }
+
+    bool isUnitType(string unitType = ""){
+        xsSetContextPlayer(0);
+        int unitID = trUnitCreate(getProtoUnit(), 0, 0, 0, -1, 0, false);
+        selectSingle(unitID);
+        if (kbProtoUnitIsType(kbUnitGetProtoUnitID(unitID), kbGetUnitTypeID(unitType)) != false){
+            trUnitDestroy(true);
+            log(3, "Is " + unitType + " unit type.");
+            return true;
+        }
+        trUnitDestroy(true);
+        log(3, "Should never see this message except at the start of the game.");
+        return false;
+    }
 
     void setCardParameters(int age = 0, int cost = 1,
                            string protounit = "", string titleText = "", string hoverText = "", string iconPath = ""){
@@ -31,9 +52,21 @@ class CardParameters {
         params.strings.add(titleText);
         params.strings.add(hoverText);
         m_params = params;
-        m_unitTypes = new int(MAX_UNIT_TYPES + 1, -1);
         m_uuid = g_uuidCardCounter;
         g_uuidCardCounter = g_uuidCardCounter + 1;
+
+        m_unitTypes = new bool(MAX_UNIT_TYPES, false);
+        m_unitTypes[0] = isUnitType(UNIT_TYPE_INFANTRY);
+        m_unitTypes[1] = isUnitType(UNIT_TYPE_ARCHER);
+        m_unitTypes[2] = isUnitType(UNIT_TYPE_CAVALRY);
+        m_unitTypes[3] = isUnitType(UNIT_TYPE_MYTH);
+        m_unitTypes[4] = isUnitType(UNIT_TYPE_HERO);
+        m_unitTypes[5] = isUnitType(UNIT_TYPE_HEALER);
+        m_unitTypes[6] = isUnitType(UNIT_TYPE_SIEGE);
+        m_unitTypes[7] = isUnitType(UNIT_TYPE_BUILDING);
+        m_unitTypes[8] = isUnitType(UNIT_TYPE_SOLDIER);
+        m_unitTypes[9] = isUnitType(UNIT_TYPE_RANGED);
+        m_unitTypes[10] = isUnitType(UNIT_TYPE_MYTH_SIEGE);
     }
 
     int getIntData(){
@@ -64,13 +97,6 @@ class CardParameters {
         return m_params.strings[0];
     }
 
-    string getProtoUnit(){
-        if (m_params.strings.size() < 1){
-            return "";
-        }
-        return m_params.strings[1];
-    }
-
     string getIconPath(){
         if (m_params.strings.size() < 2){
             return "";
@@ -85,38 +111,15 @@ class CardParameters {
         return m_params.strings[3];
     }
 
-    bool isUnitType(string unitType = ""){
-        xsSetContextPlayer(0);
-        trUnitSelectClear();
-        int unitID = trUnitCreate(getProtoUnit(), 0, 0, 0, -1, 0, false);
-        trUnitSelectByID(unitID);
-        if (kbProtoUnitIsType(kbUnitGetProtoUnitID(unitID), kbGetUnitTypeID(unitType)) != false){
-            trUnitDestroy(true);
-            trUnitSelectClear();
-            log(3, "Is " + unitType + " unit type.");
-            return true;
-        }
-        trUnitDestroy(true);
-        trUnitSelectClear();
-        return false;
-    }
-
-    bool isUnitTypeCache(int index = 0, string unitType = ""){
-        if (m_unitTypes[index] == -1){
-            m_unitTypes[index] = isUnitType(unitType) ? 1 : 0;
-        }
-        return m_unitTypes[index] == 1;
-    }
-
-    bool isInfantry(){ return isUnitTypeCache(0, UNIT_TYPE_INFANTRY);}
-    bool isArcher(){ return (isUnitTypeCache(1, UNIT_TYPE_ARCHER) || isUnitTypeCache(9, UNIT_TYPE_RANGED));}
-    bool isCavalry(){ return isUnitTypeCache(2, UNIT_TYPE_CAVALRY);}
-    bool isMythUnit(){ return isUnitTypeCache(3, UNIT_TYPE_MYTH);}
-    bool isHero(){ return isUnitTypeCache(4, UNIT_TYPE_HERO);}
-    bool isHealer(){ return isUnitTypeCache(5, UNIT_TYPE_HEALER);}
-    bool isSiege(){ return (isUnitTypeCache(6, UNIT_TYPE_SIEGE) || isUnitTypeCache(10, UNIT_TYPE_MYTH_SIEGE));}
-    bool isBuilding(){ return isUnitTypeCache(7, UNIT_TYPE_BUILDING);}
-    bool isSoldier(){ return isUnitTypeCache(8, UNIT_TYPE_SOLDIER);}
+    bool isInfantry(){ return m_unitTypes[0];}
+    bool isArcher(){ return (m_unitTypes[1] || m_unitTypes[9]);}
+    bool isCavalry(){ return m_unitTypes[2];}
+    bool isMythUnit(){ return m_unitTypes[3];}
+    bool isHero(){ return m_unitTypes[4];}
+    bool isHealer(){ return m_unitTypes[5];}
+    bool isSiege(){ return (m_unitTypes[6] || m_unitTypes[10]);}
+    bool isBuilding(){ return m_unitTypes[7];}
+    bool isSoldier(){ return m_unitTypes[8];}
 
     bool isGreek() { return xsStringFindFirst(getIconPath(), "greek", 0, false) != -1; }
     bool isNorse() { return xsStringFindFirst(getIconPath(), "norse", 0, false) != -1; }

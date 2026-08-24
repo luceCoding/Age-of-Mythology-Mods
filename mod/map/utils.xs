@@ -33,6 +33,7 @@ void setupAsSharedShop(string shopUnitType = "", int p = 0){
     trModifyProtounitData(shopUnitType, p, puFIELD_OBSTRUCTION_X, 2.5, relativityASSIGN);
     trModifyProtounitData(shopUnitType, p, puFIELD_OBSTRUCTION_Z, 2.5, relativityASSIGN);
     trProtoUnitSetFlag(p, shopUnitType, "ObscuredByUnits", true);
+    trProtoUnitSetFlag(p, shopUnitType, "VisibleUnderFog", true);
     trProtoUnitSetIcon(shopUnitType, p, "", "ui\minimap\minimap_highlighted_item");
 }
 
@@ -41,4 +42,10 @@ void setupAsTower(string unitType = "", int p = 0){
     trProtoUnitSetIcon(unitType, p, "", "ui\minimap\minimap_village_center");
     trModifyProtounitData(unitType, p, 5, 0, 1); // Max contained
     trModifyProtounitData(unitType, p, puFIELD_LOS, 18, relativityASSIGN);
+}
+
+void setupCreepWaveUnit(string unitType = "", int p = 0){
+    trProtounitModifySpawnData(unitType, p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
+    trModifyProtounitData(unitType, p, puFIELD_SPEED, 4, relativityASSIGN);
+    trModifyProtounitData(unitType, p, puFIELD_LOS, 15, relativityASSIGN);
 }

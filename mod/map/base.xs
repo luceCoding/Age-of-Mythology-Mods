@@ -4,8 +4,7 @@
 int spawnBuilding(string protoName = "", float x = 0.0, float h = 0.0, float z = 0.0, float heading = 0.0, int player = 0, float scale = 0.0) {
     int unitId = trUnitCreateForced(protoName, x, h, z, heading, player);
     if (scale != 1.0) {
-        trUnitSelectClear();
-        trUnitSelectByID(unitId);
+        selectSingle(unitId);
         trUnitSetScale(scale, scale, scale);
     }
     return unitId;
@@ -203,7 +202,6 @@ void spawnArcSegment(float cx = 0.0, float cz = 0.0, float radius = 0.0, float s
         float z = cz + (radius * sinDeg(currentAngleDeg));
 
         int wallId = trUnitCreateForced(wallProto, x, configMapBaseHeight, z, 0.0, player);
-        trUnitSelectClear();
         selectSingle(wallId);
         trUnitSetScale(1.2, 1.2, 1.2);
     }

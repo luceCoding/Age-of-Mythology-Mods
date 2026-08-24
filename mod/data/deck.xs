@@ -10,22 +10,6 @@ class DeckData {
         log(3, "Added card to deck " + card.getUuid());
     }
 
-    // Draws the top card (last element in the array)
-    CardData drawTopCard() {
-        if (m_cardArray.size() <= 0) {
-            CardData emptyCard;
-            return emptyCard; // Return default/null object if deck is empty
-        }
-
-        int lastIndex = m_cardArray.size() - 1;
-        CardData drawnCard = m_cardArray[lastIndex];
-
-        // Shrink the array by 1 to remove the top card
-        m_cardArray.resize(lastIndex); 
-        log(3, "Popped card from deck, size: " + m_cardArray.size());
-        return drawnCard;
-    }
-
     // Fast removal at a specific index (Draws a specific/random card)
     CardData drawCardAtIndex(int index = 0) {
         int currentSize = m_cardArray.size();

@@ -203,6 +203,7 @@ void modifyPlayerData(){
         trTechSetStatus(p, 378, 2); // Boiling Oil
 
         trModifyProtounitData("SentryTower", p, puFIELD_HITPOINTS, 2000, relativityASSIGN);
+        trModifyProtounitData("SentryTower", p, puFIELD_CRUSH_ARMOR, 0.3, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_DIVINE, 20, relativityASSIGN);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
@@ -210,6 +211,7 @@ void modifyPlayerData(){
         setupAsTower("SentryTower", p);
 
         trModifyProtounitData("MirrorTower", p, puFIELD_HITPOINTS, 4000, relativityASSIGN);
+        trModifyProtounitData("MirrorTower", p, puFIELD_CRUSH_ARMOR, 0.3, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_DIVINE, 50, relativityASSIGN);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_RANGE, 18, relativityASSIGN);
@@ -217,12 +219,14 @@ void modifyPlayerData(){
         setupAsTower("MirrorTower", p);
 
         trModifyProtounitData("StatueOfLightning", p, puFIELD_HITPOINTS, 8000, relativityASSIGN);
+        trModifyProtounitData("StatueOfLightning", p, puFIELD_CRUSH_ARMOR, 0.3, relativityASSIGN);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_DIVINE, 60, relativityASSIGN);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
         trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 1, relativityASSIGN);
         setupAsTower("StatueOfLightning", p);
 
         trModifyProtounitData("Fortress", p, puFIELD_HITPOINTS, 24000, relativityASSIGN);
+        trModifyProtounitData("Fortress", p, puFIELD_CRUSH_ARMOR, 0.3, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_DIVINE, 70, relativityASSIGN);
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
@@ -231,11 +235,12 @@ void modifyPlayerData(){
         // For win condition
         trProtounitModifySpawnData("Fortress", p, "FlyingPurpleHippo", 0, 1.0, 1, -1, -1);
 
-        trProtounitModifySpawnData("Hoplite", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-        trProtounitModifySpawnData("Hippeus", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-        trProtounitModifySpawnData("Toxotes", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-        trProtounitModifySpawnData("Cyclops", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-        trProtounitModifySpawnData("Heracles", p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
+        setupCreepWaveUnit("Hoplite", p);
+        setupCreepWaveUnit("Hippeus", p);
+        setupCreepWaveUnit("Toxotes", p);
+        setupCreepWaveUnit("Cyclops", p);
+        setupCreepWaveUnit("Heracles", p);
+
         trPlayerSetCiv(p, "Zeus");
     }
 

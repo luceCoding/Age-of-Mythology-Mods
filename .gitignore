@@ -2,3 +2,4 @@
 output.xs
 *trigtemp*.xs
 *.code-workspace
+samples/*
