@@ -41,7 +41,7 @@ void removeShopCommands(int p = 0, string shopType = ""){
 }
 
 void addMarketCommands(){
-    for(int p = 0; p <= cNumberPlayers; p++) {
+    for(int p = 1; p <= cNumberPlayers-2; p++) {
         string plantName = preparePlant(p, cUnitTypePlantGreekBush, 
                                         "Open shop",
                                         "Purchase cards.",
@@ -56,7 +56,7 @@ void addMarketCommands(){
 
 void addForgeCommands(){
     int plantType = cUnitTypePlantGreekShrub;
-    for(int p = 0; p <= cNumberPlayers; p++) {
+    for(int p = 1; p <= cNumberPlayers-2; p++) {
         string plantName = preparePlant(p, plantType, 
                                         "Open forge",
                                         "Add sockets to your cards.",
@@ -72,7 +72,7 @@ void addForgeCommands(){
 
 void addArmoryCommands(){
     int plantType = cUnitTypePlantGreekGrass;
-    for(int p = 0; p <= cNumberPlayers; p++) {
+    for(int p = 1; p <= cNumberPlayers-2; p++) {
         string plantName = preparePlant(p, plantType, 
                                         "Open armory",
                                         "Add upgrades to your cards.",
@@ -88,7 +88,7 @@ void addArmoryCommands(){
 
 void addTempleCommands(){
     int plantType = cUnitTypePlantGreekWeeds;
-    for(int p = 0; p <= cNumberPlayers; p++) {
+    for(int p = 1; p <= cNumberPlayers-2; p++) {
         string plantName = preparePlant(p, plantType, 
                                         "Open temple",
                                         "Reroll rarities for your cards.",
@@ -104,7 +104,7 @@ void addTempleCommands(){
 
 void addShrineCommands(){
     int plantType = cUnitTypePlantGreekFern;
-    for(int p = 0; p <= cNumberPlayers; p++) {
+    for(int p = 1; p <= cNumberPlayers-2; p++) {
         string plantName = preparePlant(p, plantType, 
                                         "Open library",
                                         "Identify cards.",

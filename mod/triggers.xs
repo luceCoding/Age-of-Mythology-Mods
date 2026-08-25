@@ -6,7 +6,8 @@ include "common/ui.xs"
 void startGame(){
     initializeGlobals();
     initializeTeams();
-    modifyPlayerData();
+
+    preModifyPlayerData();
 
     createAIBases();
     createBaseOuterwalls();
@@ -26,6 +27,8 @@ void startGame(){
     paintAllLanesCircular();
     generateAllCamps();
     startCapturePoints();
+
+    postModifyPlayerData();
 }
 
 rule FIRE_FIRST_IMMEDIATELY_TRIGGER
@@ -72,6 +75,7 @@ runImmediately
             xsSetContextPlayer(owner);
 
             if (kbProtoUnitIsType(protoUnit, COMMAND_TYPE)) {
+                selectSingle(unitId);
                 trUnitDestroy();
                 PlayerCommands playerCommands = playerCommandsArray[owner];
                 for (int i = 0; i < playerCommands.plantArray.size(); i++) {
@@ -92,7 +96,7 @@ runImmediately
                 }
                 case cUnitTypeFlyingPurpleHippo: {
                     int losingTeam = g_finalTeam[owner];
-                    for (int p = 1; p < cNumberPlayers; p++) {
+                    for (int p = 1; p <= cNumberPlayers; p++) {
                         if (g_finalTeam[p] == losingTeam) {
                             trPlayerSetDefeated(p);
                         } else {
@@ -104,5 +108,15 @@ runImmediately
             }
         });
         Search_lastTime = xsGetTimeMS();
+    }
+}
+
+rule DEV_MODE
+highFrequency
+active
+{
+    if(kbPlayerGetName(1) == "ItzJover" && trChatHistoryContains("devmode")){
+        trPlayerGrantResources(1, "Gold", 99999);
+        xsDisableSelf();
     }
 }

@@ -7,10 +7,10 @@ class Buff {
     bool m_init = false;
     
     int m_buffType = BUFF_TYPE_PROTO_DATA;
-    int[] m_synergyTypes = default;
     int m_puField = -1;
     float m_delta = 0.0;
     int m_relativity = -1;
+    int[] m_synergyTypes = default;
 
     void setBuffData(int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
         m_buffType = BUFF_TYPE_PROTO_DATA;

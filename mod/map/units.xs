@@ -92,7 +92,7 @@ void createShops(){
     }
 }
 
-void modifyPlayerData(){
+void preModifyPlayerData(){
 
     // All players
     for(int p = 0; p <= cNumberPlayers; p++) {
@@ -138,29 +138,15 @@ void modifyPlayerData(){
         trPlayerGrantResources(p, "Favor", -favor);
         trPlayerGrantResources(p, "Gold", STARTING_GOLD);
 
-        for (int k = 0; k < g_shopTypes.size(); k++) {
-            string shopType = g_shopTypes[k];
-            setupAsSharedShop(shopType, p);
-            int shopId = ShopTypeToUnitIDMap.get(k);
-            selectSingle(shopId);
-            switch(k){
-                case SHOP_TYPE_FORGE: trUnitChangeName("Forge (Add Sockets)");
-                case SHOP_TYPE_ARMORY: trUnitChangeName("Armory (Roll Upgrades)");
-                case SHOP_TYPE_TEMPLE: trUnitChangeName("Temple (Roll Rarities)");
-                case SHOP_TYPE_SHRINE: trUnitChangeName("Library (Identification)");
-            }
-            trProtoUnitSetFlag(p, shopType, "Invulnerable", true);
-            trProtounitRemoveCommand(shopType, p, "Delete");
-        }
-
+        
         // For card synergies
         trProtoUnitSetUnitType(p, "Tanuki", "AbstractHealer", true);
     }
 
     // Only Humans
-    for(int p = 1; p < cNumberPlayers - 2; p++) {
-        trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_X, 0.5, 3);
-        trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_Z, 0.5, 3);
+    for(int p = 1; p <= cNumberPlayers - 2; p++) {
+        trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_X, 0.5, relativityBasePERCENT);
+        trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_Z, 0.5, relativityBasePERCENT);
         trProtounitRemoveCommand("Market", p, "Delete");
         trProtounitRemoveCommand("Market", p, "MarketBuy1");
         trProtounitRemoveCommand("Market", p, "MarketBuy2");
@@ -172,6 +158,7 @@ void modifyPlayerData(){
         trPlayerModifyData(p, 0, -1, 999, 0); // Add population
         trForbidProtounit(p, "WallConnector");
         trTechSetStatus(p, 406, 2); // Ring of the Nibelung, gold trickle
+        trTechSetStatus(p, 62, 2); //oracle tech for viewing enemy ui
 
         trTechRemove(p, "Armory", 383);
         trTechRemove(p, "Armory", 386);
@@ -183,7 +170,7 @@ void modifyPlayerData(){
         // Hide teammates's gold
         if (trCurrentPlayer() == p){
             int currTeam = g_finalTeam[p];
-            for (int p2 = 1; p2 < cNumberPlayers; p2++) {
+            for (int p2 = 1; p2 <= cNumberPlayers; p2++) {
                 int otherTeam = g_finalTeam[p2];
                 if (currTeam == otherTeam){
                     trProtoUnitSetFlag(p2, "GoldPile", "OnlyInEditor", true);
@@ -265,5 +252,34 @@ void modifyPlayerData(){
         trModifyProtounitData(creepCampTypes, 0, puFIELD_LOS, 8, relativityASSIGN);
         trProtounitModifySpawnData(creepCampTypes, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
         trProtoUnitSetFlag(0, creepCampTypes, "ObscuredByUnits", true);
+    }
+}
+
+void postModifyPlayerData(){
+    // All Players
+    for(int p = 0; p <= cNumberPlayers; p++) {
+
+        for (int k = 0; k < g_shopTypes.size(); k++) {
+            string shopType = g_shopTypes[k];
+            setupAsSharedShop(shopType, p);
+            int shopId = ShopTypeToUnitIDMap.get(k);
+            selectSingle(shopId);
+            switch(k){
+                case SHOP_TYPE_FORGE: trUnitChangeName("Forge (Add Sockets)");
+                case SHOP_TYPE_ARMORY: trUnitChangeName("Armory (Roll Upgrades)");
+                case SHOP_TYPE_TEMPLE: trUnitChangeName("Temple (Roll Rarities)");
+                case SHOP_TYPE_SHRINE: trUnitChangeName("Library (Identification)");
+            }
+            trProtoUnitSetFlag(p, shopType, "Invulnerable", true);
+            trProtounitRemoveCommand(shopType, p, "Delete");
+        }
+    }
+
+    // For humans
+    for(int p = 1; p <= cNumberPlayers-2; p++) {
+        string[] protoNames = ProtoNameToCardParametersMap.getKeys();
+        for (int i=0; i<protoNames.size(); i++){
+            setAsCardUnit(protoNames[i], p);
+        }
     }
 }

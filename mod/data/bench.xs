@@ -63,7 +63,7 @@ class BenchData {
         }
     }
 
-    void addSynergy(CardData card, int p = 0){
+    void addSynergy(ref CardData card, int p = 0){
         String key = card.getProtoName() + p;
         int count = g_synergyHashMap.get(key);
         if (count == 0){
@@ -90,7 +90,7 @@ class BenchData {
         m_synergyCounter[index] = m_synergyCounter[index] - 1;
     }
 
-    void removeSynergy(CardData card, int p = 0){
+    void removeSynergy(ref CardData card, int p = 0){
         String key = card.getProtoName() + p;
         int count = g_synergyHashMap.get(key);
         count = count - 1;
@@ -133,10 +133,12 @@ class BenchData {
             CardData card = m_cardArray[i];
             if (card.isNull() || card.isDeployed() || card.getUuid() != uuid) continue;
             spawnCard(card, m_playerShopId, m_player);
+            m_cardArray[i] = card; // TODO: Is this really needed?
             card.applyUpgrades(m_player);
             addSynergy(card, m_player);
             m_cardArray[i] = card;
             trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
+            return;
         }
     }
 
@@ -156,6 +158,7 @@ class BenchData {
                     int respawnTimeMS = RESPAWN_TIME_MS_BASE + (((currtime - g_timeMSGameStarted) / 60000) * 1000);                    
                     card.timeTillRespawn = currtime + respawnTimeMS;
                     m_cardArray[i] = card;
+                    wasThereARespawn = true;
                 }
                 // 2. Current time reached or passed the target timestamp: Respawn!
                 else if (currtime >= card.timeTillRespawn) {
@@ -195,11 +198,13 @@ class BenchData {
                         selectSingle(cardToWithdraw.getDeployedUnitID());
                         trUnitHighlight(8.0, true);
                         trSoundsetPlayPlayer(m_player, "HardPopAlert");
+                        return false;
                     }
                 }
                 else {
                     trChatSendToPlayer(m_player, m_player, "Unit must be alive before it can be withdrawn.");
                     trSoundsetPlayPlayer(m_player, "HardPopAlert");
+                    return false;
                 }
             }
         }
@@ -226,7 +231,7 @@ class BenchData {
     bool rerollRarity(int uuid = -1, int p = 0){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData card = m_cardArray[i];
-            if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
+            if (uuid == card.getUuid() && (card.isNull() == false) && card.isIdentified()){
                 if (purchase(g_templeShopCost, p)){
                     int rarity = card.rerollRarity();
                     g_templeShopCost = g_templeShopCost + 10;

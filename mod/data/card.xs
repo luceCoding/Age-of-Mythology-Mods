@@ -60,7 +60,7 @@ class CardData {
     }
 
     void applyUpgrade(ref int p, ref int puFIELD, int sign = 1){
-        float absDelta = (1.0 + m_rarity) * sign;
+        float absDelta = 2.0 * (1.0 + m_rarity) * sign;
 
         switch(puFIELD){
             case UPGRADE_HACK_ARMOR: 

@@ -43,29 +43,6 @@ class Shop {
         m_decks[deckIndex] = deck;
     }
 
-    bool drawFromDeck(int d = 0, int p = 0){
-        DeckData deck = m_decks[d];
-        DrawData currDraw = m_currDraws[p];
-        CardData drawnCard = deck.drawRandomCard();
-        m_decks[d] = deck;
-        if (drawnCard.isNull() == false){
-            bool hasAddedCard = currDraw.addCard(drawnCard, p);
-            m_currDraws[p] = currDraw;
-            if (hasAddedCard == false){
-                deck.addCard(drawnCard);
-                m_decks[d] = deck;
-                log(3, "Failed to draw a card for player " + p);
-                return false;
-            }
-            else {
-                refreshShop(p);
-                log(3, "Drew a card for player " + p);
-                return true;
-            }
-        }
-        return false;
-    }
-
     int getCost(ref CardData card, int p = 0){
         CardParameters params = card.getCardParameters();
         int cost = estimateCardValue(card);
@@ -125,7 +102,6 @@ class Shop {
                             [](int p = 1, ref Parameters parameters) -> void {
                 g_selectedUUIDs[p] = parameters.ints[0];
                 refreshShop(p);
-                log(3, "Player " + p + " clicked " + parameters.strings[3] + " " + parameters.ints[0]);
             }, uiRarityElement
         );
 
@@ -162,7 +138,7 @@ class Shop {
             switch(upgrade){
                 case UPGRADE_HACK_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "", uiIconBackgroundElement);
                 case UPGRADE_PIERCE_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                                       getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize), "Upgrade: Pierce Armor", "");
+                                                                       getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize), "Upgrade: Pierce Armor", "", uiIconBackgroundElement);
                 case UPGRADE_CRUSH_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_crush_armor.png", miniIconSize), "Upgrade: Crush Armor", "", uiIconBackgroundElement);
                 case UPGRADE_HITPOINTS: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "", uiIconBackgroundElement);
                 case UPGRADE_SHIELDS: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize), "Upgrade: Shields", "", uiIconBackgroundElement);
@@ -210,6 +186,26 @@ class Shop {
         }
     }
 
+    CardData drawFromDeck(int d = 0){
+        DeckData deck = m_decks[d];
+        CardData drawnCard = deck.drawRandomCard();
+        m_decks[d] = deck;
+        return drawnCard;
+    }
+
+    bool addCardIntoDraw(ref DrawData currDraw, ref CardData card){
+        if (card.isNull() == false){
+            return currDraw.addCard(card);
+        }
+        return false;
+    }
+
+    void addCardToDeck(ref CardData card, int d = 0){
+        DeckData deck = m_decks[d];
+        deck.addCard(card);
+        m_decks[d] = deck;
+    }
+
     void draw(int p = 0) {
         int lockedCount = 0;
         DrawData currDraw = m_currDraws[p];
@@ -252,12 +248,17 @@ class Shop {
 
         while (cardsDrew < numberOfCardsToDraw) {
             int tier = getRandomTier(m_currShopLevel[p]);
-            bool drew = drawFromDeck(tier, p);
-            if (drew) {
+            CardData drawnCard = drawFromDeck(tier);
+            if (addCardIntoDraw(currDraw, drawnCard) == false){
+                addCardToDeck(drawnCard, tier);
+            }
+            else {
                 cardsDrew = cardsDrew + 1;
             }
         }
         trSoundsetPlayPlayer(p, "AotgNextPage");
+        m_currDraws[p] = currDraw;
+        refreshShop(p);
     }
 
     void buy(int p = 0, int uuid = -1){
@@ -275,9 +276,9 @@ class Shop {
             if (removedCard.isNull() == false){
                 removedCard.unlockCard();
                 bench.addCard(removedCard);
-                m_benches[p] = bench;
-                trSoundsetPlayPlayer(p, "StorehouseSelect");
                 g_selectedUUIDs[p] = -1; // Deselect card
+                trSoundsetPlayPlayer(p, "StorehouseSelect");
+                m_benches[p] = bench;
                 refreshShop(p);
             }
         }
@@ -324,15 +325,15 @@ class Shop {
     void sell(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         CardData removedCard = bench.removeCardByUUID(uuid);
-        m_benches[p] = bench;
         if (removedCard.isNull() == false){
             int goldAmount = getCost(removedCard, p);
             addCardIntoDeck(removedCard, removedCard.getDeckIndex());
             trPlayerGrantResources(p, "Gold", goldAmount * SELL_MULTIPLIER);
             trSoundsetPlayPlayer(p, "TributeReceived");
             g_selectedUUIDs[p] = -1; // Deselect card
-            refreshShop(p);
         }
+        m_benches[p] = bench;
+        refreshShop(p);
     }
 
     void deploy(int p = 0, int uuid = -1){
@@ -656,8 +657,7 @@ void startShopTimers(){
     scheduler.add(1009, [](int iterations = 1) -> bool {
         for (int i = 1; i <= g_shop.m_benches.size()-2; i++){
             BenchData bench = g_shop.m_benches[i];
-            bool wasRespawned = bench.respawnDeployedCards();
-            if (wasRespawned){
+            if (bench.respawnDeployedCards()) {
                 g_shop.m_benches[i] = bench;
             }
         }

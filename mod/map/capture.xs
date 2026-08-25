@@ -27,7 +27,7 @@ class CapturePoint {
         int owner = kbUnitGetPlayerID(unitId);
         int enemyCount = 0;
 
-        for (int p = 1; p < cNumberPlayers; p++) {
+        for (int p = 1; p <= cNumberPlayers; p++) {
             if (p == owner) continue;
             if (owner != 0 && g_finalTeam[owner] == g_finalTeam[p]) continue;
 
@@ -45,7 +45,7 @@ class CapturePoint {
         
         int teamCount = 0;
 
-        for (int p = 1; p < cNumberPlayers; p++) {
+        for (int p = 1; p <= cNumberPlayers; p++) {
             if (p == owner) continue;
             if (g_finalTeam[owner] != g_finalTeam[p]) continue;
 
@@ -61,7 +61,7 @@ class CapturePoint {
         int owner = kbUnitGetPlayerID(unitId);
         int capturingTeam = -1;
 
-        for (int p = 1; p < cNumberPlayers; p++) {
+        for (int p = 1; p <= cNumberPlayers; p++) {
             if (p == owner) continue;
             
             if (kbUnitTypeCountInArea("Unit", p, cUnitStateAlive, unitId, radius) > 0) {
@@ -82,7 +82,7 @@ class CapturePoint {
         int maxUnits = 0;
         int dominantPlayer = -1;
 
-        for (int p = 1; p < cNumberPlayers; p++) {
+        for (int p = 1; p <= cNumberPlayers; p++) {
             if (p == owner) continue;
 
             bool isAlly = false;

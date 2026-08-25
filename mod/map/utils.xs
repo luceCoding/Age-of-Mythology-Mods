@@ -5,6 +5,7 @@ void setAsCardUnit(string protoName = "", int p = 0){
     trProtoUnitSetFlag(p, protoName, "KnockoutDeath", false);
     trProtoUnitSetFlag(p, protoName, "Invulnerable", false);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeDivineImmunity", false);
+    trModifyProtounitData(protoName, p, puFIELD_HP_REGEN, 0.2, relativityABSOLUTE);
 }
 
 void setAsPlaceholder(string unitType = "", int p = 0){

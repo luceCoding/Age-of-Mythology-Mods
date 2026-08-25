@@ -7,7 +7,7 @@ class DeckData {
     // Adds a card to the deck
     void addCard(ref CardData card) {
         m_cardArray.add(card);
-        log(3, "Added card to deck " + card.getUuid());
+        log(3, "Added card to deck " + card.getUuid() + " size: " + m_cardArray.size());
     }
 
     // Fast removal at a specific index (Draws a specific/random card)

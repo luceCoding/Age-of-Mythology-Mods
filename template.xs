@@ -1,7 +1,6 @@
 //// mod/globals.xs
 //// common/nottud.xs
 //// common/collections/hashMap.xs
-//// common/collections/hashSet.xs
 
 void generate()
 {

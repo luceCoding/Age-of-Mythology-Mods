@@ -148,10 +148,11 @@ void initializeCardParametersMap(){
                     "Cheiroballista", "Cheiroballista", "Cheiroballista",
                     "resources/atlantean/player_color/units/cheiroballista_icon.png"
                     );
-    addCardIntoDeck(1, 137,
-                    "Caladria", "Caladria", "Caladria",
-                    "resources/atlantean/player_color/units/caladria_icon.png"
-                    );
+    // TODO: Fix possible oos with Caladria?
+    //addCardIntoDeck(1, 137,
+    //                "Caladria", "Caladria", "Caladria",
+    //                "resources/atlantean/player_color/units/caladria_icon.png"
+    //                );
     addCardIntoDeck(1, 96,
                     "Automaton", "Automaton", "Automaton",
                     "resources/atlantean/player_color/units/automaton_icon.png"

@@ -6,17 +6,13 @@ class DrawData {
     CardData[] m_cardArray = default;
 
     int getSize(){
-        if (m_cardArray.size() <= 0){
+        if (m_cardArray.size() == 0){
             m_cardArray = new CardData(config_MAX_DRAWN_CARDS);
         }
         return m_cardArray.size();
     }
 
-    bool addCard(ref CardData card, int p = 0){
-        if (m_cardArray.size() <= 0){
-            m_cardArray = new CardData(config_MAX_DRAWN_CARDS);
-        }
-
+    bool addCard(ref CardData card){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData currCard = m_cardArray[i];
             if (currCard.isNull()){
@@ -43,10 +39,7 @@ class DrawData {
         return currCard;
     }
 
-    CardData removeCard(int index = 0){        
-        if (m_cardArray.size() <= 0){
-            m_cardArray = new CardData(config_MAX_DRAWN_CARDS);
-        }
+    CardData removeCard(int index = 0){
         if (index < 0 || index >= m_cardArray.size()) {
             CardData emptyCard;
             return emptyCard;
@@ -64,10 +57,7 @@ class DrawData {
         return removedCard;
     }
 
-    CardData getCardByUUID(int uuid = -1){        
-        if (m_cardArray.size() <= 0){
-            m_cardArray = new CardData(config_MAX_DRAWN_CARDS);
-        }
+    CardData getCardByUUID(int uuid = -1){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData currCard = m_cardArray[i];
             if (currCard.getUuid() == uuid) {
@@ -78,10 +68,7 @@ class DrawData {
         return emptyCard;
     }
 
-    CardData removeCardByUUID(int uuid = -1){        
-        if (m_cardArray.size() <= 0){
-            m_cardArray = new CardData(config_MAX_DRAWN_CARDS);
-        }
+    CardData removeCardByUUID(int uuid = -1){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData currCard = m_cardArray[i];
             if (currCard.getUuid() == uuid) {

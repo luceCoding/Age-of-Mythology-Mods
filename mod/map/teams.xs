@@ -1,8 +1,8 @@
 int[] g_finalTeam = default;
 
 void initializeTeams(){
-    int[] initialTeam = new int(cNumberPlayers, 1);
-    g_finalTeam = new int(cNumberPlayers, 1);
+    int[] initialTeam = new int(cNumberPlayers + 1, 1);
+    g_finalTeam = new int(cNumberPlayers + 1, 0);
 
     int maxHumanPlayer = cNumberPlayers - 2;
     if (maxHumanPlayer < 1) return;
@@ -11,7 +11,7 @@ void initializeTeams(){
     int teamBCount = 0;
 
     // 1. Snapshot initial human team state relative to Player 1
-    for (int p = 1; p <= maxHumanPlayer; p = p + 1) {
+    for (int p = 1; p <= maxHumanPlayer; p++) {
         if (p == 1 || trPlayerGetDiplomacy(p, 1) == "Ally") {
             initialTeam[p] = 1; // Group 1 (Allies with P1)
             teamACount = teamACount + 1;
@@ -62,6 +62,10 @@ void initializeTeams(){
             }
         }
     }
+
+    // Explicitly assign the last two AI players to their respective teams in g_finalTeam
+    g_finalTeam[aiTeamA] = 1;
+    g_finalTeam[aiTeamB] = 2;
 
     // 4. Set mutual diplomacy between humans (p2 starts at p1 + 1)
     for (int p1 = 1; p1 <= maxHumanPlayer; p1 = p1 + 1) {
