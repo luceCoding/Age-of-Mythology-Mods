@@ -36,6 +36,9 @@ void setupAsSharedShop(string shopUnitType = "", int p = 0){
     trModifyProtounitData(shopUnitType, p, puFIELD_LOS, SHARED_SHOP_CAPTURE_RADIUS, relativityASSIGN);
     trProtoUnitSetFlag(p, shopUnitType, "ObscuredByUnits", true);
     trProtoUnitSetFlag(p, shopUnitType, "VisibleUnderFog", true);
+    trProtoUnitSetUnitType(p, shopUnitType, "TradeableTo", true);
+    trModifyProtounitActionUnitType("CaravanGreek", "Trade", shopUnitType, p, 1, 1.1, 1);
+    trModifyProtounitActionUnitType("PiXiu", "Trade", shopUnitType, p, 1, (1.1 * 1.25), 1);
     trProtoUnitSetIcon(shopUnitType, p, "", "ui\minimap\minimap_highlighted_item");
 }
 

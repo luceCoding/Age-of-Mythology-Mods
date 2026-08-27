@@ -137,7 +137,6 @@ void preModifyPlayerData(){
         trPlayerGrantResources(p, "Gold", -gold);
         trPlayerGrantResources(p, "Favor", -favor);
         trPlayerGrantResources(p, "Gold", STARTING_GOLD);
-
         
         // For card synergies
         trProtoUnitSetUnitType(p, "Tanuki", "AbstractHealer", true);
@@ -145,8 +144,9 @@ void preModifyPlayerData(){
 
     // Only Humans
     for(int p = 1; p <= cNumberPlayers - 2; p++) {
-        trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_X, 0.5, relativityBasePERCENT);
-        trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_Z, 0.5, relativityBasePERCENT);
+        trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_X, 0.0, relativityBasePERCENT);
+        trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_Z, 0.0, relativityBasePERCENT);
+        trProtoUnitSetUnitType(p, "Market", "LogicalTypeBuildingThatCanBeEmpowered", false);
         trProtounitRemoveCommand("Market", p, "Delete");
         trProtounitRemoveCommand("Market", p, "MarketBuy1");
         trProtounitRemoveCommand("Market", p, "MarketBuy2");
@@ -186,6 +186,7 @@ void preModifyPlayerData(){
 
     // Last 2 AIs
     for(int p = cNumberPlayers - 1; p <= cNumberPlayers; p++) {
+        trPlayerSetCiv(p, "Demeter");
         trTechSetStatus(p, 373, 2); // Watch Tower
         trTechSetStatus(p, 378, 2); // Boiling Oil
 
@@ -208,7 +209,8 @@ void preModifyPlayerData(){
         trModifyProtounitData("StatueOfLightning", p, puFIELD_HITPOINTS, 8000, relativityASSIGN);
         trModifyProtounitData("StatueOfLightning", p, puFIELD_CRUSH_ARMOR, 0.3, relativityASSIGN);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_DIVINE, 60, relativityASSIGN);
-        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
+        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 3, relativityASSIGN);
+        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_N_BOUNCES, 2, relativityASSIGN);
         trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 1, relativityASSIGN);
         setupAsTower("StatueOfLightning", p);
 
@@ -227,8 +229,6 @@ void preModifyPlayerData(){
         setupCreepWaveUnit("Toxotes", p);
         setupCreepWaveUnit("Cyclops", p);
         setupCreepWaveUnit("Heracles", p);
-
-        trPlayerSetCiv(p, "Zeus");
     }
 
     // Only Gaia

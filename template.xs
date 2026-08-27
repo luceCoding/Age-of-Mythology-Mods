@@ -39,6 +39,7 @@ void generate()
     defineHashMapDefinition("string", "int", "0", "");
     defineHashMapDefinition("int", "int", "0", "");
 
+    // mod/data/utils.xs
     // mod/data/card.xs
     // mod/data/buffs.xs
     // mod/data/synergies.xs

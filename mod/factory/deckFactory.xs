@@ -81,6 +81,15 @@ void initializeCardParametersMap(){
                     "resources/egyptian/player_color/units/slinger_icon.png"
                     );
 
+    addCardIntoDeck(1, 125,
+                    "CaravanGreek", "Caravan", "Caravan",
+                    "resources/greek/player_color/units/caravan_greek_icon.png"
+                    );
+    addCardIntoDeck(2, 205,
+                    "PiXiu", "PiXiu", "PiXiu",
+                    "resources/chinese/player_color/units/pixiu_icon.png"
+                    );
+
     addCardIntoDeck(1, 90,
                     "Hoplite", "Hoplite", "Hoplite",
                     "resources/greek/player_color/units/hoplite_icon.png"
@@ -149,10 +158,10 @@ void initializeCardParametersMap(){
                     "resources/atlantean/player_color/units/cheiroballista_icon.png"
                     );
     // TODO: Fix possible oos with Caladria?
-    //addCardIntoDeck(1, 137,
-    //                "Caladria", "Caladria", "Caladria",
-    //                "resources/atlantean/player_color/units/caladria_icon.png"
-    //                );
+    addCardIntoDeck(1, 137,
+                    "Caladria", "Caladria", "Caladria",
+                    "resources/atlantean/player_color/units/caladria_icon.png"
+                    );
     addCardIntoDeck(1, 96,
                     "Automaton", "Automaton", "Automaton",
                     "resources/atlantean/player_color/units/automaton_icon.png"

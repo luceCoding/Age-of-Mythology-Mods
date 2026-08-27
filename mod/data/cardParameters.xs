@@ -28,7 +28,11 @@ class CardParameters {
 
     bool isUnitType(string unitType = ""){
         xsSetContextPlayer(0);
-        int unitID = trUnitCreate(getProtoUnit(), 0, 0, 0, -1, 0, false);
+        int unitID = trUnitCreateForced(getProtoUnit(), 0, 0, 0, -1, 0, false);
+        if (unitID < 0) {
+            errorLog(unitType + " failed to spawn");
+            return false;
+        }
         selectSingle(unitID);
         if (kbProtoUnitIsType(kbUnitGetProtoUnitID(unitID), kbGetUnitTypeID(unitType)) != false){
             trUnitDestroy(true);

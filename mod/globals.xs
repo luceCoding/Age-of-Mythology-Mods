@@ -45,6 +45,7 @@ const int puFIELD_ACTION_ALL_DMG = 2;
 const int puFIELD_ACTION_DMG_AREA = 3;
 const int puFIELD_ACTION_RATE_OF_FIRE = 4;
 const int puFIELD_ACTION_N_PROJECTILES = 8;
+const int puFIELD_ACTION_N_BOUNCES = 9;
 const int puFIELD_ACTION_HACK = 13;
 const int puFIELD_ACTION_PIERCE = 14;
 const int puFIELD_ACTION_CRUSH = 15;

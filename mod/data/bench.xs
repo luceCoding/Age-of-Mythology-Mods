@@ -109,31 +109,33 @@ class BenchData {
         }
     }
 
-    void spawnCard(ref CardData card, int shopId = -1, int p  = 0){
+    bool spawnCard(ref CardData card, int shopId = -1, int p  = 0){
         CardParameters params = card.getCardParameters();
         string protoName = params.getProtoUnit();
         vector position = trUnitGetPosition(shopId);
-        int unitID = trUnitCreate(protoName, position.x, position.y, position.z, xsRandFloat(0.0, 360.0), p, false);
-        string displayName = kbProtoUnitGetDisplayName(p, kbProtoUnitGetID(card.getProtoName()));
-        switch(card.getRarity()){
-            case 1: displayName = displayName + " (Green Rarity)";
-            case 2: displayName = displayName + " (Blue Rarity)";
-            case 3: displayName = displayName + " (Purple Rarity)";
-            case 4: displayName = displayName + " (Gold Rarity)";
-            default: displayName = displayName + " (White Rarity)";
+        int unitID = trUnitCreateForced(protoName, position.x, position.y, position.z, xsRandFloat(0.0, 360.0), p, false);
+        if (unitID < 0) {
+            errorLog("Player " + p + " failed to spawn " + protoName + " for card " + card.getUuid());
+            return false;
         }
+        string displayName = kbProtoUnitGetDisplayName(p, kbProtoUnitGetID(card.getProtoName()));
+        int rarity = card.getRarity();
+        displayName = getDisplayName(rarity, displayName);
         selectSingle(unitID);
         trUnitChangeName(displayName);
         card.deploy(unitID);
         log(3, "Player " + p + " deployed " + protoName + " to shop " + shopId);
+        return true;
     }
 
     void deployCard(int uuid = -1){
         for(int i = 0; i < m_cardArray.size(); i++) {
             CardData card = m_cardArray[i];
             if (card.isNull() || card.isDeployed() || card.getUuid() != uuid) continue;
-            spawnCard(card, m_playerShopId, m_player);
-            m_cardArray[i] = card; // TODO: Is this really needed?
+            if (spawnCard(card, m_playerShopId, m_player) == false) {
+                return;
+            }
+            m_cardArray[i] = card;
             card.applyUpgrades(m_player);
             addSynergy(card, m_player);
             m_cardArray[i] = card;
@@ -162,11 +164,12 @@ class BenchData {
                 }
                 // 2. Current time reached or passed the target timestamp: Respawn!
                 else if (currtime >= card.timeTillRespawn) {
-                    spawnCard(card, m_playerShopId, m_player);
-                    trSoundsetPlayPlayer(m_player, "HeroRevive");
-                    card.timeTillRespawn = 0; // Reset timestamp so it can be used again next death
-                    m_cardArray[i] = card;
-                    wasThereARespawn = true;
+                    if (spawnCard(card, m_playerShopId, m_player)) {
+                        trSoundsetPlayPlayer(m_player, "HeroRevive");
+                        card.timeTillRespawn = 0; // Reset timestamp so it can be used again next death
+                        m_cardArray[i] = card;
+                        wasThereARespawn = true;
+                    }
                 }
                 // 3. currtime < card.timeTillRespawn: Still waiting for target time, do nothing.
             }

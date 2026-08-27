@@ -171,13 +171,7 @@ class Shop {
 
         // Title
         string title = params.getTitle();
-        // Color Tier
-        switch(rarity){
-            case 1: title = "<color=0.10,0.58,0.37>" + title + "</color>";
-            case 2: title = "<color=0.15,0.32,0.49>" + title + "</color>";
-            case 3: title = "<color=0.60,0.00,0.73>" + title + "</color>";
-            case 4: title = "<color=0.71,0.58,0.00>" + title + "</color>";
-        }
+        title = getDisplayName(rarity, title);
         minimapSafeDisplay(p, posX, posY + 0.116 * iconMultiplier, title);
 
         // Deployed Icon
