@@ -1,18 +1,5 @@
 include "lib/rm_core.xs";
 
-const int MAX_UNIT_TYPES = 11;
-const string UNIT_TYPE_INFANTRY = "AbstractInfantry";
-const string UNIT_TYPE_ARCHER = "AbstractArcher";
-const string UNIT_TYPE_CAVALRY = "AbstractCavalry";
-const string UNIT_TYPE_MYTH = "MythUnit";
-const string UNIT_TYPE_HERO = "Hero";
-const string UNIT_TYPE_HEALER = "AbstractHealer";
-const string UNIT_TYPE_SIEGE = "AbstractSiegeWeapon";
-const string UNIT_TYPE_BUILDING = "Building";
-const string UNIT_TYPE_SOLDIER = "HumanSoldier";
-const string UNIT_TYPE_RANGED = "Ranged";
-const string UNIT_TYPE_MYTH_SIEGE = "MythUnitSiege";
-
 class CardParameters {
 
     Parameters m_params;
@@ -30,7 +17,7 @@ class CardParameters {
         xsSetContextPlayer(0);
         int unitID = trUnitCreateForced(getProtoUnit(), 0, 0, 0, -1, 0, false);
         if (unitID < 0) {
-            errorLog(unitType + " failed to spawn");
+            errorLog(getProtoUnit() + " failed to spawn");
             return false;
         }
         selectSingle(unitID);

@@ -342,15 +342,15 @@ class BenchData {
         float height = 0.025;
         float posYOffset = 0.035;
 
-        // 1. Initialize index map array [0, 1, 2, 3, 4, 5, 6, 7]
-        int[] sortedIndices = new int(8, 0);
+        // 1. Initialize index map array for every configured synergy.
+        int[] sortedIndices = new int(MAX_SYNERGIES, 0);
         for (int i = 0; i < sortedIndices.size(); i++) {
             sortedIndices[i] = i;
         }
 
         // 2. Bubble sort indices based on values in m_synergyCounter (Descending)
         for (int i = 0; i < sortedIndices.size()-1; i++) {
-            for (int j = 0; j < 7 - i; j++) {
+            for (int j = 0; j < sortedIndices.size() - 1 - i; j++) {
                 int idxA = sortedIndices[j];
                 int idxB = sortedIndices[j + 1];
 

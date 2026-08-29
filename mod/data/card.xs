@@ -75,7 +75,7 @@ class CardData {
             }
             case UPGRADE_SHIELDS: {
                 trModifyProtounitData(m_protoName, p, puFIELD_SHIELDS, 5.0 * absDelta, relativityABSOLUTE);
-                trModifyProtounitData(m_protoName, p, puFIELD_SHIELD_REGEN, 0.2 * absDelta, relativityABSOLUTE);
+                trModifyProtounitData(m_protoName, p, puFIELD_SHIELD_REGEN, 0.1 * absDelta, relativityABSOLUTE);
             }
             case UPGRADE_SPEED: {
                 float pctDelta = (sign > 0) ? (1.0 + (0.05 * (m_rarity + 1))) : (1.0 - (0.05 * (m_rarity + 1)));

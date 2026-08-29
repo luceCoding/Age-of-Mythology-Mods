@@ -26,63 +26,105 @@ void initializeSynergies(){
         synergy.m_icon = icons[i];
         synergy.m_rolloverName = rolloverNames[i];
         synergy.m_rolloverDescription = "";
-        synergy.m_buffs = new Buff(9);
+        synergy.m_buffs = new Buff(13);
         g_synergies.add(synergy);
     }
 
     int[] emptySynergyType = new int(0, -1);
     {
-        int[] tmpSynergyType = new int(0, -1);
-        tmpSynergyType.add(SYNERGY_INDEX_INFANTRY);
         SynergyData synergy = g_synergies[SYNERGY_INDEX_INFANTRY];
-        synergy.m_buffs[2] = createBuffData(tmpSynergyType, puFIELD_HACK_ARMOR, 0.05, relativityABSOLUTE);
-        synergy.m_buffs[3] = createBuffData(emptySynergyType, puFIELD_HACK_ARMOR, 0.05, relativityABSOLUTE);
-        synergy.m_buffs[4] = createBuffAction(emptySynergyType, puFIELD_ACTION_HACK, 1, relativityABSOLUTE);
+        string[] tempUnitTypes = new string(0, "");
+        tempUnitTypes.add(UNIT_TYPE_CAVALRY);
+        synergy.m_buffs[2] = createBuffData(emptySynergyType, puFIELD_HACK_ARMOR, 0.05, relativityABSOLUTE);
+        synergy.m_buffs[3] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0.25, relativityABSOLUTE);
+        synergy.m_buffs[4] = createBuffAction(emptySynergyType, puFIELD_ACTION_HACK, 2, relativityABSOLUTE);
+        synergy.m_buffs[5] = createBuffData(emptySynergyType, puFIELD_SHIELDS, 25, relativityABSOLUTE);
         synergy.m_buffs[6] = createBuffData(emptySynergyType, puFIELD_HACK_ARMOR, 1.1, relativityBasePERCENT);
-        synergy.m_buffs[8] = createBuffAction(emptySynergyType, puFIELD_ACTION_HACK, 2, relativityABSOLUTE);
+        synergy.m_buffs[8] = createBuffAction(emptySynergyType, puFIELD_ACTION_HACK, 4, relativityABSOLUTE);
+        synergy.m_buffs[10] = createBuffData(emptySynergyType, puFIELD_SHIELDS, 50, relativityABSOLUTE);
         g_synergies[SYNERGY_INDEX_INFANTRY] = synergy;
     }
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_RANGED];
-        synergy.m_buffs[2] = createBuffAction(emptySynergyType, puFIELD_ACTION_PIERCE, 1, relativityABSOLUTE);
+        string[] tempUnitTypes = new string(0, "");
+        tempUnitTypes.add(UNIT_TYPE_INFANTRY);
+        synergy.m_buffs[2] = createBuffAction(emptySynergyType, puFIELD_ACTION_PIERCE, 2, relativityABSOLUTE);
+        synergy.m_buffs[3] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0.25, relativityABSOLUTE);
         synergy.m_buffs[4] = createBuffAction(emptySynergyType, puFIELD_ACTION_RANGE, 1, relativityABSOLUTE);
-        synergy.m_buffs[6] = createBuffAction(emptySynergyType, puFIELD_ACTION_PIERCE, 2, relativityABSOLUTE);
-        synergy.m_buffs[8] = createBuffAction(emptySynergyType, puFIELD_ACTION_RATE_OF_FIRE, 0.9, relativityBasePERCENT);
+        synergy.m_buffs[5] = createBuffAction(emptySynergyType, puFIELD_ACTION_RATE_OF_FIRE, 0.9, relativityBasePERCENT);
+        synergy.m_buffs[6] = createBuffAction(emptySynergyType, puFIELD_ACTION_PIERCE, 4, relativityABSOLUTE);
+        synergy.m_buffs[8] = createBuffAction(emptySynergyType, puFIELD_ACTION_RANGE, 1, relativityABSOLUTE);
+        synergy.m_buffs[10] = createBuffAction(emptySynergyType, puFIELD_ACTION_RATE_OF_FIRE, 0.85, relativityBasePERCENT);
         g_synergies[SYNERGY_INDEX_RANGED] = synergy;
     }
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_CAVALRY];
+        string[] tempUnitTypes = new string(0, "");
+        tempUnitTypes.add(UNIT_TYPE_ARCHER);
         synergy.m_buffs[2] = createBuffData(emptySynergyType, puFIELD_PIERCE_ARMOR, 0.05, relativityABSOLUTE);
-        synergy.m_buffs[4] = createBuffData(emptySynergyType, puFIELD_SPEED, 0.05, relativityABSOLUTE);
+        synergy.m_buffs[3] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0.25, relativityABSOLUTE);
+        synergy.m_buffs[4] = createBuffData(emptySynergyType, puFIELD_SPEED, 1.05, relativityBasePERCENT);
+        synergy.m_buffs[5] = createBuffData(emptySynergyType, puFIELD_HITPOINTS, 1.1, relativityBasePERCENT);
         synergy.m_buffs[6] = createBuffData(emptySynergyType, puFIELD_PIERCE_ARMOR, 1.1, relativityBasePERCENT);
-        synergy.m_buffs[8] = createBuffData(emptySynergyType, puFIELD_SPEED, 0.05, relativityBasePERCENT);
+        synergy.m_buffs[8] = createBuffData(emptySynergyType, puFIELD_SPEED, 1.1, relativityBasePERCENT);
+        synergy.m_buffs[10] = createBuffData(emptySynergyType, puFIELD_HITPOINTS, 1.15, relativityBasePERCENT);
         g_synergies[SYNERGY_INDEX_CAVALRY] = synergy;
     }
 
     {
-        SynergyData synergy = g_synergies[SYNERGY_INDEX_MYTH];
-        synergy.m_buffs[4] = createBuffData(emptySynergyType, puFIELD_RECHARGE, 0.02, relativityABSOLUTE);
-        synergy.m_buffs[8] = createBuffData(emptySynergyType, puFIELD_RECHARGE, 0.04, relativityABSOLUTE);
-        g_synergies[SYNERGY_INDEX_MYTH] = synergy;
-    }
-
-    {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_HEALER];
-        synergy.m_buffs[2] = createBuffData(emptySynergyType, puFIELD_HITPOINTS, 20, relativityABSOLUTE);
-        synergy.m_buffs[4] = createBuffData(emptySynergyType, puFIELD_HP_REGEN, 0.02, relativityABSOLUTE);
-        synergy.m_buffs[6] = createBuffData(emptySynergyType, puFIELD_HITPOINTS, 1.1, relativityBasePERCENT);
-        synergy.m_buffs[8] = createBuffData(emptySynergyType, puFIELD_HP_REGEN, 0.05, relativityABSOLUTE);
+        synergy.m_buffs[2] = createBuffData(emptySynergyType, puFIELD_HITPOINTS, 10, relativityABSOLUTE);
+        synergy.m_buffs[4] = createBuffData(emptySynergyType, puFIELD_HP_REGEN, 0.25, relativityABSOLUTE);
+        synergy.m_buffs[6] = createBuffData(emptySynergyType, puFIELD_HITPOINTS, 20, relativityABSOLUTE);
+        synergy.m_buffs[8] = createBuffData(emptySynergyType, puFIELD_HP_REGEN, 0.5, relativityABSOLUTE);
+        // 10% Lifesteal
         g_synergies[SYNERGY_INDEX_HEALER] = synergy;
     }
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_SIEGE];
-        synergy.m_buffs[2] = createBuffAction(emptySynergyType, puFIELD_ACTION_CRUSH, 2, relativityABSOLUTE);
-        synergy.m_buffs[4] = createBuffAction(emptySynergyType, puFIELD_ACTION_DMG_AREA, 0.01, relativityABSOLUTE);
-        synergy.m_buffs[6] = createBuffAction(emptySynergyType, puFIELD_ACTION_CRUSH, 4, relativityABSOLUTE);
-        synergy.m_buffs[8] = createBuffAction(emptySynergyType, puFIELD_ACTION_DMG_AREA, 0.02, relativityABSOLUTE);
+        string[] tempUnitTypes = new string(0, "");
+        tempUnitTypes.add(UNIT_TYPE_BUILDING);
+        synergy.m_buffs[2] = createBuffAction(emptySynergyType, puFIELD_ACTION_CRUSH, 5, relativityABSOLUTE);
+        synergy.m_buffs[3] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0.25, relativityABSOLUTE);
+        synergy.m_buffs[4] = createBuffAction(emptySynergyType, puFIELD_ACTION_DMG_AREA, 1, relativityABSOLUTE);
+        synergy.m_buffs[6] = createBuffAction(emptySynergyType, puFIELD_ACTION_CRUSH, 10, relativityABSOLUTE);
+        synergy.m_buffs[8] = createBuffAction(emptySynergyType, puFIELD_ACTION_DMG_AREA, 2, relativityABSOLUTE);
+        synergy.m_buffs[10] = createBuffAction(emptySynergyType, puFIELD_ACTION_N_PROJECTILES, 1, relativityABSOLUTE);
         g_synergies[SYNERGY_INDEX_SIEGE] = synergy;
+    }
+
+    {
+        SynergyData synergy = g_synergies[SYNERGY_INDEX_SOLDIER];
+        string[] tempUnitTypes = new string(0, "");
+        tempUnitTypes.add(UNIT_TYPE_HERO);
+        synergy.m_buffs[4] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0.25, relativityABSOLUTE);
+        synergy.m_buffs[8] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0.5, relativityABSOLUTE);
+        synergy.m_buffs[12] = createBuffData(emptySynergyType, puFIELD_ACTION_ALL_DMG, 5, relativityABSOLUTE);
+        g_synergies[SYNERGY_INDEX_SOLDIER] = synergy;
+    }
+
+    {
+        SynergyData synergy = g_synergies[SYNERGY_INDEX_MYTH];
+        string[] tempUnitTypes = new string(0, "");
+        tempUnitTypes.add(UNIT_TYPE_INFANTRY);
+        tempUnitTypes.add(UNIT_TYPE_ARCHER);
+        tempUnitTypes.add(UNIT_TYPE_CAVALRY);
+        synergy.m_buffs[4] = createBuffData(emptySynergyType, puFIELD_RECHARGE, 2, relativityABSOLUTE);
+        synergy.m_buffs[8] = createBuffData(emptySynergyType, puFIELD_RECHARGE, 0.05, relativityBasePERCENT);
+        synergy.m_buffs[12] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0.5, relativityABSOLUTE);
+        g_synergies[SYNERGY_INDEX_MYTH] = synergy;
+    }
+
+    {
+        SynergyData synergy = g_synergies[SYNERGY_INDEX_HERO];
+        string[] tempUnitTypes = new string(0, "");
+        tempUnitTypes.add(UNIT_TYPE_MYTH);
+        synergy.m_buffs[4] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0.25, relativityABSOLUTE);
+        synergy.m_buffs[8] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 0.5, relativityABSOLUTE);
+        synergy.m_buffs[12] = createBuffAction(emptySynergyType, puFIELD_ACTION_DIVINE, 5, relativityABSOLUTE);
+        g_synergies[SYNERGY_INDEX_HERO] = synergy;
     }
 }

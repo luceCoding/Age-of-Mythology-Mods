@@ -90,6 +90,23 @@ void initializeCardParametersMap(){
                     "resources/chinese/player_color/units/pixiu_icon.png"
                     );
 
+    addCardIntoDeck(1, 70,
+                    "TlamanihSpearman", "Tlamanih Spearman", "Tlamanih Spearman",
+                    "resources/aztec/player_color/units/tlamanih_spearman_icon.png"
+                    );
+    addCardIntoDeck(1, 80,
+                    "TequihuaArcher", "Tequihua Archer", "Tequihua Archer",
+                    "resources/aztec/player_color/units/tequihua_archer_icon.png"
+                    );
+    addCardIntoDeck(1, 90,
+                    "CoyoteWarrior", "Coyote Warrior", "Coyote Warrior",
+                    "resources/aztec/player_color/units/coyote_warrior_icon.png"
+                    );
+    addCardIntoDeck(1, 130,
+                    "OcelotlWarrior", "Ocelotl Warrior", "Ocelotl Warrior",
+                    "resources/aztec/player_color/units/ocelotl_warrior_icon.png"
+                    );
+
     addCardIntoDeck(1, 90,
                     "Hoplite", "Hoplite", "Hoplite",
                     "resources/greek/player_color/units/hoplite_icon.png"
@@ -103,12 +120,16 @@ void initializeCardParametersMap(){
                     "resources/greek/player_color/units/hippeus_icon.png"
                     );
     addCardIntoDeck(1, 100,
-                    "ShadeSPC", "Shade", "Shade",
+                    "ShadeSPC", "Suicide Shade", "Suicide Shade",
                     "resources/spc/player_color/units/shade_spc_icon.png"
                     );
     addCardIntoDeck(1, 194,
                     "Minotaur", "Minotaur", "Minotaur",
                     "resources/greek/player_color/units/minotaur_icon.png"
+                    );
+    addCardIntoDeck(1, 194,
+                    "Centaur", "Centaur", "Centaur",
+                    "resources/greek/player_color/units/centaur_icon.png"
                     );
 
     addCardIntoDeck(1, 165,
@@ -144,6 +165,10 @@ void initializeCardParametersMap(){
                     "Troll", "Troll", "Troll",
                     "resources/norse/player_color/units/troll_icon.png"
                     );
+    addCardIntoDeck(1, 214,
+                    "Draugr", "Draugr", "Draugr",
+                    "resources/norse_freyr/player_color/units/draugr_icon.png"
+                    );
 
     addCardIntoDeck(1, 95,
                     "Katapeltes", "Katapeltes", "Katapeltes",
@@ -157,7 +182,6 @@ void initializeCardParametersMap(){
                     "Cheiroballista", "Cheiroballista", "Cheiroballista",
                     "resources/atlantean/player_color/units/cheiroballista_icon.png"
                     );
-    // TODO: Fix possible oos with Caladria?
     addCardIntoDeck(1, 137,
                     "Caladria", "Caladria", "Caladria",
                     "resources/atlantean/player_color/units/caladria_icon.png"
@@ -192,6 +216,10 @@ void initializeCardParametersMap(){
                     "YumiArcher", "Yumi Archer", "Yumi Archer",
                     "resources/japanese/player_color/units/yumi_archer_icon.png"
                     );
+    addCardIntoDeck(1, 115,
+                    "NaginataRider", "Naginata Rider", "Naginata Rider",
+                    "resources/japanese/player_color/units/naginata_rider_icon.png"
+                    );
     addCardIntoDeck(1, 180,
                     "Samurai", "Samurai", "Samurai",
                     "resources/japanese/player_color/units/samurai_icon.png"
@@ -203,6 +231,19 @@ void initializeCardParametersMap(){
     addCardIntoDeck(1, 224,
                     "OnnaMusha", "Onna Musha", "Onna Musha",
                     "resources/japanese/player_color/units/onna_musha_icon.png"
+                    );
+
+    addCardIntoDeck(2, 125,
+                    "EagleWarrior", "Eagle Warrior", "Eagle Warrior",
+                    "resources/aztec/player_color/units/eagle_warrior_icon.png"
+                    );
+    addCardIntoDeck(2, 200,
+                    "Otontin", "Otontin Smasher", "Otontin Smasher",
+                    "resources/aztec/player_color/units/otontin_icon.png"
+                    );
+    addCardIntoDeck(2, 135,
+                    "ShornOne", "Shorn One", "Shorn One",
+                    "resources/aztec/player_color/units/shorn_one_icon.png"
                     );
 
     addCardIntoDeck(2, 140,
@@ -226,7 +267,15 @@ void initializeCardParametersMap(){
                     "Shinobi", "Shinobi", "Shinobi",
                     "resources/japanese/player_color/units/shinobi_icon.png"
                     );
+    addCardIntoDeck(2, 275,
+                    "Oyumi", "Oyumi", "Oyumi",
+                    "resources/japanese/player_color/units/oyumi_icon.png"
+                    );
 
+    addCardIntoDeck(2, 120,
+                    "Godi", "Godi", "Godi",
+                    "resources/norse/player_color/units/godi_icon.png"
+                    );
     addCardIntoDeck(2, 130,
                     "Jarl", "Jarl", "Jarl",
                     "resources/norse/player_color/units/jarl_icon.png"
@@ -252,6 +301,15 @@ void initializeCardParametersMap(){
                     "Destroyer", "Destroyer", "Destroyer",
                     "resources/atlantean/player_color/units/destroyer_icon.png"
                     );
+    addCardIntoDeck(2, 95,
+                    "Arcus", "Arcus", "Arcus",
+                    "resources/atlantean/player_color/units/arcus_icon.png"
+                    );
+    addCardIntoDeck(2, 115,
+                    "Contarius", "Contarius", "Contarius",
+                    "resources/atlantean/player_color/units/contarius_icon.png"
+                    );
+
     addCardIntoDeck(2, 270,
                     "Behemoth", "Behemoth", "Behemoth",
                     "resources/atlantean/player_color/units/behemoth_icon.png"
@@ -261,6 +319,7 @@ void initializeCardParametersMap(){
                     "Petrobolos", "Petrobolos", "Petrobolos",
                     "resources/greek/player_color/units/petrobolos_icon.png"
                     );
+                
     addCardIntoDeck(2, 300,
                     "SiegeCrossbow", "Siege Crossbow", "Siege Crossbow",
                     "resources/chinese/player_color/units/siege_crossbow_icon.png"
@@ -278,6 +337,10 @@ void initializeCardParametersMap(){
                     "Peltast", "Peltast", "Peltast",
                     "resources/greek/player_color/units/peltast_icon.png"
                     );
+    addCardIntoDeck(2, 85,
+                    "Hypaspist", "Hypaspist", "Hypaspist",
+                    "resources/greek/player_color/units/hypaspist_icon.png"
+                    );
     addCardIntoDeck(2, 276,
                     "Hydra", "Hydra", "Hydra",
                     "resources/greek/player_color/units/hydra_icon.png"
@@ -291,10 +354,42 @@ void initializeCardParametersMap(){
                     "WhiteHorseCavalry", "White Horse Cavalry", "White Horse Cavalry",
                     "resources/chinese/player_color/units/white_horse_cavalry_icon.png"
                     );
+    addCardIntoDeck(2, 299,
+                    "TaoWu", "TaoWu", "TaoWu",
+                    "resources/chinese/player_color/units/taowu_icon.png"
+                    );
+
+    addCardIntoDeck(2, 120,
+                    "YumiHorseArcher", "Yumi Horse Archer", "Yumi Horse Archer",
+                    "resources/japanese/player_color/units/yumi_horse_archer_icon.png"
+                    );
 
     addCardIntoDeck(2, 130,
                     "Tanuki", "Tanuki", "Tanuki",
                     "resources/japanese/player_color/units/tanuki_icon.png"
+                    );
+
+    addCardIntoDeck(3, 150,
+                    "JaguarRider", "Jaguar Rider", "Jaguar Rider",
+                    "resources/aztec/player_color/units/jaguar_rider_icon.png"
+                    );
+
+    addCardIntoDeck(3, 130,
+                    "Fanatic", "Fanatic", "Fanatic",
+                    "resources/atlantean/player_color/units/fanatic_icon.png"
+                    );
+
+    addCardIntoDeck(3, 508,
+                    "LiJing", "LiJing", "LiJing",
+                    "resources/chinese/player_color/units/li_jing_icon.png"
+                    );
+    addCardIntoDeck(3, 508,
+                    "WenZhong", "WenZhong", "WenZhong",
+                    "resources/chinese/player_color/units/wen_zhong_icon.png"
+                    );
+    addCardIntoDeck(3, 508,
+                    "YangJian", "Yang Jian", "Yang Jian",
+                    "resources/chinese/player_color/units/yang_jian_icon.png"
                     );
 
     addCardIntoDeck(3, 145,
@@ -310,6 +405,10 @@ void initializeCardParametersMap(){
                     "AmazonArcher", "Amazon Archer", "Amazon Archer",
                     "resources/greek/player_color/units/amazonarcher_icon.png"
                     );
+    addCardIntoDeck(3, 160,
+                    "Gastraphetoros", "Gastraphetoros", "Gastraphetoros",
+                    "resources/greek/player_color/units/gastraphetoros_icon.png"
+                    );
     addCardIntoDeck(3, 140,
                     "Hetairos", "Hetairos", "Hetairos",
                     "resources/greek/player_color/units/hetairos_icon.png"
@@ -319,7 +418,7 @@ void initializeCardParametersMap(){
                     "resources/greek/player_color/units/myrmidon_icon.png"
                     );
     addCardIntoDeck(3, 406,
-                    "Perseus ", "Perseus ", "Perseus ",
+                    "Perseus", "Perseus", "Perseus",
                     "resources/greek/player_color/units/perseus_icon.png"
                     );
     addCardIntoDeck(3, 406,
@@ -334,6 +433,10 @@ void initializeCardParametersMap(){
                     "Colossus", "Colossus", "Colossus",
                     "resources/greek/player_color/units/colossus_icon.png"
                     );
+    addCardIntoDeck(3, 500,
+                    "Helepolis", "Helepolis", "Helepolis",
+                    "resources/greek/player_color/units/helepolis_icon.png"
+                    );
 
     addCardIntoDeck(3, 300,
                     "Ballista", "Ballista", "Ballista",
@@ -343,8 +446,20 @@ void initializeCardParametersMap(){
                     "Mummy", "Mummy", "Mummy",
                     "resources/egyptian/player_color/units/mummy_icon.png"
                     );
+    addCardIntoDeck(3, 248,
+                    "HunDun", "HunDun", "HunDun",
+                    "resources/chinese/player_color/units/hundun_icon.png"
+                    );
+    addCardIntoDeck(3, 255,
+                    "Onmyoji", "Onmyoji", "Onmyoji",
+                    "resources/japanese/player_color/units/onmyoji_icon.png"
+                    );
+    addCardIntoDeck(3, 180,
+                    "SamuraiHatamoto", "Hatamoto Samurai", "Hatamoto Samurai",
+                    "resources/japanese/player_color/units/samurai_icon.png"
+                    );
 
-    addCardIntoDeck(4, 500,
+    addCardIntoDeck(4, 550,
                     "SonOfOsiris", "Son Of Osiris", "Son Of Osiris",
                     "resources/egyptian/player_color/units/son_of_osiris_icon.png"
                     );
@@ -352,12 +467,20 @@ void initializeCardParametersMap(){
                     "Arkantos", "Arkantos", "Arkantos",
                     "resources/spc/player_color/units/arkantos_icon.png"
                     );
-    addCardIntoDeck(4, 500,
+    addCardIntoDeck(4, 750,
                     "Nidhogg", "Nidhogg", "Nidhogg",
                     "resources/norse/player_color/units/nidhogg_icon.png"
                     );
-    addCardIntoDeck(4, 500,
+    addCardIntoDeck(4, 750,
                     "YingLong", "Ying Long", "Ying Long",
                     "resources/chinese/player_color/units/yinglong_icon.png"
+                    );
+    addCardIntoDeck(4, 600,
+                    "SiegeCrossbowSPC", "Giant Siege Crossbow", "Giant Siege Crossbow",
+                    "resources/chinese/player_color/units/siege_crossbow_icon.png"
+                    );
+    addCardIntoDeck(4, 650,
+                    "LivingPoseidonStatue", "Living Poseidon Statue", "Living Poseidon Statue",
+                    "resources/spc/player_color/units/living_poseidon_statue_icon.png"
                     );
 }

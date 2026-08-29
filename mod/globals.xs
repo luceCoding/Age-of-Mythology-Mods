@@ -12,6 +12,19 @@ const int MAX_SOCKETS_PER_CARD = 3;
 const int MAX_SYNERGIES = 11;
 const int HERO_WAVE = 5;
 
+const int MAX_UNIT_TYPES = 11;
+const string UNIT_TYPE_INFANTRY = "AbstractInfantry";
+const string UNIT_TYPE_ARCHER = "AbstractArcher";
+const string UNIT_TYPE_CAVALRY = "AbstractCavalry";
+const string UNIT_TYPE_MYTH = "MythUnit";
+const string UNIT_TYPE_HERO = "Hero";
+const string UNIT_TYPE_HEALER = "AbstractHealer";
+const string UNIT_TYPE_SIEGE = "AbstractSiegeWeapon";
+const string UNIT_TYPE_BUILDING = "Building";
+const string UNIT_TYPE_SOLDIER = "HumanSoldier";
+const string UNIT_TYPE_RANGED = "Ranged";
+const string UNIT_TYPE_MYTH_SIEGE = "MythUnitSiege";
+
 const int SYNERGY_INDEX_INFANTRY = 0;
 const int SYNERGY_INDEX_RANGED = 1;
 const int SYNERGY_INDEX_CAVALRY = 2;

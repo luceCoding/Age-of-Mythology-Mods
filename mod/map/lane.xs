@@ -146,4 +146,41 @@ void startLanes(){
         g_T2BotLane.moveUnits();
         return true;
     });
+
+    // Medium upgrades
+    scheduler.add(600000, [](int iterations = 1) -> bool {
+        for (int p = cNumberPlayers-1; p <= cNumberPlayers; p++){
+            trTechSetStatus(p, 394, 2); // Archers
+            trTechSetStatus(p, 397, 2); // Cav
+            trTechSetStatus(p, 391, 2); // Inf
+        }
+        return false;
+    });
+
+    // Heavy upgrades
+    scheduler.add(1200000, [](int iterations = 1) -> bool {
+        for (int p = cNumberPlayers-1; p <= cNumberPlayers; p++){
+            trTechSetStatus(p, 395, 2);
+            trTechSetStatus(p, 398, 2);
+            trTechSetStatus(p, 392, 2);
+        }
+        return false;
+    });
+
+    // Champion upgrades
+    scheduler.add(1800000, [](int iterations = 1) -> bool {
+        for (int p = cNumberPlayers-1; p <= cNumberPlayers; p++){
+            trTechSetStatus(p, 396, 2);
+            trTechSetStatus(p, 399, 2);
+            trTechSetStatus(p, 393, 2);
+        }
+        return false;
+    });
+
+    scheduler.add(600000, [](int iterations = 1) -> bool {
+        for (int p = cNumberPlayers-1; p <= cNumberPlayers; p++){
+            trTechSetStatus(p, 66, 2); // Dionysia
+        }
+        return true;
+    });
 }

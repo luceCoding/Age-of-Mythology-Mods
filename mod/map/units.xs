@@ -139,7 +139,9 @@ void preModifyPlayerData(){
         trPlayerGrantResources(p, "Gold", STARTING_GOLD);
         
         // For card synergies
-        trProtoUnitSetUnitType(p, "Tanuki", "AbstractHealer", true);
+        trProtoUnitSetUnitType(p, "Tanuki", UNIT_TYPE_HEALER, true);
+        trProtoUnitSetUnitType(p, "Perseus", UNIT_TYPE_MYTH, true);
+        trProtoUnitSetUnitType(p, "LivingPoseidonStatue", UNIT_TYPE_INFANTRY, true);
     }
 
     // Only Humans
@@ -177,6 +179,27 @@ void preModifyPlayerData(){
                 }
             }
         }
+
+        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_ACTION_PIERCE, 200, relativityASSIGN);
+        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_ACTION_PIERCE, 200, relativityASSIGN);
+        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_ACTION_CRUSH, 200, relativityASSIGN);
+        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_ACTION_CRUSH, 200, relativityASSIGN);
+        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_ACTION_RANGE, 32, relativityASSIGN);
+        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_ACTION_RANGE, 32, relativityASSIGN);
+        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_MIN_RANGE, 8, relativityASSIGN);
+        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_MIN_RANGE, 8, relativityASSIGN);
+        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 5, relativityASSIGN);
+        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 5, relativityASSIGN);
+        trModifyProtounitData("SiegeCrossbowSPC", p, puFIELD_HITPOINTS, 250, relativityASSIGN);
+
+        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_HACK, 50, relativityASSIGN);
+        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_CRUSH, 0, relativityASSIGN);
+        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 5, relativityASSIGN);
+        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_HITPOINTS, 5000, relativityASSIGN);
+        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_HP_REGEN, 0, relativityASSIGN);
+        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_HACK_ARMOR, 0.5, relativityASSIGN);
+        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_PIERCE_ARMOR, 0.75, relativityASSIGN);
+        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_CRUSH_ARMOR, 0.25, relativityASSIGN);
 
         string[] protoNames = ProtoNameToCardParametersMap.getKeys();
         for (int i=0; i<protoNames.size(); i++){
@@ -221,8 +244,11 @@ void preModifyPlayerData(){
         trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
         setupAsTower("Fortress", p);
         trProtoUnitSetIcon("Fortress", p, "", "ui\minimap\minimap_wonder");
-        // For win condition
-        trProtounitModifySpawnData("Fortress", p, "FlyingPurpleHippo", 0, 1.0, 1, -1, -1);
+        trProtounitModifySpawnData("Fortress", p, "FlyingPurpleHippo", 0, 1.0, 1, -1, -1); // For win condition
+
+        trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeVillagersAttack", false);
+        trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeHandUnitsAttack", false);
+        trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeRangedUnitsAttack", false);
 
         setupCreepWaveUnit("Hoplite", p);
         setupCreepWaveUnit("Hippeus", p);

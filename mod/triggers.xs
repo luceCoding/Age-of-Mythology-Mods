@@ -120,3 +120,15 @@ active
         xsDisableSelf();
     }
 }
+
+rule DEV_MODE2
+highFrequency
+active
+{
+    if(kbPlayerGetName(1) == "ItzJover" && trChatHistoryContains("devmodeall")){
+        for (int p = 1; p <= cNumberPlayers-2; p++){
+            trPlayerGrantResources(p, "Gold", 99999);
+        }
+        xsDisableSelf();
+    }
+}

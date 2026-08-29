@@ -25,7 +25,7 @@ class Shop {
     }
 
     int getDrawCost(int p = 0){
-        return (m_currShopLevel[p] * 5) + 10;
+        return (m_currShopLevel[p] * 10) + 10;
     }
 
     int getBuyXPCost(int p = 0){
