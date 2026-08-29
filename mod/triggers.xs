@@ -116,19 +116,8 @@ highFrequency
 active
 {
     if(kbPlayerGetName(1) == "ItzJover" && trChatHistoryContains("devmode")){
+        trCreateRevealer(1, "default", vector(0, configMapBaseHeight, 0), 9999, false);
         trPlayerGrantResources(1, "Gold", 99999);
-        xsDisableSelf();
-    }
-}
-
-rule DEV_MODE2
-highFrequency
-active
-{
-    if(kbPlayerGetName(1) == "ItzJover" && trChatHistoryContains("devmodeall")){
-        for (int p = 1; p <= cNumberPlayers-2; p++){
-            trPlayerGrantResources(p, "Gold", 99999);
-        }
         xsDisableSelf();
     }
 }

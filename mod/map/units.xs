@@ -180,6 +180,8 @@ void preModifyPlayerData(){
             }
         }
 
+        trProtoUnitMovementType("Servant", p, "land");
+
         trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_ACTION_PIERCE, 200, relativityASSIGN);
         trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_ACTION_PIERCE, 200, relativityASSIGN);
         trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_ACTION_CRUSH, 200, relativityASSIGN);
@@ -194,8 +196,9 @@ void preModifyPlayerData(){
 
         trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_HACK, 50, relativityASSIGN);
         trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_CRUSH, 0, relativityASSIGN);
-        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 5, relativityASSIGN);
-        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_HITPOINTS, 5000, relativityASSIGN);
+        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 3, relativityASSIGN);
+        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_DMG_AREA, 1, relativityASSIGN);
+        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_HITPOINTS, 4500, relativityASSIGN);
         trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_HP_REGEN, 0, relativityASSIGN);
         trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_HACK_ARMOR, 0.5, relativityASSIGN);
         trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_PIERCE_ARMOR, 0.75, relativityASSIGN);

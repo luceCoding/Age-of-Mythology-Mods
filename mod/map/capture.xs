@@ -4,7 +4,7 @@ class CapturePoint {
     int m_captureableUnitId = -1;
     int m_shopType = -1;
     float m_radius = 12.0;
-    int m_lastOwner = -1;
+    int m_lastTeam = -1; 
     bool m_commandsRemoved = false; 
 
     void init(int unitId = -1, int shopType = -1, int captureSeconds = 10, float radius = 10.0){
@@ -14,6 +14,7 @@ class CapturePoint {
         m_captureTimer = captureSeconds;
         m_radius = radius;
         m_commandsRemoved = false;
+        m_lastTeam = -1;
     }
 
     bool isOwnerNearby(int unitId = -1, float radius = 10.0) {
@@ -108,6 +109,37 @@ class CapturePoint {
         }
     }
 
+    // Apply shop commands to every player on a specific team
+    void addTeamCommands(int teamID = -1) {
+        if (teamID == -1) return;
+        for (int p = 1; p <= cNumberPlayers; p++) {
+            if (g_finalTeam[p] == teamID) {
+                switch(m_shopType){
+                    case SHOP_TYPE_FORGE: addForgeCommands(p);
+                    case SHOP_TYPE_ARMORY: addArmoryCommands(p);
+                    case SHOP_TYPE_TEMPLE: addTempleCommands(p);
+                    case SHOP_TYPE_SHRINE: addShrineCommands(p);
+                }
+            }
+        }
+    }
+
+    // Remove shop commands from every player on a specific team that lost control
+    void removeTeamCommands(int teamID = -1) {
+        if (teamID == -1) return;
+        for (int p = 1; p <= cNumberPlayers; p++) {
+            if (g_finalTeam[p] == teamID) {
+                closeShop(p, m_shopType);
+                switch(m_shopType){
+                    case SHOP_TYPE_FORGE: removeForgeCommands(p);
+                    case SHOP_TYPE_ARMORY: removeArmoryCommands(p);
+                    case SHOP_TYPE_TEMPLE: removeTempleCommands(p);
+                    case SHOP_TYPE_SHRINE: removeShrineCommands(p);
+                }
+            }
+        }
+    }
+
     void processCapturePoint(){
         if (m_captureableUnitId < 0) return;
 
@@ -115,15 +147,23 @@ class CapturePoint {
         int enemyCount = getEnemiesNearby(m_captureableUnitId, m_radius);
         bool contested = isContested(m_captureableUnitId, m_radius);
         int owner = kbUnitGetPlayerID(m_captureableUnitId);
+        int currentTeam = (owner > 0) ? g_finalTeam[owner] : -1;
+
+        if (m_lastTeam == -1 && currentTeam != -1) {
+            m_lastTeam = currentTeam;
+        }
 
         // 1. CAPTURING: Owner absent, enemy present, and point is uncontested by rival teams
         if (ownerPresent == false && enemyCount > 0 && contested == false) {
             m_captureTimer = m_captureTimer - 1;
             
             showWorldSpacePrompt("Capturing..." + m_captureTimer + "s");
-            closeShop(owner, m_shopType);
-            removeShopCommands(owner, g_shopTypes[m_shopType]);
-            m_commandsRemoved = true; 
+            
+            // Strip commands from the team that just lost control of the point
+            if (!m_commandsRemoved) {
+                removeTeamCommands(m_lastTeam);
+                m_commandsRemoved = true;
+            }
             
             if (m_captureTimer <= 0) {
                 int newOwner = getDominantPlayer(m_captureableUnitId, m_radius, true);
@@ -139,16 +179,17 @@ class CapturePoint {
         // 2. CONTESTED / ATTEMPTING TO CAPTURE WHILE BLOCKED: Freeze timer state
         if (contested == true || (enemyCount > 0 && ownerPresent == true)) {
             showWorldSpacePrompt("Contested...");
-            closeShop(owner, m_shopType);
-            removeShopCommands(owner, g_shopTypes[m_shopType]);
-            m_commandsRemoved = true; 
+            if (!m_commandsRemoved) {
+                removeTeamCommands(m_lastTeam);
+                m_commandsRemoved = true;
+            }
             return; 
         }
 
         int teamCount = getTeammatesNearby(m_captureableUnitId, m_radius);
-        // 3. RECOVERY / DAMAGED STATE: No enemies present, but timer is damaged. 
+        
+        // 3. RECOVERY / DAMAGED STATE
         if (enemyCount == 0 && m_captureTimer < m_maxTimer) {
-            // Recover ONLY if the owner (or an ally) is standing on the point
             if (ownerPresent == true || teamCount > 0) {
                 m_captureTimer = m_captureTimer + 1;
                 
@@ -170,35 +211,33 @@ class CapturePoint {
             if (ownerPresent == false && enemyCount == 0 && teamCount > 0) {
                 int newTeammateOwner = getDominantPlayer(m_captureableUnitId, m_radius, false);
                 if (newTeammateOwner != -1) {
-                    // Close shop and strip commands from the old owner before converting
-                    closeShop(owner, m_shopType);
-                    removeShopCommands(owner, g_shopTypes[m_shopType]);
-                    
                     selectSingle(m_captureableUnitId);
                     trUnitConvert(newTeammateOwner);
                     owner = newTeammateOwner; 
-                    m_commandsRemoved = true; // Trigger command re-addition for the new teammate
                 }
             }
 
-            // Restore if the owner changed OR if the owner repelled an attack and fully recovered
-            if ((owner != 0 && m_lastOwner != -1 && owner != m_lastOwner) || m_commandsRemoved == true) {
+            int newTeam = (owner > 0) ? g_finalTeam[owner] : -1;
+            
+            // If team changed or commands were removed due to contest/capture attempt
+            if (newTeam != m_lastTeam || m_commandsRemoved == true) {
                 showWorldSpacePrompt("Captured");
                 
-                switch(m_shopType){
-                    case SHOP_TYPE_FORGE: addForgeCommands();
-                    case SHOP_TYPE_ARMORY: addArmoryCommands();
-                    case SHOP_TYPE_TEMPLE: addTempleCommands();
-                    case SHOP_TYPE_SHRINE: addShrineCommands();
+                // Remove commands from the old team if ownership truly changed to a different team
+                if (newTeam != m_lastTeam) {
+                    removeTeamCommands(m_lastTeam);
                 }
+
+                // Grant commands to all members of the new controlling team
+                addTeamCommands(newTeam);
+                
                 m_commandsRemoved = false; 
+                m_lastTeam = newTeam;
             }
-            else if (owner == m_lastOwner && m_commandsRemoved == false) {
+            else if (newTeam == m_lastTeam && m_commandsRemoved == false) {
                 trWorldSpacePromptHide(""+m_captureableUnitId);
             }
         }
-        
-        m_lastOwner = owner;
     }
 };
 

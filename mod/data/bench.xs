@@ -135,7 +135,6 @@ class BenchData {
             if (spawnCard(card, m_playerShopId, m_player) == false) {
                 return;
             }
-            m_cardArray[i] = card;
             card.applyUpgrades(m_player);
             addSynergy(card, m_player);
             m_cardArray[i] = card;

@@ -33,13 +33,6 @@ string preparePlant(int p = 1, int plantType = -1,
     return plantName;
 }
 
-void removeShopCommands(int p = 0, string shopType = ""){
-    for(int i = 0; i < plantNames.size(); i++) {
-        string plantName = plantNames[i];
-        trProtounitRemoveTrain(shopType, p, plantName);
-    }
-}
-
 void addMarketCommands(){
     for(int p = 1; p <= cNumberPlayers-2; p++) {
         string plantName = preparePlant(p, cUnitTypePlantGreekBush, 
@@ -50,72 +43,72 @@ void addMarketCommands(){
                                                                 openShop(p);
                                                             }
                                         );
-        trProtounitAddTrain("Market", p, plantName, 0, 5);
+        trProtounitAddTrain("Market", p, plantName, 0, 0);
     }
 }
 
-void addForgeCommands(){
-    int plantType = cUnitTypePlantGreekShrub;
-    for(int p = 1; p <= cNumberPlayers-2; p++) {
-        string plantName = preparePlant(p, plantType, 
-                                        "Open forge",
-                                        "Add sockets to your cards.",
-                                        "resources\nature\relics\relic_anvil_icon.png",
-                                        [](int p = 1) -> void {
-                                                                openForge(p);
-                                                            }
-                                        );
-        trProtounitAddTrain("DwarvenForge", p, plantName, 0, 5);
-    }
-    plantNames.add(kbProtoUnitGetName(plantType));
+void addForgeCommands(int p = -1){
+    string plantName = preparePlant(p, cUnitTypePlantGreekShrub, 
+                                    "Open forge",
+                                    "Add sockets to your cards.",
+                                    "resources\nature\relics\relic_anvil_icon.png",
+                                    [](int p = 1) -> void {
+                                                            openForge(p);
+                                                        }
+                                    );
+    trProtounitAddTrain("Market", p, plantName, 0, 1);
 }
 
-void addArmoryCommands(){
-    int plantType = cUnitTypePlantGreekGrass;
-    for(int p = 1; p <= cNumberPlayers-2; p++) {
-        string plantName = preparePlant(p, plantType, 
-                                        "Open armory",
-                                        "Add upgrades to your cards.",
-                                        "resources\nature\relics\relic_jewelry_icon.png",
-                                        [](int p = 1) -> void {
-                                                                openArmory(p);
-                                                            }
-                                        );
-        trProtounitAddTrain("DwarvenArmory", p, plantName, 0, 5);
-    }
-    plantNames.add(kbProtoUnitGetName(plantType));
+void removeForgeCommands(int p = -1){
+    trProtounitRemoveTrain("Market", p, kbProtoUnitGetName(cUnitTypePlantGreekShrub));
 }
 
-void addTempleCommands(){
-    int plantType = cUnitTypePlantGreekWeeds;
-    for(int p = 1; p <= cNumberPlayers-2; p++) {
-        string plantName = preparePlant(p, plantType, 
-                                        "Open temple",
-                                        "Reroll rarities for your cards.",
-                                        "resources\nature\relics\relic_ankh_icon.png",
-                                        [](int p = 1) -> void {
-                                                                openTemple(p);
-                                                            }
-                                        );
-        trProtounitAddTrain("TempleOfTheGods", p, plantName, 0, 5);
-    }
-    plantNames.add(kbProtoUnitGetName(plantType));
+void addArmoryCommands(int p = -1){
+    string plantName = preparePlant(p, cUnitTypePlantGreekGrass, 
+                                    "Open armory",
+                                    "Add upgrades to your cards.",
+                                    "resources\nature\relics\relic_jewelry_icon.png",
+                                    [](int p = 1) -> void {
+                                                            openArmory(p);
+                                                        }
+                                    );
+    trProtounitAddTrain("Market", p, plantName, 0, 2);
 }
 
-void addShrineCommands(){
-    int plantType = cUnitTypePlantGreekFern;
-    for(int p = 1; p <= cNumberPlayers-2; p++) {
-        string plantName = preparePlant(p, plantType, 
-                                        "Open library",
-                                        "Identify cards.",
-                                        "resources\nature\relics\relic_scroll_icon.png",
-                                        [](int p = 1) -> void {
-                                                                openShrine(p);
-                                                            }
-                                        );
-        trProtounitAddTrain("ShrineJapanese", p, plantName, 0, 5);
-    }
-    plantNames.add(kbProtoUnitGetName(plantType));
+void removeArmoryCommands(int p = -1){
+    trProtounitRemoveTrain("Market", p, kbProtoUnitGetName(cUnitTypePlantGreekGrass));
+}
+
+void addTempleCommands(int p = -1){
+    string plantName = preparePlant(p, cUnitTypePlantGreekWeeds, 
+                                    "Open temple",
+                                    "Reroll rarities for your cards.",
+                                    "resources\nature\relics\relic_ankh_icon.png",
+                                    [](int p = 1) -> void {
+                                                            openTemple(p);
+                                                        }
+                                    );
+    trProtounitAddTrain("Market", p, plantName, 0, 3);
+}
+
+void removeTempleCommands(int p = -1){
+    trProtounitRemoveTrain("Market", p, kbProtoUnitGetName(cUnitTypePlantGreekWeeds));
+}
+
+void addShrineCommands(int p = -1){
+    string plantName = preparePlant(p, cUnitTypePlantGreekFern, 
+                                    "Open library",
+                                    "Identify cards.",
+                                    "resources\nature\relics\relic_scroll_icon.png",
+                                    [](int p = 1) -> void {
+                                                            openShrine(p);
+                                                        }
+                                    );
+    trProtounitAddTrain("Market", p, plantName, 0, 4);
+}
+
+void removeShrineCommands(int p = -1){
+    trProtounitRemoveTrain("Market", p, kbProtoUnitGetName(cUnitTypePlantGreekFern));
 }
 
 void initPlayerCommands(){

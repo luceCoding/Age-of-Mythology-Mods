@@ -171,7 +171,8 @@ class Buff {
                     valStr = "" + pct + "%";
                 }
             } 
-            else if (m_puField == puFIELD_HP_REGEN) {
+            else if (m_puField == puFIELD_HP_REGEN || m_puField == puFIELD_SHIELDS) {   
+                // Format decimal stats like HP regen and shields with tenths precision (+0.1)
                 int tenthDelta = (m_delta * 10.0) + 0.5;
                 string sign = "";
                 if (tenthDelta > 0) {

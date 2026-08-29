@@ -190,6 +190,10 @@ void initializeCardParametersMap(){
                     "Automaton", "Automaton", "Automaton",
                     "resources/atlantean/player_color/units/automaton_icon.png"
                     );
+    addCardIntoDeck(1, 137,
+                    "Servant", "Servant", "Servant",
+                    "resources/atlantean/player_color/units/servant_icon.png"
+                    );
 
     addCardIntoDeck(1, 85,
                     "FireArcher", "Fire Archer", "Fire Archer",
@@ -346,6 +350,14 @@ void initializeCardParametersMap(){
                     "resources/greek/player_color/units/hydra_icon.png"
                     );
 
+    addCardIntoDeck(2, 300,
+                    "CangJie", "CangJie", "CangJie",
+                    "resources/spc/player_color/units/cangjie_icon.png"
+                    );
+    addCardIntoDeck(2, 250,
+                    "Sage", "Sage", "Sage",
+                    "resources/chinese/player_color/units/sage_icon.png"
+                    );
     addCardIntoDeck(2, 145,
                     "ChuKoNu", "ChuKoNu", "ChuKoNu",
                     "resources/chinese/player_color/units/chu_ko_nu_icon.png"
@@ -367,6 +379,11 @@ void initializeCardParametersMap(){
     addCardIntoDeck(2, 130,
                     "Tanuki", "Tanuki", "Tanuki",
                     "resources/japanese/player_color/units/tanuki_icon.png"
+                    );
+
+    addCardIntoDeck(3, 500,
+                    "Reginleif", "Reginleif", "Reginleif",
+                    "resources/spc/player_color/units/reginleif_icon.png"
                     );
 
     addCardIntoDeck(3, 150,
@@ -482,5 +499,9 @@ void initializeCardParametersMap(){
     addCardIntoDeck(4, 650,
                     "LivingPoseidonStatue", "Living Poseidon Statue", "Living Poseidon Statue",
                     "resources/spc/player_color/units/living_poseidon_statue_icon.png"
+                    );
+    addCardIntoDeck(4, 450,
+                    "Yasuko", "Yasuko", "Yasuko",
+                    "resources/spc/player_color/units/yasuko_icon.png"
                     );
 }
