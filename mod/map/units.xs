@@ -96,18 +96,18 @@ void preModifyPlayerData(){
 
     // All players
     for(int p = 0; p <= cNumberPlayers; p++) {
-        trTechSetStatus(p, 2, 2); // Classical Ages
-        trTechSetStatus(p, 90, 2);
-        trTechSetStatus(p, 184, 2);
-        trTechSetStatus(p, 20, 2);
-        trTechSetStatus(p, 509, 2);
-        trTechSetStatus(p, 626, 2);
-        //trTechSetStatus(p, 275, 2); // Atlantean Age causing extra upgrades?
-        trTechSetStatus(p, 751, 2);
+        trTechSetStatus(p, cTechClassicalAgeGeneral, 2); // Classical Ages
+        trTechSetStatus(p, cTechClassicalAgeEgyptian, 2);
+        trTechSetStatus(p, cTechClassicalAgeNorse, 2);
+        trTechSetStatus(p, cTechClassicalAgeGreek, 2);
+        trTechSetStatus(p, cTechClassicalAgeChinese, 2);
+        trTechSetStatus(p, cTechClassicalAgeJapanese, 2);
+        //trTechSetStatus(p, cTechClassicalAgeAtlantean, 2); // Atlantean Age causing extra upgrades?
+        trTechSetStatus(p, cTechClassicalAgeAztec, 2);
 
         setAsPlaceholder("GoldPile", p);
         trProtoUnitSetFlag(p, "GoldPile", "ObscuredByUnits", true);
-        trModifyProtounitData("GoldPile", p, puFIELD_LIFESPAN, GOLDPILE_LIFESPAN, relativityASSIGN);
+        trModifyProtounitData("GoldPile", p, cXSProtoEffectLifespan, GOLDPILE_LIFESPAN, cXSRelativityAssign);
 
         // Forbid
         trForbidProtounit(p, "CaravanAtlantean");
@@ -142,32 +142,39 @@ void preModifyPlayerData(){
         trProtoUnitSetUnitType(p, "Tanuki", UNIT_TYPE_HEALER, true);
         trProtoUnitSetUnitType(p, "Perseus", UNIT_TYPE_MYTH, true);
         trProtoUnitSetUnitType(p, "LivingPoseidonStatue", UNIT_TYPE_INFANTRY, true);
+        trProtoUnitSetUnitType(p, "Shogun", UNIT_TYPE_CAVALRY, true);
+        trProtoUnitSetUnitType(p, "WenZhong", UNIT_TYPE_MYTH, true);
+        trProtoUnitSetUnitType(p, "Arkantos", UNIT_TYPE_SOLDIER, true);
+        trProtoUnitSetUnitType(p, "ArkantosGod", UNIT_TYPE_SOLDIER, true);
+        trProtoUnitSetUnitType(p, "Polyphemus", UNIT_TYPE_MYTH_SIEGE, true);
+        trProtoUnitSetUnitType(p, "QiLin", UNIT_TYPE_HEALER, true);
     }
 
     // Only Humans
     for(int p = 1; p <= cNumberPlayers - 2; p++) {
-        trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_X, 0.0, relativityBasePERCENT);
-        trModifyProtounitData("Market", p, puFIELD_OBSTRUCTION_Z, 0.0, relativityBasePERCENT);
+        trModifyProtounitData("Market", p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityBasePercent);
+        trModifyProtounitData("Market", p, cXSProtoEffectObstructionRadiusZ, 0.0, cXSRelativityBasePercent);
         trProtoUnitSetUnitType(p, "Market", "LogicalTypeBuildingThatCanBeEmpowered", false);
         trProtounitRemoveCommand("Market", p, "Delete");
         trProtounitRemoveCommand("Market", p, "MarketBuy1");
         trProtounitRemoveCommand("Market", p, "MarketBuy2");
         trProtounitRemoveCommand("Market", p, "MarketSell1");
         trProtounitRemoveCommand("Market", p, "MarketSell2");
-        trProtounitRemoveTech("Market", p, 363); // Coinage
-        trProtounitRemoveTech("Market", p, 582); // Silk Road
+        trProtounitRemoveTech("Market", p, cTechCoinage);
+        trProtounitRemoveTech("Market", p, cTechSilkRoad);
         trProtoUnitSetFlag(p, "Market", "Invulnerable", true);
         trPlayerModifyData(p, 0, -1, 999, 0); // Add population
-        trForbidProtounit(p, "WallConnector");
-        trTechSetStatus(p, 406, 2); // Ring of the Nibelung, gold trickle
-        trTechSetStatus(p, 62, 2); //oracle tech for viewing enemy ui
+        trTechSetStatus(p, cTechRelicRingOfNibelung, 2);
+        trTechSetStatus(p, cTechOracle, 2);
+        forbidBuilding(p);
+        modifyBuildingCosts(p);
 
-        trTechRemove(p, "Armory", 383);
-        trTechRemove(p, "Armory", 386);
-        trTechRemove(p, "Armory", 380);
-        trTechRemove(p, "Armory", 390);
-        trProtounitRemoveTech("DwarvenArmory", 1, 389);
-        trTechRemove(p, "Market", 361); // Tax Collectors
+        trTechRemove(p, "Armory", cTechCopperArmor);
+        trTechRemove(p, "Armory", cTechCopperShields);
+        trTechRemove(p, "Armory", cTechCopperWeapons);
+        trTechRemove(p, "Armory", cTechBallistics);
+        trTechRemove(p, "DwarvenArmory", cTechBurningPitch);
+        trTechRemove(p, "Market", cTechTaxCollectors);
 
         // Hide teammates's gold
         if (trCurrentPlayer() == p){
@@ -182,27 +189,38 @@ void preModifyPlayerData(){
 
         trProtoUnitMovementType("Servant", p, "land");
 
-        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_ACTION_PIERCE, 200, relativityASSIGN);
-        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_ACTION_PIERCE, 200, relativityASSIGN);
-        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_ACTION_CRUSH, 200, relativityASSIGN);
-        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_ACTION_CRUSH, 200, relativityASSIGN);
-        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_ACTION_RANGE, 32, relativityASSIGN);
-        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_ACTION_RANGE, 32, relativityASSIGN);
-        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_MIN_RANGE, 8, relativityASSIGN);
-        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_MIN_RANGE, 8, relativityASSIGN);
-        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 5, relativityASSIGN);
-        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 5, relativityASSIGN);
-        trModifyProtounitData("SiegeCrossbowSPC", p, puFIELD_HITPOINTS, 250, relativityASSIGN);
+        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, cXSActionEffectDamagePierce, 200, cXSRelativityAssign);
+        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, cXSActionEffectDamagePierce, 200, cXSRelativityAssign);
+        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, cXSActionEffectDamageCrush, 200, cXSRelativityAssign);
+        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, cXSActionEffectDamageCrush, 200, cXSRelativityAssign);
+        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, cXSActionEffectRange, 32, cXSRelativityAssign);
+        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, cXSActionEffectRange, 32, cXSRelativityAssign);
+        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, cXSActionEffectMinRange, 8, cXSRelativityAssign);
+        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, cXSActionEffectMinRange, 8, cXSRelativityAssign);
+        trModifyProtounitAction("SiegeCrossbowSPC", "RangedAttack", p, cXSActionEffectROF, 5, cXSRelativityAssign);
+        trModifyProtounitAction("SiegeCrossbowSPC", "AntiWallAttack", p, cXSActionEffectROF, 5, cXSRelativityAssign);
+        trModifyProtounitData("SiegeCrossbowSPC", p, cXSProtoEffectHitpoints, 250, cXSRelativityAssign);
 
-        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_HACK, 50, relativityASSIGN);
-        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_CRUSH, 0, relativityASSIGN);
-        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 3, relativityASSIGN);
-        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, puFIELD_ACTION_DMG_AREA, 1, relativityASSIGN);
-        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_HITPOINTS, 4500, relativityASSIGN);
-        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_HP_REGEN, 0, relativityASSIGN);
-        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_HACK_ARMOR, 0.5, relativityASSIGN);
-        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_PIERCE_ARMOR, 0.75, relativityASSIGN);
-        trModifyProtounitData("LivingPoseidonStatue", p, puFIELD_CRUSH_ARMOR, 0.25, relativityASSIGN);
+        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectDamageHack, 40, cXSRelativityAssign);
+        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectDamageCrush, 0, cXSRelativityAssign);
+        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectROF, 3, cXSRelativityAssign);
+        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectDamageArea, 1, cXSRelativityAssign);
+        trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectHitpoints, 4500, cXSRelativityAssign);
+        trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectUnitRegenRate, 0, cXSRelativityAssign);
+        trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorHack, 0.5, cXSRelativityAssign);
+        trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorPierce, 0.75, cXSRelativityAssign);
+        trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
+
+        trModifyProtounitData("ArkantosGod", p, cXSProtoEffectUnitRegenRate, 0, cXSRelativityAssign);
+        trModifyProtounitAction("ArkantosGod", "HandAttack", p, cXSActionEffectDamageHack, 25, cXSRelativityAssign);
+        trModifyProtounitAction("ArkantosGod", "BuckAttack", p, cXSActionEffectDamageHack, 25, cXSRelativityAssign);
+        trModifyProtounitData("ArkantosGod", p, cXSProtoEffectArmorHack, 0.6, cXSRelativityAssign);
+        trModifyProtounitData("ArkantosGod", p, cXSProtoEffectArmorPierce, 0.6, cXSRelativityAssign);
+
+        trModifyProtounitAction("Osiris", "LightningAttack", p, cXSActionEffectDamageDivine, 100, cXSRelativityAssign);
+        trModifyProtounitData("Osiris", p, cXSProtoEffectSpeed, 3, cXSRelativityAssign);
+        trModifyProtounitData("OsirisPieceBox", p, cXSProtoEffectObstructionRadiusX, 0, cXSRelativityAssign);
+        trModifyProtounitData("OsirisPieceBox", p, cXSProtoEffectObstructionRadiusZ, 0, cXSRelativityAssign);
 
         string[] protoNames = ProtoNameToCardParametersMap.getKeys();
         for (int i=0; i<protoNames.size(); i++){
@@ -216,35 +234,35 @@ void preModifyPlayerData(){
         trTechSetStatus(p, 373, 2); // Watch Tower
         trTechSetStatus(p, 378, 2); // Boiling Oil
 
-        trModifyProtounitData("SentryTower", p, puFIELD_HITPOINTS, 2000, relativityASSIGN);
-        trModifyProtounitData("SentryTower", p, puFIELD_CRUSH_ARMOR, 0.3, relativityASSIGN);
-        trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
-        trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_DIVINE, 20, relativityASSIGN);
-        trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
-        trModifyProtounitAction("SentryTower", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
+        trModifyProtounitData("SentryTower", p, cXSProtoEffectHitpoints, 2000, cXSRelativityAssign);
+        trModifyProtounitData("SentryTower", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
+        trModifyProtounitAction("SentryTower", "RangedAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
+        trModifyProtounitAction("SentryTower", "RangedAttack", p, cXSActionEffectDamageDivine, 20, cXSRelativityAssign);
+        trModifyProtounitAction("SentryTower", "RangedAttack", p, cXSActionEffectROF, 1, cXSRelativityAssign);
+        trModifyProtounitAction("SentryTower", "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
         setupAsTower("SentryTower", p);
 
-        trModifyProtounitData("MirrorTower", p, puFIELD_HITPOINTS, 4000, relativityASSIGN);
-        trModifyProtounitData("MirrorTower", p, puFIELD_CRUSH_ARMOR, 0.3, relativityASSIGN);
-        trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
-        trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_DIVINE, 50, relativityASSIGN);
-        trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_RANGE, 18, relativityASSIGN);
-        trModifyProtounitAction("MirrorTower", "BeamAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 1, relativityASSIGN);
+        trModifyProtounitData("MirrorTower", p, cXSProtoEffectHitpoints, 4000, cXSRelativityAssign);
+        trModifyProtounitData("MirrorTower", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
+        trModifyProtounitAction("MirrorTower", "BeamAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
+        trModifyProtounitAction("MirrorTower", "BeamAttack", p, cXSActionEffectDamageDivine, 50, cXSRelativityAssign);
+        trModifyProtounitAction("MirrorTower", "BeamAttack", p, cXSActionEffectRange, 18, cXSRelativityAssign);
+        trModifyProtounitAction("MirrorTower", "BeamAttack", p, cXSActionEffectROF, 1, cXSRelativityAssign);
         setupAsTower("MirrorTower", p);
 
-        trModifyProtounitData("StatueOfLightning", p, puFIELD_HITPOINTS, 8000, relativityASSIGN);
-        trModifyProtounitData("StatueOfLightning", p, puFIELD_CRUSH_ARMOR, 0.3, relativityASSIGN);
-        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_DIVINE, 60, relativityASSIGN);
-        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_RATE_OF_FIRE, 3, relativityASSIGN);
-        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, puFIELD_ACTION_N_BOUNCES, 2, relativityASSIGN);
-        trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, puFIELD_ACTION_UNITTYPE_DMG_BONUS, 1, relativityASSIGN);
+        trModifyProtounitData("StatueOfLightning", p, cXSProtoEffectHitpoints, 8000, cXSRelativityAssign);
+        trModifyProtounitData("StatueOfLightning", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
+        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectDamageDivine, 60, cXSRelativityAssign);
+        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectROF, 3, cXSRelativityAssign);
+        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectNumBounces, 2, cXSRelativityAssign);
+        trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
         setupAsTower("StatueOfLightning", p);
 
-        trModifyProtounitData("Fortress", p, puFIELD_HITPOINTS, 24000, relativityASSIGN);
-        trModifyProtounitData("Fortress", p, puFIELD_CRUSH_ARMOR, 0.3, relativityASSIGN);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_PIERCE, 0, relativityASSIGN);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_ACTION_DIVINE, 70, relativityASSIGN);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, puFIELD_MIN_RANGE, 0, relativityASSIGN);
+        trModifyProtounitData("Fortress", p, cXSProtoEffectHitpoints, 24000, cXSRelativityAssign);
+        trModifyProtounitData("Fortress", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 70, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
         setupAsTower("Fortress", p);
         trProtoUnitSetIcon("Fortress", p, "", "ui\minimap\minimap_wonder");
         trProtounitModifySpawnData("Fortress", p, "FlyingPurpleHippo", 0, 1.0, 1, -1, -1); // For win condition
@@ -268,17 +286,17 @@ void preModifyPlayerData(){
     trProtoUnitSetIcon("MiningCampJapanese", 0, "", "ui\minimap\minimap_gold");
     trProtoUnitSetIcon("MiningCamp", 0, "", "ui\minimap\minimap_gold");
 
-    trModifyProtounitData("MiningCampJapanese", 0, puFIELD_HITPOINTS, 2, relativityBasePERCENT);
-    trModifyProtounitData("MiningCampJapanese", 0, puFIELD_HACK_ARMOR, 1.3, relativityBasePERCENT);
-    trModifyProtounitData("MiningCampJapanese", 0, puFIELD_CRUSH_ARMOR, 0.2, relativityABSOLUTE);
+    trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectHitpoints, 2, cXSRelativityBasePercent);
+    trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectArmorHack, 1.3, cXSRelativityBasePercent);
+    trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectArmorCrush, 0.2, cXSRelativityAbsolute);
 
-    trModifyProtounitData("MiningCamp", 0, puFIELD_HITPOINTS, 4, relativityBasePERCENT);
-    trModifyProtounitData("MiningCamp", 0, puFIELD_HACK_ARMOR, 1.5, relativityBasePERCENT);
-    trModifyProtounitData("MiningCamp", 0, puFIELD_CRUSH_ARMOR, 0.4, relativityABSOLUTE);
+    trModifyProtounitData("MiningCamp", 0, cXSProtoEffectHitpoints, 4, cXSRelativityBasePercent);
+    trModifyProtounitData("MiningCamp", 0, cXSProtoEffectArmorHack, 1.5, cXSRelativityBasePercent);
+    trModifyProtounitData("MiningCamp", 0, cXSProtoEffectArmorCrush, 0.4, cXSRelativityAbsolute);
 
     for (int i = 0; i < g_creepCampTypes.size(); i++) {
         string creepCampTypes = g_creepCampTypes[i];
-        trModifyProtounitData(creepCampTypes, 0, puFIELD_LOS, 8, relativityASSIGN);
+        trModifyProtounitData(creepCampTypes, 0, cXSProtoEffectLOS, 8, cXSRelativityAssign);
         trProtounitModifySpawnData(creepCampTypes, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
         trProtoUnitSetFlag(0, creepCampTypes, "ObscuredByUnits", true);
     }

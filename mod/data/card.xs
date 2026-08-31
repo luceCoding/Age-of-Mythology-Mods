@@ -18,16 +18,20 @@ class CardData {
     int timeTillRespawn = 0;
     int[] m_upgrades = default;
 
-    void setCard(ref CardParameters params, int upgrade = -1){
+    void setCard(ref CardParameters params, int upgrade = -1, bool addSockets = true){
         m_protoName = params.getProtoUnit();
         m_uuid = g_uuidCardCounter;
         g_uuidCardCounter = g_uuidCardCounter + 1;
         m_deckIndex = params.getAge();
         m_isIdentified = xsRandBool(0.85);
-        m_upgrades = new int(0, -1);
-        m_upgrades.add(upgrade);
-        if (xsRandInt(0, 6) == 0){
-            m_upgrades.add(-1);
+        if (upgrade != -1){
+            m_upgrades = new int(0, -1);
+            m_upgrades.add(upgrade);
+        }
+        if (addSockets){
+            if (xsRandInt(0, 6) == 0){
+                m_upgrades.add(-1);
+            }
         }
     }
 
@@ -64,35 +68,35 @@ class CardData {
 
         switch(puFIELD){
             case UPGRADE_HACK_ARMOR: 
-                trModifyProtounitData(m_protoName, p, puFIELD_HACK_ARMOR, absDelta / 100.0, relativityABSOLUTE);
+                trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorHack, absDelta / 100.0, cXSRelativityAbsolute);
             case UPGRADE_PIERCE_ARMOR: 
-                trModifyProtounitData(m_protoName, p, puFIELD_PIERCE_ARMOR, absDelta / 100.0, relativityABSOLUTE);
+                trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorPierce, absDelta / 100.0, cXSRelativityAbsolute);
             case UPGRADE_CRUSH_ARMOR: 
-                trModifyProtounitData(m_protoName, p, puFIELD_CRUSH_ARMOR, absDelta / 100.0, relativityABSOLUTE);
+                trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorCrush, absDelta / 100.0, cXSRelativityAbsolute);
             case UPGRADE_HITPOINTS: {
                 float pctDelta = (sign > 0) ? (1.0 + (0.05 * (m_rarity + 1))) : (1.0 - (0.05 * (m_rarity + 1)));
-                trModifyProtounitData(m_protoName, p, puFIELD_HITPOINTS, pctDelta, relativityBasePERCENT);
+                trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, pctDelta, cXSRelativityBasePercent);
             }
             case UPGRADE_SHIELDS: {
-                trModifyProtounitData(m_protoName, p, puFIELD_SHIELDS, 5.0 * absDelta, relativityABSOLUTE);
+                trModifyProtounitData(m_protoName, p, cXSProtoEffectMaxShieldPoints, 5.0 * absDelta, cXSRelativityAbsolute);
             }
             case UPGRADE_SPEED: {
                 float pctDelta = (sign > 0) ? (1.0 + (0.05 * (m_rarity + 1))) : (1.0 - (0.05 * (m_rarity + 1)));
-                trModifyProtounitData(m_protoName, p, puFIELD_SPEED, pctDelta, relativityBasePERCENT);
+                trModifyProtounitData(m_protoName, p, cXSProtoEffectSpeed, pctDelta, cXSRelativityBasePercent);
             }
             case UPGRADE_HP_REGEN: 
-                trModifyProtounitData(m_protoName, p, puFIELD_HP_REGEN, 0.1 * absDelta, relativityABSOLUTE);
+                trModifyProtounitData(m_protoName, p, cXSProtoEffectUnitRegenRate, 0.1 * absDelta, cXSRelativityAbsolute);
             case UPGRADE_HACK_ATTACK: {
-                trModifyProtounitAction(m_protoName, "HandAttack", p, puFIELD_ACTION_HACK, absDelta, relativityABSOLUTE);
-                trModifyProtounitAction(m_protoName, "RangedAttack", p, puFIELD_ACTION_HACK, absDelta, relativityABSOLUTE);
+                trModifyProtounitAction(m_protoName, "HandAttack", p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute);
+                trModifyProtounitAction(m_protoName, "RangedAttack", p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute);
             }
             case UPGRADE_PIERCE_ATTACK: {
-                trModifyProtounitAction(m_protoName, "HandAttack", p, puFIELD_ACTION_PIERCE, absDelta, relativityABSOLUTE);
-                trModifyProtounitAction(m_protoName, "RangedAttack", p, puFIELD_ACTION_PIERCE, absDelta, relativityABSOLUTE);
+                trModifyProtounitAction(m_protoName, "HandAttack", p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute);
+                trModifyProtounitAction(m_protoName, "RangedAttack", p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute);
             }
             case UPGRADE_CRUSH_ATTACK: {
-               trModifyProtounitAction(m_protoName, "HandAttack", p, puFIELD_ACTION_CRUSH, absDelta, relativityABSOLUTE);
-                trModifyProtounitAction(m_protoName, "RangedAttack", p, puFIELD_ACTION_CRUSH, absDelta, relativityABSOLUTE);
+               trModifyProtounitAction(m_protoName, "HandAttack", p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute);
+                trModifyProtounitAction(m_protoName, "RangedAttack", p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute);
             }
         }
     }
@@ -113,6 +117,10 @@ class CardData {
 
     string getProtoName(){
         return m_protoName;
+    }
+
+    void setRarity(int rarity = -1){
+        m_rarity = rarity;
     }
 
     int getRarity(){

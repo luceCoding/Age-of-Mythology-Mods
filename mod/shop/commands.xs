@@ -112,6 +112,7 @@ void removeShrineCommands(int p = -1){
 }
 
 void initPlayerCommands(){
+    trSetMilitaryAutoTrain(false);
     playerCommandsArray.resize(cNumberPlayers + 1);
     addMarketCommands();
 }

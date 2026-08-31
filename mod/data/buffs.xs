@@ -1,8 +1,10 @@
 const int BUFF_TYPE_PROTO_DATA = 0; // trModifyProtounitData
 const int BUFF_TYPE_PROTO_ACTION = 1; // trModifyProtounitAction
 const int BUFF_TYPE_PROTO_ACTION_UNIT_TYPE = 2; // trModifyProtounitActionUnitType
+const int BUFF_TYPE_PROTO_ACTION_SPECIAL = 3; // trProtounitActionSpecialEffect
 
 string[] g_allProtounits = default;
+float[] g_special_action_counter = default;
 
 class Buff {
     bool m_init = false;
@@ -14,6 +16,10 @@ class Buff {
     string[] m_unitTypes = default;
     int[] m_synergyTypes = default;
 
+    // Fields specifically for trProtounitActionSpecialEffect
+    int m_effectField = -1;
+    float m_duration = 0.0;
+
     void setBuffData(int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
         m_buffType = BUFF_TYPE_PROTO_DATA;
         m_synergyTypes = synergyTypes;
@@ -21,6 +27,9 @@ class Buff {
         m_delta = delta;
         m_relativity = relativity;
         m_init = true;
+        if (g_special_action_counter.size() == 0){
+            g_special_action_counter = new float(cNumberPlayers+1, 0.0);
+        }
     }
 
     void setBuffAction(int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
@@ -42,6 +51,15 @@ class Buff {
         m_init = true;
     }
 
+    void setBuffSpecialAction(int[] synergyTypes = default, int effectField = -1, float duration = 0.0, float deltaVal = 0.0) {
+        m_buffType = BUFF_TYPE_PROTO_ACTION_SPECIAL;
+        m_synergyTypes = synergyTypes;
+        m_effectField = effectField;
+        m_duration = duration;
+        m_delta = deltaVal;
+        m_init = true;
+    }
+
     bool isEmpty() {
         return m_init == false;
     }
@@ -55,6 +73,7 @@ class Buff {
             trModifyProtounitAction(targetProto, "RangedAttack", p, m_puField, deltaVal, m_relativity);
             trModifyProtounitAction(targetProto, "BuildingAttack", p, m_puField, deltaVal, m_relativity);
             trModifyProtounitAction(targetProto, "AntiWallAttack", p, m_puField, deltaVal, m_relativity);
+            trModifyProtounitAction(targetProto, "LightningAttack", p, m_puField, deltaVal, m_relativity);
         } 
         else if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE) {
             for (int u = 0; u < m_unitTypes.size(); u++) {
@@ -63,12 +82,24 @@ class Buff {
                 trModifyProtounitActionUnitType(targetProto, "RangedAttack", unitTypeName, p, m_puField, deltaVal, m_relativity);
                 trModifyProtounitActionUnitType(targetProto, "BuildingAttack", unitTypeName, p, m_puField, deltaVal, m_relativity);
                 trModifyProtounitActionUnitType(targetProto, "AntiWallAttack", unitTypeName, p, m_puField, deltaVal, m_relativity);
+                trModifyProtounitActionUnitType(targetProto, "LightningAttack", unitTypeName, p, m_puField, deltaVal, m_relativity);
             }
+        }
+        else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL) {
+            trProtounitActionSpecialEffect(targetProto, "HandAttack", p, m_effectField, "All", -1, m_duration, g_special_action_counter[p]);
+            trProtounitActionSpecialEffect(targetProto, "RangedAttack", p, m_effectField, "All", -1, m_duration, g_special_action_counter[p]);
+            trProtounitActionSpecialEffect(targetProto, "BuildingAttack", p, m_effectField, "All", -1, m_duration, g_special_action_counter[p]);
+            trProtounitActionSpecialEffect(targetProto, "AntiWallAttack", p, m_effectField, "All", -1, m_duration, g_special_action_counter[p]);
+            trProtounitActionSpecialEffect(targetProto, "LightningAttack", p, m_effectField, "All", -1, m_duration, g_special_action_counter[p]);
         }
     }
 
     void applyBuff(int p = 0) {
         if (isEmpty()) { return; }
+
+        if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL){
+            g_special_action_counter[p] = g_special_action_counter[p] + m_delta;
+        }
 
         CardParameters[] params = ProtoNameToCardParametersMap.getValues();
         for (int i = 0; i < params.size(); i++) {
@@ -94,10 +125,16 @@ class Buff {
         if (isEmpty()) { return; }
 
         float invDelta = m_delta;
-        if (m_relativity == relativityABSOLUTE) {
+        if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL) {
+            invDelta = -m_delta;
+        } else if (m_relativity == cXSRelativityAbsolute) {
             invDelta = -m_delta;
         } else {
             invDelta = 1.0 - (m_delta - 1.0);
+        }
+
+        if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL){
+            g_special_action_counter[p] = g_special_action_counter[p] + invDelta;
         }
 
         CardParameters[] params = ProtoNameToCardParametersMap.getValues();
@@ -128,41 +165,65 @@ class Buff {
         // 1. Map the protounit field to a readable UI name
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE) {
             fieldName = "Bonus Damage";
+        } else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL) {
+            switch (m_effectField) {
+                case cOnHitEffectStun: fieldName = "Stun";
+                case cOnHitEffectSnare: fieldName = "Snare";
+                case cOnHitEffectDamageOverTime: fieldName = "Damage over Time";
+                case cOnHitEffectLifesteal: fieldName = "Lifesteal";
+                case cOnHitEffectThrow: fieldName = "Throw";
+            }
         } else {
             switch (m_buffType) {
                 case BUFF_TYPE_PROTO_DATA: {
                     switch (m_puField) {
-                        case puFIELD_HACK_ARMOR: fieldName = "Hack Armor";
-                        case puFIELD_PIERCE_ARMOR: fieldName = "Pierce Armor";
-                        case puFIELD_CRUSH_ARMOR: fieldName = "Crush Armor";
-                        case puFIELD_HITPOINTS: fieldName = "Max HP";
-                        case puFIELD_SPEED: fieldName = "Movement Speed";
-                        case puFIELD_RECHARGE: fieldName = "Recharge Rate";
-                        case puFIELD_HP_REGEN: fieldName = "HP Regen";
-                        case puFIELD_SHIELDS: fieldName = "Shields";
-                        case puFIELD_ACTION_ALL_DMG: fieldName = "All Damage";
-                        case puFIELD_ACTION_DIVINE: fieldName = "Divine Damage";
+                        case cXSProtoEffectArmorHack: fieldName = "Hack Armor";
+                        case cXSProtoEffectArmorPierce: fieldName = "Pierce Armor";
+                        case cXSProtoEffectArmorCrush: fieldName = "Crush Armor";
+                        case cXSProtoEffectHitpoints: fieldName = "Max HP";
+                        case cXSProtoEffectSpeed: fieldName = "Movement Speed";
+                        case cXSProtoEffectRechargeTime: fieldName = "Recharge Rate";
+                        case cXSProtoEffectUnitRegenRate: fieldName = "HP Regen";
+                        case cXSProtoEffectMaxShieldPoints: fieldName = "Shields";
+                        case cXSActionEffectDamageAll: fieldName = "All Damage";
+                        case cXSActionEffectDamageDivine: fieldName = "Divine Damage";
                     }
                 }
                 case BUFF_TYPE_PROTO_ACTION: {
                     switch (m_puField) {
-                        case puFIELD_ACTION_HACK: fieldName = "Hack Damage";
-                        case puFIELD_ACTION_PIERCE: fieldName = "Pierce Damage";
-                        case puFIELD_ACTION_CRUSH: fieldName = "Crush Damage";
-                        case puFIELD_ACTION_RANGE: fieldName = "Attack Range";
-                        case puFIELD_ACTION_RATE_OF_FIRE: fieldName = "Rate of Fire";
-                        case puFIELD_ACTION_DMG_AREA: fieldName = "Area Damage";
-                        case puFIELD_ACTION_N_PROJECTILES: fieldName = "Projectiles";
-                        case puFIELD_ACTION_ALL_DMG: fieldName = "All Damage";
-                        case puFIELD_ACTION_DIVINE: fieldName = "Divine Damage";
+                        case cXSActionEffectDamageHack: fieldName = "Hack Damage";
+                        case cXSActionEffectDamagePierce: fieldName = "Pierce Damage";
+                        case cXSActionEffectDamageCrush: fieldName = "Crush Damage";
+                        case cXSActionEffectRange: fieldName = "Attack Range";
+                        case cXSActionEffectROF: fieldName = "Rate of Fire";
+                        case cXSActionEffectDamageArea: fieldName = "Area Damage";
+                        case cXSActionEffectNumProjectiles: fieldName = "Projectiles";
+                        case cXSActionEffectDamageAll: fieldName = "All Damage";
+                        case cXSActionEffectDamageDivine: fieldName = "Divine Damage";
                     }
                 }
             }
         }
 
-        // 2. Format the value based on relativity (Absolute vs Percent)    
+        // 2. Format the value based on relativity / type    
         string valStr = "";
-        if (m_relativity == relativityABSOLUTE) {
+        if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL) {
+            if (m_effectField == cOnHitEffectLifesteal) {
+                int pct = (m_delta * 100.0) + 0.5;
+                if (pct > 0) {
+                    valStr = "+" + pct + "%";
+                } else {
+                    valStr = "" + pct + "%";
+                }
+            } else {
+                int intDelta = m_delta;
+                if (intDelta > 0) {
+                    valStr = "+" + intDelta;
+                } else {
+                    valStr = "" + intDelta;
+                }
+            }
+        } else if (m_relativity == cXSRelativityAbsolute) {
             if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE) {
                 int pct = (m_delta * 100.0) + 0.5;
                 if (pct > 0) {
@@ -171,8 +232,7 @@ class Buff {
                     valStr = "" + pct + "%";
                 }
             } 
-            else if (m_puField == puFIELD_HP_REGEN || m_puField == puFIELD_SHIELDS) {   
-                // Format decimal stats like HP regen and shields with tenths precision (+0.1)
+            else if (m_puField == cXSProtoEffectUnitRegenRate || m_puField == cXSProtoEffectMaxShieldPoints) {   
                 int tenthDelta = (m_delta * 10.0) + 0.5;
                 string sign = "";
                 if (tenthDelta > 0) {
@@ -183,8 +243,7 @@ class Buff {
                 if (decPart < 0) { decPart = -decPart; }
                 valStr = sign + wholePart + "." + decPart;
             }
-            else if (m_puField == puFIELD_RECHARGE) {
-                // Force absolute recharge flat time to display as a reduction (-s)
+            else if (m_puField == cXSProtoEffectRechargeTime) {
                 int intDelta = m_delta;
                 if (intDelta > 0) {
                     valStr = "-" + intDelta + "s";
@@ -205,9 +264,8 @@ class Buff {
                 }
             }
         } else {
-            // Handle percentage-based relativity cleanly with rounding
             int pct = 0;
-            if (m_puField == puFIELD_ACTION_RATE_OF_FIRE && m_delta > 0.0 && m_delta < 1.0) {
+            if (m_puField == cXSActionEffectROF && m_delta > 0.0 && m_delta < 1.0) {
                 float speedIncrease = 1.0 - m_delta;
                 pct = (speedIncrease * 100.0) + 0.5; 
             } else if (m_delta > -1.0 && m_delta < 1.0) {
@@ -216,8 +274,7 @@ class Buff {
                 pct = ((m_delta - 1.0) * 100.0) + 0.5; 
             }
 
-            // Force recharge percentage reductions to display with a minus sign (-%)
-            if (m_puField == puFIELD_RECHARGE) {
+            if (m_puField == cXSProtoEffectRechargeTime) {
                 if (pct > 0) {
                     valStr = "-" + pct + "%";
                 } else {
@@ -232,7 +289,7 @@ class Buff {
             }
         }
 
-        // 3. Format target unit types if it's a unit-type action buff, otherwise format synergies
+        // 3. Format target unit types or synergies
         string targetStr = "";
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE && m_unitTypes.size() > 0) {
             targetStr = "vs ";
@@ -308,5 +365,11 @@ Buff createBuffAction(int[] synergyTypes = default, int puField = -1, float delt
 Buff createBuffActionUnitType(int[] synergyTypes = default, string[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1){
     Buff buff;
     buff.setBuffActionUnitType(synergyTypes, unitTypes, puField, delta, relativity);
+    return buff;
+}
+
+Buff createBuffSpecialAction(int[] synergyTypes = default, int effectField = -1, float duration = 0.0, float deltaVal = 0.0){
+    Buff buff;
+    buff.setBuffSpecialAction(synergyTypes, effectField, duration, deltaVal);
     return buff;
 }

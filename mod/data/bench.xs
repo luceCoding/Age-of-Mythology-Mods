@@ -10,11 +10,13 @@ class BenchData {
     int m_playerShopId = -1;
     int[] m_synergyCounter = default;
     CardData[] m_cardArray = default;
+    int m_cardSize = 0; // Tracks active cards without shrinking/reallocating the array
 
     void init(int p = -1, int shopId = -1){
         m_player = p;
         m_playerShopId = shopId;
         m_synergyCounter = new int(MAX_SYNERGIES, 0);
+        m_cardSize = 0;
     }
     
     int getPlayerShopID(){
@@ -22,22 +24,33 @@ class BenchData {
     }
 
     bool addCard(ref CardData card){
-        m_cardArray.add(card);
-        log(3, "Added card to bench " + card.getUuid());
+        // Reuse an existing slot if available, otherwise grow the array pool
+        if (m_cardSize < m_cardArray.size()) {
+            m_cardArray[m_cardSize] = card;
+        } else {
+            m_cardArray.add(card);
+        }
+        m_cardSize++;
+        log(3, "Added card to bench " + card.getUuid() + ", size: " + m_cardSize);
         return true;
     }
 
     CardData removeCardByUUID(int uuid = -1){        
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData currCard = m_cardArray[i];
             if (currCard.getUuid() == uuid) {
-                int lastIndex = m_cardArray.size() - 1;
+                m_cardSize--; // Reduce active count
                 
-                // Overwrite with last element and shrink array
-                m_cardArray[i] = m_cardArray[lastIndex];
-                m_cardArray.resize(lastIndex);
+                // Swap the last active element into this slot if it's not already the last one
+                if (i < m_cardSize) {
+                    m_cardArray[i] = m_cardArray[m_cardSize];
+                }
+                
+                // Clear the vacated slot to prevent ghost card rendering
+                CardData nullCard;
+                m_cardArray[m_cardSize] = nullCard;
 
-                log(3, "Removed card from bench " + currCard.getUuid() + ", size: " + m_cardArray.size());
+                log(3, "Removed card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
                 return currCard;
             }
         }
@@ -51,14 +64,14 @@ class BenchData {
     }
 
     int getNumberOfCardsHeld(){
-        return m_cardArray.size();
+        return m_cardSize;
     }
 
     void incrementSynergyAndApplyBuff(int index = 0, int p = 0){
         m_synergyCounter[index] = m_synergyCounter[index] + 1;
         SynergyData synergy = g_synergies[index];
         if (m_synergyCounter[index] < synergy.m_buffs.size()){
-            Buff buff = synergy.m_buffs[m_synergyCounter[index]]; // Index error?
+            Buff buff = synergy.m_buffs[m_synergyCounter[index]];
             buff.applyBuff(p);
         }
     }
@@ -84,7 +97,7 @@ class BenchData {
     void decrementSynergyAndResetBuff(int index = 0, int p = 0){
         SynergyData synergy = g_synergies[index];
         if (m_synergyCounter[index] < synergy.m_buffs.size()){
-            Buff buff = synergy.m_buffs[m_synergyCounter[index]]; // Index error?
+            Buff buff = synergy.m_buffs[m_synergyCounter[index]];
             buff.resetBuff(p);
         }
         m_synergyCounter[index] = m_synergyCounter[index] - 1;
@@ -104,7 +117,6 @@ class BenchData {
             if (params.isHero()){decrementSynergyAndResetBuff(SYNERGY_INDEX_HERO, p);}
             if (params.isHealer()){decrementSynergyAndResetBuff(SYNERGY_INDEX_HEALER, p);}
             if (params.isSiege()){decrementSynergyAndResetBuff(SYNERGY_INDEX_SIEGE, p);}
-            //if (params.isBuilding()){decrementSynergyAndResetBuff(SYNERGY_INDEX_BUILDING, p);}
             if (params.isSoldier()){decrementSynergyAndResetBuff(SYNERGY_INDEX_SOLDIER, p);}
         }
     }
@@ -129,7 +141,7 @@ class BenchData {
     }
 
     void deployCard(int uuid = -1){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
             if (card.isNull() || card.isDeployed() || card.getUuid() != uuid) continue;
             if (spawnCard(card, m_playerShopId, m_player) == false) {
@@ -147,7 +159,7 @@ class BenchData {
         bool wasThereARespawn = false;
         int currtime = xsGetTimeMS();
 
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
             if (card.isNull() == true || card.isDeployed() == false) { continue; }
             
@@ -177,7 +189,7 @@ class BenchData {
     }
 
     bool withdrawCard(int uuid = -1){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData cardToWithdraw = m_cardArray[i];
             if (uuid == cardToWithdraw.getUuid() && (!(cardToWithdraw.isNull())) && cardToWithdraw.isDeployed()){
                 int unitID = cardToWithdraw.getDeployedUnitID();
@@ -214,7 +226,7 @@ class BenchData {
     }
 
     bool identifyCard(int uuid = -1, int p = 0){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
             if (uuid == card.getUuid() && (!(card.isNull())) && (card.isIdentified() == false)){
                 if (purchase(g_shrineShopCost, p)){
@@ -231,7 +243,7 @@ class BenchData {
     }
 
     bool rerollRarity(int uuid = -1, int p = 0){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
             if (uuid == card.getUuid() && (card.isNull() == false) && card.isIdentified()){
                 if (purchase(g_templeShopCost, p)){
@@ -254,7 +266,7 @@ class BenchData {
     }
 
     bool addSocket(int uuid = -1, int p = 0){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
             if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
                 if (purchase(g_forgeShopCost, p)){
@@ -273,7 +285,7 @@ class BenchData {
     }
 
     bool rerollUpgrade(int uuid = -1, int p = 0, int upgradeIdx = 0){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
             if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
                 if (purchase(g_armoryShopCost, p)){
@@ -349,7 +361,8 @@ class BenchData {
 
         // 2. Bubble sort indices based on values in m_synergyCounter (Descending)
         for (int i = 0; i < sortedIndices.size()-1; i++) {
-            for (int j = 0; j < sortedIndices.size() - 1 - i; j++) {
+            int j = 0;
+            for (j = 0; j < sortedIndices.size() - 1 - i; j++) {
                 int idxA = sortedIndices[j];
                 int idxB = sortedIndices[j + 1];
 
@@ -365,7 +378,6 @@ class BenchData {
             int idx = sortedIndices[i];
             if (m_synergyCounter[idx] > 0) {
                 SynergyData synergy = g_synergies[idx];
-                //minimapSafeDisplay(p, posX + 0.0825, posY + 0.005, m_synergyCounter[idx] + " : " + getSynergyText(idx));
                 renderSynergyIcon(p, posX, posY, posYOffset, width, height, 32, idx, false, " " + m_synergyCounter[idx] + " : " + getSynergyText(idx));
             }
         }

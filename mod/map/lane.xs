@@ -5,9 +5,11 @@ class LaneManager {
     vector[] m_waypoints = default;
     int[] m_unitIds = default;
     int[] m_unitTargetIndices = default;
+    int m_unitSize = 0; // Tracks active units without shrinking/reallocating parallel arrays
 
     void init(){
         m_waypoints = new vector(0, cInvalidVector);
+        m_unitSize = 0;
     }
 
     void addPoint(vector point = cInvalidVector){
@@ -19,8 +21,16 @@ class LaneManager {
             errorLog("LaneManager: Cannot add unit, no waypoints defined!");
             return;
         }
-        m_unitIds.add(unitId);
-        m_unitTargetIndices.add(0); // Start unit targeting the first waypoint
+
+        // Reuse an existing slot if available, otherwise grow the array pools
+        if (m_unitSize < m_unitIds.size()) {
+            m_unitIds[m_unitSize] = unitId;
+            m_unitTargetIndices[m_unitSize] = 0; // Start unit targeting the first waypoint
+        } else {
+            m_unitIds.add(unitId);
+            m_unitTargetIndices.add(0);
+        }
+        m_unitSize++;
     }
 
     void moveUnits(){
@@ -28,20 +38,22 @@ class LaneManager {
             return;
         }
 
-        for (int i = 0; i < m_unitIds.size(); i++){
+        // Only loop through active units up to m_unitSize
+        for (int i = 0; i < m_unitSize; i++){
             int unitID = m_unitIds[i];
             selectSingle(unitID);
-            // Remove dead units
+            
+            // Remove dead units via swap-and-pop
             if (trUnitDead()){
-                int lastIndex = m_unitIds.size() - 1;
+                m_unitSize--; // Reduce active count
                 
-                // Swap-and-pop both parallel tracking arrays
-                m_unitIds[i] = m_unitIds[lastIndex];
-                m_unitIds.resize(lastIndex, -1);
-
-                m_unitTargetIndices[i] = m_unitTargetIndices[lastIndex];
-                m_unitTargetIndices.resize(lastIndex, 0);
-                i--; // Reprocess the swapped unit at current index
+                // Swap the last active elements into this index if it's not the last one
+                if (i < m_unitSize) {
+                    m_unitIds[i] = m_unitIds[m_unitSize];
+                    m_unitTargetIndices[i] = m_unitTargetIndices[m_unitSize];
+                }
+                
+                i--; // Step back to evaluate the newly swapped-in unit
                 continue;
             }
 

@@ -1,23 +1,33 @@
 class IncomeHandler {
     int[] m_goldUnitIDs = default;
+    int m_goldSize = 0; // Tracks active gold units without shrinking/reallocating the array
     int team1_gold = 0;
     int team2_gold = 0;
 
     void addGold(int unitId = -1){
-        m_goldUnitIDs.add(unitId);
+        if (m_goldSize < m_goldUnitIDs.size()) {
+            m_goldUnitIDs[m_goldSize] = unitId;
+        } else {
+            m_goldUnitIDs.add(unitId);
+        }
+        m_goldSize++;
     }
 
     void processGold(){
-        for (int i = 0; i < m_goldUnitIDs.size(); i++) {
+        for (int i = 0; i < m_goldSize; i++) {
             int goldUnitId = m_goldUnitIDs[i];
             selectSingle(goldUnitId);
+            
+            // If the gold unit is dead, remove it via swap-and-pop
             if (trUnitDead() == true){
-                int lastIndex = m_goldUnitIDs.size() - 1;
-                m_goldUnitIDs[i] = m_goldUnitIDs[lastIndex];
-                m_goldUnitIDs.resize(lastIndex, -1);
-                i--;
+                m_goldSize--;
+                if (i < m_goldSize) {
+                    m_goldUnitIDs[i] = m_goldUnitIDs[m_goldSize];
+                }
+                i--; // Step back to check the newly swapped-in element
                 continue;
             }
+
             int owner = kbUnitGetPlayerID(goldUnitId);
             for(int p = 1; p <= cNumberPlayers - 2; p++) {
                 if (owner == p || g_finalTeam[p] == g_finalTeam[owner]) {continue;}
@@ -57,6 +67,14 @@ class IncomeHandler {
                     }
                     trSoundsetPlayPlayer(p, "TributeReceived");
                     trUnitDestroy();
+                    
+                    // Remove collected gold unit via swap-and-pop
+                    m_goldSize--;
+                    if (i < m_goldSize) {
+                        m_goldUnitIDs[i] = m_goldUnitIDs[m_goldSize];
+                    }
+                    i--; // Step back to check the swapped-in element
+                    
                     break;
                 }
             }

@@ -8,6 +8,7 @@ class CreepCamp {
     int m_placeHolderUnitId = -1;
     vector m_campPosition = cInvalidVector;
     int[] m_unitIds = default;
+    int m_unitSize = 0; // Tracks active living/spawned units for this camp
 
     void init(int placeHolderUnitId = -1, int respawnTime = 30, string protoUnit = "", int count = 1, float initialSpawnDelay = 0.0){
         m_campPosition = kbUnitGetTruePosition(placeHolderUnitId);
@@ -20,11 +21,12 @@ class CreepCamp {
         m_deathTime = -1.0;
         m_hasSpawned = false;
         m_placeHolderUnitId = placeHolderUnitId;
+        m_unitSize = 0;
     }
 
     bool areAllDead(){
-        if (m_unitIds.size() == 0) { return true; }
-        for (int i = 0; i < m_unitIds.size(); i++){
+        if (m_unitSize == 0) { return true; }
+        for (int i = 0; i < m_unitSize; i++){
             selectSingle(m_unitIds[i]);
             if (trUnitDead() == false){
                 return false;
@@ -34,18 +36,23 @@ class CreepCamp {
     }
 
     void spawnUnits(){
-        m_unitIds.resize(m_count, -1);
+        m_unitSize = 0;
         for (int i = 0; i < m_count; i++){
             int newUnitId = trUnitCreate(m_protoUnit, m_campPosition.x, configMapBaseHeight, m_campPosition.z, xsRandInt(0, 360), 0);
             if (newUnitId != -1) {
-                m_unitIds[i] = newUnitId;
+                if (m_unitSize < m_unitIds.size()) {
+                    m_unitIds[m_unitSize] = newUnitId;
+                } else {
+                    m_unitIds.add(newUnitId);
+                }
+                m_unitSize++;
             }
         }
+        // Grow the camp size for the next respawn cycle
         m_count = m_count + 1;
     }
 
     void processCamp(){
-
         if (m_hasSpawned == false) {
             if (xsGetTime() < m_initialSpawnTime) {
                 return;
@@ -77,7 +84,7 @@ class CreepCamp {
             return;
         }
 
-        // 5. Timer finished: Respawn camp
+        // 5. Timer finished: Respawn camp with increased size
         spawnUnits();
         m_deathTime = -1.0;
     }

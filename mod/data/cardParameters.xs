@@ -105,7 +105,7 @@ class CardParameters {
     bool isInfantry(){ return m_unitTypes[0];}
     bool isArcher(){ return (m_unitTypes[1] || m_unitTypes[9]);}
     bool isCavalry(){ return m_unitTypes[2];}
-    bool isMythUnit(){ return m_unitTypes[3];}
+    bool isMythUnit(){ return m_unitTypes[3] || m_unitTypes[10];}
     bool isHero(){ return m_unitTypes[4];}
     bool isHealer(){ return m_unitTypes[5];}
     bool isSiege(){ return (m_unitTypes[6] || m_unitTypes[10]);}

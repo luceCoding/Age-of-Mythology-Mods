@@ -4,10 +4,10 @@ const int configMapBaseHeight = 4;
 const float configMapWaterLevel = -2.0;
 const float configMapWaterDepth = 3.0;
 
+int g_uuidCardCounter = 0;
 int[] g_selectedUUIDs = default;
 float g_timeMSGameStarted = 0.0;
-
-int g_uuidCardCounter = 0;
+const int OSIRIS_CARDS_NEEDED = 5;
 const int MAX_SOCKETS_PER_CARD = 3;
 const int MAX_SYNERGIES = 11;
 const int HERO_WAVE = 5;
@@ -37,41 +37,6 @@ const int SYNERGY_INDEX_SOLDIER = 8;
 const int SYNERGY_INDEX_FLYING = 9;
 const int SYNERGY_INDEX_TITAN = 10;
 
-const int puFIELD_HITPOINTS = 0;
-const int puFIELD_SPEED = 1;
-const int puFIELD_LOS = 2;
-const int puFIELD_LIFESPAN = 8;
-const int puFIELD_RECHARGE = 9;
-const int puFIELD_SHIELDS = 12;
-const int puFIELD_HACK_ARMOR = 13;
-const int puFIELD_PIERCE_ARMOR = 14;
-const int puFIELD_CRUSH_ARMOR = 15;
-const int puFIELD_HP_REGEN = 17;
-const int puFIELD_GP_BLOCK = 22;
-const int puFIELD_OBSTRUCTION_X = 23;
-const int puFIELD_OBSTRUCTION_Z = 24;
-const int puFIELD_SHIELD_REGEN = 26;
-
-const int puFIELD_ACTION_RANGE = 0;
-const int puFIELD_MIN_RANGE = 1;
-const int puFIELD_ACTION_ALL_DMG = 2;
-const int puFIELD_ACTION_DMG_AREA = 3;
-const int puFIELD_ACTION_RATE_OF_FIRE = 4;
-const int puFIELD_ACTION_N_PROJECTILES = 8;
-const int puFIELD_ACTION_N_BOUNCES = 9;
-const int puFIELD_ACTION_HACK = 13;
-const int puFIELD_ACTION_PIERCE = 14;
-const int puFIELD_ACTION_CRUSH = 15;
-const int puFIELD_ACTION_DIVINE = 16;
-const int puFIELD_ACTION_DISPLAY_PROJ = 18;
-
-const int puFIELD_ACTION_UNITTYPE_DMG_BONUS = 0;
-
-const int relativityABSOLUTE = 0;
-const int relativityASSIGN = 1;
-const int relativityPERCENT = 2;
-const int relativityBasePERCENT = 3;
-
 const int UPGRADE_HACK_ARMOR = 0;
 const int UPGRADE_PIERCE_ARMOR = 1;
 const int UPGRADE_CRUSH_ARMOR = 2;
@@ -84,7 +49,7 @@ const int UPGRADE_PIERCE_ATTACK = 8;
 const int UPGRADE_CRUSH_ATTACK = 9;
 
 const int TOTAL_AGES = 5;
-const float SELL_MULTIPLIER = 0.8;
+const float SELL_MULTIPLIER = 0.75;
 const float UI_LEFT_BUFFER = 50;
 const int config_MAX_DRAWN_CARDS = 5;
 const int MAX_CARDS_IN_BENCH = 20;

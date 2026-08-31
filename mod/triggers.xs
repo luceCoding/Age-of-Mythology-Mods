@@ -105,9 +105,53 @@ runImmediately
                     }
                     trEndGame();
                 }
+                case cUnitTypeOsirisPieceBox: {
+                    xsSetContextPlayer(owner);
+                    int __queryId = kbUnitQueryCreate("__QueryId"+g_uuidCardCounter);
+                    g_uuidCardCounter++;
+                    kbUnitQuerySetPlayerID(__queryId, owner);
+                    kbUnitQuerySetUnitType(__queryId, cUnitTypeAll);
+                    kbUnitQuerySetState(__queryId, cUnitStateAny);
+                    kbUnitQuerySetIgnoreKnockedOutUnits(__queryId, false);
+                    kbUnitQuerySetUnitType(__queryId, kbGetUnitTypeID("OsirisPieceBox"));
+                    xsSetContextPlayer(owner);
+                    kbUnitQueryExecute(__queryId);
+                    int[] queryTempResults = kbUnitQueryGetResults(__queryId);
+                    kbUnitQueryDestroy(__queryId);
+                    if (queryTempResults.size() == OSIRIS_CARDS_NEEDED){
+                        for(int i = 0;  i < queryTempResults.size(); i++){
+                            selectSingle(queryTempResults[i]);
+                            trUnitSetAnimationPath("Opening","spc\buildings\props\osiris_piece_box\anim\osiris_piece_box_opening",false,-1,true);
+                            trSoundPlayFN("campaign\fott\cinematics\fott20_b\lostsouls.mp3", -1, "","");
+                            trSetLighting("potg\potg02_end", 10);
+                            trMusicStop();
+                            trMusicPlay("music\battle\oi_that_pops!!!.wav", 5.0);
+                            if (i == queryTempResults.size()-1){
+                                BenchData bench = g_shop.m_benches[owner];
+                                int shopId = bench.m_playerShopId;
+                                vector location = trUnitGetPosition(shopId);
+                                trUnitCreateForced("Osiris", location.x, location.y, location.z, xsRandFloat(0.0, 360), owner, false);
+                                closeShop(owner);
+                            }
+                        }
+                    }
+                }
             }
         });
         Search_lastTime = xsGetTimeMS();
+    }
+}
+
+rule SUDDEN_DEATH
+highFrequency
+active
+{
+    if (xsGetTimeMS() - cActivationTime >= 1800000) {
+        scheduler.add(120000, [](int iterations = 1) -> bool {
+            addOsirisCardIntoDeck();
+            return true;
+        });
+        xsDisableSelf();
     }
 }
 
