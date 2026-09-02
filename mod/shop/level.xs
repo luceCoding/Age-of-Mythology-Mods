@@ -28,8 +28,8 @@ void initializeShopLevels(){
     g_shopLevels.add(createShopLevel( 50, 35, 15,  0,  0,  30));
     g_shopLevels.add(createShopLevel( 38, 35, 25,  2,  0,  35));
     g_shopLevels.add(createShopLevel( 26, 32, 35,  7,  0,  40));
-    g_shopLevels.add(createShopLevel( 18, 26, 40, 15,  0,  45));
-    g_shopLevels.add(createShopLevel( 12, 19, 38, 27,  2,  50));
+    g_shopLevels.add(createShopLevel( 19, 26, 40, 15,  0,  45));
+    g_shopLevels.add(createShopLevel( 14, 19, 38, 27,  2,  50));
     g_shopLevels.add(createShopLevel(  7, 12, 36, 37,  8,  55));
     g_shopLevels.add(createShopLevel(  4,  8, 27, 46, 15,  60));
     g_shopLevels.add(createShopLevel(  1,  2, 12, 55, 30,   0));

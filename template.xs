@@ -22,7 +22,9 @@ void generate()
     createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
 
     // common/logs.xs
+    // common/uuid.xs
     // common/math.xs
+    // common/strings.xs
     // common/preUi.xs
     createTypedScheduler("schedulerWithParameters", buildStringTypeArray("Parameters"));
     //// common/ui.xs
@@ -73,6 +75,8 @@ void generate()
 
     // mod/factory/deckFactory.xs
     // mod/factory/synergyFactory.xs
+
+    // mod/map/postBalance.xs
 
     // mod/triggers.xs
 

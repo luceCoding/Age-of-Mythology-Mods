@@ -141,13 +141,22 @@ void preModifyPlayerData(){
         // For card synergies
         trProtoUnitSetUnitType(p, "Tanuki", UNIT_TYPE_HEALER, true);
         trProtoUnitSetUnitType(p, "Perseus", UNIT_TYPE_MYTH, true);
-        trProtoUnitSetUnitType(p, "LivingPoseidonStatue", UNIT_TYPE_INFANTRY, true);
         trProtoUnitSetUnitType(p, "Shogun", UNIT_TYPE_CAVALRY, true);
         trProtoUnitSetUnitType(p, "WenZhong", UNIT_TYPE_MYTH, true);
         trProtoUnitSetUnitType(p, "Arkantos", UNIT_TYPE_SOLDIER, true);
+        trProtoUnitSetUnitType(p, "Arkantos", UNIT_TYPE_INFANTRY, true);
         trProtoUnitSetUnitType(p, "ArkantosGod", UNIT_TYPE_SOLDIER, true);
+        trProtoUnitSetUnitType(p, "ArkantosGod", UNIT_TYPE_INFANTRY, true);
         trProtoUnitSetUnitType(p, "Polyphemus", UNIT_TYPE_MYTH_SIEGE, true);
         trProtoUnitSetUnitType(p, "QiLin", UNIT_TYPE_HEALER, true);
+        trProtoUnitSetUnitType(p, "Bellerophon", UNIT_TYPE_MYTH, true);
+        trProtoUnitSetUnitType(p, "Bellerophon", UNIT_TYPE_CAVALRY, true);
+        trProtoUnitSetUnitType(p, "HarumotoBlessed", UNIT_TYPE_CAVALRY, true);
+        trProtoUnitSetUnitType(p, "Guardian", UNIT_TYPE_INFANTRY, true);
+        trProtoUnitSetUnitType(p, "Guardian", UNIT_TYPE_SIEGE, true);
+        trProtoUnitSetUnitType(p, "Automaton", UNIT_TYPE_INFANTRY, true);
+        trProtoUnitSetUnitType(p, "Chiron", UNIT_TYPE_MYTH, true);
+        trProtoUnitSetUnitType(p, "Chiron", UNIT_TYPE_MYTH_RANGED, true);
     }
 
     // Only Humans
@@ -205,13 +214,12 @@ void preModifyPlayerData(){
         trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectDamageCrush, 0, cXSRelativityAssign);
         trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectROF, 3, cXSRelativityAssign);
         trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectDamageArea, 1, cXSRelativityAssign);
-        trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectHitpoints, 4500, cXSRelativityAssign);
-        trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectUnitRegenRate, 0, cXSRelativityAssign);
+        trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectHitpoints, 2000, cXSRelativityAssign);
         trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorHack, 0.5, cXSRelativityAssign);
         trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorPierce, 0.75, cXSRelativityAssign);
         trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
 
-        trModifyProtounitData("ArkantosGod", p, cXSProtoEffectUnitRegenRate, 0, cXSRelativityAssign);
+        trModifyProtounitData("ArkantosGod", p, cXSProtoEffectHitpoints, 1000, cXSRelativityAssign);
         trModifyProtounitAction("ArkantosGod", "HandAttack", p, cXSActionEffectDamageHack, 25, cXSRelativityAssign);
         trModifyProtounitAction("ArkantosGod", "BuckAttack", p, cXSActionEffectDamageHack, 25, cXSRelativityAssign);
         trModifyProtounitData("ArkantosGod", p, cXSProtoEffectArmorHack, 0.6, cXSRelativityAssign);
@@ -221,6 +229,19 @@ void preModifyPlayerData(){
         trModifyProtounitData("Osiris", p, cXSProtoEffectSpeed, 3, cXSRelativityAssign);
         trModifyProtounitData("OsirisPieceBox", p, cXSProtoEffectObstructionRadiusX, 0, cXSRelativityAssign);
         trModifyProtounitData("OsirisPieceBox", p, cXSProtoEffectObstructionRadiusZ, 0, cXSRelativityAssign);
+
+        trModifyProtounitData("Nidhogg", p, cXSProtoEffectHitpoints, -1500, cXSRelativityAbsolute);
+        trModifyProtounitData("Yinglong", p, cXSProtoEffectHitpoints, -1500, cXSRelativityAbsolute);
+
+        trModifyProtounitAction("Guardian", "HandAttack", p, cXSActionEffectDamageHack, 50, cXSRelativityAssign);
+        trModifyProtounitAction("Guardian", "HandAttack", p, cXSActionEffectDamageCrush, 200, cXSRelativityAssign);
+        trModifyProtounitAction("Guardian", "HandAttack", p, cXSActionEffectDamageArea, 0, cXSRelativityAssign);
+        trModifyProtounitAction("Guardian", "HandAttack", p, cXSActionEffectROF, 2, cXSRelativityAssign);
+        trModifyProtounitAction("BoltStrike", "HandAttack", p, cXSActionEffectDamageDivine, 100, cXSRelativityAssign);
+        trModifyProtounitData("Guardian", p, cXSProtoEffectHitpoints, 1500, cXSRelativityAssign);
+        trModifyProtounitData("Guardian", p, cXSProtoEffectArmorHack, 0.75, cXSRelativityAssign);
+        trModifyProtounitData("Guardian", p, cXSProtoEffectArmorPierce, 0.4, cXSRelativityAssign);
+        trModifyProtounitData("Guardian", p, cXSProtoEffectArmorCrush, 0.4, cXSRelativityAssign);
 
         string[] protoNames = ProtoNameToCardParametersMap.getKeys();
         for (int i=0; i<protoNames.size(); i++){
@@ -261,7 +282,7 @@ void preModifyPlayerData(){
         trModifyProtounitData("Fortress", p, cXSProtoEffectHitpoints, 24000, cXSRelativityAssign);
         trModifyProtounitData("Fortress", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 70, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 40, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
         setupAsTower("Fortress", p);
         trProtoUnitSetIcon("Fortress", p, "", "ui\minimap\minimap_wonder");

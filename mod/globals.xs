@@ -4,15 +4,15 @@ const int configMapBaseHeight = 4;
 const float configMapWaterLevel = -2.0;
 const float configMapWaterDepth = 3.0;
 
-int g_uuidCardCounter = 0;
 int[] g_selectedUUIDs = default;
 float g_timeMSGameStarted = 0.0;
+const int MAX_CARD_COPIES = 4;
 const int OSIRIS_CARDS_NEEDED = 5;
 const int MAX_SOCKETS_PER_CARD = 3;
 const int MAX_SYNERGIES = 11;
 const int HERO_WAVE = 5;
 
-const int MAX_UNIT_TYPES = 11;
+const int MAX_UNIT_TYPES = 13;
 const string UNIT_TYPE_INFANTRY = "AbstractInfantry";
 const string UNIT_TYPE_ARCHER = "AbstractArcher";
 const string UNIT_TYPE_CAVALRY = "AbstractCavalry";
@@ -24,6 +24,8 @@ const string UNIT_TYPE_BUILDING = "Building";
 const string UNIT_TYPE_SOLDIER = "HumanSoldier";
 const string UNIT_TYPE_RANGED = "Ranged";
 const string UNIT_TYPE_MYTH_SIEGE = "MythUnitSiege";
+const string UNIT_TYPE_MYTH_RANGED = "MythUnitRanged";
+const string UNIT_TYPE_MYTH_CAVALRY = "MythUnitCavalry";
 
 const int SYNERGY_INDEX_INFANTRY = 0;
 const int SYNERGY_INDEX_RANGED = 1;
@@ -47,6 +49,7 @@ const int UPGRADE_HP_REGEN = 6;
 const int UPGRADE_HACK_ATTACK = 7;
 const int UPGRADE_PIERCE_ATTACK = 8;
 const int UPGRADE_CRUSH_ATTACK = 9;
+const int UPGRADE_ROF = 10;
 
 const int TOTAL_AGES = 5;
 const float SELL_MULTIPLIER = 0.75;
@@ -87,6 +90,7 @@ const float SHARED_SHOP_CAPTURE_RADIUS = 10.0;
 const float SHARED_SHOP_CAPTURE_TIME = 20;
 
 const int RESPAWN_TIME_MS_BASE = 5000;
+const int RESPAWN_TIME_ADDITIONAL_MS = 1500;
 
 string[] g_shopTypes = default;
 string[] g_roadTypes = default;

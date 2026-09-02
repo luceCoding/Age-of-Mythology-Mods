@@ -35,12 +35,13 @@ void initializeSynergies(){
         SynergyData synergy = g_synergies[SYNERGY_INDEX_INFANTRY];
         string[] tempUnitTypes = new string(0, "");
         tempUnitTypes.add(UNIT_TYPE_CAVALRY);
-        synergy.m_buffs[2] = createBuffData(emptySynergyType, cXSProtoEffectArmorHack, 0.05, cXSRelativityAbsolute);
+        synergy.m_buffs[2] = createBuffData(emptySynergyType, cXSProtoEffectArmorHack, 0.1, cXSRelativityAbsolute);
         synergy.m_buffs[4] = createBuffAction(emptySynergyType, cXSActionEffectDamageHack, 2, cXSRelativityAbsolute);
         synergy.m_buffs[5] = createBuffData(emptySynergyType, cXSProtoEffectMaxShieldPoints, 25, cXSRelativityAbsolute);
-        synergy.m_buffs[6] = createBuffData(emptySynergyType, cXSProtoEffectArmorHack, 1.1, cXSRelativityBasePercent);
+        synergy.m_buffs[6] = createBuffData(emptySynergyType, cXSProtoEffectArmorHack, 0.15, cXSRelativityAbsolute);
         synergy.m_buffs[8] = createBuffAction(emptySynergyType, cXSActionEffectDamageHack, 4, cXSRelativityAbsolute);
         synergy.m_buffs[10] = createBuffData(emptySynergyType, cXSProtoEffectMaxShieldPoints, 50, cXSRelativityAbsolute);
+        synergy.m_buffs[12] = createBuffAction(emptySynergyType, cXSActionEffectDamageHack, 8, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_INFANTRY] = synergy;
     }
 
@@ -54,6 +55,7 @@ void initializeSynergies(){
         synergy.m_buffs[6] = createBuffAction(emptySynergyType, cXSActionEffectDamagePierce, 4, cXSRelativityAbsolute);
         synergy.m_buffs[8] = createBuffAction(emptySynergyType, cXSActionEffectRange, 1, cXSRelativityAbsolute);
         synergy.m_buffs[10] = createBuffAction(emptySynergyType, cXSActionEffectROF, 0.85, cXSRelativityBasePercent);
+        synergy.m_buffs[12] = createBuffAction(emptySynergyType, cXSActionEffectDamagePierce, 8, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_RANGED] = synergy;
     }
 
@@ -61,12 +63,13 @@ void initializeSynergies(){
         SynergyData synergy = g_synergies[SYNERGY_INDEX_CAVALRY];
         string[] tempUnitTypes = new string(0, "");
         tempUnitTypes.add(UNIT_TYPE_ARCHER);
-        synergy.m_buffs[2] = createBuffData(emptySynergyType, cXSProtoEffectArmorPierce, 0.05, cXSRelativityAbsolute);
-        synergy.m_buffs[4] = createBuffData(emptySynergyType, cXSProtoEffectSpeed, 1.05, cXSRelativityBasePercent);
-        synergy.m_buffs[5] = createBuffData(emptySynergyType, cXSProtoEffectHitpoints, 1.1, cXSRelativityBasePercent);
-        synergy.m_buffs[6] = createBuffData(emptySynergyType, cXSProtoEffectArmorPierce, 1.1, cXSRelativityBasePercent);
-        synergy.m_buffs[8] = createBuffData(emptySynergyType, cXSProtoEffectSpeed, 1.1, cXSRelativityBasePercent);
-        synergy.m_buffs[10] = createBuffData(emptySynergyType, cXSProtoEffectHitpoints, 1.2, cXSRelativityBasePercent);
+        synergy.m_buffs[2] = createBuffData(emptySynergyType, cXSProtoEffectArmorPierce, 0.1, cXSRelativityAbsolute);
+        synergy.m_buffs[4] = createBuffData(emptySynergyType, cXSProtoEffectSpeed, 1.1, cXSRelativityBasePercent);
+        synergy.m_buffs[5] = createBuffData(emptySynergyType, cXSProtoEffectHitpoints, 50, cXSRelativityAbsolute);
+        synergy.m_buffs[6] = createBuffData(emptySynergyType, cXSProtoEffectArmorPierce, 0.15, cXSRelativityAbsolute);
+        synergy.m_buffs[8] = createBuffData(emptySynergyType, cXSProtoEffectSpeed, 1.15, cXSRelativityBasePercent);
+        synergy.m_buffs[10] = createBuffData(emptySynergyType, cXSProtoEffectHitpoints, 100, cXSRelativityAbsolute);
+        synergy.m_buffs[12] = createBuffData(emptySynergyType, cXSProtoEffectSpeed, 1.20, cXSRelativityBasePercent);
         g_synergies[SYNERGY_INDEX_CAVALRY] = synergy;
     }
 
@@ -101,12 +104,12 @@ void initializeSynergies(){
         SynergyData synergy = g_synergies[SYNERGY_INDEX_SOLDIER];
         string[] tempUnitTypes = new string(0, "");
         tempUnitTypes.add(UNIT_TYPE_HERO);
-        synergy.m_buffs[3] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAbsolute);
-        synergy.m_buffs[6] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, 1.0, 0.25);
-        synergy.m_buffs[9] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.5, cXSRelativityAbsolute);
-        synergy.m_buffs[12] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, 1.0, 0.5);
-        synergy.m_buffs[15] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.75, cXSRelativityAbsolute);
-        synergy.m_buffs[18] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, 1.0, 0.75);
+        synergy.m_buffs[3] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.1, cXSRelativityAbsolute);
+        synergy.m_buffs[6] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, 1.0, 0.1);
+        synergy.m_buffs[9] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAbsolute);
+        synergy.m_buffs[12] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, 1.0, 0.25);
+        synergy.m_buffs[15] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.5, cXSRelativityAbsolute);
+        synergy.m_buffs[18] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, 1.0, 0.5);
         g_synergies[SYNERGY_INDEX_SOLDIER] = synergy;
     }
 

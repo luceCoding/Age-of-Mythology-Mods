@@ -3,7 +3,7 @@ include "lib/rm_core.xs";
 class CardParameters {
 
     Parameters m_params;
-    int m_uuid = -1;
+    int m_uuid = cMinInt;
     bool[] m_unitTypes = default;
 
     string getProtoUnit(){
@@ -22,29 +22,29 @@ class CardParameters {
         }
         selectSingle(unitID);
         if (kbProtoUnitIsType(kbUnitGetProtoUnitID(unitID), kbGetUnitTypeID(unitType)) != false){
-            trUnitDestroy(true);
+            trUnitDestroy(false);
             log(3, "Is " + unitType + " unit type.");
             return true;
         }
-        trUnitDestroy(true);
+        trUnitDestroy(false);
         log(3, "Should never see this message except at the start of the game.");
         return false;
     }
 
-    void setCardParameters(int age = 0, int cost = 1,
-                           string protounit = "", string titleText = "", string hoverText = "", string iconPath = ""){
+    void setCardParameters(int age = 0, int protoID = -1, int cost = -1){
         Parameters params = createParameters();
         params.ints.add(-1); // placeholder for data
         params.ints.add(age);
+        if (cost < 0){
+            cost = kbProtoUnitGetCostTotal(protoID);
+        }
         params.ints.add(cost);
         params.strings.add(""); // placeholder for data
-        params.strings.add(protounit);
-        params.strings.add(iconPath);
-        params.strings.add(titleText);
-        params.strings.add(hoverText);
+        params.strings.add(kbProtoUnitGetName(protoID));
+        params.strings.add(toForwardSlash(kbProtoUnitGetIconPath(0, protoID)));
+        params.strings.add(kbProtoUnitGetDisplayName(0, protoID));
         m_params = params;
-        m_uuid = g_uuidCardCounter;
-        g_uuidCardCounter = g_uuidCardCounter + 1;
+        m_uuid = g_uuid.getNextUUID();
 
         m_unitTypes = new bool(MAX_UNIT_TYPES, false);
         m_unitTypes[0] = isUnitType(UNIT_TYPE_INFANTRY);
@@ -58,6 +58,8 @@ class CardParameters {
         m_unitTypes[8] = isUnitType(UNIT_TYPE_SOLDIER);
         m_unitTypes[9] = isUnitType(UNIT_TYPE_RANGED);
         m_unitTypes[10] = isUnitType(UNIT_TYPE_MYTH_SIEGE);
+        m_unitTypes[11] = isUnitType(UNIT_TYPE_MYTH_RANGED);
+        m_unitTypes[12] = isUnitType(UNIT_TYPE_MYTH_CAVALRY);
     }
 
     int getIntData(){
@@ -103,9 +105,9 @@ class CardParameters {
     }
 
     bool isInfantry(){ return m_unitTypes[0];}
-    bool isArcher(){ return (m_unitTypes[1] || m_unitTypes[9]);}
-    bool isCavalry(){ return m_unitTypes[2];}
-    bool isMythUnit(){ return m_unitTypes[3] || m_unitTypes[10];}
+    bool isArcher(){ return (m_unitTypes[1] || m_unitTypes[9] || m_unitTypes[11]);}
+    bool isCavalry(){ return m_unitTypes[2] || m_unitTypes[12];}
+    bool isMythUnit(){ return m_unitTypes[3] || m_unitTypes[10] || m_unitTypes[11] || m_unitTypes[12];}
     bool isHero(){ return m_unitTypes[4];}
     bool isHealer(){ return m_unitTypes[5];}
     bool isSiege(){ return (m_unitTypes[6] || m_unitTypes[10]);}

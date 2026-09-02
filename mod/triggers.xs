@@ -29,6 +29,21 @@ void startGame(){
     startCapturePoints();
 
     postModifyPlayerData();
+    postApplyBalancePatch();
+
+    trPlayerSetName(cNumberPlayers-1, "ItzJover1");
+    trPlayerSetName(cNumberPlayers, "ItzJover2");
+    trChatSend(cNumberPlayers, "Welcome to Deck of the Ages!");
+    trChatSend(cNumberPlayers, "This mod is currently a pre-alpha build and is under development. Everything is subject to change.");
+    trChatSend(cNumberPlayers, "Created by ItzJover.");
+
+    for (int p=1; p < cNumberPlayers-2; p++){
+        if (trCurrentPlayer() == p){
+            BenchData bench = g_shop.m_benches[trCurrentPlayer()];
+            int shopId = bench.m_playerShopId;
+            cameraLookAt(trUnitGetPosition(shopId), 60.0, 45.0, 45.0);
+        }
+    }
 }
 
 rule FIRE_FIRST_IMMEDIATELY_TRIGGER
@@ -107,8 +122,7 @@ runImmediately
                 }
                 case cUnitTypeOsirisPieceBox: {
                     xsSetContextPlayer(owner);
-                    int __queryId = kbUnitQueryCreate("__QueryId"+g_uuidCardCounter);
-                    g_uuidCardCounter++;
+                    int __queryId = kbUnitQueryCreate("__QueryId"+g_uuid.getNextUUID());
                     kbUnitQuerySetPlayerID(__queryId, owner);
                     kbUnitQuerySetUnitType(__queryId, cUnitTypeAll);
                     kbUnitQuerySetState(__queryId, cUnitStateAny);

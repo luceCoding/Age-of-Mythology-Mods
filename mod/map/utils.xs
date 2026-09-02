@@ -7,8 +7,21 @@ void setAsCardUnit(string protoName = "", int p = 0){
     trProtoUnitSetFlag(p, protoName, "NotKBTracked", false);
     trProtoUnitSetFlag(p, protoName, "KBTracked", true);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeDivineImmunity", false);
-    trModifyProtounitData(protoName, p, cXSProtoEffectUnitRegenRate, 0.2, cXSRelativityAbsolute);
-    trModifyProtounitData(protoName, p, cXSProtoEffectShieldRegenRate, 0.2, cXSRelativityAbsolute);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidBoltTarget", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidFrostTarget", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidTraitorTarget", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeAffectedByRestoration", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeEarthquakeAttack", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeParticipatesInBattlecries", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidMeteorTarget", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidTornadoAttack", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeHealed", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidShiftingSandsTarget", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidBloodPactTarget", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidShockwaveTarget", true);
+    trProtoUnitSetUnitType(p, protoName, "TradeUnit", true); // For abilities
+    trModifyProtounitData(protoName, p, cXSProtoEffectUnitRegenRate, 0.2, cXSRelativityAssign);
+    trModifyProtounitData(protoName, p, cXSProtoEffectShieldRegenRate, 0.4, cXSRelativityAssign);
 }
 
 void setAsPlaceholder(string unitType = "", int p = 0){
@@ -40,8 +53,8 @@ void setupAsSharedShop(string shopUnitType = "", int p = 0){
     trProtoUnitSetFlag(p, shopUnitType, "ObscuredByUnits", true);
     trProtoUnitSetFlag(p, shopUnitType, "VisibleUnderFog", true);
     trProtoUnitSetUnitType(p, shopUnitType, "TradeableTo", true);
-    trModifyProtounitActionUnitType("CaravanGreek", "Trade", shopUnitType, p, 1, 1.1, 1);
-    trModifyProtounitActionUnitType("PiXiu", "Trade", shopUnitType, p, 1, (1.1 * 1.25), 1);
+    trModifyProtounitActionUnitType("CaravanGreek", "Trade", shopUnitType, p, 1, 1.0, 1);
+    trModifyProtounitActionUnitType("PiXiu", "Trade", shopUnitType, p, 1, (1.0 * 1.25), 1);
     trProtoUnitSetIcon(shopUnitType, p, "", "ui\minimap\minimap_highlighted_item");
 }
 

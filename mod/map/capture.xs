@@ -136,6 +136,7 @@ class CapturePoint {
                     case SHOP_TYPE_TEMPLE: removeTempleCommands(p);
                     case SHOP_TYPE_SHRINE: removeShrineCommands(p);
                 }
+                trSoundsetPlayPlayer(p, "AutoqueueOff");
             }
         }
     }

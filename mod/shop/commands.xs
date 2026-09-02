@@ -57,6 +57,7 @@ void addForgeCommands(int p = -1){
                                                         }
                                     );
     trProtounitAddTrain("Market", p, plantName, 0, 1);
+    trSoundsetPlayPlayer(p, "ArmorySelect");
 }
 
 void removeForgeCommands(int p = -1){
@@ -73,6 +74,7 @@ void addArmoryCommands(int p = -1){
                                                         }
                                     );
     trProtounitAddTrain("Market", p, plantName, 0, 2);
+    trSoundsetPlayPlayer(p, "ArmorySelect");
 }
 
 void removeArmoryCommands(int p = -1){
@@ -89,6 +91,7 @@ void addTempleCommands(int p = -1){
                                                         }
                                     );
     trProtounitAddTrain("Market", p, plantName, 0, 3);
+    trSoundsetPlayPlayer(p, "TempleSelect");
 }
 
 void removeTempleCommands(int p = -1){
@@ -105,6 +108,7 @@ void addShrineCommands(int p = -1){
                                                         }
                                     );
     trProtounitAddTrain("Market", p, plantName, 0, 4);
+    trSoundsetPlayPlayer(p, "ShrineSelect");
 }
 
 void removeShrineCommands(int p = -1){

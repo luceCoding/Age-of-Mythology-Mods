@@ -32,11 +32,12 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
             } else if (fromType == "bool") {
                 rmTriggerAddScriptLine("int keyInt = 0;");
                 rmTriggerAddScriptLine("if(key){ keyInt = 1; }");
-            } else {
+            } else if (fromType == "int") {
                 rmTriggerAddScriptLine("int keyInt = key;");
+            } else {
+                rmTriggerAddScriptLine("int keyInt = key.m_uuid; // Class instance unique identifier");
             }
             rmTriggerAddScriptLine("int h = (keyInt ^ (keyInt >> 16)) * 73244539;");
-            // Bulletproof against negative numbers and overflow absolute failures
             rmTriggerAddScriptLine("if(h < 0){ h = 0 - h; }");
             rmTriggerAddScriptLine("int slot = h % capacity;");
             rmTriggerAddScriptLine("if(slot < 0){ slot = slot + capacity; }");
@@ -82,7 +83,7 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
                         rmTriggerAddScriptLine("count++;");
                     rmTriggerAddScriptLine("}");
                 rmTriggerAddScriptLine("}");
-                rmTriggerAddScriptLine("}");
+            rmTriggerAddScriptLine("}");
             rmTriggerAddScriptLine("invalidateCache();");
         rmTriggerAddScriptLine("}");
         rmTriggerAddScriptLine("");
@@ -138,7 +139,7 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
             rmTriggerAddScriptLine("}");
             rmTriggerAddScriptLine(""+toType+" removed = values[slot];");
             rmTriggerAddScriptLine("occupied[slot] = false;");
-            rmTriggerAddScriptLine("count--;"); // Corrected: count drops for removal, and properly handled in rehash loop below
+            rmTriggerAddScriptLine("count--;");
             rmTriggerAddScriptLine("invalidateCache();");
             rmTriggerAddScriptLine("");
             rmTriggerAddScriptLine("int nextSlot = slot + 1;");
@@ -149,13 +150,13 @@ void defineHashMapDefinition(string fromType = "", string toType = "", string de
                 rmTriggerAddScriptLine(fromType+" rehashKey = keys[nextSlot];");
                 rmTriggerAddScriptLine(toType+" rehashValue = values[nextSlot];");
                 rmTriggerAddScriptLine("occupied[nextSlot] = false;");
-                rmTriggerAddScriptLine("count--;"); // Temporarily decrement because findSlot/re-insert will increment it back
+                rmTriggerAddScriptLine("count--;");
                 rmTriggerAddScriptLine("int targetSlot = findSlot(rehashKey);");
                 rmTriggerAddScriptLine("if(targetSlot >= 0){");
                     rmTriggerAddScriptLine("occupied[targetSlot] = true;");
                     rmTriggerAddScriptLine("keys[targetSlot] = rehashKey;");
                     rmTriggerAddScriptLine("values[targetSlot] = rehashValue;");
-                    rmTriggerAddScriptLine("count++;"); // Fixed: Restore count properly upon re-insertion
+                    rmTriggerAddScriptLine("count++;");
                 rmTriggerAddScriptLine("}");
                 rmTriggerAddScriptLine("nextSlot = nextSlot + 1;");
                 rmTriggerAddScriptLine("if(nextSlot >= capacity){");

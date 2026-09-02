@@ -12,7 +12,12 @@ void renderShrine(int p = 1){
 }
 
 void createShrineCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){
-    if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.isIdentified()) { return; }
+    if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false) { return; }
+    if (currCard.isIdentified()) {
+        trChatSendToPlayer(p, p, "Card is already identified.");
+        trSoundsetPlayPlayer(p, "PopCapHit");
+        return;
+    }
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
 
