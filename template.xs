@@ -29,7 +29,7 @@ void generate()
     createTypedScheduler("schedulerWithParameters", buildStringTypeArray("Parameters"));
     //// common/ui.xs
     // common/postUi.xs
-    // common/attachment/utils.xs
+    // common/attachment/attachments.xs
     // common/search.xs
     
     // mod/common/rng.xs

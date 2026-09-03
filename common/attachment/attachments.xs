@@ -6,19 +6,23 @@ void scheduleDelete(int unitId = -1, int timeMs = 0){
 }
 
 class AttachmentManager {
-    int[] attachmentIds = default;
-    int[] attachmentTargetIds = default;
     int m_size = 0; // Tracks active items without shrinking arrays
+    int m_walkAnimationID = -1;
+    int[] m_attachmentIds = default;
+    int[] m_attachmentTargetIds = default;
 
     void add(int attachmentId = -1, int targetId = -1) {
+        if (m_walkAnimationID == -1){
+            m_walkAnimationID = kbGetAnimationID("Walk");
+        }
         // Reuse existing slots if we have unallocated/freed capacity
-        if (m_size < attachmentIds.size()) {
-            attachmentIds[m_size] = attachmentId;
-            attachmentTargetIds[m_size] = targetId;
+        if (m_size < m_attachmentIds.size()) {
+            m_attachmentIds[m_size] = attachmentId;
+            m_attachmentTargetIds[m_size] = targetId;
         } else {
             // Otherwise grow the array if we've hit peak capacity
-            attachmentIds.add(attachmentId);
-            attachmentTargetIds.add(targetId);
+            m_attachmentIds.add(attachmentId);
+            m_attachmentTargetIds.add(targetId);
         }
         m_size++;
     }
@@ -30,8 +34,8 @@ class AttachmentManager {
 
         // If we didn't remove the very last active element, swap the last active one into this slot
         if (index < m_size) {
-            attachmentIds[index] = attachmentIds[m_size];
-            attachmentTargetIds[index] = attachmentTargetIds[m_size];
+            m_attachmentIds[index] = m_attachmentIds[m_size];
+            m_attachmentTargetIds[index] = m_attachmentTargetIds[m_size];
         }
 
         return true;
@@ -40,8 +44,8 @@ class AttachmentManager {
     void process() {
         // Only loop through active elements up to m_size
         for (int i = 0; i < m_size; i++) {
-            int attachmentTargetId = attachmentTargetIds[i];
-            int attachmentId = attachmentIds[i];
+            int attachmentTargetId = m_attachmentTargetIds[i];
+            int attachmentId = m_attachmentIds[i];
             
             selectSingle(attachmentTargetId);
             if (trUnitDead()) {
@@ -49,14 +53,16 @@ class AttachmentManager {
                 trUnitDestroy();
                 remove(i);
                 i--; // Step back to evaluate the swapped-in element
+                continue;
             } 
             else {
                 selectSingle(attachmentId);
                 if (trUnitDead()){
                     remove(i);
                     i--; // Step back to evaluate the swapped-in element
+                    continue;
                 }
-                else{
+                else if (kbUnitGetCurAnimationID(attachmentTargetId) == m_walkAnimationID){
                     vector targetLoc = trUnitGetPosition(attachmentTargetId);
                     trUnitReposition(targetLoc.x, targetLoc.y, targetLoc.z, false, true);
                 }
