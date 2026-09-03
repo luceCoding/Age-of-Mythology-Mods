@@ -348,6 +348,21 @@ class BenchData {
         return text;
     }
 
+    int getActiveTier(int synergyIndex = 0) {
+        SynergyData synergy = g_synergies[synergyIndex];
+        Buff[] buffs = synergy.m_buffs;
+        int currentCount = m_synergyCounter[synergyIndex];
+        int activeTierIndex = -1;
+        for (int i = 0; i < buffs.size(); i++) {
+            Buff buff = buffs[i];
+            if (buff.isEmpty()) { continue; }
+            if (i <= currentCount) {
+                activeTierIndex = i;
+            }
+        }
+        return activeTierIndex;
+    }
+
     void renderSynergies(float posX = 0.0, float posY = 0.0, int p = 1) {
         float width = 0.1;
         float height = 0.025;
@@ -359,14 +374,28 @@ class BenchData {
             sortedIndices[i] = i;
         }
 
-        // 2. Bubble sort indices based on values in m_synergyCounter (Descending)
+        // 2. Bubble sort: Primary = Counter (Descending), Secondary = Active Tier (Descending)
         for (int i = 0; i < sortedIndices.size()-1; i++) {
             int j = 0;
             for (j = 0; j < sortedIndices.size() - 1 - i; j++) {
                 int idxA = sortedIndices[j];
                 int idxB = sortedIndices[j + 1];
 
-                if (m_synergyCounter[idxA] < m_synergyCounter[idxB]) {
+                int countA = m_synergyCounter[idxA];
+                int countB = m_synergyCounter[idxB];
+                int tierA = getActiveTier(idxA);
+                int tierB = getActiveTier(idxB);
+
+                bool swap = false;
+                if (countA < countB) {
+                    swap = true;
+                } else if (countA == countB) {
+                    if (tierA < tierB) {
+                        swap = true;
+                    }
+                }
+
+                if (swap) {
                     sortedIndices[j] = idxB;
                     sortedIndices[j + 1] = idxA;
                 }

@@ -70,6 +70,7 @@ void generate()
     // mod/map/creepCamp.xs
     // mod/map/camps.xs
     // mod/map/capture.xs
+    // mod/map/boss.xs
 
     // mod/income/income.xs
 

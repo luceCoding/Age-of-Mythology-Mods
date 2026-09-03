@@ -52,12 +52,14 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeCaravanGreek);
     addCardsIntoDeck(2, cUnitTypePiXiu);
 
-
     addCardsIntoDeck(1, cUnitTypeTlamanihSpearman);
     addCardsIntoDeck(1, cUnitTypeTequihuaArcher);
     addCardsIntoDeck(1, cUnitTypeOcelotlWarrior);
     addCardsIntoDeck(1, cUnitTypeChaneque);
     addCardsIntoDeck(1, cUnitTypeCentzonTotochtin);
+    addCardsIntoDeck(1, cUnitTypeTeixiptlaHuitz, 130);
+    addCardsIntoDeck(1, cUnitTypeTeixiptlaTezca, 130);
+    addCardsIntoDeck(1, cUnitTypeTeixiptlaQuetz, 130);
 
     addCardsIntoDeck(1, cUnitTypeHoplite);
     addCardsIntoDeck(1, cUnitTypeToxotes);
@@ -149,10 +151,15 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(2, cUnitTypeTanuki);
     addCardsIntoDeck(2, cUnitTypeShogun);
 
-    addCardsIntoDeck(3, cUnitTypeCangJie, 400);
+    addCardsIntoDeck(3, cUnitTypeCangJie, 600);
 
-    addCardsIntoDeck(3, cUnitTypeReginleif, 500);
     addCardsIntoDeck(3, cUnitTypeJaguarRider);
+    addCardsIntoDeck(3, cUnitTypeTunkuluchu);
+    addCardsIntoDeck(3, cUnitTypeSuperTeixiptlaHuitz, 620);
+    addCardsIntoDeck(3, cUnitTypeSuperTeixiptlaTezca, 620);
+    addCardsIntoDeck(3, cUnitTypeSuperTeixiptlaQuetz, 620);
+
+    addCardsIntoDeck(3, cUnitTypeReginleif, 600);
     addCardsIntoDeck(3, cUnitTypeFanatic);
 
     addCardsIntoDeck(3, cUnitTypeLiJing);
@@ -183,14 +190,14 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(3, cUnitTypeOnmyoji);
 
     addCardsIntoDeck(3, cUnitTypeSamuraiHatamoto);
-    addCardsIntoDeck(3, cUnitTypeArkantos, 450);
+    addCardsIntoDeck(3, cUnitTypeArkantos, 600);
 
     addCardsIntoDeck(4, cUnitTypeSonOfOsiris, 750);
     addCardsIntoDeck(4, cUnitTypeNidhogg, 1000);
     addCardsIntoDeck(4, cUnitTypeYingLong, 1000);
-    addCardsIntoDeck(4, cUnitTypeSiegeCrossbowSPC, 600);
+    addCardsIntoDeck(4, cUnitTypeSiegeCrossbowSPC, 750);
     addCardsIntoDeck(4, cUnitTypeLivingPoseidonStatue, 900);
-    addCardsIntoDeck(4, cUnitTypeYasuko, 600);
+    addCardsIntoDeck(4, cUnitTypeYasuko, 750);
     addCardsIntoDeck(4, cUnitTypeArkantosGod, 1000);
     addCardsIntoDeck(4, cUnitTypeHarumotoBlessed, 800);
     addCardsIntoDeck(4, cUnitTypeGuardian, 1000);

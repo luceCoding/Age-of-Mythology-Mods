@@ -7,10 +7,12 @@ class CreepCamp {
     string m_protoUnit = "";
     int m_placeHolderUnitId = -1;
     vector m_campPosition = cInvalidVector;
-    int[] m_unitIds = default;
     int m_unitSize = 0; // Tracks active living/spawned units for this camp
+    bool m_incrementCamp = true;
+    float m_unitScale = 1.0;
+    int[] m_unitIds = default;
 
-    void init(int placeHolderUnitId = -1, int respawnTime = 30, string protoUnit = "", int count = 1, float initialSpawnDelay = 0.0){
+    void init(int placeHolderUnitId = -1, int respawnTime = 30, string protoUnit = "", int count = 1, float initialSpawnDelay = 0.0, float unitScale = 1.0, bool incrementCamp = true){
         m_campPosition = kbUnitGetTruePosition(placeHolderUnitId);
 
         m_respawnTime = respawnTime;
@@ -22,6 +24,8 @@ class CreepCamp {
         m_hasSpawned = false;
         m_placeHolderUnitId = placeHolderUnitId;
         m_unitSize = 0;
+        m_incrementCamp = incrementCamp;
+        m_unitScale = unitScale;
     }
 
     bool areAllDead(){
@@ -39,6 +43,8 @@ class CreepCamp {
         m_unitSize = 0;
         for (int i = 0; i < m_count; i++){
             int newUnitId = trUnitCreate(m_protoUnit, m_campPosition.x, configMapBaseHeight, m_campPosition.z, xsRandInt(0, 360), 0);
+            selectSingle(newUnitId);
+            trUnitSetScale(m_unitScale, m_unitScale, m_unitScale);
             if (newUnitId != -1) {
                 if (m_unitSize < m_unitIds.size()) {
                     m_unitIds[m_unitSize] = newUnitId;
@@ -49,7 +55,9 @@ class CreepCamp {
             }
         }
         // Grow the camp size for the next respawn cycle
-        m_count = m_count + 1;
+        if (m_incrementCamp){
+            m_count = m_count + 1;
+        }
     }
 
     void processCamp(){
@@ -84,7 +92,7 @@ class CreepCamp {
             return;
         }
 
-        // 5. Timer finished: Respawn camp with increased size
+        // 5. Timer finished: Respawn camp
         spawnUnits();
         m_deathTime = -1.0;
     }

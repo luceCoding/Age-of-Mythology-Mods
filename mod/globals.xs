@@ -73,6 +73,12 @@ int g_forgeShopCost = 10;
 
 const float GOLDPILE_LIFESPAN = 20.0;
 
+const float BOSS_SPAWN_TIME = 300.0;
+const string TOP_BOSS_PROTO = "Fafnir";
+const string BOT_BOSS_PROTO = "Scylla";
+const string TOP_BOSS_PLACEHOLDER_PROTO = "TitanGate";
+const string BOT_BOSS_PLACEHOLDER_PROTO = "TitanGateSPC";
+
 const float T1_CRATE_SPAWN_TIME = 90.0;
 const float T2_CRATE_SPAWN_TIME = 120.0;
 const float T3_CRATE_SPAWN_TIME = 150.0;

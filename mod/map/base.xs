@@ -1,7 +1,7 @@
 // ==========================================
 // HELPER FUNCTIONS
 // ==========================================
-int spawnBuilding(string protoName = "", float x = 0.0, float h = 0.0, float z = 0.0, float heading = 0.0, int player = 0, float scale = 0.0) {
+int spawnUnit(string protoName = "", float x = 0.0, float h = 0.0, float z = 0.0, float heading = 0.0, int player = 0, float scale = 1.0) {
     int unitId = trUnitCreateForced(protoName, x, h, z, heading, player);
     if (scale != 1.0) {
         selectSingle(unitId);
@@ -72,34 +72,34 @@ void createAIBases(){
     float centerRiverX = mapX * 0.5;                  float centerRiverZ = mapZ * 0.5;
 
     // --- Spawn Buildings ---
-    spawnBuilding(unitFortress, t1FortX, h, t1FortZ, team1Angle, aiTeamA, fortressScale);
-    spawnBuilding(unitFortress, t2FortX, h, t2FortZ, team2Angle, aiTeamB, fortressScale);
+    spawnUnit(unitFortress, t1FortX, h, t1FortZ, team1Angle, aiTeamA, fortressScale);
+    spawnUnit(unitFortress, t2FortX, h, t2FortZ, team2Angle, aiTeamB, fortressScale);
 
     // Team 1 Towers
-    spawnBuilding(unitT3Tower, t1TopT3X, h, t1TopT3Z, team1Angle, aiTeamA, towerScale);
-    spawnBuilding(unitT2Tower, t1TopT2X, h, t1TopT2Z, team1Angle, aiTeamA, towerScale);
-    spawnBuilding(unitT1Tower, t1TopT1X, h, t1TopT1Z, team1Angle, aiTeamA, towerScale);
+    spawnUnit(unitT3Tower, t1TopT3X, h, t1TopT3Z, team1Angle, aiTeamA, towerScale);
+    spawnUnit(unitT2Tower, t1TopT2X, h, t1TopT2Z, team1Angle, aiTeamA, towerScale);
+    spawnUnit(unitT1Tower, t1TopT1X, h, t1TopT1Z, team1Angle, aiTeamA, towerScale);
 
-    spawnBuilding(unitT3Tower, t1MidT3X, h, t1MidT3Z, team1Angle, aiTeamA, towerScale);
-    spawnBuilding(unitT2Tower, t1MidT2X, h, t1MidT2Z, team1Angle, aiTeamA, towerScale);
-    spawnBuilding(unitT1Tower, t1MidT1X, h, t1MidT1Z, team1Angle, aiTeamA, towerScale);
+    spawnUnit(unitT3Tower, t1MidT3X, h, t1MidT3Z, team1Angle, aiTeamA, towerScale);
+    spawnUnit(unitT2Tower, t1MidT2X, h, t1MidT2Z, team1Angle, aiTeamA, towerScale);
+    spawnUnit(unitT1Tower, t1MidT1X, h, t1MidT1Z, team1Angle, aiTeamA, towerScale);
 
-    spawnBuilding(unitT3Tower, t1BotT3X, h, t1BotT3Z, team1Angle, aiTeamA, towerScale);
-    spawnBuilding(unitT2Tower, t1BotT2X, h, t1BotT2Z, team1Angle, aiTeamA, towerScale);
-    spawnBuilding(unitT1Tower, t1BotT1X, h, t1BotT1Z, team1Angle, aiTeamA, towerScale);
+    spawnUnit(unitT3Tower, t1BotT3X, h, t1BotT3Z, team1Angle, aiTeamA, towerScale);
+    spawnUnit(unitT2Tower, t1BotT2X, h, t1BotT2Z, team1Angle, aiTeamA, towerScale);
+    spawnUnit(unitT1Tower, t1BotT1X, h, t1BotT1Z, team1Angle, aiTeamA, towerScale);
 
     // Team 2 Towers
-    spawnBuilding(unitT3Tower, t2TopT3X, h, t2TopT3Z, team2Angle, aiTeamB, towerScale);
-    spawnBuilding(unitT2Tower, t2TopT2X, h, t2TopT2Z, team2Angle, aiTeamB, towerScale);
-    spawnBuilding(unitT1Tower, t2TopT1X, h, t2TopT1Z, team2Angle, aiTeamB, towerScale);
+    spawnUnit(unitT3Tower, t2TopT3X, h, t2TopT3Z, team2Angle, aiTeamB, towerScale);
+    spawnUnit(unitT2Tower, t2TopT2X, h, t2TopT2Z, team2Angle, aiTeamB, towerScale);
+    spawnUnit(unitT1Tower, t2TopT1X, h, t2TopT1Z, team2Angle, aiTeamB, towerScale);
 
-    spawnBuilding(unitT3Tower, t2MidT3X, h, t2MidT3Z, team2Angle, aiTeamB, towerScale);
-    spawnBuilding(unitT2Tower, t2MidT2X, h, t2MidT2Z, team2Angle, aiTeamB, towerScale);
-    spawnBuilding(unitT1Tower, t2MidT1X, h, t2MidT1Z, team2Angle, aiTeamB, towerScale);
+    spawnUnit(unitT3Tower, t2MidT3X, h, t2MidT3Z, team2Angle, aiTeamB, towerScale);
+    spawnUnit(unitT2Tower, t2MidT2X, h, t2MidT2Z, team2Angle, aiTeamB, towerScale);
+    spawnUnit(unitT1Tower, t2MidT1X, h, t2MidT1Z, team2Angle, aiTeamB, towerScale);
 
-    spawnBuilding(unitT3Tower, t2BotT3X, h, t2BotT3Z, team2Angle, aiTeamB, towerScale);
-    spawnBuilding(unitT2Tower, t2BotT2X, h, t2BotT2Z, team2Angle, aiTeamB, towerScale);
-    spawnBuilding(unitT1Tower, t2BotT1X, h, t2BotT1Z, team2Angle, aiTeamB, towerScale);
+    spawnUnit(unitT3Tower, t2BotT3X, h, t2BotT3Z, team2Angle, aiTeamB, towerScale);
+    spawnUnit(unitT2Tower, t2BotT2X, h, t2BotT2Z, team2Angle, aiTeamB, towerScale);
+    spawnUnit(unitT1Tower, t2BotT1X, h, t2BotT1Z, team2Angle, aiTeamB, towerScale);
 
     // --- POPULATE GLOBAL VECTORS ---
     // Arrays now hold 8 waypoints (Corners removed)

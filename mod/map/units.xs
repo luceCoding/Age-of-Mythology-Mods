@@ -157,6 +157,8 @@ void preModifyPlayerData(){
         trProtoUnitSetUnitType(p, "Automaton", UNIT_TYPE_INFANTRY, true);
         trProtoUnitSetUnitType(p, "Chiron", UNIT_TYPE_MYTH, true);
         trProtoUnitSetUnitType(p, "Chiron", UNIT_TYPE_MYTH_RANGED, true);
+        trProtoUnitSetUnitType(p, "Quinametzin", UNIT_TYPE_SIEGE, true);
+        trProtoUnitSetUnitType(p, "Otontin", UNIT_TYPE_SIEGE, true);
     }
 
     // Only Humans
@@ -321,6 +323,8 @@ void preModifyPlayerData(){
         trProtounitModifySpawnData(creepCampTypes, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
         trProtoUnitSetFlag(0, creepCampTypes, "ObscuredByUnits", true);
     }
+
+    trProtoUnitSetFlag(0, TOP_BOSS_PLACEHOLDER_PROTO, "FlareOnFullyBuilt", false);
 }
 
 void postModifyPlayerData(){
@@ -350,4 +354,20 @@ void postModifyPlayerData(){
             setAsCardUnit(protoNames[i], p);
         }
     }
+
+    // Boss
+    trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
+    trModifyProtounitData(BOT_BOSS_PROTO, 0, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
+    trProtoUnitSetUnitType(0, TOP_BOSS_PROTO, "MythUnit", false);
+    trProtoUnitSetUnitType(0, BOT_BOSS_PROTO, "MythUnit", false);
+    trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "RangedAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(BOT_BOSS_PROTO, "HandAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(BOT_BOSS_PROTO, "HandAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trProtoUnitSetIcon(TOP_BOSS_PROTO, 0, "", "ui\minimap\minimap_titan_gate");
+    trProtoUnitSetIcon(BOT_BOSS_PROTO, 0, "", "ui\minimap\minimap_titan_gate");
+    trModifyProtounitResource(TOP_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
+    trProtoUnitMovementType(BOT_BOSS_PROTO, 0, "land");
 }

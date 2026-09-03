@@ -147,7 +147,7 @@ void initializeTeams(){
     // 6. Configure AI vs AI and Gaia (Player 0) relationships
     trPlayerSetDiplomacy(aiA, aiB, "Enemy", true);
     
-    // Ensure AI players are enemies of Gaia (Player 0)
-    trPlayerSetDiplomacy(aiA, 0, "Enemy", true);
-    trPlayerSetDiplomacy(aiB, 0, "Enemy", true);
+    // Ensure AI players are Ally of Gaia (Player 0)
+    trPlayerSetDiplomacy(aiA, 0, "Ally", true);
+    trPlayerSetDiplomacy(aiB, 0, "Ally", true);
 }

@@ -10,6 +10,7 @@ void startGame(){
     preModifyPlayerData();
 
     createAIBases();
+    createBossPits();
     createBaseOuterwalls();
     spawnSymmetricObjectives();
 
@@ -30,6 +31,8 @@ void startGame(){
 
     postModifyPlayerData();
     postApplyBalancePatch();
+
+    startBoss();
 
     trPlayerSetName(cNumberPlayers-1, "ItzJover1");
     trPlayerSetName(cNumberPlayers, "ItzJover2");
@@ -88,9 +91,8 @@ runImmediately
             int protoUnit = kbUnitGetProtoUnitID(unitId);
             int owner = kbUnitGetPlayerID(unitId);
             xsSetContextPlayer(owner);
-
+            selectSingle(unitId);
             if (kbProtoUnitIsType(protoUnit, COMMAND_TYPE)) {
-                selectSingle(unitId);
                 trUnitDestroy();
                 PlayerCommands playerCommands = playerCommandsArray[owner];
                 for (int i = 0; i < playerCommands.plantArray.size(); i++) {
@@ -150,6 +152,13 @@ runImmediately
                         }
                     }
                 }
+                default: {
+                    if (owner == 0 || owner == cNumberPlayers - 1 || owner == cNumberPlayers - 2) {
+                        if (kbUnitIsType(unitId, cUnitTypeLogicalTypeHandUnitsAutoAttack) || kbUnitIsType(unitId, cUnitTypeLogicalTypeRangedUnitsAutoAttack)){
+                            trUnitSetStance("Defensive");
+                        }
+                    }
+                }
             }
         });
         Search_lastTime = xsGetTimeMS();
@@ -176,6 +185,7 @@ active
     if(kbPlayerGetName(1) == "ItzJover" && trChatHistoryContains("devmode")){
         trCreateRevealer(1, "default", vector(0, configMapBaseHeight, 0), 9999, false);
         trPlayerGrantResources(1, "Gold", 99999);
+        trGodPowerGrant(1, "MeteorSPC", 99, 0, false, false);
         xsDisableSelf();
     }
 }

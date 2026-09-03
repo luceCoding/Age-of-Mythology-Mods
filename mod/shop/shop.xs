@@ -486,9 +486,9 @@ void renderBench(int p = 1, int shopType = 0) {
     BenchData bench = g_shop.m_benches[p];
     CardData[] currCards = bench.getCards();
 
-    float propPosX = getLeftAnchorX(UI_LEFT_BUFFER + 100, 128.0, p);
+    float propPosX = getLeftAnchorX(UI_LEFT_BUFFER + 200, 128.0, p);
     if (shopType == DEFAULT_SHOP_TYPE){
-        bench.renderSynergies(propPosX, 0.0, p);
+        bench.renderSynergies(propPosX, 0.4, p);
     }
 
     int totalCards = bench.getNumberOfCardsHeld();
