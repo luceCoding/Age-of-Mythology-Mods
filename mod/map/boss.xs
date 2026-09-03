@@ -151,11 +151,11 @@ void startBoss(){
     g_TopBossBuffMsEnd = new int(cNumberPlayers+1, -1);
     g_BotBossBuffMsEnd = new int(cNumberPlayers+1, -1);
 
-    scheduler.add(60000, [](int iterations = 1) -> bool {
+    scheduler.add(60017, [](int iterations = 1) -> bool {
         trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
         trModifyProtounitData(BOT_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
-        trModifyProtounitResource(TOP_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 100, cXSRelativityAbsolute);
-        trModifyProtounitResource(BOT_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 100, cXSRelativityAbsolute);
+        trModifyProtounitResource(TOP_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 50, cXSRelativityAbsolute);
+        trModifyProtounitResource(BOT_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 50, cXSRelativityAbsolute);
         return true;
     });
 

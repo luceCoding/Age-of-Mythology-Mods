@@ -73,6 +73,7 @@ int g_templeShopCost = 10;
 int g_armoryShopCost = 10;
 int g_forgeShopCost = 10;
 
+const float INITIAL_GOLD_REWARD = 5;
 const float GOLDPILE_LIFESPAN = 20.0;
 
 const float BOSS_SPAWN_TIME = 300.0;
@@ -108,6 +109,7 @@ string[] g_roadTypes = default;
 string[] g_treeTypes = default;
 string[] g_creepCampPlaceholderTypes = default;
 string[] g_creepCampTypes = default;
+string[] g_waveTypes = default;
 
 void initializeGlobals(){
     g_shopTypes = new string(4, "");
@@ -133,4 +135,11 @@ void initializeGlobals(){
     g_creepCampTypes.add("Satyr");
     g_creepCampTypes.add("NemeanLion");
     g_creepCampTypes.add("Argus");
+
+    g_waveTypes.add("Hoplite");
+    g_waveTypes.add("Hippeus");
+    g_waveTypes.add("Toxotes");
+    g_waveTypes.add("Cyclops");
+    g_waveTypes.add("Heracles");
+    g_waveTypes.add("Colossus");
 }

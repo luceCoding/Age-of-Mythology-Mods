@@ -120,13 +120,12 @@ LaneManager g_T2BotLane;
 int g_laneCounter = 1;
 
 void spawnLaneArmy(ref LaneManager laneManager, int player = 0, vector spawnPos = cInvalidVector, vector destPos = cInvalidVector, float offsetX = 0.0, float offsetZ = 0.0, bool hasBonusUnits = false, bool hasSuperBonus = false) {
-    string currentUnit = "";
+    float rdmOffset = 2.0;
     
-    // Base wave units: 2 Hoplites, 2 Hippeus, 1 Toxotes (Total = 5)
+    // Base wave units: 2 Hoplites (Index 0), 2 Hippeus (Index 1), 1 Toxotes (Index 2)
     int numHoplites = 2;
     int numHippeus = 2;
     int numToxotes = 1;
-    float rdmOffset = 2.0;
 
     // If opposing barracks is destroyed, increase standard composition for this wave
     if (hasBonusUnits) {
@@ -135,55 +134,53 @@ void spawnLaneArmy(ref LaneManager laneManager, int player = 0, vector spawnPos 
         numToxotes = numToxotes + 1;
     }
 
-    // Spawn Hoplites
+    // Spawn Hoplites (g_waveTypes[0])
     for (int i = 0; i < numHoplites; i++) {
         float rdmOffsetX = xsRandFloat(-rdmOffset, rdmOffset);
         float rdmOffsetZ = xsRandFloat(-rdmOffset, rdmOffset);
-        int unitId = trUnitCreate("Hoplite", spawnPos.x + offsetX + rdmOffsetX, spawnPos.y, spawnPos.z + offsetZ + rdmOffsetZ, xsRandFloat(0.0, 359), player);
+        int unitId = trUnitCreate(g_waveTypes[0], spawnPos.x + offsetX + rdmOffsetX, spawnPos.y, spawnPos.z + offsetZ + rdmOffsetZ, xsRandFloat(0.0, 359), player);
         selectSingle(unitId);
         trUnitMoveToPoint(destPos.x, destPos.y, destPos.z, -1, true);
         laneManager.addUnit(unitId);
     }
 
-    // Spawn Hippeus
+    // Spawn Hippeus (g_waveTypes[1])
     for (int j = 0; j < numHippeus; j++) {
         float rdmOffsetX = xsRandFloat(-rdmOffset, rdmOffset);
         float rdmOffsetZ = xsRandFloat(-rdmOffset, rdmOffset);
-        int unitId2 = trUnitCreate("Hippeus", spawnPos.x + offsetX + rdmOffsetX, spawnPos.y, spawnPos.z + offsetZ + rdmOffsetZ, xsRandFloat(0.0, 359), player);
+        int unitId2 = trUnitCreate(g_waveTypes[1], spawnPos.x + offsetX + rdmOffsetX, spawnPos.y, spawnPos.z + offsetZ + rdmOffsetZ, xsRandFloat(0.0, 359), player);
         selectSingle(unitId2);
         trUnitMoveToPoint(destPos.x, destPos.y, destPos.z, -1, true);
         laneManager.addUnit(unitId2);
     }
 
-    // Spawn Toxotes
+    // Spawn Toxotes (g_waveTypes[2])
     for (int k = 0; k < numToxotes; k++) {
         float rdmOffsetX = xsRandFloat(-rdmOffset, rdmOffset);
         float rdmOffsetZ = xsRandFloat(-rdmOffset, rdmOffset);
-        int unitId3 = trUnitCreate("Toxotes", spawnPos.x + offsetX + rdmOffsetX, spawnPos.y, spawnPos.z + offsetZ + rdmOffsetZ, xsRandFloat(0.0, 359), player);
+        int unitId3 = trUnitCreate(g_waveTypes[2], spawnPos.x + offsetX + rdmOffsetX, spawnPos.y, spawnPos.z + offsetZ + rdmOffsetZ, xsRandFloat(0.0, 359), player);
         selectSingle(unitId3);
         trUnitMoveToPoint(destPos.x, destPos.y, destPos.z, -1, true);
         laneManager.addUnit(unitId3);
     }
 
-    // Hero / Myth Wave check (Every 5 waves: adds Cyclops and Heracles)
+    // Hero / Myth Wave check (Every 5 waves or triggered by super bonus)
     if (g_laneCounter % HERO_WAVE == 0 || hasSuperBonus) {
-        string[] heroUnits = new string(2, "Cyclops");
-        heroUnits[0] = "Cyclops";
-        heroUnits[1] = "Heracles";
-
-        for (int h = 0; h < 2; h++) {
-            int heroId = trUnitCreate(heroUnits[h], spawnPos.x + offsetX, spawnPos.y, spawnPos.z + offsetZ, xsRandFloat(0.0, 359), player);
+        // Spawns Cyclops (Index 3) and Heracles (Index 4)
+        for (int h = 3; h <= 4; h++) {
+            int heroId = trUnitCreate(g_waveTypes[h], spawnPos.x + offsetX, spawnPos.y, spawnPos.z + offsetZ, xsRandFloat(0.0, 359), player);
             selectSingle(heroId);
             trUnitMoveToPoint(destPos.x, destPos.y, destPos.z, -1, true);
             laneManager.addUnit(heroId);
         }
     }
 
-    if (hasSuperBonus){
-        int heroId = trUnitCreate("Colossus", spawnPos.x + offsetX, spawnPos.y, spawnPos.z + offsetZ, xsRandFloat(0.0, 359), player);
-        selectSingle(heroId);
+    // Super Bonus spawns Colossus (Index 5)
+    if (hasSuperBonus) {
+        int colossusId = trUnitCreate(g_waveTypes[5], spawnPos.x + offsetX, spawnPos.y, spawnPos.z + offsetZ, xsRandFloat(0.0, 359), player);
+        selectSingle(colossusId);
         trUnitMoveToPoint(destPos.x, destPos.y, destPos.z, -1, true);
-        laneManager.addUnit(heroId);
+        laneManager.addUnit(colossusId);
     }
 }
 

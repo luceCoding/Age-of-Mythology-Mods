@@ -32,7 +32,7 @@ class IncomeHandler {
             for(int p = 1; p <= cNumberPlayers - 2; p++) {
                 if (owner == p || g_finalTeam[p] == g_finalTeam[owner]) {continue;}
                 if ((kbUnitTypeCountInArea("Unit", p, cUnitStateAlive, goldUnitId, 1.5) >= 1)){
-                    int goldAmount = 10 + getMinsPastSinceStart();
+                    int goldAmount = INITIAL_GOLD_REWARD + getMinsPastSinceStart();
                     if (owner == 0) {goldAmount = goldAmount * 2;}
 
                     // Catch up mechanic
@@ -87,6 +87,30 @@ IncomeHandler g_IncomeHandler;
 void startIncome(){
     scheduler.add(307, [](int iterations = 1) -> bool {
         g_IncomeHandler.processGold();
+        return true;
+    });
+    scheduler.add(60013, [](int iterations = 1) -> bool {
+
+        CardParameters[] params = g_protoNameToCardParametersMap.getValues();
+        for (int i = 0; i < params.size(); i++) {
+            CardParameters param = params[i];
+            string targetProto = param.getProtoUnit();
+            for (int p = 1; p <= cNumberPlayers-2; p++){
+                trModifyProtounitResource(targetProto, "Gold", p, cXSPUResourceEffectKillReward, 1, cXSRelativityAbsolute);
+            }
+        }
+
+        for (int i = 0; i < g_creepCampTypes.size(); i++) {
+            string creepCampType = g_creepCampTypes[i];
+            trModifyProtounitResource(creepCampType, "Gold", 0, cXSPUResourceEffectKillReward, 2, cXSRelativityAbsolute);
+        }
+
+        for (int i = 0; i < g_waveTypes.size(); i++) {
+            string waveType = g_waveTypes[i];
+            trModifyProtounitResource(waveType, "Gold", cNumberPlayers, cXSPUResourceEffectKillReward, 1, cXSRelativityAbsolute);
+            trModifyProtounitResource(waveType, "Gold", cNumberPlayers-1, cXSPUResourceEffectKillReward, 1, cXSRelativityAbsolute);
+        }
+        
         return true;
     });
 }

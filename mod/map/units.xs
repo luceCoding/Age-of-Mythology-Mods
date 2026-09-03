@@ -296,12 +296,10 @@ void preModifyPlayerData(){
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeHandUnitsAttack", false);
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeRangedUnitsAttack", false);
 
-        setupCreepWaveUnit("Hoplite", p);
-        setupCreepWaveUnit("Hippeus", p);
-        setupCreepWaveUnit("Toxotes", p);
-        setupCreepWaveUnit("Cyclops", p);
-        setupCreepWaveUnit("Heracles", p);
-        setupCreepWaveUnit("Colossus", p);
+        for (int i=0; i < g_waveTypes.size(); i++){
+            string waveType = g_waveTypes[i];
+            setupCreepWaveUnit(waveType, p);
+        }
     }
 
     // Only Gaia
@@ -321,10 +319,10 @@ void preModifyPlayerData(){
     trModifyProtounitData("MiningCamp", 0, cXSProtoEffectArmorCrush, 0.4, cXSRelativityAbsolute);
 
     for (int i = 0; i < g_creepCampTypes.size(); i++) {
-        string creepCampTypes = g_creepCampTypes[i];
-        trModifyProtounitData(creepCampTypes, 0, cXSProtoEffectLOS, 8, cXSRelativityAssign);
-        trProtounitModifySpawnData(creepCampTypes, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-        trProtoUnitSetFlag(0, creepCampTypes, "ObscuredByUnits", true);
+        string creepCampType = g_creepCampTypes[i];
+        trModifyProtounitData(creepCampType, 0, cXSProtoEffectLOS, 8, cXSRelativityAssign);
+        trProtoUnitSetFlag(0, creepCampType, "ObscuredByUnits", true);
+        setupForAllUnits(creepCampType, 0);
     }
 
     trProtoUnitSetFlag(0, TOP_BOSS_PLACEHOLDER_PROTO, "FlareOnFullyBuilt", false);

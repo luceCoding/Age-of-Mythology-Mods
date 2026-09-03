@@ -1,5 +1,23 @@
-void setAsCardUnit(string protoName = "", int p = 0){
+void setupForAllUnits(string protoName = "", int p = 0){
+    trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
+    trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
+    trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectKillReward, INITIAL_GOLD_REWARD, cXSRelativityAssign);
+    trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
+
+    // For Kronos
+    trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
+    trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
+    trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
+    trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
+    trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
+    trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
+    trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
+    trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
+
     trProtounitModifySpawnData(protoName, p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
+}
+
+void setAsCardUnit(string protoName = "", int p = 0){
     //trProtoUnitActionSetEnabled(protoName, p, "Build", false);
     trProtoUnitActionSetEnabled(protoName, p, "Repair", false);
     trProtoUnitSetFlag(p, protoName, "KnockoutDeath", false);
@@ -24,20 +42,7 @@ void setAsCardUnit(string protoName = "", int p = 0){
     trModifyProtounitData(protoName, p, cXSProtoEffectShieldRegenRate, 0.4, cXSRelativityAssign);
     trModifyProtounitData(protoName, p, cXSProtoEffectLifespan, -1, cXSRelativityAssign);
 
-    trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
-
-    // For Kronos
-    trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
+    setupForAllUnits(protoName, p);
 }
 
 void setAsPlaceholder(string unitType = "", int p = 0){
@@ -79,12 +84,15 @@ void setupAsTower(string unitType = "", int p = 0){
     trProtoUnitSetIcon(unitType, p, "", "ui\minimap\minimap_village_center");
     trModifyProtounitData(unitType, p, 5, 0, 1); // Max contained
     trModifyProtounitData(unitType, p, cXSProtoEffectLOS, 18, cXSRelativityAssign);
+
+    setupForAllUnits(unitType, p);
 }
 
 void setupCreepWaveUnit(string unitType = "", int p = 0){
-    trProtounitModifySpawnData(unitType, p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
     trModifyProtounitData(unitType, p, cXSProtoEffectSpeed, 4, cXSRelativityAssign);
     trModifyProtounitData(unitType, p, cXSProtoEffectLOS, 15, cXSRelativityAssign);
+
+    setupForAllUnits(unitType, p);
 }
 
 void forbidBuilding(int p = 0){
