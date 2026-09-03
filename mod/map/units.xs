@@ -290,6 +290,8 @@ void preModifyPlayerData(){
         trProtoUnitSetIcon("Fortress", p, "", "ui\minimap\minimap_wonder");
         trProtounitModifySpawnData("Fortress", p, "FlyingPurpleHippo", 0, 1.0, 1, -1, -1); // For win condition
 
+        trModifyProtounitData("MilitaryAcademy", p, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
+
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeVillagersAttack", false);
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeHandUnitsAttack", false);
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeRangedUnitsAttack", false);
@@ -299,6 +301,7 @@ void preModifyPlayerData(){
         setupCreepWaveUnit("Toxotes", p);
         setupCreepWaveUnit("Cyclops", p);
         setupCreepWaveUnit("Heracles", p);
+        setupCreepWaveUnit("Colossus", p);
     }
 
     // Only Gaia

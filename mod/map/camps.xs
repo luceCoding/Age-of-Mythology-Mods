@@ -42,7 +42,7 @@ int[] generateCreepCamps(string creepName = "", int targetTotalCamps = 20,
 
     int targetPairs = targetTotalCamps / 2;
     float minInterCampDist = 25.0;
-    float minBaseDist = 40.0;
+    float minBaseDist = 45.0;
     float mapMargin = 6.0;
 
     vector team1Base = g_T1ToT2TopLane[0]; 

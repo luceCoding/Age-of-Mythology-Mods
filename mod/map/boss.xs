@@ -14,7 +14,7 @@ void createBossPits() {
     // ------------------------------------------
     float baseRadius = 20.0;     // Base radius of the single ring
     string torchProto = "Torch"; 
-    float cornerMargin = 0.09; 
+    float cornerMargin = 0.11; 
 
     float topCornerX = mapX * (1.0 - cornerMargin);
     float topCornerZ = mapZ * (1.0 - cornerMargin);

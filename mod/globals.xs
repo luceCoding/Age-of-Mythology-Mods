@@ -1,5 +1,5 @@
-const int configMapTileX = 128;
-const int configMapTileZ = 128;
+const int configMapTileX = 160;
+const int configMapTileZ = 160;
 const int configMapBaseHeight = 4;
 const float configMapWaterLevel = -2.0;
 const float configMapWaterDepth = 3.0;
