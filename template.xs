@@ -6,6 +6,10 @@ void generate()
 {
     // mod/globals.xs
     // mod/mutables.xs
+    // common/logs.xs
+    // common/uuid.xs
+    // common/math.xs
+    // common/strings.xs
 
     rmSetProgress(0.0);
 
@@ -21,15 +25,11 @@ void generate()
     createTypedScheduler("schedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"));
     createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
 
-    // common/logs.xs
-    // common/uuid.xs
-    // common/math.xs
-    // common/strings.xs
     // common/preUi.xs
     createTypedScheduler("schedulerWithParameters", buildStringTypeArray("Parameters"));
     //// common/ui.xs
     // common/postUi.xs
-
+    // common/attachment/utils.xs
     // common/search.xs
     
     // mod/common/rng.xs

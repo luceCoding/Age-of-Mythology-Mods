@@ -138,7 +138,7 @@ class CardParameters {
     }
 };
 
-Parameters createParametersCopy(ref CardParameters params){
+Parameters cardParameterstoParametersCopy(ref CardParameters params){
     Parameters cardParams = createParameters();
     for(int j = 0; j < params.m_params.ints.size(); j++) {
         cardParams.ints.add(params.m_params.ints[j]);

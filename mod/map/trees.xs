@@ -39,7 +39,7 @@ void spawnTreeCoveForUnit(
         if (treeTypes.size() > 0) {
             treeName1 = treeTypes[xsRandInt(0, treeTypes.size() - 1)];
         }
-        trUnitCreate(treeName1, treeX1, configMapBaseHeight, treeZ1, xsRandInt(0, 360), 0);
+        trUnitCreate(treeName1, treeX1, configMapBaseHeight, treeZ1, xsRandInt(0, 359), 0);
 
         // Side 2: Mirrored Camp Cove (Rotated 180 degrees across Map Center)
         float baseTreeX2 = mapX - (campPos.x + offsetX);
@@ -52,6 +52,6 @@ void spawnTreeCoveForUnit(
         if (treeTypes.size() > 0) {
             treeName2 = treeTypes[xsRandInt(0, treeTypes.size() - 1)];
         }
-        trUnitCreate(treeName2, treeX2, configMapBaseHeight, treeZ2, xsRandInt(0, 360), 0);
+        trUnitCreate(treeName2, treeX2, configMapBaseHeight, treeZ2, xsRandInt(0, 359), 0);
     }
 }

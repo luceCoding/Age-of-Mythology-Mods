@@ -30,7 +30,7 @@ void createArmoryCardButtons(ref CardData currCard, int p = 0, ref float posX, r
 
         for (int i = 0; i < count; i++) {
             float currentX = startX + (i * spacingX);
-            Parameters cardParams = createParametersCopy(params);
+            Parameters cardParams = cardParameterstoParametersCopy(params);
             int uuid = currCard.getUuid();
             cardParams.ints[0] = uuid;
             cardParams.ints[1] = i;

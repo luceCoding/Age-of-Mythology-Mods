@@ -6,7 +6,7 @@ void addCardIntoDeck(int age = 0, int protoID = -1, int cost = -1, int upgrade =
     CardParameters params;
     params.setCardParameters(age, protoID, cost);
     string protoName = kbProtoUnitGetName(protoID);
-    ProtoNameToCardParametersMap.put(protoName, params);
+    g_protoNameToCardParametersMap.put(protoName, params);
     CardData card;
     card.setCard(params, upgrade, addSockets);
     if (rarity == -1){

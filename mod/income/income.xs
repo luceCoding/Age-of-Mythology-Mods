@@ -32,7 +32,7 @@ class IncomeHandler {
             for(int p = 1; p <= cNumberPlayers - 2; p++) {
                 if (owner == p || g_finalTeam[p] == g_finalTeam[owner]) {continue;}
                 if ((kbUnitTypeCountInArea("Unit", p, cUnitStateAlive, goldUnitId, 1.5) >= 1)){
-                    int goldAmount = 10 + (((xsGetTimeMS() - g_timeMSGameStarted) / 60000));
+                    int goldAmount = 10 + getMinsPastSinceStart();
                     if (owner == 0) {goldAmount = goldAmount * 2;}
 
                     // Catch up mechanic

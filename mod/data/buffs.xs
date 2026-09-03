@@ -101,7 +101,7 @@ class Buff {
             g_special_action_counter[p] = g_special_action_counter[p] + m_delta;
         }
 
-        CardParameters[] params = ProtoNameToCardParametersMap.getValues();
+        CardParameters[] params = g_protoNameToCardParametersMap.getValues();
         for (int i = 0; i < params.size(); i++) {
             CardParameters param = params[i];
             if (m_synergyTypes.size() == 0){ // Apply to all
@@ -137,7 +137,7 @@ class Buff {
             g_special_action_counter[p] = g_special_action_counter[p] + invDelta;
         }
 
-        CardParameters[] params = ProtoNameToCardParametersMap.getValues();
+        CardParameters[] params = g_protoNameToCardParametersMap.getValues();
         for (int i = 0; i < params.size(); i++) {
             CardParameters param = params[i];
             if (m_synergyTypes.size() == 0){ // Apply to all

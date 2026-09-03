@@ -23,7 +23,7 @@ void applyHeroNerfAgainstSoldier(ref CardParameters params){
 }
 
 void postApplyBalancePatch(){
-    CardParameters[] params = ProtoNameToCardParametersMap.getValues();
+    CardParameters[] params = g_protoNameToCardParametersMap.getValues();
     for (int i=0; i<params.size(); i++){
         CardParameters param = params[i];
         applyHeroNerfAgainstSoldier(param);

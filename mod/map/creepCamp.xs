@@ -42,7 +42,7 @@ class CreepCamp {
     void spawnUnits(){
         m_unitSize = 0;
         for (int i = 0; i < m_count; i++){
-            int newUnitId = trUnitCreate(m_protoUnit, m_campPosition.x, configMapBaseHeight, m_campPosition.z, xsRandInt(0, 360), 0);
+            int newUnitId = trUnitCreate(m_protoUnit, m_campPosition.x, configMapBaseHeight, m_campPosition.z, xsRandInt(0, 359), 0);
             selectSingle(newUnitId);
             trUnitSetScale(m_unitScale, m_unitScale, m_unitScale);
             if (newUnitId != -1) {

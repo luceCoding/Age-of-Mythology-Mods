@@ -121,7 +121,7 @@ void spawnLaneArmy(ref LaneManager laneManager, int player = 0, vector spawnPos 
         } else {
             currentUnit = "Heracles";
         }
-        int unitId = trUnitCreate(currentUnit, spawnPos.x + offsetX, spawnPos.y, spawnPos.z + offsetZ, xsRandFloat(0.0, 360), player);
+        int unitId = trUnitCreate(currentUnit, spawnPos.x + offsetX, spawnPos.y, spawnPos.z + offsetZ, xsRandFloat(0.0, 359), player);
         selectSingle(unitId);
         trUnitMoveToPoint(destPos.x, destPos.y, destPos.z, -1, true);
         laneManager.addUnit(unitId);

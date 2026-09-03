@@ -112,3 +112,7 @@ void modifyBuildingCosts(int p = 0){
     //trTechModifyCost(cTechWatchTower, p, cResourceWood, 0, cXSRelativityAssign);
     //trTechModifyCost(cTechWatchTower, p, cResourceGold, 400, cXSRelativityAssign);
 }
+
+int getMinsPastSinceStart(){
+    return ((xsGetTimeMS() - g_timeMSGameStarted) / 60000);
+}

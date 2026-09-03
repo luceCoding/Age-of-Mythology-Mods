@@ -245,7 +245,7 @@ void preModifyPlayerData(){
         trModifyProtounitData("Guardian", p, cXSProtoEffectArmorPierce, 0.4, cXSRelativityAssign);
         trModifyProtounitData("Guardian", p, cXSProtoEffectArmorCrush, 0.4, cXSRelativityAssign);
 
-        string[] protoNames = ProtoNameToCardParametersMap.getKeys();
+        string[] protoNames = g_protoNameToCardParametersMap.getKeys();
         for (int i=0; i<protoNames.size(); i++){
             setAsCardUnit(protoNames[i], p);
         }
@@ -349,7 +349,7 @@ void postModifyPlayerData(){
 
     // For humans
     for(int p = 1; p <= cNumberPlayers-2; p++) {
-        string[] protoNames = ProtoNameToCardParametersMap.getKeys();
+        string[] protoNames = g_protoNameToCardParametersMap.getKeys();
         for (int i=0; i<protoNames.size(); i++){
             setAsCardUnit(protoNames[i], p);
         }
@@ -368,6 +368,10 @@ void postModifyPlayerData(){
     trModifyProtounitActionUnitType(BOT_BOSS_PROTO, "HandAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trProtoUnitSetIcon(TOP_BOSS_PROTO, 0, "", "ui\minimap\minimap_titan_gate");
     trProtoUnitSetIcon(BOT_BOSS_PROTO, 0, "", "ui\minimap\minimap_titan_gate");
+    trProtounitModifySpawnData(TOP_BOSS_PROTO, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
+    trProtounitModifySpawnData(BOT_BOSS_PROTO, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
     trModifyProtounitResource(TOP_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
     trProtoUnitMovementType(BOT_BOSS_PROTO, 0, "land");
+    trModifyProtounitResource(TOP_BOSS_PROTO, "Wood", 0, cXSPUResourceEffectKillReward, 1, cXSRelativityAbsolute);
+    trModifyProtounitResource(BOT_BOSS_PROTO, "Wood", 0, cXSPUResourceEffectKillReward, 2, cXSRelativityAbsolute);
 }

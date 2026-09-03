@@ -1,8 +1,6 @@
 include "cardParameters.xs";
 include "rng.xs";
 
-StringToCardParametersHashMap ProtoNameToCardParametersMap;
-
 class CardData {
 
     bool m_isLocked = false;
@@ -35,7 +33,7 @@ class CardData {
     }
 
     CardParameters getCardParameters(){
-        return ProtoNameToCardParametersMap.get(m_protoName);
+        return g_protoNameToCardParametersMap.get(m_protoName);
     }
 
     int rerollRarity(int luckBonus = 0){
@@ -168,6 +166,16 @@ class CardData {
     void deploy(int unitId = -1){
         m_isDeployed = true;
         m_deployedUnitId = unitId;
+        int owner = kbUnitGetPlayerID(unitId);
+        selectSingle(unitId);
+        int topBossBuffDurationLeft = g_TopBossBuffMsEnd[owner] - xsGetTimeMS();
+        if (topBossBuffDurationLeft > 0){
+            attachTopBossBuff(unitId, topBossBuffDurationLeft, owner);
+        }
+        int botBossBuffDurationLeft = g_BotBossBuffMsEnd[kbUnitGetPlayerID(unitId)] - xsGetTimeMS();
+        if (botBossBuffDurationLeft > 0){
+            attachBotBossBuff(unitId, botBossBuffDurationLeft, owner);
+        }
     }
 
     int getDeployedUnitID(){

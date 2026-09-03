@@ -1,3 +1,5 @@
+StringToCardParametersHashMap g_protoNameToCardParametersMap;
+
 string getDisplayName(ref int rarity, ref string name){
     string displayName = name;
     switch(rarity){
@@ -7,4 +9,27 @@ string getDisplayName(ref int rarity, ref string name){
         case 4: displayName = "<color=0.71,0.58,0.00>" + name + "</color>";
     }
     return displayName;
+}
+
+void applyProtoDataToAllCards(int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
+    CardParameters[] params = g_protoNameToCardParametersMap.getValues();
+    for (int i = 0; i < params.size(); i++) {
+        CardParameters param = params[i];
+        string targetProto = param.getProtoUnit();
+        trModifyProtounitData(targetProto, p, puField, deltaVal, relativity);
+    }
+}
+
+void applyProtoActionToAllCards(int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
+    CardParameters[] params = g_protoNameToCardParametersMap.getValues();
+    for (int i = 0; i < params.size(); i++) {
+        CardParameters param = params[i];
+        string targetProto = param.getProtoUnit();
+        trModifyProtounitAction(targetProto, "HandAttack", p, puField, deltaVal, relativity);
+        trModifyProtounitAction(targetProto, "RangedAttack", p, puField, deltaVal, relativity);
+        trModifyProtounitAction(targetProto, "RangedAttackFlying", p, puField, deltaVal, relativity);
+        trModifyProtounitAction(targetProto, "BuildingAttack", p, puField, deltaVal, relativity);
+        trModifyProtounitAction(targetProto, "AntiWallAttack", p, puField, deltaVal, relativity);
+        trModifyProtounitAction(targetProto, "LightningAttack", p, puField, deltaVal, relativity);
+    }
 }

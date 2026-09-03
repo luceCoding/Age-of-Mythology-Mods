@@ -146,7 +146,7 @@ runImmediately
                                 BenchData bench = g_shop.m_benches[owner];
                                 int shopId = bench.m_playerShopId;
                                 vector location = trUnitGetPosition(shopId);
-                                trUnitCreateForced("Osiris", location.x, location.y, location.z, xsRandFloat(0.0, 360), owner, false);
+                                trUnitCreateForced("Osiris", location.x, location.y, location.z, xsRandFloat(0.0, 359), owner, false);
                                 closeShop(owner);
                             }
                         }
@@ -165,12 +165,20 @@ runImmediately
     }
 }
 
+rule _Attachments
+highFrequency
+active
+runImmediately
+{
+    g_AttachmentManager.process();
+}
+
 rule SUDDEN_DEATH
 highFrequency
 active
 {
     if (xsGetTimeMS() - cActivationTime >= 1800000) {
-        scheduler.add(120000, [](int iterations = 1) -> bool {
+        scheduler.add(ADD_OSIRIS_CARD_INTERVAL_MS, [](int iterations = 1) -> bool {
             addOsirisCardIntoDeck();
             return true;
         });

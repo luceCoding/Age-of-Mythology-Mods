@@ -73,7 +73,7 @@ class Shop {
         }
 
         CardParameters params = currCard.getCardParameters();
-        Parameters cardParams = createParametersCopy(params);
+        Parameters cardParams = cardParameterstoParametersCopy(params);
         cardParams.ints[0] = uuid;
         int mainIconSize = 128.0 * iconMultiplier;
 
@@ -405,7 +405,7 @@ void renderDraws(int p = 1) {
             int cost = params.getCost() * 0.75;
             float btnPosY = posY - 0.1; 
 
-            Parameters cardParams = createParametersCopy(params);
+            Parameters cardParams = cardParameterstoParametersCopy(params);
             int uuid = currCard.getUuid();
             cardParams.ints[0] = uuid;
 
@@ -437,7 +437,7 @@ void createShopCardButtons(ref CardData currCard, int p = 0, ref float posX, ref
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
 
-    Parameters cardParams = createParametersCopy(params);
+    Parameters cardParams = cardParameterstoParametersCopy(params);
     int uuid = currCard.getUuid();
     cardParams.ints[0] = uuid;
 

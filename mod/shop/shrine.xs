@@ -21,7 +21,7 @@ void createShrineCardButtons(ref CardData currCard, int p = 0, ref float posX, r
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
 
-    Parameters cardParams = createParametersCopy(params);
+    Parameters cardParams = cardParameterstoParametersCopy(params);
     int uuid = currCard.getUuid();
     cardParams.ints[0] = uuid;
 
