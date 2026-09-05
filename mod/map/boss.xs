@@ -1,32 +1,89 @@
 CreepCamp g_topBossCamp;
 CreepCamp g_botBossCamp;
 
-// ==========================================
-// BOSS PIT GENERATOR (Clean Single Ring with Subtle Jitter)
-// ==========================================
+void buildBossPit(vector centerPos = cInvalidVector, 
+                  float baseRadius = 20.0, 
+                  float pitDepth = 1.5, 
+                  int minEntrances = 1, int maxEntrances = 3, 
+                  string floorTerrain = "", string cliffTerrain = "") {
+    // ------------------------------------------
+    // GRADUAL DECLINE (Smooth Terraced Basin)
+    // ------------------------------------------
+    int slopeSteps = 8;
+    for (int s = 0; s <= slopeSteps; s++) {
+        float t = xsIntToFloat(s) / xsIntToFloat(slopeSteps);
+        float currentRadius = baseRadius * (1.0 - (t * 0.85)); 
+        float ringDepth = pitDepth * (1.0 - t);
+        
+        vector ringPos = vector(centerPos.x, centerPos.y - ringDepth, centerPos.z);
+        trChangeTerrainHeightCircular(ringPos, currentRadius, -ringDepth * 0.6, false);
+        paintCircle(ringPos, currentRadius, floorTerrain);
+    }
+
+    // ------------------------------------------
+    // CALCULATE CIRCUMFERENCE & STEPS
+    // ------------------------------------------
+    float stepSize = 5.0; 
+    float circumference = 2.0 * cPi * baseRadius;
+    int steps = xsFloatToInt(circumference / stepSize);
+    if (steps <= 0) steps = 1;
+    float stepDeg = 360.0 / xsIntToFloat(steps);
+
+    // ------------------------------------------
+    // SYMMETRICAL ENTRANCE GAPS
+    // ------------------------------------------
+    int numEntrances = minEntrances + xsRandInt(0, (maxEntrances - minEntrances));
+    float entranceSpacing = 360.0 / xsIntToFloat(numEntrances);
+    float startOffset = xsRandFloat(0.0, 360.0);
+    float entranceWidth = 30.0; // Width of each entrance gap in degrees
+
+    // ------------------------------------------
+    // BUILD GENTLER CLIFF RING WITH GAPS
+    // ------------------------------------------
+    for (int i = 0; i < steps; i++) {
+        float currentAngle = xsIntToFloat(i) * stepDeg;
+        
+        // Check if this angle falls inside any of the symmetrically spaced entrance gaps
+        bool isEntrance = false;
+        for (int e = 0; e < numEntrances; e++) {
+            float targetAngle = startOffset + (xsIntToFloat(e) * entranceSpacing);
+            
+            // Normalize angle difference to [-180, 180]
+            float diff = currentAngle - targetAngle;
+            while (diff > 180.0) diff = diff - 360.0;
+            while (diff < -180.0) diff = diff + 360.0;
+            
+            if (abs(diff) < (entranceWidth * 0.5)) {
+                isEntrance = true;
+                break;
+            }
+        }
+
+        // Only build the cliff segment if it's outside an entrance gap
+        if (!isEntrance) {
+            int modVal = i - (3 * (i / 3));
+            float currentRadius = baseRadius + (xsIntToFloat(modVal - 1) * 0.5);
+            float x = centerPos.x + (currentRadius * cosDeg(currentAngle));
+            float z = centerPos.z + (currentRadius * sinDeg(currentAngle));
+            vector pos = vector(x, centerPos.y, z);
+
+            trChangeTerrainHeightCircular(pos, 2.0, 1.5, false);
+            paintCircle(pos, 2.0, cliffTerrain);
+        }
+    }
+}
+
 void createBossPits() {
     float mapX = configMapTileX * 2.0;
     float mapZ = configMapTileZ * 2.0;
     float h = configMapBaseHeight;
-
-    // ------------------------------------------
-    // TUNING CONTROLS
-    // ------------------------------------------
-    float baseRadius = 20.0;     // Base radius of the single ring
-    string torchProto = "Torch"; 
-    float cornerMargin = 0.11; 
+    float cornerMargin = 0.35; 
 
     float topCornerX = mapX * (1.0 - cornerMargin);
     float topCornerZ = mapZ * (1.0 - cornerMargin);
 
     float botCornerX = mapX * cornerMargin;
     float botCornerZ = mapZ * cornerMargin;
-
-    float stepSize = 7;
-    float circumference = 2.0 * cPi * baseRadius;
-    int steps = circumference / stepSize;
-    if (steps <= 0) steps = 1;
-    float stepDeg = 360.0 / steps;
 
     // Spawn Center Boss Structures
     int topBossPlaceholderID = spawnUnit(TOP_BOSS_PLACEHOLDER_PROTO, topCornerX, h, topCornerZ, xsRandFloat(0, 359), 0, 1.5);
@@ -35,30 +92,8 @@ void createBossPits() {
     g_topBossCamp.init(topBossPlaceholderID, BOSS_SPAWN_TIME, TOP_BOSS_PROTO, 1, BOSS_SPAWN_TIME + 60, 2.0, false);
     g_botBossCamp.init(botBossPlaceholderID, BOSS_SPAWN_TIME, BOT_BOSS_PROTO, 1, BOSS_SPAWN_TIME + 60, 2.0, false);
 
-    // --- TOP BOSS PIT (Single Ring, Tight Jitter) ---
-    for (int i = 0; i < steps; i++) {
-        float currentAngle = i * stepDeg;
-        
-        // Micro-adjustment (only +/- 0.3 meters) so it stays on a single track
-        float currentRadius = baseRadius + ((i % 3 - 1) * 0.3);
-
-        float x = topCornerX + (currentRadius * cosDeg(currentAngle));
-        float z = topCornerZ + (currentRadius * sinDeg(currentAngle));
-
-        spawnUnit(torchProto, x, h, z, xsRandFloat(0, 359), 0);
-    }
-
-    // --- BOTTOM BOSS PIT (Single Ring, Tight Jitter) ---
-    for (int j = 0; j < steps; j++) {
-        float currentAngle = j * stepDeg;
-        
-        float currentRadius = baseRadius + ((j % 3 - 1) * 0.3);
-
-        float x = botCornerX + (currentRadius * cosDeg(currentAngle));
-        float z = botCornerZ + (currentRadius * sinDeg(currentAngle));
-
-        spawnUnit(torchProto, x, h, z, xsRandFloat(0, 359), 0);
-    }
+    buildBossPit(vector(topCornerX, h, topCornerZ), 22.0, 2.0, 2, 4, g_colosseumRoadTypes[3], g_colosseumRoadTypes[2]);
+    buildBossPit(vector(botCornerX, h, botCornerZ), 22.0, 2.0, 2, 4, g_colosseumRoadTypes[1], g_colosseumRoadTypes[0]);
 }
 
 void attachTopBossBuff(int unitID = 0, int durationMs = 0, int p = 0){

@@ -65,32 +65,16 @@ class Buff {
     }
 
     void _executeCommand(string targetProto = "", int p = -1, float deltaVal = 0.0) {
-        if (m_buffType == BUFF_TYPE_PROTO_DATA) {
-            trModifyProtounitData(targetProto, p, m_puField, deltaVal, m_relativity);
-        } 
-        else if (m_buffType == BUFF_TYPE_PROTO_ACTION) {
-            trModifyProtounitAction(targetProto, "HandAttack", p, m_puField, deltaVal, m_relativity);
-            trModifyProtounitAction(targetProto, "RangedAttack", p, m_puField, deltaVal, m_relativity);
-            trModifyProtounitAction(targetProto, "BuildingAttack", p, m_puField, deltaVal, m_relativity);
-            trModifyProtounitAction(targetProto, "AntiWallAttack", p, m_puField, deltaVal, m_relativity);
-            trModifyProtounitAction(targetProto, "LightningAttack", p, m_puField, deltaVal, m_relativity);
-        } 
-        else if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE) {
-            for (int u = 0; u < m_unitTypes.size(); u++) {
-                string unitTypeName = m_unitTypes[u];
-                trModifyProtounitActionUnitType(targetProto, "HandAttack", unitTypeName, p, m_puField, deltaVal, m_relativity);
-                trModifyProtounitActionUnitType(targetProto, "RangedAttack", unitTypeName, p, m_puField, deltaVal, m_relativity);
-                trModifyProtounitActionUnitType(targetProto, "BuildingAttack", unitTypeName, p, m_puField, deltaVal, m_relativity);
-                trModifyProtounitActionUnitType(targetProto, "AntiWallAttack", unitTypeName, p, m_puField, deltaVal, m_relativity);
-                trModifyProtounitActionUnitType(targetProto, "LightningAttack", unitTypeName, p, m_puField, deltaVal, m_relativity);
+
+        switch(m_buffType){
+            case BUFF_TYPE_PROTO_DATA: { trModifyProtounitData(targetProto, p, m_puField, deltaVal, m_relativity); }
+            case BUFF_TYPE_PROTO_ACTION: { applyProtoActionToTarget(targetProto, p, m_puField, deltaVal, m_relativity); }
+            case BUFF_TYPE_PROTO_ACTION_SPECIAL: { applyProtoActionSpecialEffectToTarget(targetProto, p, m_effectField, m_duration, g_special_action_counter[p]); }
+            case BUFF_TYPE_PROTO_ACTION_UNIT_TYPE: {
+                for (int u = 0; u < m_unitTypes.size(); u++) {
+                    applyProtoActionUnitTypeToTarget(targetProto, m_unitTypes[u], p, m_puField, deltaVal, m_relativity);
+                }
             }
-        }
-        else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL) {
-            trProtounitActionSpecialEffect(targetProto, "HandAttack", p, m_effectField, "All", -1, m_duration, g_special_action_counter[p]);
-            trProtounitActionSpecialEffect(targetProto, "RangedAttack", p, m_effectField, "All", -1, m_duration, g_special_action_counter[p]);
-            trProtounitActionSpecialEffect(targetProto, "BuildingAttack", p, m_effectField, "All", -1, m_duration, g_special_action_counter[p]);
-            trProtounitActionSpecialEffect(targetProto, "AntiWallAttack", p, m_effectField, "All", -1, m_duration, g_special_action_counter[p]);
-            trProtounitActionSpecialEffect(targetProto, "LightningAttack", p, m_effectField, "All", -1, m_duration, g_special_action_counter[p]);
         }
     }
 

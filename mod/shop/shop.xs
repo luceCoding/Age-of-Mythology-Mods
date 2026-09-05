@@ -112,16 +112,17 @@ class Shop {
             minimapSafeDisplay(p, lockedPosX, lockedPoxY, getIconPathFormat("resources/in_game/hud/Icon_Delete.png", 64 * iconMultiplier));
         }
 
-        // Cost
-        if (currCard.isIdentified() && m_shopTypeOpened[p] == SHOP_TYPE_SHRINE) {return;}
-        int cost = getCost(currCard, p);
-        if (isBench && m_shopTypeOpened[p] == DEFAULT_SHOP_TYPE){
-            cost = cost * SELL_MULTIPLIER;
-        }
-        string costText = getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137>" + cost + "</color>";
-        minimapSafeDisplay(p, posX, posY + 0.13 * iconMultiplier, costText);
-
         if (currCard.isIdentified() == false){return;}
+
+        // Cost
+        if (m_shopTypeOpened[p] != SHOP_TYPE_SHRINE){
+            int cost = getCost(currCard, p);
+            if (isBench && m_shopTypeOpened[p] == DEFAULT_SHOP_TYPE){
+                cost = cost * SELL_MULTIPLIER;
+            }
+            string costText = getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137>" + cost + "</color>";
+            minimapSafeDisplay(p, posX, posY + 0.13 * iconMultiplier, costText);
+        }
 
         // Upgrade Icon
         float miniIconYOffset = 0.03;
@@ -178,7 +179,7 @@ class Shop {
 
         // Deployed Icon
         if (isBench && currCard.isDeployed()){
-            minimapSafeDisplay(p, posX, posY + 0.03, getIconPathFormat("resources/in_game/gamepad_contextual/cur_attac_building.png", 64 * iconMultiplier));
+            minimapSafeDisplay(p, posX, posY + 0.03, getIconPathFormat("resources/in_game/gamepad_contextual/cur_attac_building.png", 64 * iconMultiplier), uiMainIconElement);
         }
     }
 

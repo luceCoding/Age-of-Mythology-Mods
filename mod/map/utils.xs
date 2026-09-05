@@ -37,6 +37,10 @@ void setAsCardUnit(string protoName = "", int p = 0){
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidShiftingSandsTarget", true);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidBloodPactTarget", true);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidShockwaveTarget", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeHandUnitsAutoAttack", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeRangedUnitsAutoAttack", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeHandUnitsAttack", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeRangedUnitsAttack", true);
     trProtoUnitSetUnitType(p, protoName, "TradeUnit", true); // For abilities
     trModifyProtounitData(protoName, p, cXSProtoEffectUnitRegenRate, 0.2, cXSRelativityAssign);
     trModifyProtounitData(protoName, p, cXSProtoEffectShieldRegenRate, 0.4, cXSRelativityAssign);
@@ -95,6 +99,19 @@ void setupCreepWaveUnit(string unitType = "", int p = 0){
     setupForAllUnits(unitType, p);
 }
 
+void setupBoss(string protoName = "", float killReward = 0.0){
+    trModifyProtounitData(protoName, 0, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
+    trProtoUnitSetUnitType(0, protoName, "MythUnit", false);
+    trModifyProtounitActionUnitType(protoName, "HandAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(protoName, "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trProtoUnitSetIcon(protoName, 0, "", "ui\minimap\minimap_titan_gate");
+    trProtounitModifySpawnData(protoName, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
+    trModifyProtounitResource(protoName, "Gold", 0, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
+    trProtoUnitMovementType(protoName, 0, "land");
+    trModifyProtounitResource(protoName, "Wood", 0, cXSPUResourceEffectKillReward, killReward, cXSRelativityAbsolute);
+    trModifyProtounitData(protoName, 0, cXSProtoEffectLOS, 8, cXSRelativityAssign);
+}
+
 void forbidBuilding(int p = 0){
     trForbidProtounit(p, "WallConnector");
     trForbidProtounit(p, "Temple");
@@ -103,6 +120,7 @@ void forbidBuilding(int p = 0){
     trForbidProtounit(p, "HillFort");
     trForbidProtounit(p, "House");
     trForbidProtounit(p, "Armory");
+    trForbidProtounit(p, "DwarvenArmory");
     trForbidProtounit(p, "TownCenter");
     trForbidProtounit(p, "Longhouse");
     trForbidProtounit(p, "GreatHall");

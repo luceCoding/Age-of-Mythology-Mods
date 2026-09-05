@@ -131,6 +131,16 @@ class CardData {
         }
     }
 
+    void applyOneUpgrade(int p = 0, int upgradeIdx = 0){
+        int upgrade = m_upgrades[upgradeIdx];
+        applyUpgrade(p, upgrade, 1);
+    }
+
+    void resetOneUpgrade(int p = 0, int upgradeIdx = 0){
+        int upgrade = m_upgrades[upgradeIdx];
+        applyUpgrade(p, upgrade, -1);
+    }
+
     string getProtoName(){
         return m_protoName;
     }
@@ -231,5 +241,9 @@ class CardData {
             }
         }
         return count;
+    }
+
+    bool isOsirisPieceBoxCard(){
+        return kbProtoUnitGetID(m_protoName) == cUnitTypeOsirisPieceBox;
     }
 };

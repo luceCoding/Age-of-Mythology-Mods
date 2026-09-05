@@ -59,6 +59,41 @@ class BenchData {
         return emptyCard;
     }
 
+    void removeAllDeployedOsirisPieceCards(){        
+        for(int i = 0; i < m_cardSize; i++) {
+            CardData currCard = m_cardArray[i];
+            if (currCard.isOsirisPieceBoxCard() && currCard.isDeployed()) {
+                selectSingle(currCard.getDeployedUnitID());
+                trUnitDestroy();
+
+                m_cardSize--; // Reduce active count
+
+                // Swap the last active element into this slot if it's not already the last one
+                if (i < m_cardSize) {
+                    m_cardArray[i] = m_cardArray[m_cardSize];
+                    i--; // Recheck the card moved into this slot
+                }
+                
+                // Clear the vacated slot to prevent ghost card rendering
+                CardData nullCard;
+                m_cardArray[m_cardSize] = nullCard;
+
+                log(3, "Removed osiris card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
+            }
+        }
+    }
+
+    int getDeployedOsirisPieceBoxCardCount(){
+        int count = 0;
+        for(int i = 0; i < m_cardSize; i++) {
+            CardData currCard = m_cardArray[i];
+            if (currCard.isOsirisPieceBoxCard() && currCard.isDeployed()) {
+                count = count + 1;
+            }
+        }
+        return count;
+    }
+
     CardData[] getCards(){
         return m_cardArray;
     }
@@ -144,6 +179,22 @@ class BenchData {
         for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
             if (card.isNull() || card.isDeployed() || card.getUuid() != uuid) continue;
+            if (card.isOsirisPieceBoxCard() && getDeployedOsirisPieceBoxCardCount() == OSIRIS_CARDS_NEEDED-1){
+                removeAllDeployedOsirisPieceCards();
+                removeCardByUUID(uuid);
+                selectSingle(m_playerShopId);
+                vector location = trUnitGetPosition(m_playerShopId);
+                trUnitCreateForced("Osiris", location.x, location.y, location.z, xsRandFloat(0.0, 359), m_player, false);
+                closeShop(m_player);
+                trSoundPlayFN("campaign\fott\cinematics\fott20_b\lostsouls.mp3", -1, "","");
+                trSetLighting("potg\potg02_end", 10);
+                trMusicStop();
+                trMusicPlay("music\battle\oi_that_pops!!!.wav", 5.0);
+                if (trCurrentPlayer() == m_player){
+                    cameraLookAt(location, 60.0, 45.0, 45.0);
+                }
+                return;
+            }
             if (spawnCard(card, m_playerShopId, m_player) == false) {
                 return;
             }
@@ -231,8 +282,9 @@ class BenchData {
             if (uuid == card.getUuid() && (!(card.isNull())) && (card.isIdentified() == false)){
                 if (purchase(g_shrineShopCost, p)){
                     card.identify();
-                    g_shrineShopCost = g_shrineShopCost + 10;
+                    g_shrineShopCost = g_shrineShopCost + SHRINE_COST_INCREMENT;
                     m_cardArray[i] = card;
+                    g_selectedUUIDs[p] = -1;
                     trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
                     log(3, "Player " + m_player + " identified a card.");
                     return true;
@@ -247,8 +299,10 @@ class BenchData {
             CardData card = m_cardArray[i];
             if (uuid == card.getUuid() && (card.isNull() == false) && card.isIdentified()){
                 if (purchase(g_templeShopCost, p)){
+                    card.resetUpgrades(p); // TODO: Upgrade the difference instead of resetting everything
                     int rarity = card.rerollRarity();
-                    g_templeShopCost = g_templeShopCost + 10;
+                    card.applyUpgrades(p);
+                    g_templeShopCost = g_templeShopCost + TEMPLE_COST_INCREMENT;
                     m_cardArray[i] = card;
                     switch(rarity){
                         case TIER_UNCOMMON: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
@@ -272,7 +326,7 @@ class BenchData {
                 if (purchase(g_forgeShopCost, p)){
                     bool hasSocketed = card.addSocket();
                     if (hasSocketed){
-                        g_forgeShopCost = g_forgeShopCost + 10;
+                        g_forgeShopCost = g_forgeShopCost + FORGE_COST_INCREMENT;
                         m_cardArray[i] = card;
                         trSoundsetPlayPlayer(m_player, "ArmorySelect");
                         log(3, "Player " + m_player + " socketed a card.");
@@ -289,12 +343,14 @@ class BenchData {
             CardData card = m_cardArray[i];
             if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
                 if (purchase(g_armoryShopCost, p)){
+                    card.resetOneUpgrade(p, upgradeIdx);
                     int upgrade = card.rerollUpgrade(upgradeIdx);
+                    card.applyOneUpgrade(p, upgradeIdx);
                     if (upgrade == -1){
                         errorLog("Player " + m_player + " failed to upgrade card.");
                         return false;
                     }
-                    g_armoryShopCost = g_armoryShopCost + 10;
+                    g_armoryShopCost = ARMORY_COST_INCREMENT + 10;
                     m_cardArray[i] = card;
                     trSoundsetPlayPlayer(m_player, "ArmorySelect");
                     log(3, "Player " + m_player + " socketed a card.");

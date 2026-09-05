@@ -102,7 +102,7 @@ void startIncome(){
 
         for (int i = 0; i < g_creepCampTypes.size(); i++) {
             string creepCampType = g_creepCampTypes[i];
-            trModifyProtounitResource(creepCampType, "Gold", 0, cXSPUResourceEffectKillReward, 2, cXSRelativityAbsolute);
+            trModifyProtounitResource(creepCampType, "Gold", 0, cXSPUResourceEffectKillReward, i+1, cXSRelativityAbsolute);
         }
 
         for (int i = 0; i < g_waveTypes.size(); i++) {

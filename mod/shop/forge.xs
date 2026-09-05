@@ -13,13 +13,6 @@ void renderForge(int p = 1){
 
 void createForgeCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){
     if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.canSocket() == false || currCard.isIdentified() == false) { return; }
-    if (currCard.isDeployed()) {
-        trChatSendToPlayer(p, p, "Unit must be withdrawn first to be socketed.");
-        selectSingle(currCard.getDeployedUnitID());
-        trUnitHighlight(8.0, true);
-        trSoundsetPlayPlayer(p, "PopCapHit");
-        return;
-    }
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
 

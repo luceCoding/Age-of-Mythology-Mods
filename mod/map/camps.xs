@@ -87,7 +87,9 @@ int[] generateCreepCamps(string creepName = "", int targetTotalCamps = 20,
 
         // 4. Lane Terrain Gate using trTerrainAtPosition string matching
         if (isAnyTerrainNear(p1.x, p1.z, roadAvoidanceRadius, g_roadTypes) ||
-            isAnyTerrainNear(p2.x, p2.z, roadAvoidanceRadius, g_roadTypes)) {
+            isAnyTerrainNear(p2.x, p2.z, roadAvoidanceRadius, g_roadTypes) ||
+            isAnyTerrainNear(p1.x, p1.z, roadAvoidanceRadius, g_colosseumRoadTypes) ||
+            isAnyTerrainNear(p2.x, p2.z, roadAvoidanceRadius, g_colosseumRoadTypes)) {
             continue;
         }
 
@@ -121,19 +123,19 @@ CreepCamp creepCampClassInstanceWorkaround(){
 }
 
 void generateAllCamps(){
-    int[] t3CreepCamp = generateCreepCamps(g_creepCampPlaceholderTypes[2], 2, 25.0, 20.0);
+    int[] t3CreepCamp = generateCreepCamps(g_creepCampPlaceholderTypes[2], 4, 25.0, 20.0);
     for(int i = 0; i < t3CreepCamp.size(); i++){
         CreepCamp creepCamp = creepCampClassInstanceWorkaround();
         creepCamp.init(t3CreepCamp[i], T3_CAMP_SPAWN_TIME, g_creepCampTypes[2], 1, T3_CAMP_SPAWN_TIME + 60, 1.25);
         g_creepCamps.add(creepCamp);
     }
-    int[] t2CreepCamp = generateCreepCamps(g_creepCampPlaceholderTypes[1], 4, 25.0, 20.0);
+    int[] t2CreepCamp = generateCreepCamps(g_creepCampPlaceholderTypes[1], 6, 25.0, 20.0);
     for(int i = 0; i < t2CreepCamp.size(); i++){
         CreepCamp creepCamp = creepCampClassInstanceWorkaround();
         creepCamp.init(t2CreepCamp[i], T2_CAMP_SPAWN_TIME, g_creepCampTypes[1], 1, T2_CAMP_SPAWN_TIME + 60, 1.25);
         g_creepCamps.add(creepCamp);
     }
-    int[] t1CreepCamp = generateCreepCamps(g_creepCampPlaceholderTypes[0], 6, 25.0, 20.0);
+    int[] t1CreepCamp = generateCreepCamps(g_creepCampPlaceholderTypes[0], 8, 25.0, 20.0);
     for(int i = 0; i < t1CreepCamp.size(); i++){
         CreepCamp creepCamp = creepCampClassInstanceWorkaround();
         creepCamp.init(t1CreepCamp[i], T1_CAMP_SPAWN_TIME, g_creepCampTypes[0], 1, T1_CAMP_SPAWN_TIME + 60, 1.25);

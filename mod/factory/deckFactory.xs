@@ -57,9 +57,9 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeOcelotlWarrior);
     addCardsIntoDeck(1, cUnitTypeChaneque);
     addCardsIntoDeck(1, cUnitTypeCentzonTotochtin);
-    addCardsIntoDeck(1, cUnitTypeTeixiptlaHuitz, 130);
-    addCardsIntoDeck(1, cUnitTypeTeixiptlaTezca, 130);
-    addCardsIntoDeck(1, cUnitTypeTeixiptlaQuetz, 130);
+    addCardsIntoDeck(1, cUnitTypeTeixiptlaHuitz, 260);
+    addCardsIntoDeck(1, cUnitTypeTeixiptlaTezca, 260);
+    addCardsIntoDeck(1, cUnitTypeTeixiptlaQuetz, 260);
 
     addCardsIntoDeck(1, cUnitTypeHoplite);
     addCardsIntoDeck(1, cUnitTypeToxotes);

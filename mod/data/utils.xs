@@ -20,16 +20,38 @@ void applyProtoDataToAllCards(int p = 0, int puField = 0, float deltaVal = 0.0, 
     }
 }
 
+void applyProtoActionToTarget(string targetProto = "", int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
+    trModifyProtounitAction(targetProto, "HandAttack", p, puField, deltaVal, relativity);
+    trModifyProtounitAction(targetProto, "RangedAttack", p, puField, deltaVal, relativity);
+    trModifyProtounitAction(targetProto, "RangedAttackFlying", p, puField, deltaVal, relativity);
+    trModifyProtounitAction(targetProto, "BuildingAttack", p, puField, deltaVal, relativity);
+    trModifyProtounitAction(targetProto, "AntiWallAttack", p, puField, deltaVal, relativity);
+    trModifyProtounitAction(targetProto, "LightningAttack", p, puField, deltaVal, relativity);
+}
+
+void applyProtoActionUnitTypeToTarget(string targetProto = "", string unitType = "", int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
+    trModifyProtounitActionUnitType(targetProto, "HandAttack", unitType, p, puField, deltaVal, relativity);
+    trModifyProtounitActionUnitType(targetProto, "RangedAttack", unitType, p, puField, deltaVal, relativity);
+    trModifyProtounitActionUnitType(targetProto, "RangedAttackFlying", unitType, p, puField, deltaVal, relativity);
+    trModifyProtounitActionUnitType(targetProto, "BuildingAttack", unitType, p, puField, deltaVal, relativity);
+    trModifyProtounitActionUnitType(targetProto, "AntiWallAttack", unitType, p, puField, deltaVal, relativity);
+    trModifyProtounitActionUnitType(targetProto, "LightningAttack", unitType, p, puField, deltaVal, relativity);
+}
+
+void applyProtoActionSpecialEffectToTarget(string targetProto = "", int p = 0, int effectField = 0, float duration = 0.0, float value = 0.0){
+    trProtounitActionSpecialEffect(targetProto, "HandAttack", p, effectField, "All", -1, duration, value);
+    trProtounitActionSpecialEffect(targetProto, "RangedAttack", p, effectField, "All", -1, duration, value);
+    trProtounitActionSpecialEffect(targetProto, "RangedAttackFlying", p, effectField, "All", -1, duration, value);
+    trProtounitActionSpecialEffect(targetProto, "BuildingAttack", p, effectField, "All", -1, duration, value);
+    trProtounitActionSpecialEffect(targetProto, "AntiWallAttack", p, effectField, "All", -1, duration, value);
+    trProtounitActionSpecialEffect(targetProto, "LightningAttack", p, effectField, "All", -1, duration, value);
+}
+
 void applyProtoActionToAllCards(int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
     CardParameters[] params = g_protoNameToCardParametersMap.getValues();
     for (int i = 0; i < params.size(); i++) {
         CardParameters param = params[i];
         string targetProto = param.getProtoUnit();
-        trModifyProtounitAction(targetProto, "HandAttack", p, puField, deltaVal, relativity);
-        trModifyProtounitAction(targetProto, "RangedAttack", p, puField, deltaVal, relativity);
-        trModifyProtounitAction(targetProto, "RangedAttackFlying", p, puField, deltaVal, relativity);
-        trModifyProtounitAction(targetProto, "BuildingAttack", p, puField, deltaVal, relativity);
-        trModifyProtounitAction(targetProto, "AntiWallAttack", p, puField, deltaVal, relativity);
-        trModifyProtounitAction(targetProto, "LightningAttack", p, puField, deltaVal, relativity);
+        applyProtoActionToTarget(targetProto, p, puField, deltaVal, relativity);
     }
 }

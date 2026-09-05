@@ -116,14 +116,13 @@ void initializeSynergies(){
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_MYTH];
         string[] tempUnitTypes = new string(0, "");
-        tempUnitTypes.add(UNIT_TYPE_INFANTRY);
-        tempUnitTypes.add(UNIT_TYPE_ARCHER);
-        tempUnitTypes.add(UNIT_TYPE_CAVALRY);
-        synergy.m_buffs[3] = createBuffData(emptySynergyType, cXSProtoEffectRechargeTime, 1, cXSRelativityAbsolute);
+        tempUnitTypes.add(UNIT_TYPE_SOLDIER);
+        synergy.m_buffs[3] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.1, cXSRelativityAbsolute);
         synergy.m_buffs[6] = createBuffData(emptySynergyType, cXSProtoEffectRechargeTime, 2, cXSRelativityAbsolute);
-        synergy.m_buffs[9] = createBuffData(emptySynergyType, cXSProtoEffectRechargeTime, 3, cXSRelativityAbsolute);
-        synergy.m_buffs[12] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAbsolute);
-        synergy.m_buffs[15] = createBuffData(emptySynergyType, cXSProtoEffectRechargeTime, 4, cXSRelativityAbsolute);
+        synergy.m_buffs[9] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAbsolute);
+        synergy.m_buffs[12] = createBuffData(emptySynergyType, cXSProtoEffectRechargeTime, 3, cXSRelativityAbsolute);
+        synergy.m_buffs[15] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.5, cXSRelativityAbsolute);
+        synergy.m_buffs[18] = createBuffData(emptySynergyType, cXSProtoEffectRechargeTime, 4, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_MYTH] = synergy;
     }
 

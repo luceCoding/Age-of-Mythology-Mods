@@ -1,3 +1,4 @@
+mutable void closeShop(int p = 1, int shopType = SHOP_TYPE_CLOSED){ return; }
 mutable void refreshShop(int p = 1){ return; }
 mutable void openShopType(int p = 1, int shopType = DEFAULT_SHOP_TYPE){ return; }
 mutable void startGame(){ return; }

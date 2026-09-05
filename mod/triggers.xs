@@ -11,6 +11,8 @@ void startGame(){
 
     createAIBases();
     createBossPits();
+    createCornerColosseums();
+    createCornerCaves();
     createBaseOuterwalls();
     spawnSymmetricObjectives();
 
@@ -32,7 +34,11 @@ void startGame(){
     postModifyPlayerData();
     postApplyBalancePatch();
 
+    __worldSmooth(0, 0, __getMapSizeTilesX(), __getMapSizeTilesZ(), false, 2);
+    updateTerrainObstructions();
+    
     startBoss();
+    startTeamResignedCheck();
 
     trPlayerSetName(cNumberPlayers-1, "ItzJover1");
     trPlayerSetName(cNumberPlayers, "ItzJover2");
@@ -40,7 +46,7 @@ void startGame(){
     trChatSend(cNumberPlayers, "This mod is currently a pre-alpha build and is under development. Everything is subject to change.");
     trChatSend(cNumberPlayers, "Created by ItzJover.");
 
-    for (int p=1; p < cNumberPlayers-2; p++){
+    for (int p=1; p <= cNumberPlayers-2; p++){
         if (trCurrentPlayer() == p){
             BenchData bench = g_shop.m_benches[trCurrentPlayer()];
             int shopId = bench.m_playerShopId;
@@ -112,45 +118,7 @@ runImmediately
                     }
                 }
                 case cUnitTypeFlyingPurpleHippo: {
-                    int losingTeam = g_finalTeam[owner];
-                    for (int p = 1; p <= cNumberPlayers; p++) {
-                        if (g_finalTeam[p] == losingTeam) {
-                            trPlayerSetDefeated(p);
-                        } else {
-                            trPlayerSetWon(p, false);
-                        }
-                    }
-                    trEndGame();
-                }
-                case cUnitTypeOsirisPieceBox: {
-                    xsSetContextPlayer(owner);
-                    int __queryId = kbUnitQueryCreate("__QueryId"+g_uuid.getNextUUID());
-                    kbUnitQuerySetPlayerID(__queryId, owner);
-                    kbUnitQuerySetUnitType(__queryId, cUnitTypeAll);
-                    kbUnitQuerySetState(__queryId, cUnitStateAny);
-                    kbUnitQuerySetIgnoreKnockedOutUnits(__queryId, false);
-                    kbUnitQuerySetUnitType(__queryId, kbGetUnitTypeID("OsirisPieceBox"));
-                    xsSetContextPlayer(owner);
-                    kbUnitQueryExecute(__queryId);
-                    int[] queryTempResults = kbUnitQueryGetResults(__queryId);
-                    kbUnitQueryDestroy(__queryId);
-                    if (queryTempResults.size() == OSIRIS_CARDS_NEEDED){
-                        for(int i = 0;  i < queryTempResults.size(); i++){
-                            selectSingle(queryTempResults[i]);
-                            trUnitSetAnimationPath("Opening","spc\buildings\props\osiris_piece_box\anim\osiris_piece_box_opening",false,-1,true);
-                            trSoundPlayFN("campaign\fott\cinematics\fott20_b\lostsouls.mp3", -1, "","");
-                            trSetLighting("potg\potg02_end", 10);
-                            trMusicStop();
-                            trMusicPlay("music\battle\oi_that_pops!!!.wav", 5.0);
-                            if (i == queryTempResults.size()-1){
-                                BenchData bench = g_shop.m_benches[owner];
-                                int shopId = bench.m_playerShopId;
-                                vector location = trUnitGetPosition(shopId);
-                                trUnitCreateForced("Osiris", location.x, location.y, location.z, xsRandFloat(0.0, 359), owner, false);
-                                closeShop(owner);
-                            }
-                        }
-                    }
+                    setTeamAsWinner((g_finalTeam[owner] == 1) ? 2 : 1);
                 }
                 default: {
                     if (owner == 0 || owner == cNumberPlayers - 1 || owner == cNumberPlayers - 2) {

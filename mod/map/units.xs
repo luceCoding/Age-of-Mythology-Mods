@@ -229,6 +229,7 @@ void preModifyPlayerData(){
 
         trModifyProtounitAction("Osiris", "LightningAttack", p, cXSActionEffectDamageDivine, 100, cXSRelativityAssign);
         trModifyProtounitData("Osiris", p, cXSProtoEffectSpeed, 3, cXSRelativityAssign);
+        trProtoUnitSetFlag(p, "Osiris", "KnockoutDeath", true);
         trModifyProtounitData("OsirisPieceBox", p, cXSProtoEffectObstructionRadiusX, 0, cXSRelativityAssign);
         trModifyProtounitData("OsirisPieceBox", p, cXSProtoEffectObstructionRadiusZ, 0, cXSRelativityAssign);
 
@@ -277,14 +278,14 @@ void preModifyPlayerData(){
         trModifyProtounitData("StatueOfLightning", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectDamageDivine, 60, cXSRelativityAssign);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectROF, 3, cXSRelativityAssign);
-        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectNumBounces, 2, cXSRelativityAssign);
+        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectNumBounces, 3, cXSRelativityAssign);
         trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
         setupAsTower("StatueOfLightning", p);
 
         trModifyProtounitData("Fortress", p, cXSProtoEffectHitpoints, 24000, cXSRelativityAssign);
         trModifyProtounitData("Fortress", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 40, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 50, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
         setupAsTower("Fortress", p);
         trProtoUnitSetIcon("Fortress", p, "", "ui\minimap\minimap_wonder");
@@ -357,22 +358,10 @@ void postModifyPlayerData(){
     }
 
     // Boss
-    trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
-    trModifyProtounitData(BOT_BOSS_PROTO, 0, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
-    trProtoUnitSetUnitType(0, TOP_BOSS_PROTO, "MythUnit", false);
-    trProtoUnitSetUnitType(0, BOT_BOSS_PROTO, "MythUnit", false);
+    setupBoss(TOP_BOSS_PROTO, 1);
+    setupBoss(BOT_BOSS_PROTO, 2);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "RangedAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(BOT_BOSS_PROTO, "HandAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(BOT_BOSS_PROTO, "HandAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trProtoUnitSetIcon(TOP_BOSS_PROTO, 0, "", "ui\minimap\minimap_titan_gate");
-    trProtoUnitSetIcon(BOT_BOSS_PROTO, 0, "", "ui\minimap\minimap_titan_gate");
-    trProtounitModifySpawnData(TOP_BOSS_PROTO, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-    trProtounitModifySpawnData(BOT_BOSS_PROTO, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-    trModifyProtounitResource(TOP_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
-    trProtoUnitMovementType(BOT_BOSS_PROTO, 0, "land");
-    trModifyProtounitResource(TOP_BOSS_PROTO, "Wood", 0, cXSPUResourceEffectKillReward, 1, cXSRelativityAbsolute);
-    trModifyProtounitResource(BOT_BOSS_PROTO, "Wood", 0, cXSPUResourceEffectKillReward, 2, cXSRelativityAbsolute);
 }

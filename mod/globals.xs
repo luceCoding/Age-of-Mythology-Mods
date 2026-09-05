@@ -68,6 +68,10 @@ const int SHOP_TYPE_TEMPLE = 3;
 
 const int SHOP_COST_REDUCTION = 5;
 const int SHOP_COST_REDUCTION_MS_INTERVAL = 30000;
+const int SHRINE_COST_INCREMENT = 5;
+const int TEMPLE_COST_INCREMENT = 5;
+const int ARMORY_COST_INCREMENT = 5;
+const int FORGE_COST_INCREMENT = 5;
 int g_shrineShopCost = 10;
 int g_templeShopCost = 10;
 int g_armoryShopCost = 10;
@@ -76,7 +80,7 @@ int g_forgeShopCost = 10;
 const float INITIAL_GOLD_REWARD = 5;
 const float GOLDPILE_LIFESPAN = 20.0;
 
-const float BOSS_SPAWN_TIME = 300.0;
+const float BOSS_SPAWN_TIME = 360.0;
 const string TOP_BOSS_PROTO = "Fafnir";
 const string BOT_BOSS_PROTO = "Scylla";
 const string TOP_BOSS_PLACEHOLDER_PROTO = "TitanGate";
@@ -106,6 +110,7 @@ const int RESPAWN_TIME_ADDITIONAL_MS = 1500;
 
 string[] g_shopTypes = default;
 string[] g_roadTypes = default;
+string[] g_colosseumRoadTypes = default;
 string[] g_treeTypes = default;
 string[] g_creepCampPlaceholderTypes = default;
 string[] g_creepCampTypes = default;
@@ -142,4 +147,9 @@ void initializeGlobals(){
     g_waveTypes.add("Cyclops");
     g_waveTypes.add("Heracles");
     g_waveTypes.add("Colossus");
+
+    g_colosseumRoadTypes.add("Egypt Cliff 1");
+    g_colosseumRoadTypes.add("Egypt Sand 1");
+    g_colosseumRoadTypes.add("Norse Cliff 2");
+    g_colosseumRoadTypes.add("Norse Dirt Rocks 2");
 }

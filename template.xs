@@ -31,6 +31,7 @@ void generate()
     // common/postUi.xs
     // common/attachment/attachments.xs
     // common/search.xs
+    // common/terrain.xs
     
     // mod/common/rng.xs
     
@@ -71,6 +72,8 @@ void generate()
     // mod/map/camps.xs
     // mod/map/capture.xs
     // mod/map/boss.xs
+    // mod/map/colosseum.xs
+    // mod/map/cave.xs
 
     // mod/income/income.xs
 
@@ -78,6 +81,8 @@ void generate()
     // mod/factory/synergyFactory.xs
 
     // mod/map/postBalance.xs
+
+    // mod/victory/victory.xs
 
     // mod/triggers.xs
 
