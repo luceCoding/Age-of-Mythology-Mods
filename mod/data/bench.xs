@@ -185,6 +185,11 @@ class BenchData {
                 selectSingle(m_playerShopId);
                 vector location = trUnitGetPosition(m_playerShopId);
                 trUnitCreateForced("Osiris", location.x, location.y, location.z, xsRandFloat(0.0, 359), m_player, false);
+
+                string playerName = kbPlayerGetName(m_player);
+                string icon = "resources/talking_heads/osiris/osiris_spc_neutral.png";
+                trChatSend(getTeamsAIPlayer(g_finalTeam[m_player]), playerName + " has gathered all five pieces of Osiris!\n" + displayCompensatedIcon(128, 128, icon));
+
                 closeShop(m_player);
                 trSoundPlayFN("campaign\fott\cinematics\fott20_b\lostsouls.mp3", -1, "","");
                 trSetLighting("potg\potg02_end", 10);
@@ -422,7 +427,7 @@ class BenchData {
     void renderSynergies(float posX = 0.0, float posY = 0.0, int p = 1) {
         float width = 0.1;
         float height = 0.025;
-        float posYOffset = 0.035;
+        float posYOffset = 0.0325;
 
         // 1. Initialize index map array for every configured synergy.
         int[] sortedIndices = new int(MAX_SYNERGIES, 0);

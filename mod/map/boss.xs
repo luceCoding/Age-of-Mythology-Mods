@@ -137,20 +137,27 @@ void checkTopBossBuff(){
         for (int p = 1; p < cNumberPlayers; p++){
             int woodStockpiled = kbGetResourceAmount(p, kbGetResourceID("Wood"));
             if (woodStockpiled == 1){
+                int team = g_finalTeam[p];
                 float buffAmount = getMinsPastSinceStart() / 2.0;
-                Parameters params;
-                params.ints.add(p);
-                params.floats.add(buffAmount);
-                Parameters params2 = createParametersCopy(params);
-                applyProtoDataToAllCards(p, cXSProtoEffectUnitRegenRate, buffAmount, cXSRelativityAbsolute);
-                attachTopBuffToAllDeployedCards(p, BUFF_DURATION_MS);
-                g_TopBossBuffMsEnd[p] = xsGetTimeMS() + BUFF_DURATION_MS;
+                int[] playersInTeam = getPlayersInTeam(team);
+                for (int i = 0; i < playersInTeam.size(); i++){
+                    int teamPlayer = playersInTeam[i];
+                    Parameters params;
+                    params.ints.add(teamPlayer);
+                    params.floats.add(buffAmount);
+                    Parameters params2 = createParametersCopy(params);
+                    applyProtoDataToAllCards(teamPlayer, cXSProtoEffectUnitRegenRate, buffAmount, cXSRelativityAbsolute);
+                    attachTopBuffToAllDeployedCards(teamPlayer, BUFF_DURATION_MS);
+                    g_TopBossBuffMsEnd[teamPlayer] = xsGetTimeMS() + BUFF_DURATION_MS;
+                    schedulerWithParameters.add(BUFF_DURATION_MS, params2, [](int iterations = 1, ref Parameters params) -> bool {
+                        applyProtoDataToAllCards(params.ints[0], cXSProtoEffectUnitRegenRate, -params.floats[0], cXSRelativityAbsolute);
+                        return false;
+                    });
+                }
                 trSoundsetPlay("UI_MajorGodSelectSet");
+                string icon = "resources/talking_heads/gouard/gouard_good.png";
+                trChatSend(getTeamsAIPlayer(team), "Team " + team + " has gained green buff!\n" + displayCompensatedIcon(128, 128, icon));
                 trPlayerGrantResources(p, "Wood", -1);
-                schedulerWithParameters.add(BUFF_DURATION_MS, params2, [](int iterations = 1, ref Parameters params) -> bool {
-                    applyProtoDataToAllCards(params.ints[0], cXSProtoEffectUnitRegenRate, -params.floats[0], cXSRelativityAbsolute);
-                    return false;
-                });
                 break;
             }
         }
@@ -162,20 +169,27 @@ void checkBotBossBuff(){
         for (int p = 1; p < cNumberPlayers; p++){
             int woodStockpiled = kbGetResourceAmount(p, kbGetResourceID("Wood"));
             if (woodStockpiled == 2){
+                int team = g_finalTeam[p];
                 float buffAmount = getMinsPastSinceStart() / 2.0;
-                Parameters params;
-                params.ints.add(p);
-                params.floats.add(buffAmount);
-                Parameters params2 = createParametersCopy(params);
-                applyProtoActionToAllCards(p, cXSActionEffectDamageDivine, buffAmount, cXSRelativityAbsolute);
-                attachBotBuffToAllDeployedCards(p, BUFF_DURATION_MS);
-                g_BotBossBuffMsEnd[p] = xsGetTimeMS() + BUFF_DURATION_MS;
+                int[] playersInTeam = getPlayersInTeam(team);
+                for (int i = 0; i < playersInTeam.size(); i++){
+                    int teamPlayer = playersInTeam[i];
+                    Parameters params;
+                    params.ints.add(teamPlayer);
+                    params.floats.add(buffAmount);
+                    Parameters params2 = createParametersCopy(params);
+                    applyProtoActionToAllCards(teamPlayer, cXSActionEffectDamageDivine, buffAmount, cXSRelativityAbsolute);
+                    attachBotBuffToAllDeployedCards(teamPlayer, BUFF_DURATION_MS);
+                    g_BotBossBuffMsEnd[teamPlayer] = xsGetTimeMS() + BUFF_DURATION_MS;
+                    schedulerWithParameters.add(BUFF_DURATION_MS, params2, [](int iterations = 1, ref Parameters params) -> bool {
+                        applyProtoActionToAllCards(params.ints[0], cXSActionEffectDamageDivine, -params.floats[0], cXSRelativityAbsolute);
+                        return false;
+                    });
+                }
                 trSoundsetPlay("UI_MajorGodSelectZeus");
+                string icon = "resources/talking_heads/gouard/gouard_bad.png";
+                trChatSend(getTeamsAIPlayer(team), "Team " + team + " has gained red buff!\n" + displayCompensatedIcon(128, 128, icon));
                 trPlayerGrantResources(p, "Wood", -2);
-                schedulerWithParameters.add(BUFF_DURATION_MS, params2, [](int iterations = 1, ref Parameters params) -> bool {
-                    applyProtoActionToAllCards(params.ints[0], cXSActionEffectDamageDivine, -params.floats[0], cXSRelativityAbsolute);
-                    return false;
-                });
                 break;
             }
         }

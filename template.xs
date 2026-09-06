@@ -42,6 +42,8 @@ void generate()
     defineHashMapDefinition("string", "int", "0", "");
     defineHashMapDefinition("int", "int", "0", "");
 
+    // mod/map/teams.xs
+
     // mod/data/utils.xs
     // mod/data/card.xs
     // mod/data/buffs.xs
@@ -64,7 +66,6 @@ void generate()
     // mod/map/lane.xs
     // mod/map/base.xs
     // mod/map/objectives.xs
-    // mod/map/teams.xs
     // mod/map/units.xs
     // mod/map/roads.xs
     // mod/map/trees.xs

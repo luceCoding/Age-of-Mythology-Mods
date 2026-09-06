@@ -83,7 +83,6 @@ void initializeSynergies(){
         synergy.m_buffs[7] = createBuffData(emptySynergyType, cXSProtoEffectMaxShieldPoints, 0.3, cXSRelativityAbsolute);
         synergy.m_buffs[8] = createBuffData(emptySynergyType, cXSProtoEffectUnitRegenRate, 0.5, cXSRelativityAbsolute);
         synergy.m_buffs[9] = createBuffData(emptySynergyType, cXSProtoEffectMaxShieldPoints, 0.5, cXSRelativityAbsolute);
-        // 10% Lifesteal
         g_synergies[SYNERGY_INDEX_HEALER] = synergy;
     }
 
@@ -93,7 +92,7 @@ void initializeSynergies(){
         tempUnitTypes.add(UNIT_TYPE_BUILDING);
         synergy.m_buffs[2] = createBuffAction(emptySynergyType, cXSActionEffectDamageCrush, 5, cXSRelativityAbsolute);
         synergy.m_buffs[4] = createBuffAction(emptySynergyType, cXSActionEffectDamageArea, 1, cXSRelativityAbsolute);
-        synergy.m_buffs[5] = createBuffAction(emptySynergyType, cXSActionEffectNumProjectiles, 1, cXSRelativityAbsolute);
+        synergy.m_buffs[5] = createBuffAction(emptySynergyType, cXSActionEffectDamagePierce, 4, cXSRelativityAbsolute);
         synergy.m_buffs[6] = createBuffAction(emptySynergyType, cXSActionEffectDamageCrush, 10, cXSRelativityAbsolute);
         synergy.m_buffs[8] = createBuffAction(emptySynergyType, cXSActionEffectDamageArea, 1, cXSRelativityAbsolute);
         synergy.m_buffs[10] = createBuffAction(emptySynergyType, cXSActionEffectNumProjectiles, 1, cXSRelativityAbsolute);

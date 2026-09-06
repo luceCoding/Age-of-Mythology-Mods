@@ -25,6 +25,7 @@ string preparePlant(int p = 1, int plantType = -1,
     trProtoUnitSetFlag(p, plantName, "DoNotQueue", true);
     trProtoUnitSetFlag(p, plantName, "AllowOverPopCap", true);
     trProtoUnitSetFlag(p, plantName, "AlwaysAllowOverPopCap", true);
+    trProtoUnitSetFlag(p, plantName, "Invulnerable", true);
     trUnforbidProtounit(p, plantName);
     trModifyProtounitData(plantName, p, cXSProtoEffectTrainPoints, 0.01, cXSRelativityAssign);
     trProtoUnitSetUnitType(p, plantName, COMMAND_TYPE_NAME, true);

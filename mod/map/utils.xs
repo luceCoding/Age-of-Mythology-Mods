@@ -18,12 +18,12 @@ void setupForAllUnits(string protoName = "", int p = 0){
 }
 
 void setAsCardUnit(string protoName = "", int p = 0){
-    //trProtoUnitActionSetEnabled(protoName, p, "Build", false);
     trProtoUnitActionSetEnabled(protoName, p, "Repair", false);
     trProtoUnitSetFlag(p, protoName, "KnockoutDeath", false);
     trProtoUnitSetFlag(p, protoName, "Invulnerable", false);
     trProtoUnitSetFlag(p, protoName, "NotKBTracked", false);
     trProtoUnitSetFlag(p, protoName, "KBTracked", true);
+    trProtoUnitSetFlag(p, protoName, "Deleteable", false);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeDivineImmunity", false);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidBoltTarget", true);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidFrostTarget", true);

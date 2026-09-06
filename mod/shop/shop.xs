@@ -29,7 +29,7 @@ class Shop {
     }
 
     int getBuyXPCost(int p = 0){
-        return getDrawCost(p) * 2;
+        return getDrawCost(p) * BUY_XP_COST_MULTIPLIER;
     }
 
     void addCardIntoDeck(ref CardData card, int deckIndex = -1){
@@ -47,7 +47,7 @@ class Shop {
         CardParameters params = card.getCardParameters();
         int cost = estimateCardValue(card);
         if (card.isIdentified() == false){
-            cost = 50;
+            cost = UNIDENTIFIED_CARD_BASE_COST;
         }
         int shopType = m_shopTypeOpened[p];
         switch(shopType){
@@ -112,10 +112,10 @@ class Shop {
             minimapSafeDisplay(p, lockedPosX, lockedPoxY, getIconPathFormat("resources/in_game/hud/Icon_Delete.png", 64 * iconMultiplier));
         }
 
-        if (currCard.isIdentified() == false){return;}
-
         // Cost
-        if (m_shopTypeOpened[p] != SHOP_TYPE_SHRINE){
+        if ((m_shopTypeOpened[p] != SHOP_TYPE_SHRINE) 
+            || (currCard.isIdentified() == false && (m_shopTypeOpened[p] == SHOP_TYPE_SHRINE || m_shopTypeOpened[p] != DEFAULT_SHOP_TYPE)))
+        {
             int cost = getCost(currCard, p);
             if (isBench && m_shopTypeOpened[p] == DEFAULT_SHOP_TYPE){
                 cost = cost * SELL_MULTIPLIER;
@@ -123,6 +123,8 @@ class Shop {
             string costText = getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137>" + cost + "</color>";
             minimapSafeDisplay(p, posX, posY + 0.13 * iconMultiplier, costText);
         }
+
+        if (currCard.isIdentified() == false){return;}
 
         // Upgrade Icon
         float miniIconYOffset = 0.03;
@@ -489,7 +491,7 @@ void renderBench(int p = 1, int shopType = 0) {
 
     float propPosX = getLeftAnchorX(UI_LEFT_BUFFER + 200, 128.0, p);
     if (shopType == DEFAULT_SHOP_TYPE){
-        bench.renderSynergies(propPosX, 0.4, p);
+        bench.renderSynergies(propPosX, 0.35, p);
     }
 
     int totalCards = bench.getNumberOfCardsHeld();

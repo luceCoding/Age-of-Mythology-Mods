@@ -214,10 +214,10 @@ void preModifyPlayerData(){
 
         trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectDamageHack, 40, cXSRelativityAssign);
         trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectDamageCrush, 0, cXSRelativityAssign);
-        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectROF, 3, cXSRelativityAssign);
+        trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectROF, 2, cXSRelativityAssign);
         trModifyProtounitAction("LivingPoseidonStatue", "HandAttack", p, cXSActionEffectDamageArea, 1, cXSRelativityAssign);
         trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectHitpoints, 2000, cXSRelativityAssign);
-        trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorHack, 0.5, cXSRelativityAssign);
+        trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorHack, 0.6, cXSRelativityAssign);
         trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorPierce, 0.75, cXSRelativityAssign);
         trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
 
@@ -233,8 +233,8 @@ void preModifyPlayerData(){
         trModifyProtounitData("OsirisPieceBox", p, cXSProtoEffectObstructionRadiusX, 0, cXSRelativityAssign);
         trModifyProtounitData("OsirisPieceBox", p, cXSProtoEffectObstructionRadiusZ, 0, cXSRelativityAssign);
 
-        trModifyProtounitData("Nidhogg", p, cXSProtoEffectHitpoints, -1500, cXSRelativityAbsolute);
-        trModifyProtounitData("Yinglong", p, cXSProtoEffectHitpoints, -1500, cXSRelativityAbsolute);
+        trModifyProtounitData("Nidhogg", p, cXSProtoEffectHitpoints, -1000, cXSRelativityAbsolute);
+        trModifyProtounitData("Yinglong", p, cXSProtoEffectHitpoints, -1000, cXSRelativityAbsolute);
 
         trModifyProtounitAction("Guardian", "HandAttack", p, cXSActionEffectDamageHack, 50, cXSRelativityAssign);
         trModifyProtounitAction("Guardian", "HandAttack", p, cXSActionEffectDamageCrush, 200, cXSRelativityAssign);
@@ -243,13 +243,8 @@ void preModifyPlayerData(){
         trModifyProtounitAction("BoltStrike", "HandAttack", p, cXSActionEffectDamageDivine, 100, cXSRelativityAssign);
         trModifyProtounitData("Guardian", p, cXSProtoEffectHitpoints, 1500, cXSRelativityAssign);
         trModifyProtounitData("Guardian", p, cXSProtoEffectArmorHack, 0.75, cXSRelativityAssign);
-        trModifyProtounitData("Guardian", p, cXSProtoEffectArmorPierce, 0.4, cXSRelativityAssign);
-        trModifyProtounitData("Guardian", p, cXSProtoEffectArmorCrush, 0.4, cXSRelativityAssign);
-
-        string[] protoNames = g_protoNameToCardParametersMap.getKeys();
-        for (int i=0; i<protoNames.size(); i++){
-            setAsCardUnit(protoNames[i], p);
-        }
+        trModifyProtounitData("Guardian", p, cXSProtoEffectArmorPierce, 0.6, cXSRelativityAssign);
+        trModifyProtounitData("Guardian", p, cXSProtoEffectArmorCrush, 0.6, cXSRelativityAssign);
     }
 
     // Last 2 AIs

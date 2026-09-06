@@ -7,7 +7,7 @@ const float configMapWaterDepth = 3.0;
 int[] g_selectedUUIDs = default;
 float g_timeMSGameStarted = 0.0;
 const int MAX_CARD_COPIES = 4;
-const int SUDDEN_DEATH_MS = 1800000;
+const int SUDDEN_DEATH_MS = 2100000;
 const int ADD_OSIRIS_CARD_INTERVAL_MS = 120000;
 const int OSIRIS_CARDS_NEEDED = 5;
 const int MAX_SOCKETS_PER_CARD = 3;
@@ -66,6 +66,8 @@ const int SHOP_TYPE_SHRINE = 1;
 const int SHOP_TYPE_ARMORY = 2;
 const int SHOP_TYPE_TEMPLE = 3;
 
+const int UNIDENTIFIED_CARD_BASE_COST = 100;
+const int BUY_XP_COST_MULTIPLIER = 3;
 const int SHOP_COST_REDUCTION = 5;
 const int SHOP_COST_REDUCTION_MS_INTERVAL = 30000;
 const int SHRINE_COST_INCREMENT = 5;

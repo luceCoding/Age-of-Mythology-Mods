@@ -151,3 +151,23 @@ void initializeTeams(){
     trPlayerSetDiplomacy(aiA, 0, "Ally", true);
     trPlayerSetDiplomacy(aiB, 0, "Ally", true);
 }
+
+int[] getPlayersInTeam(int team = 0){
+    int[] playersInTeam = new int(0, 0);
+    for (int p = 1; p <= cNumberPlayers; p++){
+        if (g_finalTeam[p] == team){
+            playersInTeam.add(p);
+        }
+    }
+    return playersInTeam;
+}
+
+int getTeamsAIPlayer(int team = 0){
+    if (team == 1){
+        return cNumberPlayers - 1;
+    }
+    else if (team == 2){
+        return cNumberPlayers;
+    }
+    return 0;
+}

@@ -40,8 +40,8 @@ void startGame(){
     startBoss();
     startTeamResignedCheck();
 
-    trPlayerSetName(cNumberPlayers-1, "ItzJover1");
-    trPlayerSetName(cNumberPlayers, "ItzJover2");
+    trPlayerSetName(getTeamsAIPlayer(1), "Team 1");
+    trPlayerSetName(getTeamsAIPlayer(2), "Team 2");
     trChatSend(cNumberPlayers, "Welcome to Deck of the Ages!");
     trChatSend(cNumberPlayers, "This mod is currently a pre-alpha build and is under development. Everything is subject to change.");
     trChatSend(cNumberPlayers, "Created by ItzJover.");
@@ -51,6 +51,9 @@ void startGame(){
             BenchData bench = g_shop.m_benches[trCurrentPlayer()];
             int shopId = bench.m_playerShopId;
             cameraLookAt(trUnitGetPosition(shopId), 60.0, 45.0, 45.0);
+            selectSingle(shopId);
+            trUnitGameSelect();
+            trUnitHighlight(30.0, true);
         }
     }
 }
@@ -105,19 +108,21 @@ runImmediately
                     if (playerCommands.plantArray[i] == protoUnit) {
                         void(int) apply = playerCommands.applyArray[i];
                         apply(owner);
+                        break;
                     }
                 }
                 return;
             }
 
             switch(protoUnit){
-                case 741: { // GoldPile
+                case cUnitTypeGoldPile: {
                     g_IncomeHandler.addGold(unitId);
                     if (owner != 0){
                         trUnitSetScale(0.5, 0.5, 0.5);
                     }
                 }
                 case cUnitTypeFlyingPurpleHippo: {
+                    trUnitChangeName("ItzJover");
                     setTeamAsWinner((g_finalTeam[owner] == 1) ? 2 : 1);
                 }
                 default: {

@@ -8,12 +8,7 @@ bool isTeamStillActive(int team = 1){
 }
 
 void setTeamAsWinner(int team = 0){
-    int[] winners = new int(0, 0);
-    for (int p = 1; p <= cNumberPlayers; p++) {
-        if (g_finalTeam[p] == team) {
-            winners.add(p);
-        }
-    }
+    int[] winners = getPlayersInTeam(team);
     trSetVictoryPlayers(winners);
     trEndGame();
 }
