@@ -22,6 +22,7 @@ void startGame(){
     initializeSynergies();
 
     createShops();
+    createHealingSprings();
     initPlayerCommands();
     trHideScoreboard();
 
@@ -126,7 +127,7 @@ runImmediately
                     setTeamAsWinner((g_finalTeam[owner] == 1) ? 2 : 1);
                 }
                 default: {
-                    if (owner == 0 || owner == cNumberPlayers - 1 || owner == cNumberPlayers - 2) {
+                    if (owner == 0) {
                         if (kbUnitIsType(unitId, cUnitTypeLogicalTypeHandUnitsAutoAttack) || kbUnitIsType(unitId, cUnitTypeLogicalTypeRangedUnitsAutoAttack)){
                             trUnitSetStance("No Attack");
                         }
@@ -168,6 +169,7 @@ active
         trPlayerGrantResources(1, "Gold", 99999);
         trGodPowerGrant(1, "MeteorSPC", 99, 0, false, false);
         trGodPowerGrant(1, "Bolt", 99, 0, false, false);
+        trGodPowerGrant(1, "Earthquake", 99, 0, false, false);
         xsDisableSelf();
     }
 }

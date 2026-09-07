@@ -28,7 +28,7 @@ void createAIBases(){
     float team1DefaultAngle = 315.0;
     float team2DefaultAngle = 135.0;
 
-    float fortOffset     = 0.09;
+    float fortOffset     = 0.11;
     float sideEdgeMargin = 0.11;
 
     float sideT3Step = 0.25; float sideT2Step = 0.45; float sideT1Step = 0.65;

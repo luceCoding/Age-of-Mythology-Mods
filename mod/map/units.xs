@@ -92,6 +92,41 @@ void createShops(){
     }
 }
 
+void createHealingSprings() {
+    // 1 tile = 2 meters in the AoM engine
+    float mapMeterX = configMapTileX * 2.0;
+    float mapMeterZ = configMapTileZ * 2.0;
+    
+    float marginX = mapMeterX * 0.025;
+    float marginZ = mapMeterZ * 0.025;
+    
+    // Control how far inward the spring is pushed from the corner vertex
+    float cornerMargin = 10.0; 
+    
+    // Corner Vertices
+    float t1CornerX = marginX;
+    float t1CornerZ = mapMeterZ - marginZ;
+    
+    float t2CornerX = mapMeterX - marginX;
+    float t2CornerZ = marginZ;
+
+    {
+        float springX = t1CornerX + cornerMargin;
+        float springZ = t1CornerZ - cornerMargin;
+        int t1Spring = trUnitCreateForced("HealingSpring", springX, configMapBaseHeight, springZ, 0.0, getTeamsAIPlayer(1));
+        selectSingle(t1Spring);
+        trUnitSetScale(0.75, 0.75, 0.75);
+    }
+
+    {
+        float springX = t2CornerX - cornerMargin;
+        float springZ = t2CornerZ + cornerMargin;
+        int t2Spring = trUnitCreateForced("HealingSpring", springX, configMapBaseHeight, springZ, 0.0, getTeamsAIPlayer(2));
+        selectSingle(t2Spring);
+        trUnitSetScale(0.75, 0.75, 0.75);
+    }
+}
+
 void preModifyPlayerData(){
 
     // All players
@@ -291,6 +326,10 @@ void preModifyPlayerData(){
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeVillagersAttack", false);
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeHandUnitsAttack", false);
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeRangedUnitsAttack", false);
+
+        trProtoUnitActionSetEnabled("HealingSpring", p, "AutoConvert", false);
+        trModifyProtounitAction("HealingSpring", "AreaHeal", p, cXSActionEffectModifyRate, 5, cXSRelativityAssign);
+        trModifyProtounitAction("HealingSpring", "AreaHeal", p, cXSActionEffectRange, 15, cXSRelativityAssign);
 
         for (int i=0; i < g_waveTypes.size(); i++){
             string waveType = g_waveTypes[i];
