@@ -18,6 +18,7 @@ void setupForAllUnits(string protoName = "", int p = 0){
 }
 
 void setAsCardUnit(string protoName = "", int p = 0){
+    setupForAllUnits(protoName, p);
     trProtoUnitActionSetEnabled(protoName, p, "Repair", false);
     trProtoUnitSetFlag(p, protoName, "KnockoutDeath", false);
     trProtoUnitSetFlag(p, protoName, "Invulnerable", false);
@@ -44,10 +45,7 @@ void setAsCardUnit(string protoName = "", int p = 0){
     trProtoUnitSetUnitType(p, protoName, "TradeUnit", true); // For abilities
     trModifyProtounitData(protoName, p, cXSProtoEffectUnitRegenRate, 0.2, cXSRelativityAssign);
     trModifyProtounitData(protoName, p, cXSProtoEffectShieldRegenRate, 0.4, cXSRelativityAssign);
-    trModifyProtounitData(protoName, p, cXSProtoEffectLifespan, -1, cXSRelativityAssign);
-
-    setupForAllUnits(protoName, p);
-}
+    trModifyProtounitData(protoName, p, cXSProtoEffectLifespan, -1, cXSRelativityAssign);}
 
 void setAsPlaceholder(string unitType = "", int p = 0){
     trModifyProtounitData(unitType, p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityAssign);
@@ -84,32 +82,29 @@ void setupAsSharedShop(string shopUnitType = "", int p = 0){
 }
 
 void setupAsTower(string unitType = "", int p = 0){
+    setupForAllUnits(unitType, p);
     trProtoUnitSetFlag(p, unitType, "VisibleUnderFog", true);
     trProtoUnitSetIcon(unitType, p, "", "ui\minimap\minimap_village_center");
     trModifyProtounitData(unitType, p, 5, 0, 1); // Max contained
     trModifyProtounitData(unitType, p, cXSProtoEffectLOS, 18, cXSRelativityAssign);
-
-    setupForAllUnits(unitType, p);
 }
 
 void setupCreepWaveUnit(string unitType = "", int p = 0){
+    setupForAllUnits(unitType, p);
     trModifyProtounitData(unitType, p, cXSProtoEffectSpeed, 4, cXSRelativityAssign);
     trModifyProtounitData(unitType, p, cXSProtoEffectLOS, 15, cXSRelativityAssign);
-
-    setupForAllUnits(unitType, p);
 }
 
 void setupBoss(string protoName = "", float killReward = 0.0){
+    setupForAllUnits(protoName, 0);
     trModifyProtounitData(protoName, 0, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
     trProtoUnitSetUnitType(0, protoName, "MythUnit", false);
     trModifyProtounitActionUnitType(protoName, "HandAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(protoName, "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trProtoUnitSetIcon(protoName, 0, "", "ui\minimap\minimap_titan_gate");
-    trProtounitModifySpawnData(protoName, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-    trModifyProtounitResource(protoName, "Gold", 0, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
     trProtoUnitMovementType(protoName, 0, "land");
+    trModifyProtounitData(protoName, 0, cXSProtoEffectLOS, GAIA_CREEP_LOS, cXSRelativityAssign);
     trModifyProtounitResource(protoName, "Wood", 0, cXSPUResourceEffectKillReward, killReward, cXSRelativityAbsolute);
-    trModifyProtounitData(protoName, 0, cXSProtoEffectLOS, 8, cXSRelativityAssign);
 }
 
 void forbidBuilding(int p = 0){

@@ -316,8 +316,9 @@ void preModifyPlayerData(){
 
     for (int i = 0; i < g_creepCampTypes.size(); i++) {
         string creepCampType = g_creepCampTypes[i];
-        trModifyProtounitData(creepCampType, 0, cXSProtoEffectLOS, 8, cXSRelativityAssign);
+        trModifyProtounitData(creepCampType, 0, cXSProtoEffectLOS, GAIA_CREEP_LOS, cXSRelativityAssign);
         trProtoUnitSetFlag(0, creepCampType, "ObscuredByUnits", true);
+        trModifyProtounitData(creepCampType, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAssign);
         setupForAllUnits(creepCampType, 0);
     }
 
@@ -359,4 +360,5 @@ void postModifyPlayerData(){
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(BOT_BOSS_PROTO, "HandAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
 }

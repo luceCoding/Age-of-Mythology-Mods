@@ -89,8 +89,8 @@ void createBossPits() {
     int topBossPlaceholderID = spawnUnit(TOP_BOSS_PLACEHOLDER_PROTO, topCornerX, h, topCornerZ, xsRandFloat(0, 359), 0, 1.5);
     int botBossPlaceholderID = spawnUnit(BOT_BOSS_PLACEHOLDER_PROTO, botCornerX, h, botCornerZ, xsRandFloat(0, 359), 0, 1.5);
 
-    g_topBossCamp.init(topBossPlaceholderID, BOSS_SPAWN_TIME, TOP_BOSS_PROTO, 1, BOSS_SPAWN_TIME + 60, 2.0, false);
-    g_botBossCamp.init(botBossPlaceholderID, BOSS_SPAWN_TIME, BOT_BOSS_PROTO, 1, BOSS_SPAWN_TIME + 60, 2.0, false);
+    g_topBossCamp.init(topBossPlaceholderID, BOSS_SPAWN_TIME, TOP_BOSS_PROTO, 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, "Top Boss is under attack!", "WonderSelect");
+    g_botBossCamp.init(botBossPlaceholderID, BOSS_SPAWN_TIME, BOT_BOSS_PROTO, 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, "Bottom Boss is under attack!", "WonderSelect");
 
     buildBossPit(vector(topCornerX, h, topCornerZ), 22.0, 2.0, 2, 4, g_colosseumRoadTypes[3], g_colosseumRoadTypes[2]);
     buildBossPit(vector(botCornerX, h, botCornerZ), 22.0, 2.0, 2, 4, g_colosseumRoadTypes[1], g_colosseumRoadTypes[0]);
@@ -128,8 +128,9 @@ void attachBotBuffToAllDeployedCards(int p = 0, int durationMs = 0){
     }
 }
 
-Parameters createParametersCopy(ref Parameters params){
-    return params; // Workaround for instance bug
+Parameters createParametersWorkAround(){
+    Parameters params;
+    return params;
 }
 
 void checkTopBossBuff(){
@@ -142,14 +143,13 @@ void checkTopBossBuff(){
                 int[] playersInTeam = getPlayersInTeam(team);
                 for (int i = 0; i < playersInTeam.size(); i++){
                     int teamPlayer = playersInTeam[i];
-                    Parameters params;
+                    Parameters params = createParametersWorkAround();
                     params.ints.add(teamPlayer);
                     params.floats.add(buffAmount);
-                    Parameters params2 = createParametersCopy(params);
                     applyProtoDataToAllCards(teamPlayer, cXSProtoEffectUnitRegenRate, buffAmount, cXSRelativityAbsolute);
                     attachTopBuffToAllDeployedCards(teamPlayer, BUFF_DURATION_MS);
                     g_TopBossBuffMsEnd[teamPlayer] = xsGetTimeMS() + BUFF_DURATION_MS;
-                    schedulerWithParameters.add(BUFF_DURATION_MS, params2, [](int iterations = 1, ref Parameters params) -> bool {
+                    schedulerWithParameters.add(BUFF_DURATION_MS, params, [](int iterations = 1, ref Parameters params) -> bool {
                         applyProtoDataToAllCards(params.ints[0], cXSProtoEffectUnitRegenRate, -params.floats[0], cXSRelativityAbsolute);
                         return false;
                     });
@@ -174,14 +174,13 @@ void checkBotBossBuff(){
                 int[] playersInTeam = getPlayersInTeam(team);
                 for (int i = 0; i < playersInTeam.size(); i++){
                     int teamPlayer = playersInTeam[i];
-                    Parameters params;
+                    Parameters params = createParametersWorkAround();
                     params.ints.add(teamPlayer);
                     params.floats.add(buffAmount);
-                    Parameters params2 = createParametersCopy(params);
                     applyProtoActionToAllCards(teamPlayer, cXSActionEffectDamageDivine, buffAmount, cXSRelativityAbsolute);
                     attachBotBuffToAllDeployedCards(teamPlayer, BUFF_DURATION_MS);
                     g_BotBossBuffMsEnd[teamPlayer] = xsGetTimeMS() + BUFF_DURATION_MS;
-                    schedulerWithParameters.add(BUFF_DURATION_MS, params2, [](int iterations = 1, ref Parameters params) -> bool {
+                    schedulerWithParameters.add(BUFF_DURATION_MS, params, [](int iterations = 1, ref Parameters params) -> bool {
                         applyProtoActionToAllCards(params.ints[0], cXSActionEffectDamageDivine, -params.floats[0], cXSRelativityAbsolute);
                         return false;
                     });
@@ -203,8 +202,8 @@ void startBoss(){
     scheduler.add(60017, [](int iterations = 1) -> bool {
         trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
         trModifyProtounitData(BOT_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
-        trModifyProtounitResource(TOP_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 50, cXSRelativityAbsolute);
-        trModifyProtounitResource(BOT_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 50, cXSRelativityAbsolute);
+        trModifyProtounitResource(TOP_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 5, cXSRelativityAbsolute);
+        trModifyProtounitResource(BOT_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 5, cXSRelativityAbsolute);
         return true;
     });
 

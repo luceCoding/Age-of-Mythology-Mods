@@ -88,6 +88,7 @@ const string BOT_BOSS_PROTO = "Scylla";
 const string TOP_BOSS_PLACEHOLDER_PROTO = "TitanGate";
 const string BOT_BOSS_PLACEHOLDER_PROTO = "TitanGateSPC";
 const float BUFF_DURATION_MS = 180000;
+const float GAIA_CREEP_LOS = 8.0;
 int[] g_TopBossBuffMsEnd = default;
 int[] g_BotBossBuffMsEnd = default;
 
