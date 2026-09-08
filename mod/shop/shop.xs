@@ -136,6 +136,10 @@ class Shop {
 
         int[] upgrades = currCard.getUpgrades();
         for (int i = 0; i < upgrades.size(); i++) {
+            if (i == 3){
+                leftPosX = leftPosX + miniIconYOffset * iconMultiplier;
+                leftPosY = posY + 0.08 * iconMultiplier;
+            }
             int upgrade = upgrades[i];
             int uiIconBackgroundElement = minimapSafeDisplay(p, leftPosX, leftPosY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize), uiMainIconElement);
             switch(upgrade){
@@ -325,12 +329,31 @@ class Shop {
         refreshShop(p);
     }
 
+    CardData copyCard(CardData copiedCard){
+        copiedCard.m_uuid = g_uuid.getNextUUID();
+        return copiedCard;
+    }
+
     void sell(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
         CardData removedCard = bench.removeCardByUUID(uuid);
         if (removedCard.isNull() == false){
             int goldAmount = getCost(removedCard, p);
+
+            int rarity = removedCard.getRarity();
+            while(removedCard.getRarity() > 0){
+                removedCard.decreaseRarityByOne(p);
+            }
+            removedCard.setRarity(TIER_COMMON);
+            int cardCount = rarity + 1;
+            for (int i = 0; i < cardCount - 1; i++){
+                CardData copiedCard = copyCard(removedCard);
+                copiedCard.splitUpgradeSubset(i);
+                addCardIntoDeck(copiedCard, copiedCard.getDeckIndex());
+            }
+            removedCard.splitUpgradeSubset(cardCount - 1);
             addCardIntoDeck(removedCard, removedCard.getDeckIndex());
+
             trPlayerGrantResources(p, "Gold", goldAmount * SELL_MULTIPLIER);
             trSoundsetPlayPlayer(p, "TributeReceived");
             g_selectedUUIDs[p] = -1; // Deselect card

@@ -9,10 +9,7 @@ void addCardIntoDeck(int age = 0, int protoID = -1, int cost = -1, int upgrade =
     g_protoNameToCardParametersMap.put(protoName, params);
     CardData card;
     card.setCard(params, upgrade, addSockets);
-    if (rarity == -1){
-        card.rerollRarity(0);
-    }
-    else {
+    if (rarity != -1){
         card.setRarity(rarity);
     }
     g_shop.addCardIntoDeck(card);

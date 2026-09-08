@@ -1,6 +1,6 @@
 StringToCardParametersHashMap g_protoNameToCardParametersMap;
 
-string getDisplayName(ref int rarity, ref string name){
+string getDisplayName(int rarity = 0, ref string name){
     string displayName = name;
     switch(rarity){
         case 1: displayName = "<color=0.10,0.58,0.37>" + name + "</color>";

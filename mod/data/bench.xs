@@ -59,6 +59,29 @@ class BenchData {
         return emptyCard;
     }
 
+    CardData removeCardByIndex(int index = -1){ 
+        // Validate index bounds
+        if (index < 0 || index >= m_cardSize) {
+            CardData emptyCard;
+            return emptyCard;
+        }
+
+        CardData currCard = m_cardArray[index];
+        m_cardSize--; // Reduce active count
+        
+        // Swap the last active element into this slot if it's not already the last one
+        if (index < m_cardSize) {
+            m_cardArray[index] = m_cardArray[m_cardSize];
+        }
+        
+        // Clear the vacated slot to prevent ghost card rendering
+        CardData nullCard;
+        m_cardArray[m_cardSize] = nullCard;
+
+        log(3, "Removed card from index " + index + " (UUID: " + currCard.getUuid() + "), size: " + m_cardSize);
+        return currCard;
+    }
+
     void removeAllDeployedOsirisPieceCards(){        
         for(int i = 0; i < m_cardSize; i++) {
             CardData currCard = m_cardArray[i];
@@ -156,7 +179,14 @@ class BenchData {
         }
     }
 
-    bool spawnCard(ref CardData card, int shopId = -1, int p  = 0){
+    void changeDisplayName(ref CardData card){
+        string displayName = kbProtoUnitGetDisplayName(m_player, kbProtoUnitGetID(card.getProtoName()));
+        displayName = getDisplayName(card.getRarity(), displayName);
+        selectSingle(card.getDeployedUnitID());
+        trUnitChangeName(displayName);
+    }
+
+    bool spawnCard(ref CardData card, int shopId = -1, int p  = 0, bool applyCardHealth = true){
         CardParameters params = card.getCardParameters();
         string protoName = params.getProtoUnit();
         vector position = trUnitGetPosition(shopId);
@@ -165,14 +195,26 @@ class BenchData {
             errorLog("Player " + p + " failed to spawn " + protoName + " for card " + card.getUuid());
             return false;
         }
-        string displayName = kbProtoUnitGetDisplayName(p, kbProtoUnitGetID(card.getProtoName()));
-        int rarity = card.getRarity();
-        displayName = getDisplayName(rarity, displayName);
-        selectSingle(unitID);
-        trUnitChangeName(displayName);
         card.deploy(unitID);
+        if (applyCardHealth) {
+            card.applyRarityHealth(p);
+        }
+        changeDisplayName(card);
         log(3, "Player " + p + " deployed " + protoName + " to shop " + shopId);
         return true;
+    }
+
+    CardData getAndUpgradeDuplicateDeployedCard(string proto = "", ref CardData duplicateCard){
+        for(int i = 0; i < m_cardSize; i++) {
+            CardData card = m_cardArray[i];
+            if (card.isDeployed() && card.getProtoName() == proto && card.isOsirisPieceBoxCard() == false){
+                card.mergeDuplicate(duplicateCard, m_player);
+                m_cardArray[i] = card;
+                return card;
+            }
+        }
+        CardData EmptyCard;
+        return EmptyCard;
     }
 
     void deployCard(int uuid = -1){
@@ -200,7 +242,15 @@ class BenchData {
                 }
                 return;
             }
+            CardData newCard = getAndUpgradeDuplicateDeployedCard(card.getProtoName(), card);
+            if (newCard.isNull() == false){
+                removeCardByIndex(i);
+                changeDisplayName(newCard);
+                trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
+                return;
+            }
             if (spawnCard(card, m_playerShopId, m_player) == false) {
+                addCard(card);
                 return;
             }
             card.applyUpgrades(m_player);
@@ -231,7 +281,7 @@ class BenchData {
                 }
                 // 2. Current time reached or passed the target timestamp: Respawn!
                 else if (currtime >= card.timeTillRespawn) {
-                    if (spawnCard(card, m_playerShopId, m_player)) {
+                    if (spawnCard(card, m_playerShopId, m_player, false)) {
                         trSoundsetPlayPlayer(m_player, "HeroRevive");
                         card.timeTillRespawn = 0; // Reset timestamp so it can be used again next death
                         m_cardArray[i] = card;
@@ -255,6 +305,7 @@ class BenchData {
                     float distance = kbUnitGetDistanceToPoint(unitID, shopLocation);
                     if (distance <= 10){
                         trUnitDestroy(true);
+                        cardToWithdraw.resetRarityHealth(m_player);
                         cardToWithdraw.resetUpgrades(m_player);
                         cardToWithdraw.withdraw();
                         removeSynergy(cardToWithdraw, m_player);
@@ -355,7 +406,7 @@ class BenchData {
                         errorLog("Player " + m_player + " failed to upgrade card.");
                         return false;
                     }
-                    g_armoryShopCost = ARMORY_COST_INCREMENT + 10;
+                    g_armoryShopCost = g_armoryShopCost + ARMORY_COST_INCREMENT;
                     m_cardArray[i] = card;
                     trSoundsetPlayPlayer(m_player, "ArmorySelect");
                     log(3, "Player " + m_player + " socketed a card.");

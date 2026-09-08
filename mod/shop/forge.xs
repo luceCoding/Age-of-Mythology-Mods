@@ -12,7 +12,16 @@ void renderForge(int p = 1){
 }
 
 void createForgeCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){
-    if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false || currCard.canSocket() == false || currCard.isIdentified() == false) { return; }
+    if (currCard.isNull() 
+        || (currCard.getUuid() == g_selectedUUIDs[p]) == false 
+        || currCard.canSocket() == false || currCard.isIdentified() == false 
+        || currCard.isOsirisPieceBoxCard() 
+        || currCard.getNumberOfSockets() >= currCard.getRarity()+1) { return; }
+    if (currCard.getNumberOfSockets() >= currCard.getRarity()+1) { 
+        trChatSendToPlayer(p, p, "Card has max sockets already, upgrade its rarity to increase its socket count.");
+        trSoundsetPlayPlayer(p, "PopCapHit");
+        return; 
+    }
     CardParameters params = currCard.getCardParameters();
     float btnPosY = posY + 0.005; 
 

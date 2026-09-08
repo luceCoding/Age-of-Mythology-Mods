@@ -39,10 +39,14 @@ class CardParameters {
             cost = kbProtoUnitGetCostTotal(protoID);
         }
         params.ints.add(cost);
+        params.ints.add(protoID);
         params.strings.add(""); // placeholder for data
         params.strings.add(kbProtoUnitGetName(protoID));
         params.strings.add(toForwardSlash(kbProtoUnitGetIconPath(0, protoID)));
         params.strings.add(kbProtoUnitGetDisplayName(0, protoID));
+
+        params.floats.add(kbPlayerGetProtoStatFloat(0, protoID, cProtoStatMaxHP));
+
         m_params = params;
         m_uuid = g_uuid.getNextUUID();
 
@@ -78,9 +82,16 @@ class CardParameters {
 
     int getCost(){
         if (m_params.ints.size() < 2){
-            return 999;
+            return -1;
         }
         return m_params.ints[2];
+    }
+
+    int getProtoID(){
+        if (m_params.ints.size() < 3){
+            return -1;
+        }
+        return m_params.ints[3];
     }
 
     string getStringData(){
@@ -102,6 +113,13 @@ class CardParameters {
             return "";
         }
         return m_params.strings[3];
+    }
+
+    float getInitalMaxHP(){
+        if (m_params.floats.size() < 0){
+            return 0.0;
+        }
+        return m_params.floats[0];
     }
 
     bool isInfantry(){ return m_unitTypes[0];}

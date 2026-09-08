@@ -18,5 +18,5 @@ int estimateCardValue(ref CardData card){
     int numberOfSockets = card.getNumberOfSockets();
     int rarity = card.getRarity();
     int numberOfUpgrades = card.getNumberOfUpgrades();
-    return (initalCost + ((numberOfSockets-1) * 10) + ((numberOfUpgrades-1) * 10)) * (1 + (rarity*0.05));
+    return (initalCost + ((numberOfSockets-1) * 10) + ((numberOfUpgrades-1) * 10)) * (1 + (rarity));
 }

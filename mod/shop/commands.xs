@@ -83,6 +83,7 @@ void removeArmoryCommands(int p = -1){
 }
 
 void addTempleCommands(int p = -1){
+    return; // TODO: Disabled for now
     string plantName = preparePlant(p, cUnitTypePlantGreekWeeds, 
                                     "Open temple",
                                     "Reroll rarities for your cards.",

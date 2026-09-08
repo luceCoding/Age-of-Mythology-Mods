@@ -21,15 +21,6 @@ class CardData {
         m_uuid = g_uuid.getNextUUID();
         m_deckIndex = params.getAge();
         m_isIdentified = xsRandBool(0.85);
-        if (upgrade != -1){
-            m_upgrades = new int(0, -1);
-            m_upgrades.add(upgrade);
-        }
-        if (addSockets){
-            if (xsRandInt(0, 6) == 0){
-                m_upgrades.add(-1);
-            }
-        }
     }
 
     CardParameters getCardParameters(){
@@ -61,7 +52,12 @@ class CardData {
         return -1;
     }
 
+    bool isDeployed(){
+        return m_isDeployed;
+    }
+
     void applyUpgrade(ref int p, ref int puFIELD, int sign = 1){
+        if (isDeployed() == false) { return; }
         float absDelta = 2.0 * (1.0 + m_rarity) * sign;
 
         switch(puFIELD){
@@ -153,6 +149,44 @@ class CardData {
         return m_rarity;
     }
 
+    void increaseRarityBy(int rarityIncrease = 1, int p = 0){
+        m_rarity = m_rarity + rarityIncrease;
+        CardParameters params = getCardParameters();
+        trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, params.getInitalMaxHP() * rarityIncrease, cXSRelativityAbsolute);
+    }
+
+    void increaseRarityByOne(int p = 0){
+        increaseRarityBy(1, p);
+    }
+
+    void mergeDuplicate(ref CardData duplicateCard, int p = 0){
+        resetUpgrades(p);
+        increaseRarityBy(duplicateCard.getRarity() + 1, p);
+        for (int i = 0; i < duplicateCard.m_upgrades.size(); i++){
+            int upgrade = duplicateCard.m_upgrades[i];
+            m_upgrades.add(upgrade);
+        }
+        applyUpgrades(p);
+    }
+
+    void decreaseRarityByOne(int p = 0){
+        m_rarity = m_rarity - 1;
+        if (isDeployed()){
+            CardParameters params = getCardParameters();
+            trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, -params.getInitalMaxHP(), cXSRelativityAbsolute);
+        }
+    }
+
+    void resetRarityHealth(int p = 0){
+        CardParameters params = getCardParameters();
+        trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, -params.getInitalMaxHP() * m_rarity, cXSRelativityAbsolute);
+    }
+
+    void applyRarityHealth(int p = 0){
+        CardParameters params = getCardParameters();
+        trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, params.getInitalMaxHP() * m_rarity, cXSRelativityAbsolute);
+    }
+
     int getUuid(){
         return m_uuid;
     }
@@ -194,10 +228,6 @@ class CardData {
 
     void withdraw(){
         m_isDeployed = false;
-    }
-
-    bool isDeployed(){
-        return m_isDeployed;
     }
 
     bool isNull(){
@@ -245,5 +275,28 @@ class CardData {
 
     bool isOsirisPieceBoxCard(){
         return kbProtoUnitGetID(m_protoName) == cUnitTypeOsirisPieceBox;
+    }
+
+    void splitUpgradeSubset(int cardIndex = 0){
+        int socketCount = m_upgrades.size();
+        int[] originalUpgrades = m_upgrades;
+        m_upgrades = new int(0, -1);
+        if (cardIndex >= socketCount){
+            return;
+        }
+
+        int upgradeNumber = 0;
+        int selectedUpgrade = -1;
+        for (int i = 0; i < originalUpgrades.size(); i++){
+            if (originalUpgrades[i] == -1){
+                continue;
+            }
+            if (upgradeNumber == cardIndex){
+                selectedUpgrade = originalUpgrades[i];
+                break;
+            }
+            upgradeNumber = upgradeNumber + 1;
+        }
+        m_upgrades.add(selectedUpgrade);
     }
 };
