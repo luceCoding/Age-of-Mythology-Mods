@@ -36,71 +36,73 @@ string preparePlant(int p = 1, int plantType = -1,
 
 void addRecallCommand(int p = 0, string protoUnit = ""){
     string plantName = preparePlant(p, cUnitTypePlantEgyptianBush, 
-                                    "Recall",
+                                    "Recall (B)",
                                     "Teleport back to your card shop.",
                                     "resources\atlantean\static_color\god_powers\vortex_icon.png",
-                                    [](int p = 1, vector v = cInvalidVector) -> void {
-                                        BenchData bench = g_shop.m_benches[p];
-                                        int[] unitIds = bench.getDeployedUnitIDs();
-                                        int[] closestUnitIds = new int(0, -1);
-                                        for (int i = 0; i < unitIds.size(); i++){
-                                            if (kbUnitGetDistanceToPoint(unitIds[i], v) <= 1.5){
-                                                closestUnitIds.add(unitIds[i]);
+                                        [](int p = 1, vector v = cInvalidVector) -> void {
+                                            BenchData bench = g_shop.m_benches[p];
+                                            int[] unitIds = bench.getDeployedUnitIDs();
+                                            int[] closestUnitIds = new int(0, -1);
+                                            for (int i = 0; i < unitIds.size(); i++){
+                                                if (kbUnitGetDistanceToPoint(unitIds[i], v) <= 1.5){
+                                                    closestUnitIds.add(unitIds[i]);
+                                                }
+                                            }
+                                            if (closestUnitIds.size() == 1){
+                                                int unitId = closestUnitIds[0];
+                                                if (kbUnitGetIsAffectedByStatusEffect(unitId, cStatusEffectStunned)) { return; }
+                                                int shopId = bench.getPlayerShopID();
+                                                vector shopVector = kbUnitGetPosition(shopId);
+                                                selectSingle(unitId);
+                                                vector v2 = kbUnitGetTruePosition(unitId);
+                                                trUnitApplyEffect(cOnHitEffectStun, 10.0);
+                                                trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXVortexFinish), v2.x, v2.y, v2.z, -1, 0);
+                                                setUnitCacheValue(unitId, kbUnitGetStatFloat(unitId, cUnitStatCurrHP));
+                                                playUnitSound(unitId, "VortexBirth", SOUND_SET);
+                                                unitSchedulerWithVector.add(unitId, 500, shopVector, [](int unitId = 0, int iteration = 0, vector shopVector = cInvalidVector) -> bool {
+                                                    float currHP = kbUnitGetStatFloat(unitId, cUnitStatCurrHP);
+                                                    if (currHP < getUnitCacheValue(unitId)){
+                                                        selectSingle(unitId);
+                                                        vector v = kbUnitGetTruePosition(unitId);
+                                                        trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXArkantosGodIn), v.x, v.y, v.z, -1, 0);
+                                                        playUnitSound(unitId, "AotgLegendDeath", SOUND_SET);
+                                                        setUnitCacheValue(unitId, 0);
+                                                        return false;
+                                                    }
+                                                    setUnitCacheValue(unitId, currHP);
+                                                    if (iteration == 6 || iteration == 12 || iteration == 15 ){
+                                                        vector v = kbUnitGetTruePosition(unitId);
+                                                        trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXVortexFinish), v.x, v.y, v.z, -1, 0);
+                                                    }
+                                                    if (iteration >= 20){
+                                                        selectSingle(unitId);
+                                                        trUnitReposition(shopVector.x, shopVector.y, shopVector.z, false, true);
+                                                        playUnitSound(unitId, "VortexLift", SOUND_SET);
+                                                        setUnitCacheValue(unitId, 0);
+                                                        return false;
+                                                    }
+                                                    return true;
+                                                });
+                                            }
+                                            else if (closestUnitIds.size() >= 2 && trCurrentPlayer() == p){
+                                                for (int i = 0; i < closestUnitIds.size(); i++){
+                                                    selectSingle(closestUnitIds[i]);
+                                                    trUnitHighlight(5.0, true);
+                                                }
+                                                trChatSendToPlayer(p, p, "Unit must be away from other units to recall.");
+                                                trSoundsetPlayPlayer(p, "PopCapHit");
                                             }
                                         }
-                                        if (closestUnitIds.size() == 1){
-                                            int unitId = closestUnitIds[0];
-                                            int shopId = bench.getPlayerShopID();
-                                            vector shopVector = kbUnitGetPosition(shopId);
-                                            selectSingle(unitId);
-                                            vector v2 = kbUnitGetTruePosition(unitId);
-                                            trUnitApplyEffect(cOnHitEffectStun, 10.0);
-                                            trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXVortexFinish), v2.x, v2.y, v2.z, -1, 0);
-                                            setUnitCacheValue(unitId, kbUnitGetStatFloat(unitId, cUnitStatCurrHP));
-                                            playUnitSound(unitId, "VortexBirth", SOUND_SET);
-                                            unitSchedulerWithVector.add(unitId, 500, shopVector, [](int unitId = 0, int iteration = 0, vector shopVector = cInvalidVector) -> bool {
-                                                float currHP = kbUnitGetStatFloat(unitId, cUnitStatCurrHP);
-                                                if (currHP < getUnitCacheValue(unitId)){
-                                                    selectSingle(unitId);
-                                                    vector v = kbUnitGetTruePosition(unitId);
-                                                    trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXArkantosGodIn), v.x, v.y, v.z, -1, 0);
-                                                    playUnitSound(unitId, "AotgLegendDeath", SOUND_SET);
-                                                    setUnitCacheValue(unitId, 0);
-                                                    return false;
-                                                }
-                                                setUnitCacheValue(unitId, currHP);
-                                                if (iteration == 6 || iteration == 12 || iteration == 15 ){
-                                                    vector v = kbUnitGetTruePosition(unitId);
-                                                    trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXVortexFinish), v.x, v.y, v.z, -1, 0);
-                                                }
-                                                if (iteration >= 20){
-                                                    selectSingle(unitId);
-                                                    trUnitReposition(shopVector.x, shopVector.y, shopVector.z, false, true);
-                                                    playUnitSound(unitId, "VortexLift", SOUND_SET);
-                                                    setUnitCacheValue(unitId, 0);
-                                                    return false;
-                                                }
-                                                return true;
-                                            });
-                                        }
-                                        else if (closestUnitIds.size() >= 2 && trCurrentPlayer() == p){
-                                            for (int i = 0; i < closestUnitIds.size(); i++){
-                                                selectSingle(closestUnitIds[i]);
-                                                trUnitHighlight(5.0, true);
-                                            }
-                                            trChatSendToPlayer(p, p, "Unit must be away from other units to recall.");
-                                            trSoundsetPlayPlayer(p, "PopCapHit");
-                                        }
-                                    }
                                     );
     trProtounitAddTrain(protoUnit, p, plantName, 3, 5);
     setUpUnitCache(kbProtoUnitGetID(protoUnit), p, cResourceFavor);
+    trExecuteConsoleCommand("map("+quote+"B"+quote+", "+quote+"game"+quote+", "+quote+"trainInSelectedByID("+648+", 1, false)"+quote+")");
 }
 
 void addMarketCommands(){
     for(int p = 1; p <= cNumberPlayers-2; p++) {
         string plantName = preparePlant(p, cUnitTypePlantGreekBush, 
-                                        "Open shop",
+                                        "Open shop (Q)",
                                         "Purchase cards.",
                                         "resources\shared\static_color\buildings\market_icon.png",
                                     [](int p = 1, vector v = cInvalidVector) -> void {
@@ -109,11 +111,12 @@ void addMarketCommands(){
                                         );
         trProtounitAddTrain("Market", p, plantName, 0, 0);
     }
+    trExecuteConsoleCommand("map("+quote+"Q"+quote+", "+quote+"game"+quote+", "+quote+"trainInSelectedByID("+643+", 1, false)"+quote+")");
 }
 
 void addForgeCommands(int p = -1){
     string plantName = preparePlant(p, cUnitTypePlantGreekShrub, 
-                                    "Open forge",
+                                    "Open forge (W)",
                                     "Add sockets to your cards.",
                                     "resources\nature\relics\relic_anvil_icon.png",
                                     [](int p = 1, vector v = cInvalidVector) -> void {
@@ -122,6 +125,7 @@ void addForgeCommands(int p = -1){
                                     );
     trProtounitAddTrain("Market", p, plantName, 0, 1);
     trSoundsetPlayPlayer(p, "ArmorySelect");
+    trExecuteConsoleCommand("map("+quote+"W"+quote+", "+quote+"game"+quote+", "+quote+"trainInSelectedByID("+644+", 1, false)"+quote+")");
 }
 
 void removeForgeCommands(int p = -1){
@@ -130,7 +134,7 @@ void removeForgeCommands(int p = -1){
 
 void addArmoryCommands(int p = -1){
     string plantName = preparePlant(p, cUnitTypePlantGreekGrass, 
-                                    "Open armory",
+                                    "Open armory (E)",
                                     "Add upgrades to your cards.",
                                     "resources\nature\relics\relic_jewelry_icon.png",
                                     [](int p = 1, vector v = cInvalidVector) -> void {
@@ -139,6 +143,7 @@ void addArmoryCommands(int p = -1){
                                     );
     trProtounitAddTrain("Market", p, plantName, 0, 2);
     trSoundsetPlayPlayer(p, "ArmorySelect");
+    trExecuteConsoleCommand("map("+quote+"E"+quote+", "+quote+"game"+quote+", "+quote+"trainInSelectedByID("+645+", 1, false)"+quote+")");
 }
 
 void removeArmoryCommands(int p = -1){
@@ -148,7 +153,7 @@ void removeArmoryCommands(int p = -1){
 void addTempleCommands(int p = -1){
     return; // TODO: Disabled for now
     string plantName = preparePlant(p, cUnitTypePlantGreekWeeds, 
-                                    "Open temple",
+                                    "Open temple (R)",
                                     "Reroll rarities for your cards.",
                                     "resources\nature\relics\relic_ankh_icon.png",
                                     [](int p = 1, vector v = cInvalidVector) -> void {
@@ -157,6 +162,7 @@ void addTempleCommands(int p = -1){
                                     );
     trProtounitAddTrain("Market", p, plantName, 0, 3);
     trSoundsetPlayPlayer(p, "TempleSelect");
+    trExecuteConsoleCommand("map("+quote+"R"+quote+", "+quote+"game"+quote+", "+quote+"trainInSelectedByID("+646+", 1, false)"+quote+")");
 }
 
 void removeTempleCommands(int p = -1){
@@ -165,7 +171,7 @@ void removeTempleCommands(int p = -1){
 
 void addShrineCommands(int p = -1){
     string plantName = preparePlant(p, cUnitTypePlantGreekFern, 
-                                    "Open library",
+                                    "Open library (T)",
                                     "Identify cards.",
                                     "resources\nature\relics\relic_scroll_icon.png",
                                     [](int p = 1, vector v = cInvalidVector) -> void {
@@ -174,6 +180,7 @@ void addShrineCommands(int p = -1){
                                     );
     trProtounitAddTrain("Market", p, plantName, 0, 4);
     trSoundsetPlayPlayer(p, "ShrineSelect");
+    trExecuteConsoleCommand("map("+quote+"T"+quote+", "+quote+"game"+quote+", "+quote+"trainInSelectedByID("+647+", 1, false)"+quote+")");
 }
 
 void removeShrineCommands(int p = -1){

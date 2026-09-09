@@ -6,11 +6,11 @@ StringToIntHashMap g_synergyHashMap;
 mutable bool purchase(int goldAmount = 0, int p = 0) { return false; }
 
 class BenchData {
+    int m_cardSize = 0; // Tracks active cards without shrinking/reallocating the array
     int m_player = -1;
     int m_playerShopId = -1;
     int[] m_synergyCounter = default;
     CardData[] m_cardArray = default;
-    int m_cardSize = 0; // Tracks active cards without shrinking/reallocating the array
 
     void init(int p = -1, int shopId = -1){
         m_player = p;
@@ -186,21 +186,23 @@ class BenchData {
         trUnitChangeName(displayName);
     }
 
-    bool spawnCard(ref CardData card, int shopId = -1, int p  = 0, bool applyCardHealth = true){
+    bool spawnCard(ref CardData card, bool applyCardHealth = true){
         CardParameters params = card.getCardParameters();
+        selectSingle(m_playerShopId);
         string protoName = params.getProtoUnit();
-        vector position = trUnitGetPosition(shopId);
-        int unitID = trUnitCreateForced(protoName, position.x, position.y, position.z, xsRandFloat(0.0, 360.0), p, false);
+        vector position = trUnitGetPosition(m_playerShopId);
+        int unitID = trUnitCreateForced(protoName, position.x, position.y, position.z, xsRandFloat(0.0, 360.0), m_player, false);
         if (unitID < 0) {
-            errorLog("Player " + p + " failed to spawn " + protoName + " for card " + card.getUuid());
+            errorLog("Player " + m_player + " failed to spawn " + protoName + " for card " + card.getUuid());
             return false;
         }
         card.deploy(unitID);
+        card.setIsRespawning(false);
         if (applyCardHealth) {
-            card.applyRarityHealth(p);
+            card.applyRarityHealth(m_player);
         }
         changeDisplayName(card);
-        log(3, "Player " + p + " deployed " + protoName + " to shop " + shopId);
+        log(3, "Player " + m_player + " deployed " + protoName + " to shop " + m_playerShopId);
         return true;
     }
 
@@ -249,7 +251,7 @@ class BenchData {
                 trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
                 return;
             }
-            if (spawnCard(card, m_playerShopId, m_player) == false) {
+            if (spawnCard(card) == false) {
                 addCard(card);
                 return;
             }
@@ -259,39 +261,6 @@ class BenchData {
             trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
             return;
         }
-    }
-
-    bool respawnDeployedCards(){
-        bool wasThereARespawn = false;
-        int currtime = xsGetTimeMS();
-
-        for(int i = 0; i < m_cardSize; i++) {
-            CardData card = m_cardArray[i];
-            if (card.isNull() == true || card.isDeployed() == false) { continue; }
-            
-            int unitId = card.getDeployedUnitID();
-            selectSingle(unitId);
-            if (trUnitDead()){
-                // 1. Timer hasn't been started yet: set the target timestamp
-                if (card.timeTillRespawn == 0) {
-                    int respawnTimeMS = RESPAWN_TIME_MS_BASE + (((currtime - g_timeMSGameStarted) / 60000) * RESPAWN_TIME_ADDITIONAL_MS);                    
-                    card.timeTillRespawn = currtime + respawnTimeMS;
-                    m_cardArray[i] = card;
-                    wasThereARespawn = true;
-                }
-                // 2. Current time reached or passed the target timestamp: Respawn!
-                else if (currtime >= card.timeTillRespawn) {
-                    if (spawnCard(card, m_playerShopId, m_player, false)) {
-                        trSoundsetPlayPlayer(m_player, "HeroRevive");
-                        card.timeTillRespawn = 0; // Reset timestamp so it can be used again next death
-                        m_cardArray[i] = card;
-                        wasThereARespawn = true;
-                    }
-                }
-                // 3. currtime < card.timeTillRespawn: Still waiting for target time, do nothing.
-            }
-        }
-        return wasThereARespawn;
     }
 
     bool withdrawCard(int uuid = -1){

@@ -1,11 +1,14 @@
 // ==========================================
 // HELPER FUNCTIONS
 // ==========================================
-int spawnUnit(string protoName = "", float x = 0.0, float h = 0.0, float z = 0.0, float heading = 0.0, int player = 0, float scale = 1.0) {
+int spawnUnit(string protoName = "", float x = 0.0, float h = 0.0, float z = 0.0, float heading = 0.0, int player = 0, float scale = 1.0, bool isInvulnerable = false) {
     int unitId = trUnitCreateForced(protoName, x, h, z, heading, player);
+    selectSingle(unitId);
     if (scale != 1.0) {
-        selectSingle(unitId);
         trUnitSetScale(scale, scale, scale);
+    }
+    if (isInvulnerable) {
+        trUnitMakeInvulnerable(true);
     }
     return unitId;
 }
@@ -79,48 +82,54 @@ void createAIBases(){
     float t2MidHeading = atan2Deg(t2MidT2Z - t2MidT3Z, t2MidT2X - t2MidT3X);
     float t2BotHeading = atan2Deg(t2BotT2Z - t2BotT3Z, t2BotT2X - t2BotT3X) - 90.0;
 
-    // --- Spawn Buildings ---
-    spawnUnit(unitFortress, t1FortX, h, t1FortZ, team1DefaultAngle, aiTeamA, fortressScale);
-    spawnUnit(unitFortress, t2FortX, h, t2FortZ, team2DefaultAngle, aiTeamB, fortressScale);
+    // --- Spawn Invulnerable Fortresses ---
+    g_t1FortressId = spawnUnit(unitFortress, t1FortX, h, t1FortZ, team1DefaultAngle, aiTeamA, fortressScale, true);
+    g_t2FortressId = spawnUnit(unitFortress, t2FortX, h, t2FortZ, team2DefaultAngle, aiTeamB, fortressScale, true);
 
-    // Team 1 Towers
-    spawnUnit(unitT3Tower, t1TopT3X, h, t1TopT3Z, t1TopHeading, aiTeamA, towerScale);
-    spawnUnit(unitT2Tower, t1TopT2X, h, t1TopT2Z, team1DefaultAngle, aiTeamA, towerScale);
-    spawnUnit(unitT1Tower, t1TopT1X, h, t1TopT1Z, team1DefaultAngle, aiTeamA, towerScale);
+    // --- Team 1 Towers (T3 & T2 Invulnerable, T1 Vulnerable) ---
+    // Top Lane Towers
+    g_T1TopLane.addTower(0, spawnUnit(unitT3Tower, t1TopT3X, h, t1TopT3Z, t1TopHeading, aiTeamA, towerScale, true));
+    g_T1TopLane.addTower(1, spawnUnit(unitT2Tower, t1TopT2X, h, t1TopT2Z, team1DefaultAngle, aiTeamA, towerScale, true));
+    g_T1TopLane.addTower(2, spawnUnit(unitT1Tower, t1TopT1X, h, t1TopT1Z, team1DefaultAngle, aiTeamA, towerScale));
 
-    spawnUnit(unitT3Tower, t1MidT3X, h, t1MidT3Z, t1MidHeading, aiTeamA, towerScale);
-    spawnUnit(unitT2Tower, t1MidT2X, h, t1MidT2Z, team1DefaultAngle, aiTeamA, towerScale);
-    spawnUnit(unitT1Tower, t1MidT1X, h, t1MidT1Z, team1DefaultAngle, aiTeamA, towerScale);
+    // Mid Lane Towers
+    g_T1MidLane.addTower(0, spawnUnit(unitT3Tower, t1MidT3X, h, t1MidT3Z, t1MidHeading, aiTeamA, towerScale, true));
+    g_T1MidLane.addTower(1, spawnUnit(unitT2Tower, t1MidT2X, h, t1MidT2Z, team1DefaultAngle, aiTeamA, towerScale, true));
+    g_T1MidLane.addTower(2, spawnUnit(unitT1Tower, t1MidT1X, h, t1MidT1Z, team1DefaultAngle, aiTeamA, towerScale));
 
-    spawnUnit(unitT3Tower, t1BotT3X, h, t1BotT3Z, t1BotHeading, aiTeamA, towerScale);
-    spawnUnit(unitT2Tower, t1BotT2X, h, t1BotT2Z, team1DefaultAngle, aiTeamA, towerScale);
-    spawnUnit(unitT1Tower, t1BotT1X, h, t1BotT1Z, team1DefaultAngle, aiTeamA, towerScale);
+    // Bot Lane Towers
+    g_T1BotLane.addTower(0, spawnUnit(unitT3Tower, t1BotT3X, h, t1BotT3Z, t1BotHeading, aiTeamA, towerScale, true));
+    g_T1BotLane.addTower(1, spawnUnit(unitT2Tower, t1BotT2X, h, t1BotT2Z, team1DefaultAngle, aiTeamA, towerScale, true));
+    g_T1BotLane.addTower(2, spawnUnit(unitT1Tower, t1BotT1X, h, t1BotT1Z, team1DefaultAngle, aiTeamA, towerScale));
 
-    // Team 2 Towers
-    spawnUnit(unitT3Tower, t2TopT3X, h, t2TopT3Z, t2TopHeading, aiTeamB, towerScale);
-    spawnUnit(unitT2Tower, t2TopT2X, h, t2TopT2Z, team2DefaultAngle, aiTeamB, towerScale);
-    spawnUnit(unitT1Tower, t2TopT1X, h, t2TopT1Z, team2DefaultAngle, aiTeamB, towerScale);
+    // --- Team 2 Towers (T3 & T2 Invulnerable, T1 Vulnerable) ---
+    // Top Lane Towers
+    g_T2TopLane.addTower(0, spawnUnit(unitT3Tower, t2TopT3X, h, t2TopT3Z, t2TopHeading, aiTeamB, towerScale, true));
+    g_T2TopLane.addTower(1, spawnUnit(unitT2Tower, t2TopT2X, h, t2TopT2Z, team2DefaultAngle, aiTeamB, towerScale, true));
+    g_T2TopLane.addTower(2, spawnUnit(unitT1Tower, t2TopT1X, h, t2TopT1Z, team2DefaultAngle, aiTeamB, towerScale));
 
-    spawnUnit(unitT3Tower, t2MidT3X, h, t2MidT3Z, t2MidHeading, aiTeamB, towerScale);
-    spawnUnit(unitT2Tower, t2MidT2X, h, t2MidT2Z, team2DefaultAngle, aiTeamB, towerScale);
-    spawnUnit(unitT1Tower, t2MidT1X, h, t2MidT1Z, team2DefaultAngle, aiTeamB, towerScale);
+    // Mid Lane Towers
+    g_T2MidLane.addTower(0, spawnUnit(unitT3Tower, t2MidT3X, h, t2MidT3Z, t2MidHeading, aiTeamB, towerScale, true));
+    g_T2MidLane.addTower(1, spawnUnit(unitT2Tower, t2MidT2X, h, t2MidT2Z, team2DefaultAngle, aiTeamB, towerScale, true));
+    g_T2MidLane.addTower(2, spawnUnit(unitT1Tower, t2MidT1X, h, t2MidT1Z, team2DefaultAngle, aiTeamB, towerScale));
 
-    spawnUnit(unitT3Tower, t2BotT3X, h, t2BotT3Z, t2BotHeading, aiTeamB, towerScale);
-    spawnUnit(unitT2Tower, t2BotT2X, h, t2BotT2Z, team2DefaultAngle, aiTeamB, towerScale);
-    spawnUnit(unitT1Tower, t2BotT1X, h, t2BotT1Z, team2DefaultAngle, aiTeamB, towerScale);
+    // Bot Lane Towers
+    g_T2BotLane.addTower(0, spawnUnit(unitT3Tower, t2BotT3X, h, t2BotT3Z, t2BotHeading, aiTeamB, towerScale, true));
+    g_T2BotLane.addTower(1, spawnUnit(unitT2Tower, t2BotT2X, h, t2BotT2Z, team2DefaultAngle, aiTeamB, towerScale, true));
+    g_T2BotLane.addTower(2, spawnUnit(unitT1Tower, t2BotT1X, h, t2BotT1Z, team2DefaultAngle, aiTeamB, towerScale));
 
-    // --- Barracks Behind T3 Towers (Facing Down Lane) ---
+    // --- Barracks Behind T3 Towers (Facing Down Lane, Invulnerable) ---
     float barracksPushFactor = 0.8; 
 
-    // Team 1 Barracks (Captured IDs)
-    g_t1TopBarracksID = spawnUnit(unitBarracks, t1FortX + (t1TopT3X - t1FortX) * barracksPushFactor, h, t1FortZ + (t1TopT3Z - t1FortZ) * barracksPushFactor, t1TopHeading, aiTeamA, barracksScale);
-    g_t1MidBarracksID = spawnUnit(unitBarracks, t1FortX + (t1MidT3X - t1FortX) * barracksPushFactor, h, t1FortZ + (t1MidT3Z - t1FortZ) * barracksPushFactor, t1MidHeading, aiTeamA, barracksScale);
-    g_t1BotBarracksID = spawnUnit(unitBarracks, t1FortX + (t1BotT3X - t1FortX) * barracksPushFactor, h, t1FortZ + (t1BotT3Z - t1FortZ) * barracksPushFactor, t1BotHeading, aiTeamA, barracksScale);
+    // Team 1 Barracks (Assigned to T1 Lane Managers)
+    g_T1TopLane.addBarracks(spawnUnit(unitBarracks, t1FortX + (t1TopT3X - t1FortX) * barracksPushFactor, h, t1FortZ + (t1TopT3Z - t1FortZ) * barracksPushFactor, t1TopHeading, aiTeamA, barracksScale, true));
+    g_T1MidLane.addBarracks(spawnUnit(unitBarracks, t1FortX + (t1MidT3X - t1FortX) * barracksPushFactor, h, t1FortZ + (t1MidT3Z - t1FortZ) * barracksPushFactor, t1MidHeading, aiTeamA, barracksScale, true));
+    g_T1BotLane.addBarracks(spawnUnit(unitBarracks, t1FortX + (t1BotT3X - t1FortX) * barracksPushFactor, h, t1FortZ + (t1BotT3Z - t1FortZ) * barracksPushFactor, t1BotHeading, aiTeamA, barracksScale, true));
 
-    // Team 2 Barracks (Captured IDs)
-    g_t2TopBarracksID = spawnUnit(unitBarracks, t2FortX + (t2TopT3X - t2FortX) * barracksPushFactor, h, t2FortZ + (t2TopT3Z - t2FortZ) * barracksPushFactor, t2TopHeading, aiTeamB, barracksScale);
-    g_t2MidBarracksID = spawnUnit(unitBarracks, t2FortX + (t2MidT3X - t2FortX) * barracksPushFactor, h, t2FortZ + (t2MidT3Z - t2FortZ) * barracksPushFactor, t2MidHeading, aiTeamB, barracksScale);
-    g_t2BotBarracksID = spawnUnit(unitBarracks, t2FortX + (t2BotT3X - t2FortX) * barracksPushFactor, h, t2FortZ + (t2BotT3Z - t2FortZ) * barracksPushFactor, t2BotHeading, aiTeamB, barracksScale);
+    // Team 2 Barracks (Assigned to T2 Lane Managers)
+    g_T2TopLane.addBarracks(spawnUnit(unitBarracks, t2FortX + (t2TopT3X - t2FortX) * barracksPushFactor, h, t2FortZ + (t2TopT3Z - t2FortZ) * barracksPushFactor, t2TopHeading, aiTeamB, barracksScale, true));
+    g_T2MidLane.addBarracks(spawnUnit(unitBarracks, t2FortX + (t2MidT3X - t2FortX) * barracksPushFactor, h, t2FortZ + (t2MidT3Z - t2FortZ) * barracksPushFactor, t2MidHeading, aiTeamB, barracksScale, true));
+    g_T2BotLane.addBarracks(spawnUnit(unitBarracks, t2FortX + (t2BotT3X - t2FortX) * barracksPushFactor, h, t2FortZ + (t2BotT3Z - t2FortZ) * barracksPushFactor, t2BotHeading, aiTeamB, barracksScale, true));
 
     // --- POPULATE GLOBAL VECTORS ---
     g_T1ToT2TopLane = new vector(8, cInvalidVector);

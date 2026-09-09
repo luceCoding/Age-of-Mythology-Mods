@@ -75,7 +75,11 @@ def process_xs_template(
                             continue
 
                         # Escape double quotes
-                        escaped_content = stripped_content.replace('"', '\\"')
+                        if 'trExecuteConsoleCommand("map(' in stripped_content:
+                            escaped_content = stripped_content.replace('trExecuteConsoleCommand("map("', 'trExecuteConsoleCommand(\\"map("')
+                            escaped_content = escaped_content.replace('+quote+")")', '+quote+")\\")')
+                        else:
+                            escaped_content = stripped_content.replace('"', '\\"')
 
                         if len(escaped_content):
                             if len(escaped_content) > MAX_LENGTH:

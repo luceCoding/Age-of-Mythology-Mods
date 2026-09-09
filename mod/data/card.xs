@@ -6,6 +6,7 @@ class CardData {
     bool m_isLocked = false;
     bool m_isDeployed = false;
     bool m_isIdentified = true;
+    bool m_isRespawning = false;
     string m_protoName = "";
     int m_count = 1;
     int m_uuid = cMinInt;
@@ -13,7 +14,6 @@ class CardData {
     int m_luckBonus = 0;
     int m_deckIndex = -1;
     int m_deployedUnitId = -1;
-    int timeTillRespawn = 0;
     int[] m_upgrades = default;
 
     void setCard(ref CardParameters params, int upgrade = -1, bool addSockets = true){
@@ -209,6 +209,14 @@ class CardData {
     void withdraw(){
         m_isDeployed = false;
         m_deployedUnitId = -1;
+    }
+
+    void setIsRespawning(bool isRespawning = false){
+        m_isRespawning = isRespawning;
+    }
+
+    bool isRespawning(){
+        return m_isRespawning;
     }
 
     bool isNull(){

@@ -120,7 +120,7 @@ class Shop {
             if (isBench && m_shopTypeOpened[p] == DEFAULT_SHOP_TYPE){
                 cost = cost * SELL_MULTIPLIER;
             }
-            string costText = getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137>" + cost + "</color>";
+            string costText = getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137,0,0,0>" + cost + "</color>";
             minimapSafeDisplay(p, posX, posY + 0.13 * iconMultiplier, costText);
         }
 
@@ -618,21 +618,25 @@ void renderShop(int p = 1){
                          "V: " + level.m_tier5Chance + "%";
     uiSystemAddDisplayDynamic(p, drawPosx - 0.015, drawPosYStart + 0.15, 1259, [](int p = 1, ref Parameters parameters) -> string { 
                 int goldStockpiled = kbGetResourceAmount(p, kbGetResourceID("Gold"));
-                return getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " " + goldStockpiled; 
+                return getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + " <color=0.729,0.557,0.137,0,0,0>" + goldStockpiled + "</color>"; 
             }, EMPTY_PARAMETERS
         );
     if (shopLevel < MAX_SHOP_LEVEL && shopLevel < g_shopLevels.size()){
         minimapSafeDisplayWithHover(p, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
+                                    "<color=1,1,1,0,0,0>" +
                                     "\nLevel: " + shopLevel + "\n" + 
                                     "XP: " + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded,
-                                    "Shop Level Draw Chances",
+                                    "Shop Level Drop Chances" +
+                                    "</color>",
                                     shopChances);
     }
     else {
         minimapSafeDisplayWithHover(p, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
+                                    "<color=1,1,1,0,0,0>" +
                                     "\nLevel: " + MAX_SHOP_LEVEL + 
                                     "\nXP: MAX",
-                                    "Shop Level Drop Chances",
+                                    "Shop Level Drop Chances" +
+                                    "</color>",
                                     shopChances);
     }
 
@@ -676,15 +680,53 @@ void hideWorldPrompts(int p = 1){
     }
 }
 
+bool respawnDeployedCards(ref BenchData bench){
+    bool wasThereAChange = false;
+    int currtime = xsGetTimeMS();
+
+    for(int i = 0; i < bench.m_cardSize; i++) {
+        CardData card = bench.m_cardArray[i];
+        if (card.isNull() || card.isDeployed() == false || card.isRespawning()) { continue; }
+        int unitId = card.getDeployedUnitID();
+        selectSingle(unitId);
+        if (trUnitDead()){
+            card.setIsRespawning(true);
+            bench.m_cardArray[i] = card;
+            wasThereAChange = true;
+            int respawnTimeMS = RESPAWN_TIME_MS_BASE + (((currtime - g_timeMSGameStarted) / 60000) * RESPAWN_TIME_ADDITIONAL_MS);
+            schedulerWithIntInt.add(respawnTimeMS, bench.m_player, i, [](int iterations = 1, int p = 0, int cardIndex = 0) -> bool {
+                BenchData bench = g_shop.m_benches[p];
+                CardData deadCard = bench.m_cardArray[cardIndex];
+                if (deadCard.isNull() || deadCard.isDeployed() == false || deadCard.isRespawning() == false) { return false; }
+                if (bench.spawnCard(deadCard, false)) {
+                    trSoundsetPlayPlayer(p, "HeroRevive");
+                    bench.m_cardArray[cardIndex] = deadCard;
+                    g_shop.m_benches[p] = bench;
+                }
+                return false;
+            });
+        }
+    }
+    return wasThereAChange;
+}
+
+int[] g_unitLostCache = default;
+
 void startShopTimers(){
 
+    g_unitLostCache = new int(cNumberPlayers-1, 0);
+
     // Shop respawner
-    // Auto close shops
-    scheduler.add(1009, [](int iterations = 1) -> bool {
-        for (int i = 1; i <= g_shop.m_benches.size()-2; i++){
-            BenchData bench = g_shop.m_benches[i];
-            if (bench.respawnDeployedCards()) {
-                g_shop.m_benches[i] = bench;
+    scheduler.add(2003, [](int iterations = 1) -> bool {
+        for (int p = 1; p <= cNumberPlayers - 2; p++){
+            int unitsLost = kbGetStatValueInt(p, cStatTypeUnitsLost);
+            // Only run the heavy card-loop if the total cumulative deaths have increased 
+            if (unitsLost > g_unitLostCache[p]) {
+                BenchData bench = g_shop.m_benches[p];
+                if (respawnDeployedCards(bench)){
+                    g_shop.m_benches[p] = bench;
+                }
+                g_unitLostCache[p] = unitsLost;
             }
         }
         return true;

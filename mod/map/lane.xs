@@ -1,32 +1,47 @@
 const int aiTeamA = cNumberPlayers - 1;
 const int aiTeamB = cNumberPlayers;
+int g_t1FortressId = -1;
+int g_t2FortressId = -1;
 
 // ==========================================
-// BARRACKS TRACKING IDs
+// INVULNERABILITY & TOWER STATUS HELPERS
 // ==========================================
-int g_t1TopBarracksID = -1;
-int g_t1MidBarracksID = -1;
-int g_t1BotBarracksID = -1;
-
-int g_t2TopBarracksID = -1;
-int g_t2MidBarracksID = -1;
-int g_t2BotBarracksID = -1;
-
 bool isUnitDead(int unitId = -1) {
     if (unitId < 0) { return true; }
     selectSingle(unitId);
     return trUnitDead();
 }
 
+void setUnitInvulnerable(int unitId = -1, bool isInvulnerable = false) {
+    if (unitId >= 0) {
+        selectSingle(unitId);
+        trUnitMakeInvulnerable(isInvulnerable);
+    }
+}
+
 class LaneManager {
+    int m_unitSize = 0; // Tracks active units without shrinking/reallocating parallel arrays
+    int m_barracksUnitID = -1;
+    int m_fortressUnitID = -1;
     vector[] m_waypoints = default;
     int[] m_unitIds = default;
     int[] m_unitTargetIndices = default;
-    int m_unitSize = 0; // Tracks active units without shrinking/reallocating parallel arrays
+    int[] m_towerUnitIDs = default;
+
+    // Track whether invulnerability has already been stripped to avoid redundant native calls
+    bool m_t2Vulnerable = false;
+    bool m_t3Vulnerable = false;
+    bool m_barracksVulnerable = false;
 
     void init(){
         m_waypoints = new vector(0, cInvalidVector);
+        m_towerUnitIDs = new int(3, -1);
         m_unitSize = 0;
+        m_barracksUnitID = -1;
+        m_fortressUnitID = -1;
+        m_t2Vulnerable = false;
+        m_t3Vulnerable = false;
+        m_barracksVulnerable = false;
     }
 
     void addPoint(vector point = cInvalidVector){
@@ -48,6 +63,81 @@ class LaneManager {
             m_unitTargetIndices.add(0);
         }
         m_unitSize++;
+    }
+
+    void addTower(int index = 0, int unitId = -1){
+        if (index < 0) {
+            return;
+        }
+
+        // Dynamically grow the tower array if the index exceeds current capacity
+        while (index >= m_towerUnitIDs.size()) {
+            m_towerUnitIDs.add(-1);
+        }
+
+        m_towerUnitIDs[index] = unitId;
+    }
+
+    void addBarracks(int unitId = -1) {
+        m_barracksUnitID = unitId;
+    }
+
+    void addFortress(int unitId = -1) {
+        m_fortressUnitID = unitId;
+    }
+
+    bool isT1Dead() {
+        if (m_towerUnitIDs.size() > 2) {
+            return isUnitDead(m_towerUnitIDs[2]);
+        }
+        return true;
+    }
+
+    bool isT2Dead() {
+        if (m_towerUnitIDs.size() > 1) {
+            return isUnitDead(m_towerUnitIDs[1]);
+        }
+        return true;
+    }
+
+    bool isT3Dead() {
+        if (m_towerUnitIDs.size() > 0) {
+            return isUnitDead(m_towerUnitIDs[0]);
+        }
+        return true;
+    }
+
+    bool isBarracksDead() {
+        return isUnitDead(m_barracksUnitID);
+    }
+
+    bool isFortressDead() {
+        return isUnitDead(m_fortressUnitID);
+    }
+
+    // Evaluates sequential invulnerability rules for this lane
+    void updateInvulnerability() {
+        // Rule 1: Turn off T2 invulnerability if T1 tower is dead
+        if (!m_t2Vulnerable && isT1Dead()) {
+            if (m_towerUnitIDs.size() > 1) {
+                setUnitInvulnerable(m_towerUnitIDs[1], false);
+                m_t2Vulnerable = true;
+            }
+        }
+
+        // Rule 2: Turn off T3 invulnerability if T2 tower is dead
+        if (!m_t3Vulnerable && isT2Dead()) {
+            if (m_towerUnitIDs.size() > 0) {
+                setUnitInvulnerable(m_towerUnitIDs[0], false);
+                m_t3Vulnerable = true;
+            }
+        }
+
+        // Rule 3: Turn off Barracks invulnerability if T3 tower is dead
+        if (!m_barracksVulnerable && isT3Dead()) {
+            setUnitInvulnerable(m_barracksUnitID, false);
+            m_barracksVulnerable = true;
+        }
     }
 
     void moveUnits(){
@@ -93,6 +183,16 @@ class LaneManager {
         }
     }
 };
+
+// ==========================================
+// GLOBAL FORTRESS INVULNERABILITY CHECKER
+// ==========================================
+void updateTeamFortressInvulnerability(ref LaneManager topLane, ref LaneManager midLane, ref LaneManager botLane, int fortressUnitId = -1) {
+    // Turn off fortress invulnerability if any of the T3 towers across its lanes are dead
+    if (topLane.isT3Dead() || midLane.isT3Dead() || botLane.isT3Dead()) {
+        setUnitInvulnerable(fortressUnitId, false);
+    }
+}
 
 // ==========================================
 // GLOBAL VECTOR WAYPOINT STORAGE
@@ -188,14 +288,14 @@ void spawnLaneArmy(ref LaneManager laneManager, int player = 0, vector spawnPos 
 // WAVE EXECUTION & TRIGGER LOOP
 // ==========================================
 void spawnLane(){
-    // Check if opposing barracks are destroyed for each lane
-    bool t1TopBonus = isUnitDead(g_t2TopBarracksID);
-    bool t1MidBonus = isUnitDead(g_t2MidBarracksID);
-    bool t1BotBonus = isUnitDead(g_t2BotBarracksID);
+    // Check if opposing barracks are destroyed for each lane using LaneManager's internal states
+    bool t1TopBonus = g_T2TopLane.isBarracksDead();
+    bool t1MidBonus = g_T2MidLane.isBarracksDead();
+    bool t1BotBonus = g_T2BotLane.isBarracksDead();
 
-    bool t2TopBonus = isUnitDead(g_t1TopBarracksID);
-    bool t2MidBonus = isUnitDead(g_t1MidBarracksID);
-    bool t2BotBonus = isUnitDead(g_t1BotBarracksID);
+    bool t2TopBonus = g_T1TopLane.isBarracksDead();
+    bool t2MidBonus = g_T1MidLane.isBarracksDead();
+    bool t2BotBonus = g_T1BotLane.isBarracksDead();
 
     bool t1SuperBonus = (t1TopBonus && t1MidBonus && t1BotBonus);
     bool t2SuperBonus = (t2TopBonus && t2MidBonus && t2BotBonus);
@@ -213,20 +313,104 @@ void spawnLane(){
     g_laneCounter = g_laneCounter + 1;
 }
 
+// ==========================================
+// INVULNERABILITY SCHEDULERS
+// ==========================================
+void setupInvulnerabilityTriggers() {
+    // 1. Team 1 Top Lane Invulnerability Progression
+    scheduler.add(3011, [](int iterations = 1) -> bool {
+        g_T1TopLane.updateInvulnerability();
+        // Return false to stop looping once T3 and Barracks are vulnerable/dead
+        if (g_T1TopLane.m_barracksVulnerable) {
+            return false;
+        }
+        return true;
+    });
+
+    // 2. Team 1 Mid Lane Invulnerability Progression
+    scheduler.add(3019, [](int iterations = 1) -> bool {
+        g_T1MidLane.updateInvulnerability();
+        if (g_T1MidLane.m_barracksVulnerable) {
+            return false;
+        }
+        return true;
+    });
+
+    // 3. Team 1 Bot Lane Invulnerability Progression
+    scheduler.add(3023, [](int iterations = 1) -> bool {
+        g_T1BotLane.updateInvulnerability();
+        if (g_T1BotLane.m_barracksVulnerable) {
+            return false;
+        }
+        return true;
+    });
+
+    // 4. Team 2 Top Lane Invulnerability Progression
+    scheduler.add(3037, [](int iterations = 1) -> bool {
+        g_T2TopLane.updateInvulnerability();
+        if (g_T2TopLane.m_barracksVulnerable) {
+            return false;
+        }
+        return true;
+    });
+
+    // 5. Team 2 Mid Lane Invulnerability Progression
+    scheduler.add(3041, [](int iterations = 1) -> bool {
+        g_T2MidLane.updateInvulnerability();
+        if (g_T2MidLane.m_barracksVulnerable) {
+            return false;
+        }
+        return true;
+    });
+
+    // 6. Team 2 Bot Lane Invulnerability Progression
+    scheduler.add(3049, [](int iterations = 1) -> bool {
+        g_T2BotLane.updateInvulnerability();
+        if (g_T2BotLane.m_barracksVulnerable) {
+            return false;
+        }
+        return true;
+    });
+
+    // 7. Team 1 Fortress Invulnerability Check
+    scheduler.add(3061, [](int iterations = 1) -> bool {
+        updateTeamFortressInvulnerability(g_T1TopLane, g_T1MidLane, g_T1BotLane, g_t1FortressId);
+        // If any T3 tower is dead, the fortress drops invulnerability and we can stop checking
+        if (g_T1TopLane.isT3Dead() || g_T1MidLane.isT3Dead() || g_T1BotLane.isT3Dead()) {
+            return false;
+        }
+        return true;
+    });
+
+    // 8. Team 2 Fortress Invulnerability Check
+    scheduler.add(3067, [](int iterations = 1) -> bool {
+        updateTeamFortressInvulnerability(g_T2TopLane, g_T2MidLane, g_T2BotLane, g_t2FortressId);
+        if (g_T2TopLane.isT3Dead() || g_T2MidLane.isT3Dead() || g_T2BotLane.isT3Dead()) {
+            return false;
+        }
+        return true;
+    });
+}
+
 void startLanes(){
     scheduler.add(30000, [](int iterations = 1) -> bool {
         spawnLane();
         return true;
     });
     scheduler.add(3109, [](int iterations = 1) -> bool {
+        
         g_T1TopLane.moveUnits();
         g_T1MidLane.moveUnits();
         g_T1BotLane.moveUnits();
+
         g_T2TopLane.moveUnits();
         g_T2MidLane.moveUnits();
         g_T2BotLane.moveUnits();
+
         return true;
     });
+
+    setupInvulnerabilityTriggers();
 
     // Medium upgrades
     scheduler.add(600000, [](int iterations = 1) -> bool {

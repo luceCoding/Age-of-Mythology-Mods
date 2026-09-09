@@ -22,6 +22,7 @@ void generate()
     rmTriggerAddScriptLine("};");
 
     createTypedScheduler("scheduler", buildStringTypeArray());
+    createTypedScheduler("schedulerWithIntInt", buildStringTypeArray("Int", "Int"));
     createTypedScheduler("schedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"));
     createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
     createTypedUnitScheduler("unitSchedulerWithVector", buildStringTypeArray("Vector"));

@@ -197,7 +197,7 @@ void preModifyPlayerData(){
     }
 
     // Only Humans
-    for(int p = 1; p <= cNumberPlayers - 2; p++) {
+    for(int p = 1; p <= cNumberPlayers-2; p++) {
         trModifyProtounitData("Market", p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityBasePercent);
         trModifyProtounitData("Market", p, cXSProtoEffectObstructionRadiusZ, 0.0, cXSRelativityBasePercent);
         trProtoUnitSetUnitType(p, "Market", "LogicalTypeBuildingThatCanBeEmpowered", false);

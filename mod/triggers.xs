@@ -26,20 +26,14 @@ void startGame(){
     initPlayerCommands();
     trHideScoreboard();
 
-    startShopTimers();
-    startIncome();
     paintAllLanesCircular();
     generateAllCamps();
-    startCapturePoints();
 
     postModifyPlayerData();
     postApplyBalancePatch();
 
     __worldSmooth(0, 0, __getMapSizeTilesX(), __getMapSizeTilesZ(), false, 2);
     updateTerrainObstructions();
-    
-    startBoss();
-    startTeamResignedCheck();
 
     trPlayerSetName(getTeamsAIPlayer(1), "Team 1");
     trPlayerSetName(getTeamsAIPlayer(2), "Team 2");
@@ -48,15 +42,22 @@ void startGame(){
     trChatSend(cNumberPlayers, "Created by ItzJover.");
 
     for (int p=1; p <= cNumberPlayers-2; p++){
+        BenchData bench = g_shop.m_benches[trCurrentPlayer()];
+        int shopId = bench.m_playerShopId;
+        vector v = kbUnitGetTruePosition(shopId);
         if (trCurrentPlayer() == p){
-            BenchData bench = g_shop.m_benches[trCurrentPlayer()];
-            int shopId = bench.m_playerShopId;
-            cameraLookAt(trUnitGetPosition(shopId), 60.0, 45.0, 45.0);
+            cameraLookAt(v, 60.0, 45.0, 45.0);
             selectSingle(shopId);
             trUnitGameSelect();
             trUnitHighlight(30.0, true);
         }
     }
+
+    startBoss();
+    startShopTimers();
+    startCapturePoints();
+    startIncome();
+    startTeamResignedCheck();
 }
 
 rule FIRE_FIRST_IMMEDIATELY_TRIGGER
