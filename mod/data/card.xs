@@ -82,33 +82,17 @@ class CardData {
             case UPGRADE_HP_REGEN: 
                 trModifyProtounitData(m_protoName, p, cXSProtoEffectUnitRegenRate, 0.1 * absDelta, cXSRelativityAbsolute);
             case UPGRADE_HACK_ATTACK: {
-                trModifyProtounitAction(m_protoName, "HandAttack", p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "RangedAttack", p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "BuildingAttack", p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "AntiWallAttack", p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "LightningAttack", p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute);
+                applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute);
             }
             case UPGRADE_PIERCE_ATTACK: {
-                trModifyProtounitAction(m_protoName, "HandAttack", p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "RangedAttack", p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "BuildingAttack", p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "AntiWallAttack", p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "LightningAttack", p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute);
+                applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute);
             }
             case UPGRADE_CRUSH_ATTACK: {
-                trModifyProtounitAction(m_protoName, "HandAttack", p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "RangedAttack", p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "BuildingAttack", p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "AntiWallAttack", p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute);
-                trModifyProtounitAction(m_protoName, "LightningAttack", p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute);
+                applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute);
             }
             case UPGRADE_ROF: {
                 float pctDelta = (sign > 0) ? (1.0 - (0.05 * (m_rarity + 1))) : (1.0 + (0.05 * (m_rarity + 1)));
-                trModifyProtounitAction(m_protoName, "HandAttack", p, cXSActionEffectROF, pctDelta, cXSRelativityBasePercent);
-                trModifyProtounitAction(m_protoName, "RangedAttack", p, cXSActionEffectROF, pctDelta, cXSRelativityBasePercent);
-                trModifyProtounitAction(m_protoName, "BuildingAttack", p, cXSActionEffectROF, pctDelta, cXSRelativityBasePercent);
-                trModifyProtounitAction(m_protoName, "AntiWallAttack", p, cXSActionEffectROF, pctDelta, cXSRelativityBasePercent);
-                trModifyProtounitAction(m_protoName, "LightningAttack", p, cXSActionEffectROF, pctDelta, cXSRelativityBasePercent);
+                applyProtoActionToTarget(m_protoName, p, cXSActionEffectROF, pctDelta, cXSRelativityBasePercent);
             }
         }
     }
@@ -153,10 +137,6 @@ class CardData {
         m_rarity = m_rarity + rarityIncrease;
         CardParameters params = getCardParameters();
         trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, params.getInitalMaxHP() * rarityIncrease, cXSRelativityAbsolute);
-    }
-
-    void increaseRarityByOne(int p = 0){
-        increaseRarityBy(1, p);
     }
 
     void mergeDuplicate(ref CardData duplicateCard, int p = 0){
@@ -228,6 +208,7 @@ class CardData {
 
     void withdraw(){
         m_isDeployed = false;
+        m_deployedUnitId = -1;
     }
 
     bool isNull(){

@@ -314,17 +314,17 @@ class BenchData {
                         log(3, "Player " + m_player + " withdrew to shop " + m_playerShopId);
                         return true;
                     }
-                    else {
+                    else if (trCurrentPlayer() == m_player) {
                         trChatSendToPlayer(m_player, m_player, "Unit must be nearby your shop before it can be withdrawn.");
                         selectSingle(cardToWithdraw.getDeployedUnitID());
                         trUnitHighlight(8.0, true);
-                        trSoundsetPlayPlayer(m_player, "HardPopAlert");
+                        trSoundsetPlayPlayer(m_player, "PopCapHit");
                         return false;
                     }
                 }
                 else {
                     trChatSendToPlayer(m_player, m_player, "Unit must be alive before it can be withdrawn.");
-                    trSoundsetPlayPlayer(m_player, "HardPopAlert");
+                    trSoundsetPlayPlayer(m_player, "PopCapHit");
                     return false;
                 }
             }
@@ -522,5 +522,16 @@ class BenchData {
                 renderSynergyIcon(p, posX, posY, posYOffset, width, height, 32, idx, false, " " + m_synergyCounter[idx] + " : " + getSynergyText(idx));
             }
         }
+    }
+
+    int[] getDeployedUnitIDs(){
+        int[] deployedUnitIDs = new int(0, -1);
+        for (int i = 0; i < m_cardSize; i++){
+            CardData card = m_cardArray[i];
+            if (card.isDeployed()){
+                deployedUnitIDs.add(card.getDeployedUnitID());
+            }
+        }
+        return deployedUnitIDs;
     }
 };

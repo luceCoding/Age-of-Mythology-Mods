@@ -25,6 +25,7 @@ void setAsCardUnit(string protoName = "", int p = 0){
     trProtoUnitSetFlag(p, protoName, "NotKBTracked", false);
     trProtoUnitSetFlag(p, protoName, "KBTracked", true);
     trProtoUnitSetFlag(p, protoName, "Deleteable", false);
+    trProtounitRemoveCommand(protoName, p, "Delete");
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeDivineImmunity", false);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidBoltTarget", true);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidFrostTarget", true);
@@ -45,7 +46,9 @@ void setAsCardUnit(string protoName = "", int p = 0){
     trProtoUnitSetUnitType(p, protoName, "TradeUnit", true); // For abilities
     trModifyProtounitData(protoName, p, cXSProtoEffectUnitRegenRate, 0.2, cXSRelativityAssign);
     trModifyProtounitData(protoName, p, cXSProtoEffectShieldRegenRate, 0.4, cXSRelativityAssign);
-    trModifyProtounitData(protoName, p, cXSProtoEffectLifespan, -1, cXSRelativityAssign);}
+    trModifyProtounitData(protoName, p, cXSProtoEffectLifespan, -1, cXSRelativityAssign);
+    addRecallCommand(p, protoName);
+}
 
 void setAsPlaceholder(string unitType = "", int p = 0){
     trModifyProtounitData(unitType, p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityAssign);

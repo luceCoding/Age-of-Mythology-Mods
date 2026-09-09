@@ -199,9 +199,9 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(4, cUnitTypeHarumotoBlessed, 800);
     addCardsIntoDeck(4, cUnitTypeGuardian, 1000);
 
-    addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 1500, -1, TIER_LEGENDARY, false);
+    addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 1000, -1, TIER_LEGENDARY, false);
 }
 
 void addOsirisCardIntoDeck(){
-    addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 1500, -1, TIER_LEGENDARY, false);
+    addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 1000, -1, TIER_LEGENDARY, false);
 }

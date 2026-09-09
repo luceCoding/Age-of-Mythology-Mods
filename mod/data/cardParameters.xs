@@ -45,7 +45,7 @@ class CardParameters {
         params.strings.add(toForwardSlash(kbProtoUnitGetIconPath(0, protoID)));
         params.strings.add(kbProtoUnitGetDisplayName(0, protoID));
 
-        params.floats.add(kbPlayerGetProtoStatFloat(0, protoID, cProtoStatMaxHP));
+        params.floats.add(kbPlayerGetProtoStatFloat(1, protoID, cProtoStatMaxHP));
 
         m_params = params;
         m_uuid = g_uuid.getNextUUID();
@@ -149,7 +149,7 @@ class CardParameters {
             case SYNERGY_INDEX_HERO: return isHero();
             case SYNERGY_INDEX_HEALER: return isHealer();
             case SYNERGY_INDEX_SIEGE: return isSiege();
-            case SYNERGY_INDEX_BUILDING: return isBuilding();
+            //case SYNERGY_INDEX_BUILDING: return isBuilding();
             case SYNERGY_INDEX_SOLDIER: return isSoldier();
         }
         return false;

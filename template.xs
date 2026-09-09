@@ -24,6 +24,7 @@ void generate()
     createTypedScheduler("scheduler", buildStringTypeArray());
     createTypedScheduler("schedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"));
     createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
+    createTypedUnitScheduler("unitSchedulerWithVector", buildStringTypeArray("Vector"));
 
     // common/preUi.xs
     createTypedScheduler("schedulerWithParameters", buildStringTypeArray("Parameters"));
@@ -32,6 +33,8 @@ void generate()
     // common/attachment/attachments.xs
     // common/search.xs
     // common/terrain.xs
+    // common/sound.xs
+    // common/unitCache.xs
     
     // mod/common/rng.xs
     

@@ -346,12 +346,12 @@ void preModifyPlayerData(){
     trProtoUnitSetIcon("MiningCamp", 0, "", "ui\minimap\minimap_gold");
 
     trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectHitpoints, 2, cXSRelativityBasePercent);
-    trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectArmorHack, 1.3, cXSRelativityBasePercent);
-    trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectArmorCrush, 0.2, cXSRelativityAbsolute);
+    trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectArmorHack, 1.2, cXSRelativityBasePercent);
+    trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectArmorCrush, 0.1, cXSRelativityAbsolute);
 
     trModifyProtounitData("MiningCamp", 0, cXSProtoEffectHitpoints, 4, cXSRelativityBasePercent);
-    trModifyProtounitData("MiningCamp", 0, cXSProtoEffectArmorHack, 1.5, cXSRelativityBasePercent);
-    trModifyProtounitData("MiningCamp", 0, cXSProtoEffectArmorCrush, 0.4, cXSRelativityAbsolute);
+    trModifyProtounitData("MiningCamp", 0, cXSProtoEffectArmorHack, 1.4, cXSRelativityBasePercent);
+    trModifyProtounitData("MiningCamp", 0, cXSProtoEffectArmorCrush, 0.2, cXSRelativityAbsolute);
 
     for (int i = 0; i < g_creepCampTypes.size(); i++) {
         string creepCampType = g_creepCampTypes[i];

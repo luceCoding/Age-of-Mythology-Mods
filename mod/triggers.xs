@@ -103,12 +103,13 @@ runImmediately
             xsSetContextPlayer(owner);
             selectSingle(unitId);
             if (kbProtoUnitIsType(protoUnit, COMMAND_TYPE)) {
+                vector v = trUnitGetPosition(unitId);
                 trUnitDestroy();
                 PlayerCommands playerCommands = playerCommandsArray[owner];
                 for (int i = 0; i < playerCommands.plantArray.size(); i++) {
                     if (playerCommands.plantArray[i] == protoUnit) {
-                        void(int) apply = playerCommands.applyArray[i];
-                        apply(owner);
+                        void(int, vector) apply = playerCommands.applyArray[i];
+                        apply(owner, v);
                         break;
                     }
                 }
@@ -164,12 +165,31 @@ rule DEV_MODE
 highFrequency
 active
 {
-    if(kbPlayerGetName(1) == "ItzJover" && trChatHistoryContains("devmode")){
-        trCreateRevealer(1, "default", vector(0, configMapBaseHeight, 0), 9999, false);
-        trPlayerGrantResources(1, "Gold", 99999);
-        trGodPowerGrant(1, "MeteorSPC", 99, 0, false, false);
-        trGodPowerGrant(1, "Bolt", 99, 0, false, false);
-        trGodPowerGrant(1, "Earthquake", 99, 0, false, false);
+    if(kbPlayerGetName(g_devIndex) == "ItzJover" && trChatHistoryContains("devmode", g_devIndex)){
+        for (int p = 1; p <= cNumberPlayers; p++){
+            trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
+            trPlayerGrantResources(p, "Gold", 99999);
+            trGodPowerGrant(p, "MeteorSPC", 99, 0, false, false);
+            trGodPowerGrant(p, "Bolt", 99, 0, false, false);
+            trGodPowerGrant(p, "Earthquake", 99, 0, false, false);
+        }
         xsDisableSelf();
     }
+    if(kbPlayerGetName(g_devIndex) != "ItzJover"){
+        xsDisableSelf();
+    }
+}
+
+rule DEV_SETUP
+runImmediately
+highFrequency
+active
+{
+    for(int p = 1; p <= cNumberPlayers; p++){
+        if (kbPlayerGetName(p) == "ItzJover"){
+            g_devIndex = p;
+            break;
+        }
+    }
+    xsDisableSelf();
 }

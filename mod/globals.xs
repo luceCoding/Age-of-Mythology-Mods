@@ -1,3 +1,5 @@
+int g_devIndex = -1;
+
 const int configMapTileX = 160;
 const int configMapTileZ = 160;
 const int configMapBaseHeight = 4;
@@ -70,7 +72,7 @@ const int UNIDENTIFIED_CARD_BASE_COST = 75;
 const int BUY_XP_COST_MULTIPLIER = 3;
 const int SHOP_COST_REDUCTION = 5;
 const int SHOP_COST_REDUCTION_MS_INTERVAL = 30000;
-const int SHRINE_COST_INCREMENT = 5;
+const int SHRINE_COST_INCREMENT = 10;
 const int TEMPLE_COST_INCREMENT = 5;
 const int ARMORY_COST_INCREMENT = 5;
 const int FORGE_COST_INCREMENT = 5;
@@ -87,7 +89,7 @@ const string TOP_BOSS_PROTO = "Fafnir";
 const string BOT_BOSS_PROTO = "Scylla";
 const string TOP_BOSS_PLACEHOLDER_PROTO = "TitanGate";
 const string BOT_BOSS_PLACEHOLDER_PROTO = "TitanGateSPC";
-const float BUFF_DURATION_MS = 180000;
+const float BUFF_DURATION_MS = 120000;
 const float GAIA_CREEP_LOS = 8.0;
 int[] g_TopBossBuffMsEnd = default;
 int[] g_BotBossBuffMsEnd = default;

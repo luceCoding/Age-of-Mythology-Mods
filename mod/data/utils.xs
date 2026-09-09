@@ -24,6 +24,7 @@ void applyProtoActionToTarget(string targetProto = "", int p = 0, int puField = 
     trModifyProtounitAction(targetProto, "HandAttack", p, puField, deltaVal, relativity);
     trModifyProtounitAction(targetProto, "RangedAttack", p, puField, deltaVal, relativity);
     trModifyProtounitAction(targetProto, "RangedAttackFlying", p, puField, deltaVal, relativity);
+    trModifyProtounitAction(targetProto, "RangedAttackMyth", p, puField, deltaVal, relativity);
     trModifyProtounitAction(targetProto, "BuildingAttack", p, puField, deltaVal, relativity);
     trModifyProtounitAction(targetProto, "AntiWallAttack", p, puField, deltaVal, relativity);
     trModifyProtounitAction(targetProto, "LightningAttack", p, puField, deltaVal, relativity);
@@ -33,6 +34,7 @@ void applyProtoActionUnitTypeToTarget(string targetProto = "", string unitType =
     trModifyProtounitActionUnitType(targetProto, "HandAttack", unitType, p, puField, deltaVal, relativity);
     trModifyProtounitActionUnitType(targetProto, "RangedAttack", unitType, p, puField, deltaVal, relativity);
     trModifyProtounitActionUnitType(targetProto, "RangedAttackFlying", unitType, p, puField, deltaVal, relativity);
+    trModifyProtounitActionUnitType(targetProto, "RangedAttackMyth", unitType, p, puField, deltaVal, relativity);
     trModifyProtounitActionUnitType(targetProto, "BuildingAttack", unitType, p, puField, deltaVal, relativity);
     trModifyProtounitActionUnitType(targetProto, "AntiWallAttack", unitType, p, puField, deltaVal, relativity);
     trModifyProtounitActionUnitType(targetProto, "LightningAttack", unitType, p, puField, deltaVal, relativity);
@@ -42,6 +44,7 @@ void applyProtoActionSpecialEffectToTarget(string targetProto = "", int p = 0, i
     trProtounitActionSpecialEffect(targetProto, "HandAttack", p, effectField, "All", -1, duration, value);
     trProtounitActionSpecialEffect(targetProto, "RangedAttack", p, effectField, "All", -1, duration, value);
     trProtounitActionSpecialEffect(targetProto, "RangedAttackFlying", p, effectField, "All", -1, duration, value);
+    trProtounitActionSpecialEffect(targetProto, "RangedAttackMyth", p, effectField, "All", -1, duration, value);
     trProtounitActionSpecialEffect(targetProto, "BuildingAttack", p, effectField, "All", -1, duration, value);
     trProtounitActionSpecialEffect(targetProto, "AntiWallAttack", p, effectField, "All", -1, duration, value);
     trProtounitActionSpecialEffect(targetProto, "LightningAttack", p, effectField, "All", -1, duration, value);
