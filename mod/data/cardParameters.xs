@@ -2,8 +2,8 @@ include "lib/rm_core.xs";
 
 class CardParameters {
 
-    Parameters m_params;
     int m_uuid = cMinInt;
+    Parameters m_params;
     bool[] m_unitTypes = default;
 
     string getProtoUnit(){
@@ -97,6 +97,7 @@ class CardParameters {
     bool isBuilding(){ return m_unitTypes[7];}
     bool isSoldier(){ return m_unitTypes[8];}
     bool isFrost(){ return m_unitTypes[13];}
+    bool isUndead(){ return m_unitTypes[14];}
 
     bool isGreek() { return xsStringFindFirst(getIconPath(), "greek", 0, false) != -1; }
     bool isNorse() { return xsStringFindFirst(getIconPath(), "norse", 0, false) != -1; }
@@ -117,6 +118,23 @@ class CardParameters {
             case SYNERGY_INDEX_SIEGE: return isSiege();
             case SYNERGY_INDEX_SOLDIER: return isSoldier();
             case SYNERGY_INDEX_FROST: return isFrost();
+            case SYNERGY_INDEX_UNDEAD: return isUndead();
+        }
+        return false;
+    }
+
+    bool isUnitUndeadType(int protoID = -1){
+        switch(protoID){
+            case cUnitTypeTzitzimitl: return true;
+            case cUnitTypeOnmoraki: return true;
+            case cUnitTypeShinigami: return true;
+            case cUnitTypeSoulGuide: return true;
+            case cUnitTypeAnubite: return true;
+            case cUnitTypeDraugr: return true;
+            case cUnitTypeEinheri: return true;
+            case cUnitTypeShadeSPC: return true;
+            case cUnitTypeMummy: return true;
+            case cUnitTypeMictlantecuhtli: return true;
         }
         return false;
     }
@@ -144,7 +162,7 @@ class CardParameters {
         m_params = params;
         m_uuid = g_uuid.getNextUUID();
 
-        m_unitTypes = new bool(MAX_UNIT_TYPES, false);
+        m_unitTypes = new bool(15, false);
         m_unitTypes[0] = isUnitType(UNIT_TYPE_INFANTRY);
         m_unitTypes[1] = isUnitType(UNIT_TYPE_ARCHER);
         m_unitTypes[2] = isUnitType(UNIT_TYPE_CAVALRY);
@@ -159,6 +177,7 @@ class CardParameters {
         m_unitTypes[11] = isUnitType(UNIT_TYPE_MYTH_RANGED);
         m_unitTypes[12] = isUnitType(UNIT_TYPE_MYTH_CAVALRY);
         m_unitTypes[13] = isUnitFrostType(protoID);
+        m_unitTypes[14] = isUnitUndeadType(protoID);
     }
 };
 

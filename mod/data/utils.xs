@@ -60,6 +60,10 @@ void applyProtoActionSpecialEffectToTarget(string targetProto = "", int p = 0, i
     trProtounitActionSpecialEffect(targetProto, "LightningAttack", p, effectField, targetType, dmgType, duration, value);
 }
 
+void applyProtoActionSpawnToTarget(string targetProto = "", int p = 0, int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){
+    trProtounitModifySpawnData(targetProto, p, kbProtoUnitGetName(spawnProtoID), eventType, delta, relativity, chance, lifespan);
+}
+
 void applyProtoActionToAllCards(int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
     CardParameters[] params = g_protoNameToCardParametersMap.getValues();
     for (int i = 0; i < params.size(); i++) {

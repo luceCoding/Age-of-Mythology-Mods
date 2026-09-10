@@ -9,6 +9,7 @@ void initializeSynergies(){
     icons[SYNERGY_INDEX_SIEGE] = "resources/in_game/gamepad_quick_select/Icon_SiegeUnit.png";
     icons[SYNERGY_INDEX_SOLDIER] = "resources/in_game/gamepad_quick_select/Icon_Villager.png";
     icons[SYNERGY_INDEX_FROST] = "resources/norse/static_color/god_powers/frost_icon.png";
+    icons[SYNERGY_INDEX_UNDEAD] = "resources/egyptian/static_color/god_powers/ancestors_icon.png";
 
     string[] rolloverNames = new string(MAX_SYNERGIES, "");
     rolloverNames[SYNERGY_INDEX_INFANTRY] = "Synergy: Infantry";
@@ -20,6 +21,7 @@ void initializeSynergies(){
     rolloverNames[SYNERGY_INDEX_SIEGE] = "Synergy: Siege";
     rolloverNames[SYNERGY_INDEX_SOLDIER] = "Synergy: Soldier";
     rolloverNames[SYNERGY_INDEX_FROST] = "Synergy: Frost";
+    rolloverNames[SYNERGY_INDEX_UNDEAD] = "Synergy: Undead";
 
     for (int i = 0; i < icons.size(); i++) {
         SynergyData synergy;
@@ -144,5 +146,15 @@ void initializeSynergies(){
         synergy.m_buffs[12] = createBuffSpecialAction(emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(2 * 1000.0), 1.0, 0.1);
         synergy.m_buffs[18] = createBuffSpecialAction(emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(3 * 1000.0), 1.0, 0.1);
         g_synergies[SYNERGY_INDEX_FROST] = synergy;
+    }
+
+    {
+        SynergyData synergy = g_synergies[SYNERGY_INDEX_UNDEAD];
+        synergy.m_buffs[2] = createBuffSpawnAction(emptySynergyType, cUnitTypeMinion, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
+        synergy.m_buffs[4] = createBuffSpawnAction(emptySynergyType, cUnitTypeMinion, cSpawnEventTypeDead, 2.0, cXSRelativityAbsolute);
+        synergy.m_buffs[6] = createBuffSpawnAction(emptySynergyType, cUnitTypeMinion, cSpawnEventTypeDead, 3.0, cXSRelativityAbsolute);
+        synergy.m_buffs[8] = createBuffSpawnAction(emptySynergyType, cUnitTypeMinion, cSpawnEventTypeDead, 4.0, cXSRelativityAbsolute);
+        synergy.m_buffs[10] = createBuffSpawnAction(emptySynergyType, cUnitTypeMinion, cSpawnEventTypeDead, 5.0, cXSRelativityAbsolute);
+        g_synergies[SYNERGY_INDEX_UNDEAD] = synergy;
     }
 }

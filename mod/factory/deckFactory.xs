@@ -103,6 +103,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(2, cUnitTypeShornOne);
     addCardsIntoDeck(2, cUnitTypeOnnaMusha);
     addCardsIntoDeck(2, cUnitTypeAyotochtli);
+    addCardsIntoDeck(2, cUnitTypeTzitzimitl);
 
     addCardsIntoDeck(2, cUnitTypeChariotArcher);
     addCardsIntoDeck(2, cUnitTypeCamelRider);

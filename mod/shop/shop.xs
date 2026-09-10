@@ -177,6 +177,7 @@ class Shop {
         if (params.isSiege()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_SIEGE, true, "", uiMainIconElement);}
         if (params.isSoldier()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_SOLDIER, true, "", uiMainIconElement);}
         if (params.isFrost()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_FROST, true, "", uiMainIconElement);}
+        if (params.isUndead()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_UNDEAD, true, "", uiMainIconElement);}
 
         // Title
         string title = params.getTitle();
