@@ -7,8 +7,8 @@ void initializeSynergies(){
     icons[SYNERGY_INDEX_HERO] = "resources/in_game/gamepad_quick_select/Icon_Heroes.png";
     icons[SYNERGY_INDEX_HEALER] = "resources/in_game/Gamepad_Radial_Menu/icon_radial_add.png";
     icons[SYNERGY_INDEX_SIEGE] = "resources/in_game/gamepad_quick_select/Icon_SiegeUnit.png";
-    icons[SYNERGY_INDEX_BUILDING] = "resources/in_game/gamepad_quick_select/Icon_Landmark.png";
     icons[SYNERGY_INDEX_SOLDIER] = "resources/in_game/gamepad_quick_select/Icon_Villager.png";
+    icons[SYNERGY_INDEX_FROST] = "resources/norse/static_color/god_powers/frost_icon.png";
 
     string[] rolloverNames = new string(MAX_SYNERGIES, "");
     rolloverNames[SYNERGY_INDEX_INFANTRY] = "Synergy: Infantry";
@@ -18,8 +18,8 @@ void initializeSynergies(){
     rolloverNames[SYNERGY_INDEX_HERO] = "Synergy: Hero";
     rolloverNames[SYNERGY_INDEX_HEALER] = "Synergy: Healer";
     rolloverNames[SYNERGY_INDEX_SIEGE] = "Synergy: Siege";
-    rolloverNames[SYNERGY_INDEX_BUILDING] = "Synergy: Building";
     rolloverNames[SYNERGY_INDEX_SOLDIER] = "Synergy: Soldier";
+    rolloverNames[SYNERGY_INDEX_FROST] = "Synergy: Frost";
 
     for (int i = 0; i < icons.size(); i++) {
         SynergyData synergy;
@@ -104,11 +104,11 @@ void initializeSynergies(){
         string[] tempUnitTypes = new string(0, "");
         tempUnitTypes.add(UNIT_TYPE_HERO);
         synergy.m_buffs[3] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.1, cXSRelativityAbsolute);
-        synergy.m_buffs[6] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, 1.0, 0.1);
+        synergy.m_buffs[6] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, -1, 1.0, 0.1);
         synergy.m_buffs[9] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAbsolute);
-        synergy.m_buffs[12] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, 1.0, 0.25);
+        synergy.m_buffs[12] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, -1, 1.0, 0.25);
         synergy.m_buffs[15] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.5, cXSRelativityAbsolute);
-        synergy.m_buffs[18] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, 1.0, 0.5);
+        synergy.m_buffs[18] = createBuffSpecialAction(emptySynergyType, cOnHitEffectLifesteal, -1, 1.0, 0.5);
         g_synergies[SYNERGY_INDEX_SOLDIER] = synergy;
     }
 
@@ -136,5 +136,13 @@ void initializeSynergies(){
         synergy.m_buffs[15] = createBuffActionUnitType(emptySynergyType, tempUnitTypes, cXSActionProtoEffectDamageBonus, 0.5, cXSRelativityAbsolute);
         synergy.m_buffs[18] = createBuffAction(emptySynergyType, cXSActionEffectDamageDivine, 4, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_HERO] = synergy;
+    }
+
+    {
+        SynergyData synergy = g_synergies[SYNERGY_INDEX_FROST];
+        synergy.m_buffs[6] = createBuffSpecialAction(emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(1 * 1000.0), 1.0, 0.1);
+        synergy.m_buffs[12] = createBuffSpecialAction(emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(2 * 1000.0), 1.0, 0.1);
+        synergy.m_buffs[18] = createBuffSpecialAction(emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(3 * 1000.0), 1.0, 0.1);
+        g_synergies[SYNERGY_INDEX_FROST] = synergy;
     }
 }

@@ -146,8 +146,8 @@ class BenchData {
             if (params.isHero()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_HERO, p);}
             if (params.isHealer()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_HEALER, p);}
             if (params.isSiege()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_SIEGE, p);}
-            //if (params.isBuilding()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_BUILDING, p);}
             if (params.isSoldier()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_SOLDIER, p);}
+            if (params.isFrost()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_FROST, p);}
         }
         g_synergyHashMap.put(key, count + 1);
     }
@@ -176,6 +176,7 @@ class BenchData {
             if (params.isHealer()){decrementSynergyAndResetBuff(SYNERGY_INDEX_HEALER, p);}
             if (params.isSiege()){decrementSynergyAndResetBuff(SYNERGY_INDEX_SIEGE, p);}
             if (params.isSoldier()){decrementSynergyAndResetBuff(SYNERGY_INDEX_SOLDIER, p);}
+            if (params.isFrost()){decrementSynergyAndResetBuff(SYNERGY_INDEX_FROST, p);}
         }
     }
 

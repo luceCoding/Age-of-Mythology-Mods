@@ -202,6 +202,8 @@ void startBoss(){
     scheduler.add(60017, [](int iterations = 1) -> bool {
         trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
         trModifyProtounitData(BOT_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
+        trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectHitpoints, 100, cXSRelativityAbsolute);
+        trModifyProtounitData(BOT_BOSS_PROTO, 0, cXSProtoEffectHitpoints, 100, cXSRelativityAbsolute);
         trModifyProtounitResource(TOP_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 5, cXSRelativityAbsolute);
         trModifyProtounitResource(BOT_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 5, cXSRelativityAbsolute);
         return true;

@@ -44,6 +44,9 @@ void addRecallCommand(int p = 0, string protoUnit = ""){
                                             int[] unitIds = bench.getDeployedUnitIDs();
                                             int[] closestUnitIds = new int(0, -1);
                                             for (int i = 0; i < unitIds.size(); i++){
+                                                int unitID = unitIds[i];
+                                                selectSingle(unitID);
+                                                if (trUnitDead()){ continue; }
                                                 if (kbUnitGetDistanceToPoint(unitIds[i], v) <= 1.5){
                                                     closestUnitIds.add(unitIds[i]);
                                                 }

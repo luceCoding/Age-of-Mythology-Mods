@@ -31,41 +31,6 @@ class CardParameters {
         return false;
     }
 
-    void setCardParameters(int age = 0, int protoID = -1, int cost = -1){
-        Parameters params = createParameters();
-        params.ints.add(-1); // placeholder for data
-        params.ints.add(age);
-        if (cost < 0){
-            cost = kbProtoUnitGetCostTotal(protoID);
-        }
-        params.ints.add(cost);
-        params.ints.add(protoID);
-        params.strings.add(""); // placeholder for data
-        params.strings.add(kbProtoUnitGetName(protoID));
-        params.strings.add(toForwardSlash(kbProtoUnitGetIconPath(0, protoID)));
-        params.strings.add(kbProtoUnitGetDisplayName(0, protoID));
-
-        params.floats.add(kbPlayerGetProtoStatFloat(1, protoID, cProtoStatMaxHP));
-
-        m_params = params;
-        m_uuid = g_uuid.getNextUUID();
-
-        m_unitTypes = new bool(MAX_UNIT_TYPES, false);
-        m_unitTypes[0] = isUnitType(UNIT_TYPE_INFANTRY);
-        m_unitTypes[1] = isUnitType(UNIT_TYPE_ARCHER);
-        m_unitTypes[2] = isUnitType(UNIT_TYPE_CAVALRY);
-        m_unitTypes[3] = isUnitType(UNIT_TYPE_MYTH);
-        m_unitTypes[4] = isUnitType(UNIT_TYPE_HERO);
-        m_unitTypes[5] = isUnitType(UNIT_TYPE_HEALER);
-        m_unitTypes[6] = isUnitType(UNIT_TYPE_SIEGE);
-        m_unitTypes[7] = isUnitType(UNIT_TYPE_BUILDING);
-        m_unitTypes[8] = isUnitType(UNIT_TYPE_SOLDIER);
-        m_unitTypes[9] = isUnitType(UNIT_TYPE_RANGED);
-        m_unitTypes[10] = isUnitType(UNIT_TYPE_MYTH_SIEGE);
-        m_unitTypes[11] = isUnitType(UNIT_TYPE_MYTH_RANGED);
-        m_unitTypes[12] = isUnitType(UNIT_TYPE_MYTH_CAVALRY);
-    }
-
     int getIntData(){
         if (m_params.ints.size() < 0){
             return -1;
@@ -131,6 +96,7 @@ class CardParameters {
     bool isSiege(){ return (m_unitTypes[6] || m_unitTypes[10]);}
     bool isBuilding(){ return m_unitTypes[7];}
     bool isSoldier(){ return m_unitTypes[8];}
+    bool isFrost(){ return m_unitTypes[13];}
 
     bool isGreek() { return xsStringFindFirst(getIconPath(), "greek", 0, false) != -1; }
     bool isNorse() { return xsStringFindFirst(getIconPath(), "norse", 0, false) != -1; }
@@ -149,10 +115,50 @@ class CardParameters {
             case SYNERGY_INDEX_HERO: return isHero();
             case SYNERGY_INDEX_HEALER: return isHealer();
             case SYNERGY_INDEX_SIEGE: return isSiege();
-            //case SYNERGY_INDEX_BUILDING: return isBuilding();
             case SYNERGY_INDEX_SOLDIER: return isSoldier();
+            case SYNERGY_INDEX_FROST: return isFrost();
         }
         return false;
+    }
+
+    bool isUnitFrostType(int protoID = -1){
+        return isNorse() && (protoID != cUnitTypeFireGiant);
+    }
+
+    void setCardParameters(int age = 0, int protoID = -1, int cost = -1){
+        Parameters params = createParameters();
+        params.ints.add(-1); // placeholder for data
+        params.ints.add(age);
+        if (cost < 0){
+            cost = kbProtoUnitGetCostTotal(protoID);
+        }
+        params.ints.add(cost);
+        params.ints.add(protoID);
+        params.strings.add(""); // placeholder for data
+        params.strings.add(kbProtoUnitGetName(protoID));
+        params.strings.add(toForwardSlash(kbProtoUnitGetIconPath(0, protoID)));
+        params.strings.add(kbProtoUnitGetDisplayName(0, protoID));
+
+        params.floats.add(kbPlayerGetProtoStatFloat(1, protoID, cProtoStatMaxHP));
+
+        m_params = params;
+        m_uuid = g_uuid.getNextUUID();
+
+        m_unitTypes = new bool(MAX_UNIT_TYPES, false);
+        m_unitTypes[0] = isUnitType(UNIT_TYPE_INFANTRY);
+        m_unitTypes[1] = isUnitType(UNIT_TYPE_ARCHER);
+        m_unitTypes[2] = isUnitType(UNIT_TYPE_CAVALRY);
+        m_unitTypes[3] = isUnitType(UNIT_TYPE_MYTH);
+        m_unitTypes[4] = isUnitType(UNIT_TYPE_HERO);
+        m_unitTypes[5] = isUnitType(UNIT_TYPE_HEALER);
+        m_unitTypes[6] = isUnitType(UNIT_TYPE_SIEGE);
+        m_unitTypes[7] = isUnitType(UNIT_TYPE_BUILDING);
+        m_unitTypes[8] = isUnitType(UNIT_TYPE_SOLDIER);
+        m_unitTypes[9] = isUnitType(UNIT_TYPE_RANGED);
+        m_unitTypes[10] = isUnitType(UNIT_TYPE_MYTH_SIEGE);
+        m_unitTypes[11] = isUnitType(UNIT_TYPE_MYTH_RANGED);
+        m_unitTypes[12] = isUnitType(UNIT_TYPE_MYTH_CAVALRY);
+        m_unitTypes[13] = isUnitFrostType(protoID);
     }
 };
 

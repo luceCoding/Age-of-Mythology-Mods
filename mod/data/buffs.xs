@@ -4,7 +4,11 @@ const int BUFF_TYPE_PROTO_ACTION_UNIT_TYPE = 2; // trModifyProtounitActionUnitTy
 const int BUFF_TYPE_PROTO_ACTION_SPECIAL = 3; // trProtounitActionSpecialEffect
 
 string[] g_allProtounits = default;
-float[] g_special_action_counter = default;
+
+StringToFloatHashMap g_buffToCounterMap;
+string getBuffToCounterKey(int p = 0, int buffType = BUFF_TYPE_PROTO_DATA, string tag = ""){
+    return ""+p+""+buffType+""+tag;
+}
 
 class Buff {
     bool m_init = false;
@@ -19,6 +23,7 @@ class Buff {
     // Fields specifically for trProtounitActionSpecialEffect
     int m_effectField = -1;
     float m_duration = 0.0;
+    int m_dmgType = -1;
 
     void setBuffData(int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
         m_buffType = BUFF_TYPE_PROTO_DATA;
@@ -27,9 +32,6 @@ class Buff {
         m_delta = delta;
         m_relativity = relativity;
         m_init = true;
-        if (g_special_action_counter.size() == 0){
-            g_special_action_counter = new float(cNumberPlayers+1, 0.0);
-        }
     }
 
     void setBuffAction(int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
@@ -51,10 +53,11 @@ class Buff {
         m_init = true;
     }
 
-    void setBuffSpecialAction(int[] synergyTypes = default, int effectField = -1, float duration = 0.0, float deltaVal = 0.0) {
+    void setBuffSpecialAction(int[] synergyTypes = default, int effectField = -1, int dmgType = -1, float duration = 0.0, float deltaVal = 0.0) {
         m_buffType = BUFF_TYPE_PROTO_ACTION_SPECIAL;
         m_synergyTypes = synergyTypes;
         m_effectField = effectField;
+        m_dmgType = dmgType;
         m_duration = duration;
         m_delta = deltaVal;
         m_init = true;
@@ -69,7 +72,9 @@ class Buff {
         switch(m_buffType){
             case BUFF_TYPE_PROTO_DATA: { trModifyProtounitData(targetProto, p, m_puField, deltaVal, m_relativity); }
             case BUFF_TYPE_PROTO_ACTION: { applyProtoActionToTarget(targetProto, p, m_puField, deltaVal, m_relativity); }
-            case BUFF_TYPE_PROTO_ACTION_SPECIAL: { applyProtoActionSpecialEffectToTarget(targetProto, p, m_effectField, m_duration, g_special_action_counter[p]); }
+            case BUFF_TYPE_PROTO_ACTION_SPECIAL: { applyProtoActionSpecialEffectToTarget(targetProto, p, m_effectField, "All", m_dmgType, m_duration, 
+                g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value")));
+            }
             case BUFF_TYPE_PROTO_ACTION_UNIT_TYPE: {
                 for (int u = 0; u < m_unitTypes.size(); u++) {
                     applyProtoActionUnitTypeToTarget(targetProto, m_unitTypes[u], p, m_puField, deltaVal, m_relativity);
@@ -82,7 +87,8 @@ class Buff {
         if (isEmpty()) { return; }
 
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL){
-            g_special_action_counter[p] = g_special_action_counter[p] + m_delta;
+            float currValue = g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"));
+            g_buffToCounterMap.put(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"), currValue + m_delta);
         }
 
         CardParameters[] params = g_protoNameToCardParametersMap.getValues();
@@ -118,7 +124,8 @@ class Buff {
         }
 
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL){
-            g_special_action_counter[p] = g_special_action_counter[p] + invDelta;
+            float currValue = g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"));
+            g_buffToCounterMap.put(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"), currValue + invDelta);
         }
 
         CardParameters[] params = g_protoNameToCardParametersMap.getValues();
@@ -151,13 +158,15 @@ class Buff {
             fieldName = "Bonus Damage";
         } else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL) {
             switch (m_effectField) {
-                case cOnHitEffectStun: fieldName = "Stun";
-                case cOnHitEffectSnare: fieldName = "Snare";
-                case cOnHitEffectDamageOverTime: fieldName = "Damage over Time";
-                case cOnHitEffectLifesteal: fieldName = "Lifesteal";
-                case cOnHitEffectThrow: fieldName = "Throw";
-            }
-        } else {
+                    case cOnHitEffectStun: fieldName = "Stun";
+                    case cOnHitEffectSnare: fieldName = "Snare";
+                    case cOnHitEffectDamageOverTime: fieldName = "Damage Over Time";
+                    case cOnHitEffectLifesteal: fieldName = "Lifesteal";
+                    case cOnHitEffectThrow: fieldName = "Throw";
+                    case cOnHitEffectProgFreezeSpeed: fieldName = "to Progressive Freeze";
+                }
+        } 
+        else {
             switch (m_buffType) {
                 case BUFF_TYPE_PROTO_DATA: {
                     switch (m_puField) {
@@ -199,7 +208,20 @@ class Buff {
                 } else {
                     valStr = "" + pct + "%";
                 }
-            } else {
+            }
+            else if (m_effectField == cOnHitEffectProgFreezeSpeed) {
+                int seconds = m_dmgType / 1000; // Convert milliseconds to seconds
+                if (m_duration > 0.0 && seconds == 0) {
+                    seconds = 1; // Fallback for small positive floats
+                }
+
+                if (seconds > 0) {
+                    valStr = "+" + seconds + "s";
+                } else {
+                    valStr = "" + seconds + "s";
+                }
+            }
+            else {
                 int intDelta = m_delta;
                 if (intDelta > 0) {
                     valStr = "+" + intDelta;
@@ -207,7 +229,8 @@ class Buff {
                     valStr = "" + intDelta;
                 }
             }
-        } else if (m_relativity == cXSRelativityAbsolute) {
+        } 
+        else if (m_relativity == cXSRelativityAbsolute) {
             if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE) {
                 int pct = (m_delta * 100.0) + 0.5;
                 if (pct > 0) {
@@ -247,7 +270,8 @@ class Buff {
                     valStr = "" + intDelta;
                 }
             }
-        } else {
+        } 
+        else {
             int pct = 0;
             if (m_puField == cXSActionEffectROF && m_delta > 0.0 && m_delta < 1.0) {
                 float speedIncrease = 1.0 - m_delta;
@@ -318,8 +342,8 @@ class Buff {
                         case SYNERGY_INDEX_HERO: sName = "Heroes";
                         case SYNERGY_INDEX_HEALER: sName = "Healers";
                         case SYNERGY_INDEX_SIEGE: sName = "Siege";
-                        case SYNERGY_INDEX_BUILDING: sName = "Buildings";
                         case SYNERGY_INDEX_SOLDIER: sName = "Soldiers";
+                        case SYNERGY_INDEX_FROST: sName = "Frost";
                     }
                     
                     if (i > 0) { 
@@ -352,8 +376,8 @@ Buff createBuffActionUnitType(int[] synergyTypes = default, string[] unitTypes =
     return buff;
 }
 
-Buff createBuffSpecialAction(int[] synergyTypes = default, int effectField = -1, float duration = 0.0, float deltaVal = 0.0){
+Buff createBuffSpecialAction(int[] synergyTypes = default, int effectField = -1, int dmgType = -1, float duration = 0.0, float deltaVal = 0.0){
     Buff buff;
-    buff.setBuffSpecialAction(synergyTypes, effectField, duration, deltaVal);
+    buff.setBuffSpecialAction(synergyTypes, effectField, dmgType, duration, deltaVal);
     return buff;
 }

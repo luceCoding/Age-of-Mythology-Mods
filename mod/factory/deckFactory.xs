@@ -120,6 +120,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(2, cUnitTypeBattleBoar);
     addCardsIntoDeck(2, cUnitTypeFrostGiant);
     addCardsIntoDeck(2, cUnitTypeRockGiant);
+    addCardsIntoDeck(2, cUnitTypeMountainGiant);
 
     addCardsIntoDeck(2, cUnitTypeDestroyer);
     addCardsIntoDeck(2, cUnitTypeArcus);
@@ -136,7 +137,6 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(2, cUnitTypeHypaspist);
     addCardsIntoDeck(2, cUnitTypeHydra);
     addCardsIntoDeck(2, cUnitTypeHamadryad);
-
 
     addCardsIntoDeck(2, cUnitTypeSage);
     addCardsIntoDeck(2, cUnitTypeChuKoNu);
@@ -180,11 +180,16 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(3, cUnitTypeHelepolis, 400);
     addCardsIntoDeck(3, cUnitTypeChiron);
 
-    addCardsIntoDeck(3, cUnitTypeZhuQue);
+    addCardsIntoDeck(3, cUnitTypeFenrir);
     addCardsIntoDeck(3, cUnitTypeBallista);
+    addCardsIntoDeck(3, cUnitTypeFireGiant);
+
+    addCardsIntoDeck(3, cUnitTypeZhuQue);
     addCardsIntoDeck(3, cUnitTypeMummy);
+    addCardsIntoDeck(3, cUnitTypeOnmoraki);
     addCardsIntoDeck(3, cUnitTypeHunDun);
     addCardsIntoDeck(3, cUnitTypeOnmyoji);
+    addCardsIntoDeck(3, cUnitTypeShinigami);
 
     addCardsIntoDeck(3, cUnitTypeSamuraiHatamoto);
     addCardsIntoDeck(3, cUnitTypeArkantos, 600);
@@ -198,6 +203,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(4, cUnitTypeArkantosGod, 1000);
     addCardsIntoDeck(4, cUnitTypeHarumotoBlessed, 800);
     addCardsIntoDeck(4, cUnitTypeGuardian, 1000);
+    addCardsIntoDeck(4, cUnitTypeMictlantecuhtli, 1000);
 
     addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 1000, -1, TIER_LEGENDARY, false);
 }

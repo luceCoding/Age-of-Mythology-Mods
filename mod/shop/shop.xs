@@ -16,12 +16,12 @@ class Shop {
 
     void init(){
         m_decks = new DeckData(TOTAL_AGES);
-        m_currDraws = new DrawData(cNumberPlayers + 1);
-        m_benches = new BenchData(cNumberPlayers + 1);
-        g_selectedUUIDs = new int(cNumberPlayers + 1, -1);
-        m_totalShopExp = new int(cNumberPlayers + 1, 0);
-        m_currShopLevel = new int(cNumberPlayers + 1, 0);
-        m_shopTypeOpened = new int(cNumberPlayers + 1, DEFAULT_SHOP_TYPE);
+        m_currDraws = new DrawData(cNumberPlayers - 1);
+        m_benches = new BenchData(cNumberPlayers - 1);
+        g_selectedUUIDs = new int(cNumberPlayers - 1, -1);
+        m_totalShopExp = new int(cNumberPlayers - 1, 0);
+        m_currShopLevel = new int(cNumberPlayers - 1, 0);
+        m_shopTypeOpened = new int(cNumberPlayers - 1, DEFAULT_SHOP_TYPE);
     }
 
     int getDrawCost(int p = 0){
@@ -168,15 +168,15 @@ class Shop {
         float rightPosX = posX + 0.055 * iconMultiplier;
         float rightPosY = posY + 0.08 * iconMultiplier;
 
-        if (params.isInfantry()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 0, true, "", uiMainIconElement);}
-        if (params.isArcher()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 1, true, "", uiMainIconElement);}
-        if (params.isCavalry()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 2, true, "", uiMainIconElement);}
-        if (params.isMythUnit()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 3, true, "", uiMainIconElement);}
-        if (params.isHero()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 4, true, "", uiMainIconElement);}
-        if (params.isHealer()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 5, true, "", uiMainIconElement);}
-        if (params.isSiege()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 6, true, "", uiMainIconElement);}
-        //if (params.isBuilding()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 7, true, "", uiMainIconElement);}
-        if (params.isSoldier()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, 8, true, "", uiMainIconElement);}
+        if (params.isInfantry()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_INFANTRY, true, "", uiMainIconElement);}
+        if (params.isArcher()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_RANGED, true, "", uiMainIconElement);}
+        if (params.isCavalry()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_CAVALRY, true, "", uiMainIconElement);}
+        if (params.isMythUnit()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_MYTH, true, "", uiMainIconElement);}
+        if (params.isHero()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_HERO, true, "", uiMainIconElement);}
+        if (params.isHealer()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_HEALER, true, "", uiMainIconElement);}
+        if (params.isSiege()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_SIEGE, true, "", uiMainIconElement);}
+        if (params.isSoldier()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_SOLDIER, true, "", uiMainIconElement);}
+        if (params.isFrost()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_FROST, true, "", uiMainIconElement);}
 
         // Title
         string title = params.getTitle();

@@ -39,10 +39,6 @@ void setAsCardUnit(string protoName = "", int p = 0){
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidShiftingSandsTarget", true);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidBloodPactTarget", true);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidShockwaveTarget", true);
-    trProtoUnitSetUnitType(p, protoName, "LogicalTypeHandUnitsAutoAttack", true);
-    trProtoUnitSetUnitType(p, protoName, "LogicalTypeRangedUnitsAutoAttack", true);
-    trProtoUnitSetUnitType(p, protoName, "LogicalTypeHandUnitsAttack", true);
-    trProtoUnitSetUnitType(p, protoName, "LogicalTypeRangedUnitsAttack", true);
     trProtoUnitSetUnitType(p, protoName, "TradeUnit", true); // For abilities
     trModifyProtounitData(protoName, p, cXSProtoEffectUnitRegenRate, 0.2, cXSRelativityAssign);
     trModifyProtounitData(protoName, p, cXSProtoEffectShieldRegenRate, 0.4, cXSRelativityAssign);
