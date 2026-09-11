@@ -25,7 +25,7 @@ class SynergyData {
 
 SynergyData[] g_synergies = default;
 
-void renderSynergyIcon(int p = 0, float posX = 0.0, ref float posY, float posYOffset = 0.0, float width = 0.0, float height = 0.0, 
+void renderSynergyIcon(int p = 0, float posX = 0.0, float posY = 0.0, float width = 0.0, float height = 0.0, 
                        int iconSize = 32, int synergyIndex = 0,
                        bool showBackground = true,
                        string content = "", int uiElementTopOf = -1
@@ -38,5 +38,4 @@ void renderSynergyIcon(int p = 0, float posX = 0.0, ref float posY, float posYOf
     minimapSafeDisplayWithHover(p, posX, posY, width, height, getIconPathFormat(synergy.m_icon, iconSize) + content, 
                                 synergy.m_rolloverName,
                                 synergy.getDescription(), uiBackgroundElement);
-    posY = posY - posYOffset;
 }

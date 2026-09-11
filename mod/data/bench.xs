@@ -149,6 +149,7 @@ class BenchData {
             if (params.isSoldier()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_SOLDIER, p);}
             if (params.isFrost()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_FROST, p);}
             if (params.isUndead()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_UNDEAD, p);}
+            if (params.isPoison()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_POISON, p);}
         }
         g_synergyHashMap.put(key, count + 1);
     }
@@ -179,6 +180,7 @@ class BenchData {
             if (params.isSoldier()){decrementSynergyAndResetBuff(SYNERGY_INDEX_SOLDIER, p);}
             if (params.isFrost()){decrementSynergyAndResetBuff(SYNERGY_INDEX_FROST, p);}
             if (params.isUndead()){decrementSynergyAndResetBuff(SYNERGY_INDEX_UNDEAD, p);}
+            if (params.isPoison()){decrementSynergyAndResetBuff(SYNERGY_INDEX_POISON, p);}
         }
     }
 
@@ -491,7 +493,8 @@ class BenchData {
             int idx = sortedIndices[i];
             if (m_synergyCounter[idx] > 0) {
                 SynergyData synergy = g_synergies[idx];
-                renderSynergyIcon(p, posX, posY, posYOffset, width, height, 32, idx, false, " " + m_synergyCounter[idx] + " : " + getSynergyText(idx));
+                renderSynergyIcon(p, posX, posY, width, height, 32, idx, false, " " + m_synergyCounter[idx] + " : " + getSynergyText(idx));
+                posY = posY - posYOffset;
             }
         }
     }

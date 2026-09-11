@@ -98,6 +98,7 @@ class CardParameters {
     bool isSoldier(){ return m_unitTypes[8];}
     bool isFrost(){ return m_unitTypes[13];}
     bool isUndead(){ return m_unitTypes[14];}
+    bool isPoison(){ return m_unitTypes[15];}
 
     bool isGreek() { return xsStringFindFirst(getIconPath(), "greek", 0, false) != -1; }
     bool isNorse() { return xsStringFindFirst(getIconPath(), "norse", 0, false) != -1; }
@@ -119,6 +120,7 @@ class CardParameters {
             case SYNERGY_INDEX_SOLDIER: return isSoldier();
             case SYNERGY_INDEX_FROST: return isFrost();
             case SYNERGY_INDEX_UNDEAD: return isUndead();
+            case SYNERGY_INDEX_POISON: return isPoison();
         }
         return false;
     }
@@ -139,8 +141,29 @@ class CardParameters {
         return false;
     }
 
+    bool isUnitPoisonType(int protoID = -1){
+        switch(protoID){
+            case cUnitTypeScorpionMan: return true;
+            case cUnitTypeWadjet: return true;
+            case cUnitTypeScarab: return true;
+            case cUnitTypeArgus: return true;
+            case cUnitTypeFafnir: return true;
+            case cUnitTypeMaquizcoatl: return true;
+            case cUnitTypeXuanWu: return true;
+            case cUnitTypePopocatepetl: return true;
+            case cUnitTypeJorogumo: return true;
+            case cUnitTypeMagumo: return true;
+            case cUnitTypeMedusa: return true;
+        }
+        return isAztec() && isSoldier();
+    }
+
     bool isUnitFrostType(int protoID = -1){
-        return isNorse() && (protoID != cUnitTypeFireGiant);
+        switch(protoID){
+            case cUnitTypeYukiOnna: return true;
+            case cUnitTypeFireGiant: return false;
+        }
+        return isNorse();
     }
 
     void setCardParameters(int age = 0, int protoID = -1, int cost = -1){
@@ -162,7 +185,7 @@ class CardParameters {
         m_params = params;
         m_uuid = g_uuid.getNextUUID();
 
-        m_unitTypes = new bool(15, false);
+        m_unitTypes = new bool(16, false);
         m_unitTypes[0] = isUnitType(UNIT_TYPE_INFANTRY);
         m_unitTypes[1] = isUnitType(UNIT_TYPE_ARCHER);
         m_unitTypes[2] = isUnitType(UNIT_TYPE_CAVALRY);
@@ -178,6 +201,7 @@ class CardParameters {
         m_unitTypes[12] = isUnitType(UNIT_TYPE_MYTH_CAVALRY);
         m_unitTypes[13] = isUnitFrostType(protoID);
         m_unitTypes[14] = isUnitUndeadType(protoID);
+        m_unitTypes[15] = isUnitPoisonType(protoID);
     }
 };
 

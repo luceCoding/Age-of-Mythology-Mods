@@ -52,11 +52,13 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeTlamanihSpearman);
     addCardsIntoDeck(1, cUnitTypeTequihuaArcher);
     addCardsIntoDeck(1, cUnitTypeOcelotlWarrior);
+    addCardsIntoDeck(1, cUnitTypeCoyoteWarrior);
     addCardsIntoDeck(1, cUnitTypeChaneque);
     addCardsIntoDeck(1, cUnitTypeCentzonTotochtin);
     addCardsIntoDeck(1, cUnitTypeTeixiptlaHuitz, 260);
     addCardsIntoDeck(1, cUnitTypeTeixiptlaTezca, 260);
     addCardsIntoDeck(1, cUnitTypeTeixiptlaQuetz, 260);
+    addCardsIntoDeck(1, cUnitTypeMaquizcoatl);
 
     addCardsIntoDeck(1, cUnitTypeHoplite);
     addCardsIntoDeck(1, cUnitTypeToxotes);
@@ -89,6 +91,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeGeHalberdier);
     addCardsIntoDeck(1, cUnitTypeWuzuJavelineer);
     addCardsIntoDeck(1, cUnitTypeQiLin);
+    addCardsIntoDeck(1, cUnitTypeJorogumo);
 
     addCardsIntoDeck(1, cUnitTypeYariSpearman);
     addCardsIntoDeck(1, cUnitTypeYumiArcher);
@@ -104,15 +107,19 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(2, cUnitTypeOnnaMusha);
     addCardsIntoDeck(2, cUnitTypeAyotochtli);
     addCardsIntoDeck(2, cUnitTypeTzitzimitl);
+    addCardsIntoDeck(2, cUnitTypePopocatepetl, 250);
 
     addCardsIntoDeck(2, cUnitTypeChariotArcher);
     addCardsIntoDeck(2, cUnitTypeCamelRider);
     addCardsIntoDeck(2, cUnitTypeWarElephant);
     addCardsIntoDeck(2, cUnitTypePetsuchos);
+    addCardsIntoDeck(2, cUnitTypeScorpionMan);
+    addCardsIntoDeck(2, cUnitTypeScarab);
 
     addCardsIntoDeck(2, cUnitTypeDaimyo);
     addCardsIntoDeck(2, cUnitTypeShinobi);
     addCardsIntoDeck(2, cUnitTypeOyumi);
+    addCardsIntoDeck(2, cUnitTypeYukiOnna, 252);
 
     addCardsIntoDeck(2, cUnitTypeGodi);
     addCardsIntoDeck(2, cUnitTypeJarl);
@@ -166,6 +173,8 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(3, cUnitTypeTigerCavalry);
     addCardsIntoDeck(3, cUnitTypeAsura);
 
+    addCardsIntoDeck(3, cUnitTypeArgus);
+
     addCardsIntoDeck(3, cUnitTypeQuinametzin);
     addCardsIntoDeck(3, cUnitTypeSoulGuide);
     addCardsIntoDeck(3, cUnitTypeAmazonArcher);
@@ -180,10 +189,12 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(3, cUnitTypeMedusa);
     addCardsIntoDeck(3, cUnitTypeHelepolis, 400);
     addCardsIntoDeck(3, cUnitTypeChiron);
+    addCardsIntoDeck(3, cUnitTypeXuanWu);
 
     addCardsIntoDeck(3, cUnitTypeFenrir);
     addCardsIntoDeck(3, cUnitTypeBallista);
     addCardsIntoDeck(3, cUnitTypeFireGiant);
+    addCardsIntoDeck(3, cUnitTypeFafnir);
 
     addCardsIntoDeck(3, cUnitTypeZhuQue);
     addCardsIntoDeck(3, cUnitTypeMummy);
@@ -194,6 +205,7 @@ void initializeCardParametersMap(){
 
     addCardsIntoDeck(3, cUnitTypeSamuraiHatamoto);
     addCardsIntoDeck(3, cUnitTypeArkantos, 600);
+    addCardsIntoDeck(3, cUnitTypeMagumo, 400);
 
     addCardsIntoDeck(4, cUnitTypeSonOfOsiris, 750);
     addCardsIntoDeck(4, cUnitTypeNidhogg, 1000);

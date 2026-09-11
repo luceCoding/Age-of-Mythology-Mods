@@ -167,17 +167,19 @@ class Shop {
         // Synergies
         float rightPosX = posX + 0.055 * iconMultiplier;
         float rightPosY = posY + 0.08 * iconMultiplier;
+        int count = 0;
 
-        if (params.isInfantry()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_INFANTRY, true, "", uiMainIconElement);}
-        if (params.isArcher()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_RANGED, true, "", uiMainIconElement);}
-        if (params.isCavalry()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_CAVALRY, true, "", uiMainIconElement);}
-        if (params.isMythUnit()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_MYTH, true, "", uiMainIconElement);}
-        if (params.isHero()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_HERO, true, "", uiMainIconElement);}
-        if (params.isHealer()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_HEALER, true, "", uiMainIconElement);}
-        if (params.isSiege()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_SIEGE, true, "", uiMainIconElement);}
-        if (params.isSoldier()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_SOLDIER, true, "", uiMainIconElement);}
-        if (params.isFrost()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_FROST, true, "", uiMainIconElement);}
-        if (params.isUndead()){renderSynergyIcon(p, rightPosX, rightPosY, miniIconYOffset * iconMultiplier, 0.025, 0.025, miniIconSize, SYNERGY_INDEX_UNDEAD, true, "", uiMainIconElement);}
+        for (int SYNERGY_INDEX = 0; SYNERGY_INDEX < MAX_SYNERGIES; SYNERGY_INDEX++){
+            if (params.isASynergy(SYNERGY_INDEX)){
+                if (count == 3){
+                    rightPosX = rightPosX - miniIconYOffset * iconMultiplier;
+                    rightPosY = posY + 0.08 * iconMultiplier;
+                }
+                renderSynergyIcon(p, rightPosX, rightPosY, 0.025, 0.025, miniIconSize, SYNERGY_INDEX, true, "", uiMainIconElement);
+                rightPosY = rightPosY - miniIconYOffset * iconMultiplier;
+                count = count + 1;
+            }
+        }
 
         // Title
         string title = params.getTitle();
@@ -341,20 +343,22 @@ class Shop {
         if (removedCard.isNull() == false){
             int goldAmount = getCost(removedCard, p);
 
-            int rarity = removedCard.getRarity();
-            while(removedCard.getRarity() > 0){
-                removedCard.decreaseRarityByOne(p);
+            if (removedCard.isOsirisPieceBoxCard() == false){
+                int rarity = removedCard.getRarity();
+                while(removedCard.getRarity() > 0){
+                    removedCard.decreaseRarityByOne(p);
+                }
+                removedCard.setRarity(TIER_COMMON);
+                int cardCount = rarity + 1;
+                for (int i = 0; i < cardCount - 1; i++){
+                    CardData copiedCard = copyCard(removedCard);
+                    copiedCard.splitUpgradeSubset(i);
+                    addCardIntoDeck(copiedCard, copiedCard.getDeckIndex());
+                }
+                removedCard.splitUpgradeSubset(cardCount - 1);
             }
-            removedCard.setRarity(TIER_COMMON);
-            int cardCount = rarity + 1;
-            for (int i = 0; i < cardCount - 1; i++){
-                CardData copiedCard = copyCard(removedCard);
-                copiedCard.splitUpgradeSubset(i);
-                addCardIntoDeck(copiedCard, copiedCard.getDeckIndex());
-            }
-            removedCard.splitUpgradeSubset(cardCount - 1);
-            addCardIntoDeck(removedCard, removedCard.getDeckIndex());
 
+            addCardIntoDeck(removedCard, removedCard.getDeckIndex());
             trPlayerGrantResources(p, "Gold", goldAmount * SELL_MULTIPLIER);
             trSoundsetPlayPlayer(p, "TributeReceived");
             g_selectedUUIDs[p] = -1; // Deselect card

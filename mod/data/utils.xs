@@ -47,7 +47,7 @@ void applyProtoActionUnitTypeToTarget(string targetProto = "", string unitType =
     trModifyProtounitActionUnitType(targetProto, "LightningAttack", unitType, p, puField, deltaVal, relativity);
 }
 
-void applyProtoActionSpecialEffectToTarget(string targetProto = "", int p = 0, int effectField = 0, string targetType = "All", int dmgType = -1, float duration = 0.0, float value = 0.0){
+void applyProtoActionSpecialEffectToTarget(string targetProto = "", int p = 0, int effectField = cOnHitEffectStun, string targetType = "All", int dmgType = -1, float duration = 0.0, float value = 0.0){
     trProtounitActionSpecialEffect(targetProto, "HandAttack", p, effectField, targetType, dmgType, duration, value);
     trProtounitActionSpecialEffect(targetProto, "ChargedHandAttack", p, effectField, targetType, dmgType, duration, value);
     trProtounitActionSpecialEffect(targetProto, "RangedAttack", p, effectField, targetType, dmgType, duration, value);
@@ -58,6 +58,19 @@ void applyProtoActionSpecialEffectToTarget(string targetProto = "", int p = 0, i
     trProtounitActionSpecialEffect(targetProto, "BuildingAttack", p, effectField, targetType, dmgType, duration, value);
     trProtounitActionSpecialEffect(targetProto, "AntiWallAttack", p, effectField, targetType, dmgType, duration, value);
     trProtounitActionSpecialEffect(targetProto, "LightningAttack", p, effectField, targetType, dmgType, duration, value);
+}
+
+void applyProtoActionSpecialEffectProtoUnitToTarget(string targetProto = "", int p = 0, int effectField = cOnHitEffectStun, string targetType = "All", string protoUnitType = "", float duration = 1.0, float value = 0.0){
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "HandAttack", p, effectField, targetType, protoUnitType, duration, value);
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "ChargedHandAttack", p, effectField, targetType, protoUnitType, duration, value);
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "RangedAttack", p, effectField, targetType, protoUnitType, duration, value);
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "RangedAttackFlying", p, effectField, targetType, protoUnitType, duration, value);
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "RangedAttackMyth", p, effectField, targetType, protoUnitType, duration, value);
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "FlyingUnitAttack", p, effectField, targetType, protoUnitType, duration, value);
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "JumpAttack", p, effectField, targetType, protoUnitType, duration, value);
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "BuildingAttack", p, effectField, targetType, protoUnitType, duration, value);
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "AntiWallAttack", p, effectField, targetType, protoUnitType, duration, value);
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "LightningAttack", p, effectField, targetType, protoUnitType, duration, value);
 }
 
 void applyProtoActionSpawnToTarget(string targetProto = "", int p = 0, int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){
