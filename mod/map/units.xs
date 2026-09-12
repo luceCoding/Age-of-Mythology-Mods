@@ -131,14 +131,14 @@ void preModifyPlayerData(){
 
     // All players
     for(int p = 0; p <= cNumberPlayers; p++) {
-        trTechSetStatus(p, cTechClassicalAgeGeneral, 2); // Classical Ages
-        trTechSetStatus(p, cTechClassicalAgeEgyptian, 2);
-        trTechSetStatus(p, cTechClassicalAgeNorse, 2);
-        trTechSetStatus(p, cTechClassicalAgeGreek, 2);
-        trTechSetStatus(p, cTechClassicalAgeChinese, 2);
-        trTechSetStatus(p, cTechClassicalAgeJapanese, 2);
-        //trTechSetStatus(p, cTechClassicalAgeAtlantean, 2); // Atlantean Age causing extra upgrades?
-        trTechSetStatus(p, cTechClassicalAgeAztec, 2);
+        trTechSetStatus(p, cTechClassicalAgeGeneral, cTechStatusActive);
+        trTechSetStatus(p, cTechClassicalAgeEgyptian, cTechStatusActive);
+        trTechSetStatus(p, cTechClassicalAgeNorse, cTechStatusActive);
+        trTechSetStatus(p, cTechClassicalAgeGreek, cTechStatusActive);
+        trTechSetStatus(p, cTechClassicalAgeChinese, cTechStatusActive);
+        trTechSetStatus(p, cTechClassicalAgeJapanese, cTechStatusActive);
+        //trTechSetStatus(p, cTechClassicalAgeAtlantean, cTechStatusActive); // Atlantean Age causing extra upgrades?
+        trTechSetStatus(p, cTechClassicalAgeAztec, cTechStatusActive);
 
         setAsPlaceholder("GoldPile", p);
         trProtoUnitSetFlag(p, "GoldPile", "ObscuredByUnits", true);
@@ -210,8 +210,8 @@ void preModifyPlayerData(){
         trProtounitRemoveTech("Market", p, cTechSilkRoad);
         trProtoUnitSetFlag(p, "Market", "Invulnerable", true);
         trPlayerModifyData(p, 0, -1, 999, 0); // Add population
-        trTechSetStatus(p, cTechRelicRingOfNibelung, 2);
-        trTechSetStatus(p, cTechOracle, 2);
+        trTechSetStatus(p, cTechRelicRingOfNibelung, cTechStatusActive);
+        trTechSetStatus(p, cTechOracle, cTechStatusActive);
         forbidBuilding(p);
         modifyBuildingCosts(p);
 
@@ -285,8 +285,8 @@ void preModifyPlayerData(){
     // Last 2 AIs
     for(int p = cNumberPlayers - 1; p <= cNumberPlayers; p++) {
         trPlayerSetCiv(p, "Demeter");
-        trTechSetStatus(p, 373, 2); // Watch Tower
-        trTechSetStatus(p, 378, 2); // Boiling Oil
+        trTechSetStatus(p, cTechWatchTower, cTechStatusActive);
+        trTechSetStatus(p, cTechBoilingOil, cTechStatusActive);
 
         trModifyProtounitData("SentryTower", p, cXSProtoEffectHitpoints, 2000, cXSRelativityAssign);
         trModifyProtounitData("SentryTower", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
@@ -381,6 +381,8 @@ void postModifyPlayerData(){
             }
             trProtoUnitSetFlag(p, shopType, "Invulnerable", true);
             trProtounitRemoveCommand(shopType, p, "Delete");
+            setupForPoisonSynergy(p);
+            setupForFireSynergy(p);
         }
     }
 

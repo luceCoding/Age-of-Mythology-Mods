@@ -31,7 +31,7 @@ class IncomeHandler {
             int owner = kbUnitGetPlayerID(goldUnitId);
             for(int p = 1; p <= cNumberPlayers - 2; p++) {
                 if (owner == p || g_finalTeam[p] == g_finalTeam[owner]) {continue;}
-                if ((kbUnitTypeCountInArea("Unit", p, cUnitStateAlive, goldUnitId, 1.5) >= 1)){
+                if ((kbUnitTypeCountInArea(UNIT_TYPE_UNIT, p, cUnitStateAlive, goldUnitId, 1.5) >= 1)){
                     int goldAmount = INITIAL_GOLD_REWARD + getMinsPastSinceStart();
                     if (owner == 0) {goldAmount = goldAmount * 2;}
 

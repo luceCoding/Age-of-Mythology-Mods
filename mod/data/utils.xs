@@ -21,6 +21,19 @@ void applyProtoDataToAllCards(int p = 0, int puField = 0, float deltaVal = 0.0, 
     }
 }
 
+void enableProtoActionAttach(string targetProto = "", int p = 0){
+    trProtounitActionSpecialEffectActive(targetProto, "HandAttack", p, cOnHitEffectAttach, "All", -1, true);
+    trProtounitActionSpecialEffectActive(targetProto, "ChargedHandAttack", p, cOnHitEffectAttach, "All", -1, true);
+    trProtounitActionSpecialEffectActive(targetProto, "RangedAttack", p, cOnHitEffectAttach, "All", -1, true);
+    trProtounitActionSpecialEffectActive(targetProto, "RangedAttackFlying", p, cOnHitEffectAttach, "All", -1, true);
+    trProtounitActionSpecialEffectActive(targetProto, "RangedAttackMyth", p, cOnHitEffectAttach, "All", -1, true);
+    trProtounitActionSpecialEffectActive(targetProto, "FlyingUnitAttack", p, cOnHitEffectAttach, "All", -1, true);
+    trProtounitActionSpecialEffectActive(targetProto, "JumpAttack", p, cOnHitEffectAttach, "All", -1, true);
+    trProtounitActionSpecialEffectActive(targetProto, "BuildingAttack", p, cOnHitEffectAttach, "All", -1, true);
+    trProtounitActionSpecialEffectActive(targetProto, "AntiWallAttack", p, cOnHitEffectAttach, "All", -1, true);
+    trProtounitActionSpecialEffectActive(targetProto, "LightningAttack", p, cOnHitEffectAttach, "All", -1, true);
+}
+
 void applyProtoActionToTarget(string targetProto = "", int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
     trModifyProtounitAction(targetProto, "HandAttack", p, puField, deltaVal, relativity);
     trModifyProtounitAction(targetProto, "ChargedHandAttack", p, puField, deltaVal, relativity);
@@ -48,6 +61,9 @@ void applyProtoActionUnitTypeToTarget(string targetProto = "", string unitType =
 }
 
 void applyProtoActionSpecialEffectToTarget(string targetProto = "", int p = 0, int effectField = cOnHitEffectStun, string targetType = "All", int dmgType = -1, float duration = 0.0, float value = 0.0){
+    if (effectField == cOnHitEffectAttach){
+        enableProtoActionAttach(targetProto, p);
+    }
     trProtounitActionSpecialEffect(targetProto, "HandAttack", p, effectField, targetType, dmgType, duration, value);
     trProtounitActionSpecialEffect(targetProto, "ChargedHandAttack", p, effectField, targetType, dmgType, duration, value);
     trProtounitActionSpecialEffect(targetProto, "RangedAttack", p, effectField, targetType, dmgType, duration, value);
@@ -61,6 +77,9 @@ void applyProtoActionSpecialEffectToTarget(string targetProto = "", int p = 0, i
 }
 
 void applyProtoActionSpecialEffectProtoUnitToTarget(string targetProto = "", int p = 0, int effectField = cOnHitEffectStun, string targetType = "All", string protoUnitType = "", float duration = 1.0, float value = 0.0){
+    if (effectField == cOnHitEffectAttach){
+        enableProtoActionAttach(targetProto, p);
+    }
     trProtounitActionSpecialEffectProtoUnit(targetProto, "HandAttack", p, effectField, targetType, protoUnitType, duration, value);
     trProtounitActionSpecialEffectProtoUnit(targetProto, "ChargedHandAttack", p, effectField, targetType, protoUnitType, duration, value);
     trProtounitActionSpecialEffectProtoUnit(targetProto, "RangedAttack", p, effectField, targetType, protoUnitType, duration, value);

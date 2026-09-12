@@ -150,6 +150,7 @@ class BenchData {
             if (params.isFrost()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_FROST, p);}
             if (params.isUndead()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_UNDEAD, p);}
             if (params.isPoison()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_POISON, p);}
+            if (params.isFire()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_FIRE, p);}
         }
         g_synergyHashMap.put(key, count + 1);
     }
@@ -181,6 +182,7 @@ class BenchData {
             if (params.isFrost()){decrementSynergyAndResetBuff(SYNERGY_INDEX_FROST, p);}
             if (params.isUndead()){decrementSynergyAndResetBuff(SYNERGY_INDEX_UNDEAD, p);}
             if (params.isPoison()){decrementSynergyAndResetBuff(SYNERGY_INDEX_POISON, p);}
+            if (params.isPoison()){decrementSynergyAndResetBuff(SYNERGY_INDEX_FIRE, p);}
         }
     }
 

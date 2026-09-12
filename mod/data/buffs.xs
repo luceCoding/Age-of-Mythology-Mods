@@ -7,12 +7,12 @@ const int BUFF_TYPE_PROTO_ACTION_SPAWN = 4; // trProtounitModifySpawnData
 string[] g_allProtounits = default;
 
 StringToFloatHashMap g_buffToCounterMap;
-string getBuffToCounterKey(int p = 0, int buffType = BUFF_TYPE_PROTO_DATA, string tag = ""){
-    return ""+p+""+buffType+""+tag;
+string getBuffToCounterKey(int p = 0, int synergyIndex = -1, int buffType = BUFF_TYPE_PROTO_DATA, string tag = ""){
+    return ""+p+""+synergyIndex+""+buffType+""+tag;
 }
 
 class Buff {
-    bool m_init = false;
+    int m_synergyIndex = -1;
     
     int m_buffType = BUFF_TYPE_PROTO_DATA;
     int m_puField = -1;
@@ -36,35 +36,35 @@ class Buff {
     string[] m_unitTypes = default;
     int[] m_synergyTypes = default;
 
-    void setBuffData(int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
+    void setBuffData(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
         m_buffType = BUFF_TYPE_PROTO_DATA;
         m_synergyTypes = synergyTypes;
         m_puField = puField;
         m_delta = delta;
         m_relativity = relativity;
-        m_init = true;
+        m_synergyIndex = synergyIndex;
     }
 
-    void setBuffAction(int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
+    void setBuffAction(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
         m_buffType = BUFF_TYPE_PROTO_ACTION;
         m_synergyTypes = synergyTypes;
         m_puField = puField;
         m_delta = delta;
         m_relativity = relativity;
-        m_init = true;
+        m_synergyIndex = synergyIndex;
     }
 
-    void setBuffActionUnitType(int[] synergyTypes = default, string[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
+    void setBuffActionUnitType(int synergyIndex = -1, int[] synergyTypes = default, string[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
         m_buffType = BUFF_TYPE_PROTO_ACTION_UNIT_TYPE;
         m_synergyTypes = synergyTypes;
         m_unitTypes = unitTypes;
         m_puField = puField;
         m_delta = delta;
         m_relativity = relativity;
-        m_init = true;
+        m_synergyIndex = synergyIndex;
     }
 
-    void setBuffSpecialAction(int[] synergyTypes = default, int effectField = -1, int dmgType = -1, float duration = 0.0, float delta = 0.0, string attachProtoUnit = "") {
+    void setBuffSpecialAction(int synergyIndex = -1, int[] synergyTypes = default, int effectField = -1, int dmgType = -1, float duration = 0.0, float delta = 0.0, string attachProtoUnit = "") {
         m_buffType = BUFF_TYPE_PROTO_ACTION_SPECIAL;
         m_synergyTypes = synergyTypes;
         m_effectField = effectField;
@@ -72,10 +72,10 @@ class Buff {
         m_duration = duration;
         m_delta = delta;
         m_attachProtoUnit = attachProtoUnit;
-        m_init = true;
+        m_synergyIndex = synergyIndex;
     }
 
-    void setBuffSpawnAction(int[] synergyTypes = default, int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){
+    void setBuffSpawnAction(int synergyIndex = -1, int[] synergyTypes = default, int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){
         m_buffType = BUFF_TYPE_PROTO_ACTION_SPAWN;
         m_synergyTypes = synergyTypes;
         m_spawnProtoID = spawnProtoID;
@@ -84,11 +84,11 @@ class Buff {
         m_relativity = relativity;
         m_chance = chance;
         m_lifespan = lifespan;
-        m_init = true;
+        m_synergyIndex = synergyIndex;
     }
 
     bool isEmpty() {
-        return m_init == false;
+        return m_synergyIndex < 0;
     }
 
     void _executeCommand(string targetProto = "", int p = -1, float delta = 0.0) {
@@ -96,9 +96,9 @@ class Buff {
             case BUFF_TYPE_PROTO_DATA: { trModifyProtounitData(targetProto, p, m_puField, delta, m_relativity); }
             case BUFF_TYPE_PROTO_ACTION: { applyProtoActionToTarget(targetProto, p, m_puField, delta, m_relativity); }
             case BUFF_TYPE_PROTO_ACTION_SPECIAL: { applyProtoActionSpecialEffectToTarget(targetProto, p, m_effectField, "All", 
-                g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType")),
-                g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration")), 
-                g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value")));
+                g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType")),
+                g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration")), 
+                g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value")));
             }
             case BUFF_TYPE_PROTO_ACTION_UNIT_TYPE: {
                 for (int u = 0; u < m_unitTypes.size(); u++) {
@@ -111,7 +111,7 @@ class Buff {
         }
         if (m_attachProtoUnit != ""){
             applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, cOnHitEffectAttach, "All", m_attachProtoUnit,
-                g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration")), 0.0);
+                g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration")), 0.0);
         }
     }
 
@@ -119,12 +119,12 @@ class Buff {
         if (isEmpty()) { return; }
 
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL){
-            float currDmgType = g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"));
-            g_buffToCounterMap.put(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"), currDmgType + m_dmgType);
-            float currValue = g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"));
-            g_buffToCounterMap.put(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"), currValue + m_delta);
-            float currDuration = g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration"));
-            g_buffToCounterMap.put(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration"), currDuration + m_duration);
+            float currDmgType = g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"));
+            g_buffToCounterMap.put(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"), currDmgType + m_dmgType);
+            float currValue = g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"));
+            g_buffToCounterMap.put(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"), currValue + m_delta);
+            float currDuration = g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration"));
+            g_buffToCounterMap.put(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration"), currDuration + m_duration);
         }
 
         if (m_unitType == ""){
@@ -163,12 +163,12 @@ class Buff {
         }
 
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL){
-            float currDmgType = g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"));
-            g_buffToCounterMap.put(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"), currDmgType + m_dmgType);
-            float currValue = g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"));
-            g_buffToCounterMap.put(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"), currValue + invDelta);
-            float currDuration = g_buffToCounterMap.get(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration"));
-            g_buffToCounterMap.put(getBuffToCounterKey(p, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration"), currDuration - m_duration);
+            float currDmgType = g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"));
+            g_buffToCounterMap.put(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"), currDmgType + m_dmgType);
+            float currValue = g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"));
+            g_buffToCounterMap.put(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value"), currValue + invDelta);
+            float currDuration = g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration"));
+            g_buffToCounterMap.put(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration"), currDuration - m_duration);
         }
 
         if (m_unitType == ""){
@@ -435,7 +435,8 @@ class Buff {
                         case SYNERGY_INDEX_SOLDIER: sName = "Soldiers";
                         case SYNERGY_INDEX_FROST: sName = "Frost";
                         case SYNERGY_INDEX_UNDEAD: sName = "Undead";
-                        case SYNERGY_INDEX_POISON: sName = "Poisonous";    
+                        case SYNERGY_INDEX_POISON: sName = "Poisonous";
+                        case SYNERGY_INDEX_FIRE: sName = "Fire";
                     }
                     
                     if (i > 0) { 
@@ -450,48 +451,56 @@ class Buff {
     }
 };
 
-Buff createBuffData(int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1){
+Buff createBuffData(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1){
     Buff buff;
-    buff.setBuffData(synergyTypes, puField, delta, relativity);
+    buff.setBuffData(synergyIndex, synergyTypes, puField, delta, relativity);
     return buff;
 }
 
-Buff createBuffAction(int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1){
+Buff createBuffAction(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1){
     Buff buff;
-    buff.setBuffAction(synergyTypes, puField, delta, relativity);
+    buff.setBuffAction(synergyIndex, synergyTypes, puField, delta, relativity);
     return buff;
 }
 
-Buff createBuffActionUnitType(int[] synergyTypes = default, string[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1){
+Buff createBuffActionUnitType(int synergyIndex = -1, int[] synergyTypes = default, string[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1){
     Buff buff;
-    buff.setBuffActionUnitType(synergyTypes, unitTypes, puField, delta, relativity);
+    buff.setBuffActionUnitType(synergyIndex, synergyTypes, unitTypes, puField, delta, relativity);
     return buff;
 }
 
-Buff createBuffSpecialAction(int[] synergyTypes = default, int effectField = -1, int dmgType = -1, float duration = 0.0, float delta = 0.0, string attachProtoUnit = ""){
+Buff createBuffSpecialAction(int synergyIndex = -1, int[] synergyTypes = default, int effectField = -1, int dmgType = -1, float duration = 0.0, float delta = 0.0, string attachProtoUnit = ""){
     Buff buff;
-    buff.setBuffSpecialAction(synergyTypes, effectField, dmgType, duration, delta, attachProtoUnit);
+    buff.setBuffSpecialAction(synergyIndex, synergyTypes, effectField, dmgType, duration, delta, attachProtoUnit);
     return buff;
 }
 
-Buff createBuffSpawnAction(int[] synergyTypes = default, int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){
+Buff createBuffSpawnAction(int synergyIndex = -1, int[] synergyTypes = default, int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){
     Buff buff;
-    buff.setBuffSpawnAction(synergyTypes, spawnProtoID, eventType, delta, relativity, chance, lifespan);
+    buff.setBuffSpawnAction(synergyIndex, synergyTypes, spawnProtoID, eventType, delta, relativity, chance, lifespan);
     return buff;
 }
 
-Buff createBuffDataSingle(string unitType = "", int puField = -1, float delta = 0.0, int relativity = -1){
+Buff createBuffActionSingle(int synergyIndex = -1, string unitType = "", int puField = -1, float delta = 0.0, int relativity = -1){
     int[] synergyTypes = new int(0, -1);
     Buff buff;
-    buff.setBuffData(synergyTypes, puField, delta, relativity);
+    buff.setBuffAction(synergyIndex, synergyTypes, puField, delta, relativity);
     buff.m_unitType = unitType;
     return buff;
 }
 
-Buff createBuffSpawnActionSingle(string unitType = "", int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){
+Buff createBuffDataSingle(int synergyIndex = -1, string unitType = "", int puField = -1, float delta = 0.0, int relativity = -1){
     int[] synergyTypes = new int(0, -1);
     Buff buff;
-    buff.setBuffSpawnAction(synergyTypes, spawnProtoID, eventType, delta, relativity, chance, lifespan);
+    buff.setBuffData(synergyIndex, synergyTypes, puField, delta, relativity);
+    buff.m_unitType = unitType;
+    return buff;
+}
+
+Buff createBuffSpawnActionSingle(int synergyIndex = -1, string unitType = "", int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){
+    int[] synergyTypes = new int(0, -1);
+    Buff buff;
+    buff.setBuffSpawnAction(synergyIndex, synergyTypes, spawnProtoID, eventType, delta, relativity, chance, lifespan);
     buff.m_unitType = unitType;
     return buff;
 }

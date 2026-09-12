@@ -100,6 +100,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeBushi);
     addCardsIntoDeck(1, cUnitTypeSamurai);
     addCardsIntoDeck(1, cUnitTypeOnnaMusha);
+    addCardsIntoDeck(1, cUnitTypeWanyudo);
 
     addCardsIntoDeck(2, cUnitTypeEagleWarrior);
     addCardsIntoDeck(2, cUnitTypeOtontin);
@@ -172,8 +173,10 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(3, cUnitTypeYangJian);
     addCardsIntoDeck(3, cUnitTypeTigerCavalry);
     addCardsIntoDeck(3, cUnitTypeAsura);
+    addCardsIntoDeck(3, cUnitTypeChimera);
 
     addCardsIntoDeck(3, cUnitTypeArgus);
+    addCardsIntoDeck(3, cUnitTypeFireSiphon);
 
     addCardsIntoDeck(3, cUnitTypeQuinametzin);
     addCardsIntoDeck(3, cUnitTypeSoulGuide);

@@ -136,3 +136,20 @@ void modifyBuildingCosts(int p = 0){
 int getMinsPastSinceStart(){
     return ((xsGetTimeMS() - g_timeMSGameStarted) / 60000);
 }
+
+void setupForPoisonSynergy(int p = 0){
+    trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageDivine, 0.0, cXSRelativityAssign);
+    trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageHack, 50.0, cXSRelativityAssign);
+}
+
+void setupForFireSynergy(int p = 0){
+    trTechSetStatus(p, cTechSkyFire, cTechStatusActive);
+    trProtoUnitSetFlag(p, "VFXArrowSignal", "NotKBTracked", false);
+    trProtoUnitSetFlag(p, "VFXArrowSignal", "KBTracked", true);
+    trProtoUnitSetFlag(p, "VFXFireAshesCS", "NotKBTracked", false);
+    trProtoUnitSetFlag(p, "VFXFireAshesCS", "KBTracked", true);
+    trProtounitAddCommand("SkyLantern", p, "Delete", 3, 5);
+    trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamagePierce, 100.0, cXSRelativityAssign);
+    trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageCrush, 100.0, cXSRelativityAssign);
+    trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageDivine, 0.0, cXSRelativityAssign);
+}

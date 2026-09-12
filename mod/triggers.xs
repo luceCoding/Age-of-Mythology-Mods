@@ -128,11 +128,23 @@ runImmediately
                     trUnitChangeName("ItzJover");
                     setTeamAsWinner((g_finalTeam[owner] == 1) ? 2 : 1);
                 }
+                case cUnitTypeVFXArrowSignal: {
+                    vector v = trUnitGetPosition(unitId);
+                    float rdmX = xsRandFloat(-50.0, 50.0);
+                    float rdmZ = xsRandFloat(-50.0, 50.0);
+                    int lanternID = trUnitCreateForced("SkyLantern", v.x + rdmX, v.y, v.z + rdmZ, xsRandFloat(0.0, 359.0), owner, false);
+                    selectSingle(lanternID);
+                    trUnitMoveToPoint(v.x, v.y, v.z);
+                }
+                case cUnitTypeVFXFireAshesCS: {
+                    vector v = trUnitGetPosition(unitId);
+                    trGodPowerGrant(owner, kbGodPowerGetName(cProtoPowerMeteorSPC), 1);
+                    trGodPowerInvoke(owner, kbGodPowerGetName(cProtoPowerMeteorSPC), v, );
+                }
                 default: {
-                    if (owner == 0) {
-                        if (kbUnitIsType(unitId, cUnitTypeLogicalTypeHandUnitsAutoAttack) || kbUnitIsType(unitId, cUnitTypeLogicalTypeRangedUnitsAutoAttack)){
-                            trUnitSetStance("No Attack");
-                        }
+                    if (owner == 0 & (kbUnitIsType(unitId, cUnitTypeLogicalTypeHandUnitsAutoAttack) || kbUnitIsType(unitId, cUnitTypeLogicalTypeRangedUnitsAutoAttack))){
+                        selectSingle(unitId);
+                        trUnitSetStance("No Attack");
                     }
                 }
             }
