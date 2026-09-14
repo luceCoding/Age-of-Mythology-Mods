@@ -27,10 +27,11 @@ void generate()
     createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
     createTypedUnitScheduler("unitSchedulerWithVector", buildStringTypeArray("Vector"));
 
-    // common/preUi.xs
-    createTypedScheduler("schedulerWithParameters", buildStringTypeArray("Parameters"));
-    //// common/ui.xs
-    // common/postUi.xs
+    // common/ui/ui1.xs
+    //// common/ui/ui2.xs
+    // common/ui/ui3.xs
+    // common/ui/ui4.xs
+    
     // common/attachment/attachments.xs
     // common/search.xs
     // common/terrain.xs

@@ -689,7 +689,7 @@ bool respawnDeployedCards(ref BenchData bench){
     bool wasThereAChange = false;
     int currtime = xsGetTimeMS();
 
-    for(int i = 0; i < bench.m_cardSize; i++) {
+    for(int i = 0; i < bench.m_cardArray.size(); i++) {
         CardData card = bench.m_cardArray[i];
         if (card.isNull() || card.isDeployed() == false || card.isRespawning()) { continue; }
         int unitId = card.getDeployedUnitID();
@@ -702,7 +702,7 @@ bool respawnDeployedCards(ref BenchData bench){
             int cardUUID = card.getUuid();
             schedulerWithIntInt.add(respawnTimeMS, bench.m_player, cardUUID, [](int iterations = 1, int p = 0, int cardUUID = 0) -> bool {
                 BenchData bench = g_shop.m_benches[p];
-                for (int i = 0; i < bench.m_cardSize; i++) {
+                for (int i = 0; i < bench.m_cardArray.size(); i++) {
                     CardData deadCard = bench.m_cardArray[i];
                     if (deadCard.isNull() || deadCard.getUuid() != cardUUID) { continue; }
                     if (deadCard.isDeployed() == false || deadCard.isRespawning() == false) { return false; }
