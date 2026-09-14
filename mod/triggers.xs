@@ -96,7 +96,7 @@ highFrequency
 active
 runImmediately
 {
-    if (Search_conditionToRun(Search_lastTime)) {
+    if (Search_conditionToRun()) {
         ySearch.process([](int unitId = 0) -> void {
             xsSetContextPlayer(-1);
             int protoUnit = kbUnitGetProtoUnitID(unitId);
@@ -152,7 +152,6 @@ runImmediately
                 }
             }
         });
-        Search_lastTime = xsGetTimeMS();
     }
 }
 

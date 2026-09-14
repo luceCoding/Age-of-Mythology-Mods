@@ -24,8 +24,7 @@ void createArmoryCardButtons(ref CardData currCard, int p = 0, ref float posX, r
         for (int i = 0; i < count; i++) {
             float currentX = startX + (i * spacingX);
             Parameters cardParams = cardParameterstoParametersCopy(params);
-            int uuid = currCard.getUuid();
-            cardParams.ints[0] = uuid;
+            cardParams.ints[0] = currCard.getUuid();
             cardParams.ints[1] = i;
             minimapSafeClickable(p, 
                                 currentX, btnPosY + 0.035, 0.1, 0.055,

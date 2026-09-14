@@ -1,8 +1,6 @@
 include "lib/rm_core.xs";
 include "card.xs"
 
-StringToIntHashMap g_synergyHashMap;
-
 mutable bool purchase(int goldAmount = 0, int p = 0) { return false; }
 
 class BenchData {
@@ -125,51 +123,31 @@ class BenchData {
         return m_cardSize;
     }
 
-    void incrementSynergyAndApplyBuff(int index = 0, int p = 0){
-        m_synergyCounter[index] = m_synergyCounter[index] + 1;
-        SynergyData synergy = g_synergies[index];
-        if (m_synergyCounter[index] < synergy.m_buffs.size()){
-            Buff buff = synergy.m_buffs[m_synergyCounter[index]];
-            buff.applyBuff(p);
-        }
-    }
-
     void addSynergy(ref CardData card, int p = 0){
-        String key = card.getProtoName() + p;
-        int count = g_synergyHashMap.get(key);
-        if (count == 0){
-            CardParameters params = card.getCardParameters();
-            for (int SYNERGY_INDEX = 0; SYNERGY_INDEX < MAX_SYNERGIES; SYNERGY_INDEX++){
-                if (params.isASynergy(SYNERGY_INDEX)){
-                    incrementSynergyAndApplyBuff(SYNERGY_INDEX, p);
+        CardParameters params = card.getCardParameters();
+        for (int SYNERGY_INDEX = 0; SYNERGY_INDEX < MAX_SYNERGIES; SYNERGY_INDEX++){
+            if (params.isASynergy(SYNERGY_INDEX)){
+                m_synergyCounter[SYNERGY_INDEX] = m_synergyCounter[SYNERGY_INDEX] + 1;
+                SynergyData synergy = g_synergies[SYNERGY_INDEX];
+                if (m_synergyCounter[SYNERGY_INDEX] < synergy.m_buffs.size()){
+                    Buff buff = synergy.m_buffs[m_synergyCounter[SYNERGY_INDEX]];
+                    buff.applyBuff(p);
                 }
             }
         }
-        g_synergyHashMap.put(key, count + 1);
-    }
-
-    void decrementSynergyAndResetBuff(int index = 0, int p = 0){
-        SynergyData synergy = g_synergies[index];
-        if (m_synergyCounter[index] < synergy.m_buffs.size()){
-            Buff buff = synergy.m_buffs[m_synergyCounter[index]];
-            buff.resetBuff(p);
-        }
-        m_synergyCounter[index] = m_synergyCounter[index] - 1;
     }
 
     void removeSynergy(ref CardData card, int p = 0){
-        String key = card.getProtoName() + p;
-        int count = g_synergyHashMap.get(key);
-        count = count - 1;
-        g_synergyHashMap.put(key, count);
-        if (count == 0){
-            CardParameters params = card.getCardParameters();
-            for (int SYNERGY_INDEX = 0; SYNERGY_INDEX < MAX_SYNERGIES; SYNERGY_INDEX++){
-                if (params.isASynergy(SYNERGY_INDEX)){
-                    decrementSynergyAndResetBuff(SYNERGY_INDEX, p);
+        CardParameters params = card.getCardParameters();
+        for (int SYNERGY_INDEX = 0; SYNERGY_INDEX < MAX_SYNERGIES; SYNERGY_INDEX++){
+            if (params.isASynergy(SYNERGY_INDEX)){
+                SynergyData synergy = g_synergies[SYNERGY_INDEX];
+                if (m_synergyCounter[SYNERGY_INDEX] < synergy.m_buffs.size()){
+                    Buff buff = synergy.m_buffs[m_synergyCounter[SYNERGY_INDEX]];
+                    buff.resetBuff(p);
                 }
+                m_synergyCounter[SYNERGY_INDEX] = m_synergyCounter[SYNERGY_INDEX] - 1;
             }
-            g_synergyHashMap.remove(key);
         }
     }
 

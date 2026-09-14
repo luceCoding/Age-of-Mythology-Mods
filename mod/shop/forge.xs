@@ -26,8 +26,7 @@ void createForgeCardButtons(ref CardData currCard, int p = 0, ref float posX, re
     float btnPosY = posY + 0.005; 
 
     Parameters cardParams = cardParameterstoParametersCopy(params);
-    int uuid = currCard.getUuid();
-    cardParams.ints[0] = uuid;
+    cardParams.ints[0] = currCard.getUuid();
 
     minimapSafeClickable(p, 
                         posX, btnPosY + 0.035, 0.1, 0.055,

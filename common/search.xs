@@ -23,6 +23,4 @@ class YSearch {
 YSearch ySearch;
 
 int Search_lastTime = 0;
-bool Search_conditionToRun(int lastTime = 0) {
-return true;
-}
+bool Search_conditionToRun() { return true; }
