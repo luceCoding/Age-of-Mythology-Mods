@@ -34,13 +34,19 @@ class BenchData {
     }
 
     CardData removeCardByUUID(int uuid = -1){        
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData currCard = m_cardArray[i];
-            if (currCard.isNull()) { continue; }
             if (currCard.getUuid() == uuid) {
+                m_cardSize--; // Reduce active count
+                
+                // Swap the last active element into this slot if it's not already the last one
+                if (i < m_cardSize) {
+                    m_cardArray[i] = m_cardArray[m_cardSize];
+                }
+                
+                // Clear the vacated slot to prevent ghost card rendering
                 CardData nullCard;
-                m_cardArray[i] = nullCard;
-                m_cardSize = max(0, m_cardSize - 1);
+                m_cardArray[m_cardSize] = nullCard;
 
                 log(3, "Removed card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
                 return currCard;
@@ -53,36 +59,45 @@ class BenchData {
 
     CardData removeCardByIndex(int index = -1){ 
         // Validate index bounds
-        if (index < 0 || index >= m_cardArray.size()) {
+        if (index < 0 || index >= m_cardSize) {
             CardData emptyCard;
             return emptyCard;
         }
 
         CardData currCard = m_cardArray[index];
-        if (currCard.isNull()) {
-            CardData emptyCard;
-            return emptyCard;
+        m_cardSize--; // Reduce active count
+        
+        // Swap the last active element into this slot if it's not already the last one
+        if (index < m_cardSize) {
+            m_cardArray[index] = m_cardArray[m_cardSize];
         }
-
+        
+        // Clear the vacated slot to prevent ghost card rendering
         CardData nullCard;
-        m_cardArray[index] = nullCard;
-        m_cardSize = max(0, m_cardSize - 1);
+        m_cardArray[m_cardSize] = nullCard;
 
         log(3, "Removed card from index " + index + " (UUID: " + currCard.getUuid() + "), size: " + m_cardSize);
         return currCard;
     }
 
     void removeAllDeployedOsirisPieceCards(){        
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData currCard = m_cardArray[i];
-            if (currCard.isNull()) { continue; }
             if (currCard.isOsirisPieceBoxCard() && currCard.isDeployed()) {
                 selectSingle(currCard.getDeployedUnitID());
                 trUnitDestroy();
 
+                m_cardSize--; // Reduce active count
+
+                // Swap the last active element into this slot if it's not already the last one
+                if (i < m_cardSize) {
+                    m_cardArray[i] = m_cardArray[m_cardSize];
+                    i--; // Recheck the card moved into this slot
+                }
+                
+                // Clear the vacated slot to prevent ghost card rendering
                 CardData nullCard;
-                m_cardArray[i] = nullCard;
-                m_cardSize = max(0, m_cardSize - 1);
+                m_cardArray[m_cardSize] = nullCard;
 
                 log(3, "Removed osiris card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
             }
@@ -91,9 +106,8 @@ class BenchData {
 
     int getDeployedOsirisPieceBoxCardCount(){
         int count = 0;
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData currCard = m_cardArray[i];
-            if (currCard.isNull()) { continue; }
             if (currCard.isOsirisPieceBoxCard() && currCard.isDeployed()) {
                 count = count + 1;
             }
@@ -165,9 +179,8 @@ class BenchData {
     }
 
     CardData getAndUpgradeDuplicateDeployedCard(string proto = "", ref CardData duplicateCard){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
-            if (card.isNull()) { continue; }
             if (card.isDeployed() && card.getProtoName() == proto && card.isOsirisPieceBoxCard() == false){
                 card.mergeDuplicate(duplicateCard, m_player);
                 m_cardArray[i] = card;
@@ -179,7 +192,7 @@ class BenchData {
     }
 
     void deployCard(int uuid = -1){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
             if (card.isNull() || card.isDeployed() || card.getUuid() != uuid) continue;
             if (card.isOsirisPieceBoxCard() && getDeployedOsirisPieceBoxCardCount() == OSIRIS_CARDS_NEEDED-1){
@@ -223,10 +236,9 @@ class BenchData {
     }
 
     bool withdrawCard(int uuid = -1){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData cardToWithdraw = m_cardArray[i];
-            if (cardToWithdraw.isNull()) { continue; }
-            if (uuid == cardToWithdraw.getUuid() && cardToWithdraw.isDeployed()){
+            if (uuid == cardToWithdraw.getUuid() && (!(cardToWithdraw.isNull())) && cardToWithdraw.isDeployed()){
                 int unitID = cardToWithdraw.getDeployedUnitID();
                 selectSingle(unitID);
                 if (trUnitDead() == false){
@@ -262,10 +274,9 @@ class BenchData {
     }
 
     bool identifyCard(int uuid = -1, int p = 0){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
-            if (card.isNull()) { continue; }
-            if (uuid == card.getUuid() && (card.isIdentified() == false)){
+            if (uuid == card.getUuid() && (!(card.isNull())) && (card.isIdentified() == false)){
                 if (purchase(g_shrineShopCost, p)){
                     card.identify();
                     g_shrineShopCost = g_shrineShopCost + SHRINE_COST_INCREMENT;
@@ -281,10 +292,9 @@ class BenchData {
     }
 
     bool rerollRarity(int uuid = -1, int p = 0){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
-            if (card.isNull()) { continue; }
-            if (uuid == card.getUuid() && card.isIdentified()){
+            if (uuid == card.getUuid() && (card.isNull() == false) && card.isIdentified()){
                 if (purchase(g_templeShopCost, p)){
                     card.resetUpgrades(p); // TODO: Upgrade the difference instead of resetting everything
                     int rarity = card.rerollRarity();
@@ -307,10 +317,9 @@ class BenchData {
     }
 
     bool addSocket(int uuid = -1, int p = 0){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
-            if (card.isNull()) { continue; }
-            if (uuid == card.getUuid() && card.isIdentified()){
+            if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
                 if (purchase(g_forgeShopCost, p)){
                     bool hasSocketed = card.addSocket();
                     if (hasSocketed){
@@ -327,10 +336,9 @@ class BenchData {
     }
 
     bool rerollUpgrade(int uuid = -1, int p = 0, int upgradeIdx = 0){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        for(int i = 0; i < m_cardSize; i++) {
             CardData card = m_cardArray[i];
-            if (card.isNull()) { continue; }
-            if (uuid == card.getUuid() && card.isIdentified()){
+            if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
                 if (purchase(g_armoryShopCost, p)){
                     card.resetOneUpgrade(p, upgradeIdx);
                     int upgrade = card.rerollUpgrade(upgradeIdx);
@@ -460,9 +468,8 @@ class BenchData {
 
     int[] getDeployedUnitIDs(){
         int[] deployedUnitIDs = new int(0, -1);
-        for (int i = 0; i < m_cardArray.size(); i++){
+        for (int i = 0; i < m_cardSize; i++){
             CardData card = m_cardArray[i];
-            if (card.isNull()) { continue; }
             if (card.isDeployed()){
                 deployedUnitIDs.add(card.getDeployedUnitID());
             }
