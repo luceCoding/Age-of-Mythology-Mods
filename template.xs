@@ -45,6 +45,7 @@ void generate()
 
     defineHashMapDefinition("string", "CardParameters", "", "");
     defineHashMapDefinition("string", "float", "0.0", "");
+    defineHashMapDefinition("string", "int", "-1", "");
     defineHashMapDefinition("int", "int", "-1", "");
 
     // mod/map/teams.xs

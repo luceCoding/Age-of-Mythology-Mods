@@ -1,6 +1,7 @@
 mutable bool purchase(int goldAmount = 0, int p = 0) { return false; }
 
 IntToIntHashMap g_CardUUIDToIndex;
+StringToIntHashMap g_ProtoUnitToIndex;
 
 class BenchData {
     int m_cardSize = 0; // Tracks active cards without shrinking/reallocating the array
@@ -22,6 +23,28 @@ class BenchData {
         return m_playerShopId;
     }
 
+    int findIdentifiedProtoIndex(string proto = "", int ignoreUUID = -1){
+        for (int i = 0; i < m_cardSize; i++) {
+            CardData candidate = m_cardArray[i];
+            if (candidate.isNull() == false && candidate.isIdentified() && candidate.getProtoName() == proto && candidate.getUuid() != ignoreUUID) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    bool isThereADuplicateCard(string proto = "", int ignoreUUID = -1){
+        int i = g_ProtoUnitToIndex.get(proto + m_player);
+        if (i >= 0 && i < m_cardSize) {
+            CardData candidate = m_cardArray[i];
+            if (candidate.isNull() == false && candidate.isIdentified() && candidate.getProtoName() == proto && candidate.getUuid() != ignoreUUID) {
+                return true;
+            }
+        }
+
+        return findIdentifiedProtoIndex(proto, ignoreUUID) >= 0;
+    }
+
     bool addCard(ref CardData card){
         // Reuse an existing slot if available, otherwise grow the array pool
         if (m_cardSize < m_cardArray.size()) {
@@ -30,6 +53,12 @@ class BenchData {
             m_cardArray.add(card);
         }
         g_CardUUIDToIndex.put(card.getUuid(), m_cardSize);
+        if (card.isIdentified()) {
+            int existingIndex = g_ProtoUnitToIndex.get(card.getProtoName() + m_player);
+            if (existingIndex < 0 || existingIndex >= m_cardSize) {
+                g_ProtoUnitToIndex.put(card.getProtoName() + m_player, m_cardSize);
+            }
+        }
         m_cardSize++;
         log(3, "Added card to bench " + card.getUuid() + ", size: " + m_cardSize);
         return true;
@@ -44,6 +73,9 @@ class BenchData {
 
         CardData currCard = m_cardArray[i];
         if (currCard.getUuid() == uuid) {
+            string currProto = currCard.getProtoName();
+            bool currWasMapped = currCard.isIdentified() && g_ProtoUnitToIndex.get(currProto + m_player) == i;
+
             if (currCard.isOsirisPieceBoxCard() && currCard.isDeployed()) {
                 m_osirisDeployedCount--;
             }
@@ -55,12 +87,18 @@ class BenchData {
                 CardData movedCard = m_cardArray[m_cardSize];
                 m_cardArray[i] = movedCard;
                 g_CardUUIDToIndex.put(movedCard.getUuid(), i);
+                if (movedCard.isIdentified() && movedCard.isDeployed() && movedCard.getProtoName() == currProto) {
+                    g_ProtoUnitToIndex.put(currProto + m_player, i);
+                }
             }
             
             // Clear the vacated slot to prevent ghost card rendering
             CardData nullCard;
             m_cardArray[m_cardSize] = nullCard;
             g_CardUUIDToIndex.remove(currCard.getUuid());
+            if (currWasMapped) {
+                g_ProtoUnitToIndex.remove(currProto + m_player);
+            }
 
             log(3, "Removed card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
             return currCard;
@@ -78,6 +116,9 @@ class BenchData {
         }
 
         CardData currCard = m_cardArray[index];
+        string currProto = currCard.getProtoName();
+        bool currWasMapped = currCard.isIdentified() && g_ProtoUnitToIndex.get(currProto + m_player) == index;
+
         if (currCard.isOsirisPieceBoxCard() && currCard.isDeployed()) {
             m_osirisDeployedCount--;
         }
@@ -89,12 +130,18 @@ class BenchData {
             CardData movedCard = m_cardArray[m_cardSize];
             m_cardArray[index] = movedCard;
             g_CardUUIDToIndex.put(movedCard.getUuid(), index);
+            if (movedCard.isIdentified() && movedCard.isDeployed() && movedCard.getProtoName() == currProto) {
+                g_ProtoUnitToIndex.put(currProto + m_player, index);
+            }
         }
         
         // Clear the vacated slot to prevent ghost card rendering
         CardData nullCard;
         m_cardArray[m_cardSize] = nullCard;
         g_CardUUIDToIndex.remove(currCard.getUuid());
+        if (currWasMapped) {
+            g_ProtoUnitToIndex.remove(currProto + m_player);
+        }
 
         log(3, "Removed card from index " + index + " (UUID: " + currCard.getUuid() + "), size: " + m_cardSize);
         return currCard;
@@ -107,6 +154,9 @@ class BenchData {
                 selectSingle(currCard.getDeployedUnitID());
                 trUnitDestroy();
 
+                string currProto = currCard.getProtoName();
+                bool currWasMapped = currCard.isIdentified() && g_ProtoUnitToIndex.get(currProto + m_player) == i;
+
                 m_cardSize--; // Reduce active count
 
                 // Swap the last active element into this slot if it's not already the last one
@@ -114,6 +164,9 @@ class BenchData {
                     CardData movedCard = m_cardArray[m_cardSize];
                     m_cardArray[i] = movedCard;
                     g_CardUUIDToIndex.put(movedCard.getUuid(), i);
+                    if (movedCard.isIdentified() && movedCard.isDeployed() && movedCard.getProtoName() == currProto) {
+                        g_ProtoUnitToIndex.put(currProto + m_player, i);
+                    }
                     i--; // Recheck the card moved into this slot
                 }
                 
@@ -121,6 +174,9 @@ class BenchData {
                 CardData nullCard;
                 m_cardArray[m_cardSize] = nullCard;
                 g_CardUUIDToIndex.remove(currCard.getUuid());
+                if (currWasMapped && (i >= m_cardSize || currCard.getProtoName() != currProto)) {
+                    g_ProtoUnitToIndex.remove(currProto + m_player);
+                }
 
                 log(3, "Removed osiris card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
             }
@@ -196,22 +252,37 @@ class BenchData {
     }
 
     CardData getAndUpgradeDuplicateDeployedCard(string proto = "", ref CardData duplicateCard){
-        for(int i = 0; i < m_cardSize; i++) {
-            CardData card = m_cardArray[i];
-            if (card.isDeployed() && card.getProtoName() == proto && card.isOsirisPieceBoxCard() == false){
-                card.mergeDuplicate(duplicateCard, m_player);
-                m_cardArray[i] = card;
-                return card;
+        int i = g_ProtoUnitToIndex.get(proto + m_player);
+        if (i > 0 && i <= m_cardSize) {
+            CardData candidate = m_cardArray[i];
+            if (candidate.isNull() || candidate.isIdentified() == false || candidate.getProtoName() != proto || candidate.getUuid() == duplicateCard.getUuid()) {
+                i = findIdentifiedProtoIndex(proto, duplicateCard.getUuid());
             }
         }
-        CardData EmptyCard;
-        return EmptyCard;
+
+        if (i < 0 || i >= m_cardSize) {
+            CardData emptyCard;
+            return emptyCard;
+        }
+
+        CardData card = m_cardArray[i];
+        if (card.isNull() == false && card.isIdentified() && card.getProtoName() == proto && card.getUuid() != duplicateCard.getUuid() && card.isOsirisPieceBoxCard() == false){
+            card.mergeDuplicate(duplicateCard, m_player);
+            m_cardArray[i] = card;
+            g_ProtoUnitToIndex.put(proto + m_player, i);
+            return card;
+        }
+        CardData emptyCard;
+        return emptyCard;
     }
 
     void deployCard(int uuid = -1){
         int i = g_CardUUIDToIndex.get(uuid);
+        if (i < 0 || i >= m_cardSize) return;
+
         CardData card = m_cardArray[i];
         if (card.isNull() || card.isDeployed() || card.getUuid() != uuid || card.isIdentified() == false) return;
+
         if (card.isOsirisPieceBoxCard() && getDeployedOsirisPieceBoxCardCount() == OSIRIS_CARDS_NEEDED-1){
             removeAllDeployedOsirisPieceCards();
             removeCardByUUID(uuid);
@@ -233,13 +304,17 @@ class BenchData {
             }
             return;
         }
-        CardData newCard = getAndUpgradeDuplicateDeployedCard(card.getProtoName(), card);
-        if (newCard.isNull() == false){
-            removeCardByIndex(i);
-            changeDisplayName(newCard);
-            trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
-            return;
+
+        if (isThereADuplicateCard(card.getProtoName(), card.getUuid())) {
+            CardData newCard = getAndUpgradeDuplicateDeployedCard(card.getProtoName(), card);
+            if (newCard.isNull() == false){
+                removeCardByIndex(i);
+                changeDisplayName(newCard);
+                trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
+                return;
+            }
         }
+
         if (spawnCard(card) == false) {
             addCard(card);
             return;
@@ -250,12 +325,17 @@ class BenchData {
             m_osirisDeployedCount++;
         }
         m_cardArray[i] = card;
+        if (card.isIdentified() && card.isDeployed()) {
+            g_ProtoUnitToIndex.put(card.getProtoName() + m_player, i);
+        }
         trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
         return;
     }
 
     bool withdrawCard(int uuid = -1){
         int i = g_CardUUIDToIndex.get(uuid);
+        if (i < 0 || i >= m_cardSize) return false;
+
         CardData cardToWithdraw = m_cardArray[i];
         if (uuid == cardToWithdraw.getUuid() && (!(cardToWithdraw.isNull())) && cardToWithdraw.isDeployed()){
             int unitID = cardToWithdraw.getDeployedUnitID();
@@ -271,6 +351,9 @@ class BenchData {
                     removeSynergy(cardToWithdraw, m_player);
                     if (cardToWithdraw.isOsirisPieceBoxCard()) {
                         m_osirisDeployedCount--;
+                    }
+                    if (cardToWithdraw.isIdentified() && g_ProtoUnitToIndex.get(cardToWithdraw.getProtoName() + m_player) == i) {
+                        g_ProtoUnitToIndex.remove(cardToWithdraw.getProtoName() + m_player);
                     }
                     m_cardArray[i] = cardToWithdraw;
                     trSoundsetPlayPlayer(m_player, "AotgBlessingUnequip");
@@ -306,6 +389,35 @@ class BenchData {
                 card.identify();
                 g_shrineShopCost = g_shrineShopCost + SHRINE_COST_INCREMENT;
                 m_cardArray[i] = card;
+                if (card.isIdentified()) {
+                    int existingIndex = g_ProtoUnitToIndex.get(card.getProtoName() + m_player);
+                    CardData existingCard;
+
+                    if (existingIndex >= 0 && existingIndex < m_cardSize) {
+                        existingCard = m_cardArray[existingIndex];
+                        if (existingCard.isNull() || existingCard.isIdentified() == false || existingCard.getProtoName() != card.getProtoName() || existingCard.getUuid() == card.getUuid()) {
+                            existingIndex = findIdentifiedProtoIndex(card.getProtoName(), card.getUuid());
+                        }
+                    }
+
+                    if (existingIndex >= 0 && existingIndex < m_cardSize) {
+                        existingCard = m_cardArray[existingIndex];
+                        if (existingCard.isNull() == false && existingCard.isIdentified() && existingCard.getProtoName() == card.getProtoName() && existingCard.getUuid() != card.getUuid() && existingCard.isOsirisPieceBoxCard() == false) {
+                            CardData mergedCard = getAndUpgradeDuplicateDeployedCard(card.getProtoName(), card);
+                            if (mergedCard.isNull() == false) {
+                                removeCardByIndex(i);
+                                g_ProtoUnitToIndex.put(card.getProtoName() + m_player, existingIndex);
+                                g_selectedUUIDs[p] = -1;
+                                trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
+                                trChatSendToPlayer(m_player, m_player, card.getProtoName() + " card identified and merged.");
+                                log(3, "Player " + m_player + " identified and merged " + card.getProtoName());
+                                return true;
+                            }
+                        }
+                    }
+
+                    g_ProtoUnitToIndex.put(card.getProtoName() + m_player, i);
+                }
                 g_selectedUUIDs[p] = -1;
                 trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
                 trChatSendToPlayer(m_player, m_player, card.getProtoName() + " card identified.");
@@ -318,6 +430,8 @@ class BenchData {
 
     bool rerollRarity(int uuid = -1, int p = 0){
         int i = g_CardUUIDToIndex.get(uuid);
+        if (i < 0 || i >= m_cardSize) return false;
+
         CardData card = m_cardArray[i];
         if (uuid == card.getUuid() && (card.isNull() == false) && card.isIdentified()){
             if (purchase(g_templeShopCost, p)){
@@ -342,6 +456,8 @@ class BenchData {
 
     bool addSocket(int uuid = -1, int p = 0){
         int i = g_CardUUIDToIndex.get(uuid);
+        if (i < 0 || i >= m_cardSize) return false;
+
         CardData card = m_cardArray[i];
         if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
             if (purchase(g_forgeShopCost, p)){
@@ -360,6 +476,8 @@ class BenchData {
 
     bool rerollUpgrade(int uuid = -1, int p = 0, int upgradeIdx = 0){
         int i = g_CardUUIDToIndex.get(uuid);
+        if (i < 0 || i >= m_cardSize) return false;
+
         CardData card = m_cardArray[i];
         if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
             if (purchase(g_armoryShopCost, p)){

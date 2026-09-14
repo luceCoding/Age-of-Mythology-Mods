@@ -252,7 +252,9 @@ class Shop {
         int numberOfCardsToDraw = config_MAX_DRAWN_CARDS - lockedCount;
         int cardsDrew = 0;
 
-        while (cardsDrew < numberOfCardsToDraw) {
+        int attempts = 0;
+        while (cardsDrew < numberOfCardsToDraw && attempts < 100) {
+            attempts = attempts + 1;
             int tier = getRandomTier(m_currShopLevel[p]);
             CardData drawnCard = drawFromDeck(tier);
             if (addCardIntoDraw(currDraw, drawnCard) == false){
@@ -269,11 +271,10 @@ class Shop {
 
     void buy(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
-        if (bench.getNumberOfCardsHeld() < MAX_CARDS_IN_BENCH){
-            DrawData currDraw = m_currDraws[p];
-
-            CardData card = currDraw.getCardByUUID(uuid);
-            if (card.isNull() == true){return;}
+        DrawData currDraw = m_currDraws[p];
+        CardData card = currDraw.getCardByUUID(uuid);
+        if (card.isNull() == true){ return; }
+        if ((bench.isThereADuplicateCard(card.getProtoName()) && card.isIdentified()) || bench.getNumberOfCardsHeld() < MAX_CARDS_IN_BENCH) { 
             int cost = getCost(card, p);
             if (purchase(cost, p) == false){return;}
 
