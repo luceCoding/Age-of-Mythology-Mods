@@ -209,6 +209,7 @@ class CardData {
     void withdraw(){
         m_isDeployed = false;
         m_deployedUnitId = -1;
+        m_isRespawning = false;
     }
 
     void setIsRespawning(bool isRespawning = false){

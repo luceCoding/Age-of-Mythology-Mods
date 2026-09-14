@@ -100,6 +100,7 @@ runImmediately
         ySearch.process([](int unitId = 0) -> void {
             xsSetContextPlayer(-1);
             int protoUnit = kbUnitGetProtoUnitID(unitId);
+            if (protoUnit <= cUnitTypeMoveTo || protoUnit == cUnitTypeAttackRevealer || protoUnit == cUnitTypeCrate || protoUnit == cUnitTypeCrateSmall){ return; }
             int owner = kbUnitGetPlayerID(unitId);
             xsSetContextPlayer(owner);
             selectSingle(unitId);
@@ -130,9 +131,11 @@ runImmediately
                 }
                 case cUnitTypeVFXArrowSignal: {
                     vector v = trUnitGetPosition(unitId);
-                    float rdmX = xsRandFloat(-50.0, 50.0);
-                    float rdmZ = xsRandFloat(-50.0, 50.0);
-                    int lanternID = trUnitCreateForced("SkyLantern", v.x + rdmX, v.y, v.z + rdmZ, xsRandFloat(0.0, 359.0), owner, false);
+                    float rdmX = xsRandFloat(40.0, 60.0);
+                    int signX = (xsRandInt(0, 1) == 0) ? -1 : 1;
+                    float rdmZ = xsRandFloat(40.0, 60.0);
+                    int signZ = (xsRandInt(0, 1) == 0) ? -1 : 1;
+                    int lanternID = trUnitCreateForced("SkyLantern", v.x + (rdmX * signX), v.y, v.z + (rdmZ * signZ), xsRandFloat(0.0, 359.0), owner, false);
                     selectSingle(lanternID);
                     trUnitMoveToPoint(v.x, v.y, v.z);
                 }

@@ -383,6 +383,7 @@ void postModifyPlayerData(){
             trProtounitRemoveCommand(shopType, p, "Delete");
             setupForPoisonSynergy(p);
             setupForFireSynergy(p);
+            setupForHealSynergy(p);
         }
     }
 

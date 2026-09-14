@@ -140,6 +140,10 @@ int getMinsPastSinceStart(){
 void setupForPoisonSynergy(int p = 0){
     trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageDivine, 0.0, cXSRelativityAssign);
     trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageHack, 50.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_MYTH, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "SelfDestructAttack", UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "SelfDestructAttack", UNIT_TYPE_MYTH, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
 }
 
 void setupForFireSynergy(int p = 0){
@@ -149,7 +153,15 @@ void setupForFireSynergy(int p = 0){
     trProtoUnitSetFlag(p, "VFXFireAshesCS", "NotKBTracked", false);
     trProtoUnitSetFlag(p, "VFXFireAshesCS", "KBTracked", true);
     trProtounitAddCommand("SkyLantern", p, "Delete", 3, 5);
-    trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamagePierce, 100.0, cXSRelativityAssign);
-    trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageCrush, 100.0, cXSRelativityAssign);
+    trProtoUnitSetUnitType(p, "SkyLantern", "LogicalTypeRangedUnitsAutoAttack", true);
+    trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamagePierce, 50.0, cXSRelativityAssign);
+    trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageCrush, 50.0, cXSRelativityAssign);
     trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageDivine, 0.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_MYTH, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+}
+
+void setupForHealSynergy(int p = 0){
+    //trProtounitActionSetFlag(p, "VFXForestProtectionArea", "AllyHealModify", "NoStack", false);
+    //trProtounitAssignAction("Priest", "VFXForestProtectionArea", "AllyHealModify", p);
 }

@@ -157,23 +157,23 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_POISON];
-        synergy.m_buffs[3] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 0.5, "VFXPoison");
+        synergy.m_buffs[3] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 0.5);
         synergy.m_buffs[5] = createBuffSpawnActionSingle(SYNERGY_INDEX_POISON, UNIT_TYPE_UNIT, cUnitTypeArgusAcidBlobDamage, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
-        synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 1, "VFXPoison");
-        synergy.m_buffs[9] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 2, "VFXPoison");
+        synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 1);
+        synergy.m_buffs[9] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 2,);
         synergy.m_buffs[10] = createBuffActionSingle(SYNERGY_INDEX_POISON, "ArgusAcidBlobDamage", cXSActionEffectDamageHack, 50, cXSRelativityAbsolute);
-        synergy.m_buffs[12] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 4, "VFXPoison");
+        synergy.m_buffs[12] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 4);
         g_synergies[SYNERGY_INDEX_POISON] = synergy;
     }
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_FIRE];
         synergy.m_buffs[2] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 0.75, "VFXScorchingFeathers");
-        synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.05);
+        synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.03);
         synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.5, "VFXScorchingFeathers");
         synergy.m_buffs[8] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "SkylanternFireAreaGround", cUnitTypeVFXFireAshesCS, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 1.0);
-        synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 3.5, "VFXBlazingPrairieUnitFire");
-        synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_POISON, "MeteorSPC", cXSActionEffectDamagePierce, 100, cXSRelativityAbsolute);
+        synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 3.5, "VFXScorchingFeathers");
+        synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_POISON, "MeteorSPC", cXSActionEffectDamagePierce, 50, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_FIRE] = synergy;
     }
 }

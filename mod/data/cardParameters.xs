@@ -182,6 +182,8 @@ class CardParameters {
             case cUnitTypePhoenix: return true;
             case cUnitTypeFireSiphon: return true;
             case cUnitTypeChimera: return true;
+            case cUnitTypeTeixiptlaHuitz: return true;
+            case cUnitTypeSuperTeixiptlaHuitz: return true;
         }
         return isChinese() & isArcher();
     }

@@ -699,14 +699,19 @@ bool respawnDeployedCards(ref BenchData bench){
             bench.m_cardArray[i] = card;
             wasThereAChange = true;
             int respawnTimeMS = RESPAWN_TIME_MS_BASE + (((currtime - g_timeMSGameStarted) / 60000) * RESPAWN_TIME_ADDITIONAL_MS);
-            schedulerWithIntInt.add(respawnTimeMS, bench.m_player, i, [](int iterations = 1, int p = 0, int cardIndex = 0) -> bool {
+            int cardUUID = card.getUuid();
+            schedulerWithIntInt.add(respawnTimeMS, bench.m_player, cardUUID, [](int iterations = 1, int p = 0, int cardUUID = 0) -> bool {
                 BenchData bench = g_shop.m_benches[p];
-                CardData deadCard = bench.m_cardArray[cardIndex];
-                if (deadCard.isNull() || deadCard.isDeployed() == false || deadCard.isRespawning() == false) { return false; }
-                if (bench.spawnCard(deadCard, false)) {
-                    trSoundsetPlayPlayer(p, "HeroRevive");
-                    bench.m_cardArray[cardIndex] = deadCard;
-                    g_shop.m_benches[p] = bench;
+                for (int i = 0; i < bench.m_cardSize; i++) {
+                    CardData deadCard = bench.m_cardArray[i];
+                    if (deadCard.isNull() || deadCard.getUuid() != cardUUID) { continue; }
+                    if (deadCard.isDeployed() == false || deadCard.isRespawning() == false) { return false; }
+                    if (bench.spawnCard(deadCard, false)) {
+                        trSoundsetPlayPlayer(p, "HeroRevive");
+                        bench.m_cardArray[i] = deadCard;
+                        g_shop.m_benches[p] = bench;
+                    }
+                    return false;
                 }
                 return false;
             });

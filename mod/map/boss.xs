@@ -170,7 +170,7 @@ void checkBotBossBuff(){
             int woodStockpiled = kbGetResourceAmount(p, kbGetResourceID("Wood"));
             if (woodStockpiled == 2){
                 int team = g_finalTeam[p];
-                float buffAmount = getMinsPastSinceStart() / 2.0;
+                float buffAmount = getMinsPastSinceStart() / 2.0 * 0.75;
                 int[] playersInTeam = getPlayersInTeam(team);
                 for (int i = 0; i < playersInTeam.size(); i++){
                     int teamPlayer = playersInTeam[i];

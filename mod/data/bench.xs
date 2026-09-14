@@ -139,18 +139,11 @@ class BenchData {
         int count = g_synergyHashMap.get(key);
         if (count == 0){
             CardParameters params = card.getCardParameters();
-            if (params.isInfantry()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_INFANTRY, p);}
-            if (params.isArcher()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_RANGED, p);}
-            if (params.isCavalry()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_CAVALRY, p);}
-            if (params.isMythUnit()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_MYTH, p);}
-            if (params.isHero()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_HERO, p);}
-            if (params.isHealer()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_HEALER, p);}
-            if (params.isSiege()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_SIEGE, p);}
-            if (params.isSoldier()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_SOLDIER, p);}
-            if (params.isFrost()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_FROST, p);}
-            if (params.isUndead()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_UNDEAD, p);}
-            if (params.isPoison()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_POISON, p);}
-            if (params.isFire()){incrementSynergyAndApplyBuff(SYNERGY_INDEX_FIRE, p);}
+            for (int SYNERGY_INDEX = 0; SYNERGY_INDEX < MAX_SYNERGIES; SYNERGY_INDEX++){
+                if (params.isASynergy(SYNERGY_INDEX)){
+                    incrementSynergyAndApplyBuff(SYNERGY_INDEX, p);
+                }
+            }
         }
         g_synergyHashMap.put(key, count + 1);
     }
@@ -171,18 +164,12 @@ class BenchData {
         g_synergyHashMap.put(key, count);
         if (count == 0){
             CardParameters params = card.getCardParameters();
-            if (params.isInfantry()){decrementSynergyAndResetBuff(SYNERGY_INDEX_INFANTRY, p);}
-            if (params.isArcher()){decrementSynergyAndResetBuff(SYNERGY_INDEX_RANGED, p);}
-            if (params.isCavalry()){decrementSynergyAndResetBuff(SYNERGY_INDEX_CAVALRY, p);}
-            if (params.isMythUnit()){decrementSynergyAndResetBuff(SYNERGY_INDEX_MYTH, p);}
-            if (params.isHero()){decrementSynergyAndResetBuff(SYNERGY_INDEX_HERO, p);}
-            if (params.isHealer()){decrementSynergyAndResetBuff(SYNERGY_INDEX_HEALER, p);}
-            if (params.isSiege()){decrementSynergyAndResetBuff(SYNERGY_INDEX_SIEGE, p);}
-            if (params.isSoldier()){decrementSynergyAndResetBuff(SYNERGY_INDEX_SOLDIER, p);}
-            if (params.isFrost()){decrementSynergyAndResetBuff(SYNERGY_INDEX_FROST, p);}
-            if (params.isUndead()){decrementSynergyAndResetBuff(SYNERGY_INDEX_UNDEAD, p);}
-            if (params.isPoison()){decrementSynergyAndResetBuff(SYNERGY_INDEX_POISON, p);}
-            if (params.isPoison()){decrementSynergyAndResetBuff(SYNERGY_INDEX_FIRE, p);}
+            for (int SYNERGY_INDEX = 0; SYNERGY_INDEX < MAX_SYNERGIES; SYNERGY_INDEX++){
+                if (params.isASynergy(SYNERGY_INDEX)){
+                    decrementSynergyAndResetBuff(SYNERGY_INDEX, p);
+                }
+            }
+            g_synergyHashMap.remove(key);
         }
     }
 

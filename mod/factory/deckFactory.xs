@@ -194,7 +194,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(3, cUnitTypeChiron);
     addCardsIntoDeck(3, cUnitTypeXuanWu);
 
-    addCardsIntoDeck(3, cUnitTypeFenrir);
+    addCardsIntoDeck(3, cUnitTypeFenrisWolfBrood);
     addCardsIntoDeck(3, cUnitTypeBallista);
     addCardsIntoDeck(3, cUnitTypeFireGiant);
     addCardsIntoDeck(3, cUnitTypeFafnir);
