@@ -308,7 +308,7 @@ void defineDatabaseDefinition(string className = "", string[] typeArray = defaul
 string gTriggerName = "";
 
 void createTypedScheduler(string name = "", string[] typeArray = default){
-
+    
     string className = "Scheduler_" + name;
     
     rmTriggerAddScriptLine("class "+className+" {");
@@ -342,7 +342,9 @@ void createTypedScheduler(string name = "", string[] typeArray = default){
                     rmTriggerAddScriptLine("continue;");
                 rmTriggerAddScriptLine("}");
                 rmTriggerAddScriptLine("lastTimeArray[index] = lastTime + delay;");
-                rmTriggerAddScriptLine("int iteration = iterationArray[index]+1;");
+                rmTriggerAddScriptLine("int iteration = iterationArray[index];");
+                rmTriggerAddScriptLine("iteration++;");
+                rmTriggerAddScriptLine("iterationArray[index] = iteration;");
                 for(int i = 0; i < typeArray.size(); i++){
                     rmTriggerAddScriptLine(typeArray[i] + " arg" + i + " = arg" + i + "Array[index];");
                 }
@@ -365,13 +367,12 @@ void createTypedScheduler(string name = "", string[] typeArray = default){
                 rmTriggerAddScriptLine("initialise();");
             rmTriggerAddScriptLine("}");
             rmTriggerAddScriptLine("if(count == delayArray.size()){");
-                rmTriggerAddScriptLine("int newSize = 2 * delayArray.size();");
-                rmTriggerAddScriptLine("delayArray.resize(newSize, 0);");
-                rmTriggerAddScriptLine("toRunArray.resize(newSize, [](int iteration = 1"+toLambdaArgumentList(typeArray, true)+") -> bool {return false;});");
-                rmTriggerAddScriptLine("lastTimeArray.resize(newSize, 0);");
-                rmTriggerAddScriptLine("iterationArray.resize(newSize, 0);");
+                rmTriggerAddScriptLine("delayArray.resize(2 * delayArray.size(), 0);");
+                rmTriggerAddScriptLine("toRunArray.resize(2 * toRunArray.size(), [](int iteration = 1"+toLambdaArgumentList(typeArray, true)+") -> bool {return false;});");
+                rmTriggerAddScriptLine("lastTimeArray.resize(2 * lastTimeArray.size(), 0);");
+                rmTriggerAddScriptLine("iterationArray.resize(2 * iterationArray.size(), 0);");
                 for(int i = 0; i < typeArray.size(); i++){
-                    rmTriggerAddScriptLine("arg" + i + "Array.resize(newSize" + getArrayDefaultValue(typeArray[i]) + ");");
+                    rmTriggerAddScriptLine("arg" + i + "Array.resize(2 * arg" + i + "Array.size()" + getArrayDefaultValue(typeArray[i]) + ");");
                 }
             rmTriggerAddScriptLine("}");
             rmTriggerAddScriptLine("delayArray[count] = delay;");
@@ -433,7 +434,9 @@ void createTypedUnitScheduler(string name = "", string[] typeArray = default){
                     rmTriggerAddScriptLine("continue;");
                 rmTriggerAddScriptLine("}");
                 rmTriggerAddScriptLine("lastTimeArray[index] = lastTime + delay;");
-                rmTriggerAddScriptLine("int iteration = iterationArray[index]+1;");
+                rmTriggerAddScriptLine("int iteration = iterationArray[index];");
+                rmTriggerAddScriptLine("iteration++;");
+                rmTriggerAddScriptLine("iterationArray[index] = iteration;");
                 rmTriggerAddScriptLine("int unitId = unitArray[index];");
                 for(int i = 0; i < typeArray.size(); i++){
                     rmTriggerAddScriptLine(typeArray[i] + " arg" + i + " = arg" + i + "Array[index];");
@@ -464,14 +467,13 @@ void createTypedUnitScheduler(string name = "", string[] typeArray = default){
                 rmTriggerAddScriptLine("initialise();");
             rmTriggerAddScriptLine("}");
             rmTriggerAddScriptLine("if(count == delayArray.size()){");
-                rmTriggerAddScriptLine("int newSize = 2 * delayArray.size();");
-                rmTriggerAddScriptLine("unitArray.resize(newSize, 0);");
-                rmTriggerAddScriptLine("delayArray.resize(newSize, 0);");
-                rmTriggerAddScriptLine("toRunArray.resize(newSize, [](int unitId = 0, int iteration = 1"+toLambdaArgumentList(typeArray, true)+") -> bool {return false;});");
-                rmTriggerAddScriptLine("lastTimeArray.resize(newSize, 0);");
-                rmTriggerAddScriptLine("iterationArray.resize(newSize, 0);");
+                rmTriggerAddScriptLine("unitArray.resize(2 * unitArray.size(), 0);");
+                rmTriggerAddScriptLine("delayArray.resize(2 * delayArray.size(), 0);");
+                rmTriggerAddScriptLine("toRunArray.resize(2 * toRunArray.size(), [](int unitId = 0, int iteration = 1"+toLambdaArgumentList(typeArray, true)+") -> bool {return false;});");
+                rmTriggerAddScriptLine("lastTimeArray.resize(2 * lastTimeArray.size(), 0);");
+                rmTriggerAddScriptLine("iterationArray.resize(2 * iterationArray.size(), 0);");
                 for(int i = 0; i < typeArray.size(); i++){
-                    rmTriggerAddScriptLine("arg" + i + "Array.resize(newSize" + getArrayDefaultValue(typeArray[i]) + ");");
+                    rmTriggerAddScriptLine("arg" + i + "Array.resize(2 * arg" + i + "Array.size()" + getArrayDefaultValue(typeArray[i]) + ");");
                 }
             rmTriggerAddScriptLine("}");
             rmTriggerAddScriptLine("unitArray[count] = unitId;");

@@ -283,7 +283,12 @@ class Shop {
                 removedCard.unlockCard();
                 bench.addCard(removedCard);
                 g_selectedUUIDs[p] = -1; // Deselect card
-                trSoundsetPlayPlayer(p, "StorehouseSelect");
+                if (removedCard.isIdentified() == false){
+                    trSoundsetPlayPlayer(p, "StorehouseSelect");
+                }
+                else {
+                    bench.deployCard(uuid);
+                }
                 m_benches[p] = bench;
                 refreshShop(p);
             }
@@ -383,7 +388,8 @@ class Shop {
 
     void identify(int p = 0, int uuid = -1){
         BenchData bench = m_benches[p];
-        bench.identifyCard(uuid, p);
+        bool isIdentified = bench.identifyCard(uuid, p);
+        if (isIdentified) { bench.deployCard(uuid); }
         m_benches[p] = bench;
         refreshShop(p);
     }

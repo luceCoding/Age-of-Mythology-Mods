@@ -4,19 +4,27 @@ include "player.xs";
 
 class DrawData {
     CardData[] m_cardArray = default;
+    bool[] m_occupied = default;
 
-    int getSize(){
+    void ensureInitialised(){
         if (m_cardArray.size() == 0){
             m_cardArray = new CardData(config_MAX_DRAWN_CARDS);
+            m_occupied = new bool(config_MAX_DRAWN_CARDS, false);
         }
+    }
+
+    int getSize(){
+        ensureInitialised();
         return m_cardArray.size();
     }
 
     bool addCard(ref CardData card){
+        ensureInitialised();
         for(int i = 0; i < m_cardArray.size(); i++) {
-            CardData currCard = m_cardArray[i];
-            if (currCard.isNull()){
+            if (m_occupied[i] == false){
                 m_cardArray[i] = card;
+                m_occupied[i] = true;
+                g_CardUUIDToIndex.put(card.getUuid(), i);
                 log(3, "Added card to draw " + card.getUuid() + ", slot: " + i);
                 return true;
             }
@@ -26,39 +34,37 @@ class DrawData {
     }
 
     CardData getCard(int index = 0){
-        if (m_cardArray.size() <= 0 || index < 0 || index >= m_cardArray.size()) {
+        ensureInitialised();
+        if (index < 0 || index >= m_cardArray.size() || m_occupied[index] == false) {
             CardData emptyCard;
             return emptyCard;
         }
 
-        CardData currCard = m_cardArray[index];
-        if (currCard.isNull()){
-            CardData emptyCard;
-            return emptyCard;
-        }
-        return currCard;
+        return m_cardArray[index];
     }
 
     CardData removeCard(int index = 0){
-        if (index < 0 || index >= m_cardArray.size()) {
+        ensureInitialised();
+        if (index < 0 || index >= m_cardArray.size() || m_occupied[index] == false) {
             CardData emptyCard;
             return emptyCard;
         }
 
         CardData removedCard = m_cardArray[index];
-        if (removedCard.isNull()){
-            CardData emptyCard;
-            return emptyCard;
-        }
+        g_CardUUIDToIndex.remove(removedCard.getUuid());
 
         CardData emptyCard;
         m_cardArray[index] = emptyCard;
+        m_occupied[index] = false;
+
         log(3, "Removed card from draw " + removedCard.getUuid() + ", slot: " + index);
         return removedCard;
     }
 
     CardData getCardByUUID(int uuid = -1){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        ensureInitialised();
+        int i = g_CardUUIDToIndex.get(uuid);
+        if (i >= 0 && i < m_cardArray.size() && m_occupied[i]) {
             CardData currCard = m_cardArray[i];
             if (currCard.getUuid() == uuid) {
                 return currCard;
@@ -69,7 +75,9 @@ class DrawData {
     }
 
     CardData removeCardByUUID(int uuid = -1){
-        for(int i = 0; i < m_cardArray.size(); i++) {
+        ensureInitialised();
+        int i = g_CardUUIDToIndex.get(uuid);
+        if (i >= 0 && i < m_cardArray.size() && m_occupied[i]) {
             CardData currCard = m_cardArray[i];
             if (currCard.getUuid() == uuid) {
                 CardData removedCard = removeCard(i);

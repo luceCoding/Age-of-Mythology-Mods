@@ -77,7 +77,7 @@ void addRecallCommand(int p = 0, string protoUnit = ""){
                                                         vector v = kbUnitGetTruePosition(unitId);
                                                         trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXVortexFinish), v.x, v.y, v.z, -1, 0);
                                                     }
-                                                    if (iteration >= 20){
+                                                    else if (iteration >= 20){
                                                         selectSingle(unitId);
                                                         trUnitReposition(shopVector.x, shopVector.y, shopVector.z, false, true);
                                                         playUnitSound(unitId, "VortexLift", SOUND_SET);

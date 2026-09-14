@@ -1,12 +1,12 @@
-include "lib/rm_core.xs";
-include "card.xs"
-
 mutable bool purchase(int goldAmount = 0, int p = 0) { return false; }
+
+IntToIntHashMap g_CardUUIDToIndex;
 
 class BenchData {
     int m_cardSize = 0; // Tracks active cards without shrinking/reallocating the array
     int m_player = -1;
     int m_playerShopId = -1;
+    int m_osirisDeployedCount = 0;
     int[] m_synergyCounter = default;
     CardData[] m_cardArray = default;
 
@@ -15,6 +15,7 @@ class BenchData {
         m_playerShopId = shopId;
         m_synergyCounter = new int(MAX_SYNERGIES, 0);
         m_cardSize = 0;
+        m_osirisDeployedCount = 0;
     }
     
     int getPlayerShopID(){
@@ -28,29 +29,41 @@ class BenchData {
         } else {
             m_cardArray.add(card);
         }
+        g_CardUUIDToIndex.put(card.getUuid(), m_cardSize);
         m_cardSize++;
         log(3, "Added card to bench " + card.getUuid() + ", size: " + m_cardSize);
         return true;
     }
 
     CardData removeCardByUUID(int uuid = -1){        
-        for(int i = 0; i < m_cardSize; i++) {
-            CardData currCard = m_cardArray[i];
-            if (currCard.getUuid() == uuid) {
-                m_cardSize--; // Reduce active count
-                
-                // Swap the last active element into this slot if it's not already the last one
-                if (i < m_cardSize) {
-                    m_cardArray[i] = m_cardArray[m_cardSize];
-                }
-                
-                // Clear the vacated slot to prevent ghost card rendering
-                CardData nullCard;
-                m_cardArray[m_cardSize] = nullCard;
+        int i = g_CardUUIDToIndex.get(uuid);
+        if (i < 0 || i >= m_cardSize) {
+            CardData emptyCard;
+            return emptyCard;
+        }
 
-                log(3, "Removed card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
-                return currCard;
+        CardData currCard = m_cardArray[i];
+        if (currCard.getUuid() == uuid) {
+            if (currCard.isOsirisPieceBoxCard() && currCard.isDeployed()) {
+                m_osirisDeployedCount--;
             }
+
+            m_cardSize--; // Reduce active count
+            
+            // Swap the last active element into this slot if it's not already the last one
+            if (i < m_cardSize) {
+                CardData movedCard = m_cardArray[m_cardSize];
+                m_cardArray[i] = movedCard;
+                g_CardUUIDToIndex.put(movedCard.getUuid(), i);
+            }
+            
+            // Clear the vacated slot to prevent ghost card rendering
+            CardData nullCard;
+            m_cardArray[m_cardSize] = nullCard;
+            g_CardUUIDToIndex.remove(currCard.getUuid());
+
+            log(3, "Removed card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
+            return currCard;
         }
         
         CardData emptyCard;
@@ -65,16 +78,23 @@ class BenchData {
         }
 
         CardData currCard = m_cardArray[index];
+        if (currCard.isOsirisPieceBoxCard() && currCard.isDeployed()) {
+            m_osirisDeployedCount--;
+        }
+
         m_cardSize--; // Reduce active count
         
         // Swap the last active element into this slot if it's not already the last one
         if (index < m_cardSize) {
-            m_cardArray[index] = m_cardArray[m_cardSize];
+            CardData movedCard = m_cardArray[m_cardSize];
+            m_cardArray[index] = movedCard;
+            g_CardUUIDToIndex.put(movedCard.getUuid(), index);
         }
         
         // Clear the vacated slot to prevent ghost card rendering
         CardData nullCard;
         m_cardArray[m_cardSize] = nullCard;
+        g_CardUUIDToIndex.remove(currCard.getUuid());
 
         log(3, "Removed card from index " + index + " (UUID: " + currCard.getUuid() + "), size: " + m_cardSize);
         return currCard;
@@ -91,28 +111,25 @@ class BenchData {
 
                 // Swap the last active element into this slot if it's not already the last one
                 if (i < m_cardSize) {
-                    m_cardArray[i] = m_cardArray[m_cardSize];
+                    CardData movedCard = m_cardArray[m_cardSize];
+                    m_cardArray[i] = movedCard;
+                    g_CardUUIDToIndex.put(movedCard.getUuid(), i);
                     i--; // Recheck the card moved into this slot
                 }
                 
                 // Clear the vacated slot to prevent ghost card rendering
                 CardData nullCard;
                 m_cardArray[m_cardSize] = nullCard;
+                g_CardUUIDToIndex.remove(currCard.getUuid());
 
                 log(3, "Removed osiris card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
             }
         }
+        m_osirisDeployedCount = 0;
     }
 
     int getDeployedOsirisPieceBoxCardCount(){
-        int count = 0;
-        for(int i = 0; i < m_cardSize; i++) {
-            CardData currCard = m_cardArray[i];
-            if (currCard.isOsirisPieceBoxCard() && currCard.isDeployed()) {
-                count = count + 1;
-            }
-        }
-        return count;
+        return m_osirisDeployedCount;
     }
 
     CardData[] getCards(){
@@ -192,143 +209,149 @@ class BenchData {
     }
 
     void deployCard(int uuid = -1){
-        for(int i = 0; i < m_cardSize; i++) {
-            CardData card = m_cardArray[i];
-            if (card.isNull() || card.isDeployed() || card.getUuid() != uuid) continue;
-            if (card.isOsirisPieceBoxCard() && getDeployedOsirisPieceBoxCardCount() == OSIRIS_CARDS_NEEDED-1){
-                removeAllDeployedOsirisPieceCards();
-                removeCardByUUID(uuid);
-                selectSingle(m_playerShopId);
-                vector location = trUnitGetPosition(m_playerShopId);
-                trUnitCreateForced("Osiris", location.x, location.y, location.z, xsRandFloat(0.0, 359), m_player, false);
+        int i = g_CardUUIDToIndex.get(uuid);
+        CardData card = m_cardArray[i];
+        if (card.isNull() || card.isDeployed() || card.getUuid() != uuid || card.isIdentified() == false) return;
+        if (card.isOsirisPieceBoxCard() && getDeployedOsirisPieceBoxCardCount() == OSIRIS_CARDS_NEEDED-1){
+            removeAllDeployedOsirisPieceCards();
+            removeCardByUUID(uuid);
+            selectSingle(m_playerShopId);
+            vector location = trUnitGetPosition(m_playerShopId);
+            trUnitCreateForced("Osiris", location.x, location.y, location.z, xsRandFloat(0.0, 359), m_player, false);
 
-                string playerName = kbPlayerGetName(m_player);
-                string icon = "resources/talking_heads/osiris/osiris_spc_neutral.png";
-                trChatSend(getTeamsAIPlayer(g_finalTeam[m_player]), playerName + " has gathered all five pieces of Osiris!\n" + displayCompensatedIcon(128, 128, icon));
+            string playerName = kbPlayerGetName(m_player);
+            string icon = "resources/talking_heads/osiris/osiris_spc_neutral.png";
+            trChatSend(getTeamsAIPlayer(g_finalTeam[m_player]), playerName + " has gathered all five pieces of Osiris!\n" + displayCompensatedIcon(128, 128, icon));
 
-                closeShop(m_player);
-                trSoundPlayFN("campaign\fott\cinematics\fott20_b\lostsouls.mp3", -1, "","");
-                trSetLighting("potg\potg02_end", 10);
-                trMusicStop();
-                trMusicPlay("music\battle\oi_that_pops!!!.wav", 5.0);
-                if (trCurrentPlayer() == m_player){
-                    cameraLookAt(location, 60.0, 45.0, 45.0);
-                }
-                return;
+            closeShop(m_player);
+            trSoundPlayFN("campaign\fott\cinematics\fott20_b\lostsouls.mp3", -1, "","");
+            trSetLighting("potg\potg02_end", 10);
+            trMusicStop();
+            trMusicPlay("music\battle\oi_that_pops!!!.wav", 5.0);
+            if (trCurrentPlayer() == m_player){
+                cameraLookAt(location, 60.0, 45.0, 45.0);
             }
-            CardData newCard = getAndUpgradeDuplicateDeployedCard(card.getProtoName(), card);
-            if (newCard.isNull() == false){
-                removeCardByIndex(i);
-                changeDisplayName(newCard);
-                trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
-                return;
-            }
-            if (spawnCard(card) == false) {
-                addCard(card);
-                return;
-            }
-            card.applyUpgrades(m_player);
-            addSynergy(card, m_player);
-            m_cardArray[i] = card;
+            return;
+        }
+        CardData newCard = getAndUpgradeDuplicateDeployedCard(card.getProtoName(), card);
+        if (newCard.isNull() == false){
+            removeCardByIndex(i);
+            changeDisplayName(newCard);
             trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
             return;
         }
+        if (spawnCard(card) == false) {
+            addCard(card);
+            return;
+        }
+        card.applyUpgrades(m_player);
+        addSynergy(card, m_player);
+        if (card.isOsirisPieceBoxCard()) {
+            m_osirisDeployedCount++;
+        }
+        m_cardArray[i] = card;
+        trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
+        return;
     }
 
     bool withdrawCard(int uuid = -1){
-        for(int i = 0; i < m_cardSize; i++) {
-            CardData cardToWithdraw = m_cardArray[i];
-            if (uuid == cardToWithdraw.getUuid() && (!(cardToWithdraw.isNull())) && cardToWithdraw.isDeployed()){
-                int unitID = cardToWithdraw.getDeployedUnitID();
-                selectSingle(unitID);
-                if (trUnitDead() == false){
-                    vector shopLocation = kbUnitGetPosition(m_playerShopId);
-                    float distance = kbUnitGetDistanceToPoint(unitID, shopLocation);
-                    if (distance <= 10){
-                        trUnitDestroy(true);
-                        cardToWithdraw.resetRarityHealth(m_player);
-                        cardToWithdraw.resetUpgrades(m_player);
-                        cardToWithdraw.withdraw();
-                        removeSynergy(cardToWithdraw, m_player);
-                        m_cardArray[i] = cardToWithdraw;
-                        trSoundsetPlayPlayer(m_player, "AotgBlessingUnequip");
-                        log(3, "Player " + m_player + " withdrew to shop " + m_playerShopId);
-                        return true;
+        int i = g_CardUUIDToIndex.get(uuid);
+        CardData cardToWithdraw = m_cardArray[i];
+        if (uuid == cardToWithdraw.getUuid() && (!(cardToWithdraw.isNull())) && cardToWithdraw.isDeployed()){
+            int unitID = cardToWithdraw.getDeployedUnitID();
+            selectSingle(unitID);
+            if (trUnitDead() == false){
+                vector shopLocation = kbUnitGetPosition(m_playerShopId);
+                float distance = kbUnitGetDistanceToPoint(unitID, shopLocation);
+                if (distance <= 10){
+                    trUnitDestroy(true);
+                    cardToWithdraw.resetRarityHealth(m_player);
+                    cardToWithdraw.resetUpgrades(m_player);
+                    cardToWithdraw.withdraw();
+                    removeSynergy(cardToWithdraw, m_player);
+                    if (cardToWithdraw.isOsirisPieceBoxCard()) {
+                        m_osirisDeployedCount--;
                     }
-                    else if (trCurrentPlayer() == m_player) {
-                        trChatSendToPlayer(m_player, m_player, "Unit must be nearby your shop before it can be withdrawn.");
-                        selectSingle(cardToWithdraw.getDeployedUnitID());
-                        trUnitHighlight(8.0, true);
-                        trSoundsetPlayPlayer(m_player, "PopCapHit");
-                        return false;
-                    }
+                    m_cardArray[i] = cardToWithdraw;
+                    trSoundsetPlayPlayer(m_player, "AotgBlessingUnequip");
+                    log(3, "Player " + m_player + " withdrew to shop " + m_playerShopId);
+                    return true;
                 }
-                else {
-                    trChatSendToPlayer(m_player, m_player, "Unit must be alive before it can be withdrawn.");
+                else if (trCurrentPlayer() == m_player) {
+                    trChatSendToPlayer(m_player, m_player, "Unit must be nearby your shop before it can be withdrawn.");
+                    selectSingle(cardToWithdraw.getDeployedUnitID());
+                    trUnitHighlight(8.0, true);
                     trSoundsetPlayPlayer(m_player, "PopCapHit");
                     return false;
                 }
+            }
+            else {
+                trChatSendToPlayer(m_player, m_player, "Unit must be alive before it can be withdrawn.");
+                trSoundsetPlayPlayer(m_player, "PopCapHit");
+                return false;
             }
         }
         return false;
     }
 
     bool identifyCard(int uuid = -1, int p = 0){
-        for(int i = 0; i < m_cardSize; i++) {
-            CardData card = m_cardArray[i];
-            if (uuid == card.getUuid() && (!(card.isNull())) && (card.isIdentified() == false)){
-                if (purchase(g_shrineShopCost, p)){
-                    card.identify();
-                    g_shrineShopCost = g_shrineShopCost + SHRINE_COST_INCREMENT;
-                    m_cardArray[i] = card;
-                    g_selectedUUIDs[p] = -1;
-                    trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
-                    log(3, "Player " + m_player + " identified a card.");
-                    return true;
-                }
+        int i = g_CardUUIDToIndex.get(uuid);
+        if (i < 0 || i >= m_cardSize) {
+            return false;
+        }
+
+        CardData card = m_cardArray[i];
+        if (uuid == card.getUuid() && (!(card.isNull())) && (card.isIdentified() == false)){
+            if (purchase(g_shrineShopCost, p)){
+                card.identify();
+                g_shrineShopCost = g_shrineShopCost + SHRINE_COST_INCREMENT;
+                m_cardArray[i] = card;
+                g_selectedUUIDs[p] = -1;
+                trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
+                trChatSendToPlayer(m_player, m_player, card.getProtoName() + " card identified.");
+                log(3, "Player " + m_player + " identified " + card.getProtoName());
+                return true;
             }
         }
         return false;
     }
 
     bool rerollRarity(int uuid = -1, int p = 0){
-        for(int i = 0; i < m_cardSize; i++) {
-            CardData card = m_cardArray[i];
-            if (uuid == card.getUuid() && (card.isNull() == false) && card.isIdentified()){
-                if (purchase(g_templeShopCost, p)){
-                    card.resetUpgrades(p); // TODO: Upgrade the difference instead of resetting everything
-                    int rarity = card.rerollRarity();
-                    card.applyUpgrades(p);
-                    g_templeShopCost = g_templeShopCost + TEMPLE_COST_INCREMENT;
-                    m_cardArray[i] = card;
-                    switch(rarity){
-                        case TIER_UNCOMMON: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
-                        case TIER_RARE: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedHeroic");
-                        case TIER_EPIC: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedMythic");
-                        case TIER_LEGENDARY: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedDivine");
-                        default: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedSimple");
-                    }
-                    log(3, "Player " + m_player + " rarity a card.");
-                    return true;
+        int i = g_CardUUIDToIndex.get(uuid);
+        CardData card = m_cardArray[i];
+        if (uuid == card.getUuid() && (card.isNull() == false) && card.isIdentified()){
+            if (purchase(g_templeShopCost, p)){
+                card.resetUpgrades(p); // TODO: Upgrade the difference instead of resetting everything
+                int rarity = card.rerollRarity();
+                card.applyUpgrades(p);
+                g_templeShopCost = g_templeShopCost + TEMPLE_COST_INCREMENT;
+                m_cardArray[i] = card;
+                switch(rarity){
+                    case TIER_UNCOMMON: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
+                    case TIER_RARE: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedHeroic");
+                    case TIER_EPIC: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedMythic");
+                    case TIER_LEGENDARY: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedDivine");
+                    default: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedSimple");
                 }
+                log(3, "Player " + m_player + " rarity a card.");
+                return true;
             }
         }
         return false;
     }
 
     bool addSocket(int uuid = -1, int p = 0){
-        for(int i = 0; i < m_cardSize; i++) {
-            CardData card = m_cardArray[i];
-            if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
-                if (purchase(g_forgeShopCost, p)){
-                    bool hasSocketed = card.addSocket();
-                    if (hasSocketed){
-                        g_forgeShopCost = g_forgeShopCost + FORGE_COST_INCREMENT;
-                        m_cardArray[i] = card;
-                        trSoundsetPlayPlayer(m_player, "ArmorySelect");
-                        log(3, "Player " + m_player + " socketed a card.");
-                        return true;
-                    }
+        int i = g_CardUUIDToIndex.get(uuid);
+        CardData card = m_cardArray[i];
+        if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
+            if (purchase(g_forgeShopCost, p)){
+                bool hasSocketed = card.addSocket();
+                if (hasSocketed){
+                    g_forgeShopCost = g_forgeShopCost + FORGE_COST_INCREMENT;
+                    m_cardArray[i] = card;
+                    trSoundsetPlayPlayer(m_player, "ArmorySelect");
+                    log(3, "Player " + m_player + " socketed a card.");
+                    return true;
                 }
             }
         }
@@ -336,23 +359,22 @@ class BenchData {
     }
 
     bool rerollUpgrade(int uuid = -1, int p = 0, int upgradeIdx = 0){
-        for(int i = 0; i < m_cardSize; i++) {
-            CardData card = m_cardArray[i];
-            if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
-                if (purchase(g_armoryShopCost, p)){
-                    card.resetOneUpgrade(p, upgradeIdx);
-                    int upgrade = card.rerollUpgrade(upgradeIdx);
-                    card.applyOneUpgrade(p, upgradeIdx);
-                    if (upgrade == -1){
-                        errorLog("Player " + m_player + " failed to upgrade card.");
-                        return false;
-                    }
-                    g_armoryShopCost = g_armoryShopCost + ARMORY_COST_INCREMENT;
-                    m_cardArray[i] = card;
-                    trSoundsetPlayPlayer(m_player, "ArmorySelect");
-                    log(3, "Player " + m_player + " socketed a card.");
-                    return true;
+        int i = g_CardUUIDToIndex.get(uuid);
+        CardData card = m_cardArray[i];
+        if (uuid == card.getUuid() && (!(card.isNull())) && card.isIdentified()){
+            if (purchase(g_armoryShopCost, p)){
+                card.resetOneUpgrade(p, upgradeIdx);
+                int upgrade = card.rerollUpgrade(upgradeIdx);
+                card.applyOneUpgrade(p, upgradeIdx);
+                if (upgrade == -1){
+                    errorLog("Player " + m_player + " failed to upgrade card.");
+                    return false;
                 }
+                g_armoryShopCost = g_armoryShopCost + ARMORY_COST_INCREMENT;
+                m_cardArray[i] = card;
+                trSoundsetPlayPlayer(m_player, "ArmorySelect");
+                log(3, "Player " + m_player + " socketed a card.");
+                return true;
             }
         }
         return false;
