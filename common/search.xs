@@ -1,15 +1,9 @@
 class YSearch {
-    bool initialised = false;
-
-    void initialise() {
+    void init() {
         trSetAutoResetRecentUnits(false);
-        initialised = true;
     }
 
     void process(void(int) handler = [](int unitId = 0) -> void {}) {
-        if (!initialised) {
-            initialise();
-        }
         int[] recent = trGetRecentUnits();
         trResetRecentUnits();
         for (int i = 0; i < recent.size(); i++) {
@@ -21,6 +15,3 @@ class YSearch {
 };
 
 YSearch ySearch;
-
-int Search_lastTime = 0;
-bool Search_conditionToRun() { return true; }

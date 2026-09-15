@@ -135,7 +135,7 @@ Parameters createParametersWorkAround(){
 
 void checkTopBossBuff(){
     if (g_topBossCamp.areAllDead()){
-        for (int p = 1; p < cNumberPlayers; p++){
+        for (int p = 1; p <= cNumberPlayers - 2; p++){
             int woodStockpiled = kbGetResourceAmount(p, kbGetResourceID("Wood"));
             if (woodStockpiled == 1){
                 int team = g_finalTeam[p];
@@ -166,7 +166,7 @@ void checkTopBossBuff(){
 
 void checkBotBossBuff(){
     if (g_botBossCamp.areAllDead()){
-        for (int p = 1; p < cNumberPlayers; p++){
+        for (int p = 1; p <= cNumberPlayers - 2; p++){
             int woodStockpiled = kbGetResourceAmount(p, kbGetResourceID("Wood"));
             if (woodStockpiled == 2){
                 int team = g_finalTeam[p];

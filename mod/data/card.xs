@@ -6,7 +6,6 @@ class CardData {
     bool m_isLocked = false;
     bool m_isDeployed = false;
     bool m_isIdentified = true;
-    bool m_isRespawning = false;
     string m_protoName = "";
     int m_count = 1;
     int m_uuid = cMinInt;
@@ -209,15 +208,6 @@ class CardData {
     void withdraw(){
         m_isDeployed = false;
         m_deployedUnitId = -1;
-        m_isRespawning = false;
-    }
-
-    void setIsRespawning(bool isRespawning = false){
-        m_isRespawning = isRespawning;
-    }
-
-    bool isRespawning(){
-        return m_isRespawning;
     }
 
     bool isNull(){

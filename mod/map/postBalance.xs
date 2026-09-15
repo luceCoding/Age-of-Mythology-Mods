@@ -4,6 +4,7 @@ void applyHeroNerfAgainstSoldier(ref CardParameters params){
         string protoName = params.getProtoUnit();
         for(int p = 0; p <= cNumberPlayers; p++) {
             applyProtoActionUnitTypeToTarget(protoName, UNIT_TYPE_SOLDIER, p, cXSActionProtoEffectDamageBonus, -0.5, cXSRelativityAbsolute);
+            applyProtoActionUnitTypeToTarget(protoName, UNIT_TYPE_MYTH, p, cXSActionProtoEffectDamageBonus, -4, cXSRelativityAbsolute);
         }
     }
     if (params.isSoldier()){

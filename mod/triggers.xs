@@ -58,6 +58,7 @@ void startGame(){
     startCapturePoints();
     startIncome();
     startTeamResignedCheck();
+    startRespawn();
 }
 
 rule FIRE_FIRST_IMMEDIATELY_TRIGGER
@@ -77,6 +78,7 @@ active
     trSetCommunityObjectivesVisibility(false);
     initialiseUiSystems(false);
     performProportionCalculation();
+    ySearch.init();
     xsDisableSelf();
 }
 
@@ -94,65 +96,62 @@ active
 rule _Search
 highFrequency
 active
-runImmediately
 {
-    if (Search_conditionToRun()) {
-        ySearch.process([](int unitId = 0) -> void {
-            xsSetContextPlayer(-1);
-            int protoUnit = kbUnitGetProtoUnitID(unitId);
-            if (protoUnit <= cUnitTypeMoveTo || protoUnit == cUnitTypeAttackRevealer || protoUnit == cUnitTypeCrate || protoUnit == cUnitTypeCrateSmall){ return; }
-            int owner = kbUnitGetPlayerID(unitId);
-            xsSetContextPlayer(owner);
-            selectSingle(unitId);
-            if (kbProtoUnitIsType(protoUnit, COMMAND_TYPE)) {
-                vector v = trUnitGetPosition(unitId);
-                trUnitDestroy();
-                PlayerCommands playerCommands = playerCommandsArray[owner];
-                for (int i = 0; i < playerCommands.plantArray.size(); i++) {
-                    if (playerCommands.plantArray[i] == protoUnit) {
-                        void(int, vector) apply = playerCommands.applyArray[i];
-                        apply(owner, v);
-                        break;
-                    }
+    ySearch.process([](int unitId = 0) -> void {
+        xsSetContextPlayer(-1);
+        int protoUnit = kbUnitGetProtoUnitID(unitId);
+        if (protoUnit <= cUnitTypeMoveTo || protoUnit == cUnitTypeAttackRevealer || protoUnit == cUnitTypeCrate || protoUnit == cUnitTypeCrateSmall){ return; }
+        int owner = kbUnitGetPlayerID(unitId);
+        xsSetContextPlayer(owner);
+        selectSingle(unitId);
+        if (kbProtoUnitIsType(protoUnit, COMMAND_TYPE)) {
+            vector v = trUnitGetPosition(unitId);
+            trUnitDestroy();
+            PlayerCommands playerCommands = playerCommandsArray[owner];
+            for (int i = 0; i < playerCommands.plantArray.size(); i++) {
+                if (playerCommands.plantArray[i] == protoUnit) {
+                    void(int, vector) apply = playerCommands.applyArray[i];
+                    apply(owner, v);
+                    break;
                 }
-                return;
             }
+            return;
+        }
 
-            switch(protoUnit){
-                case cUnitTypeGoldPile: {
-                    g_IncomeHandler.addGold(unitId);
-                    if (owner != 0){
-                        trUnitSetScale(0.5, 0.5, 0.5);
-                    }
-                }
-                case cUnitTypeFlyingPurpleHippo: {
-                    trUnitChangeName("ItzJover");
-                    setTeamAsWinner((g_finalTeam[owner] == 1) ? 2 : 1);
-                }
-                case cUnitTypeVFXArrowSignal: {
-                    vector v = trUnitGetPosition(unitId);
-                    float rdmX = xsRandFloat(40.0, 60.0);
-                    int signX = (xsRandInt(0, 1) == 0) ? -1 : 1;
-                    float rdmZ = xsRandFloat(40.0, 60.0);
-                    int signZ = (xsRandInt(0, 1) == 0) ? -1 : 1;
-                    int lanternID = trUnitCreateForced("SkyLantern", v.x + (rdmX * signX), v.y, v.z + (rdmZ * signZ), xsRandFloat(0.0, 359.0), owner, false);
-                    selectSingle(lanternID);
-                    trUnitMoveToPoint(v.x, v.y, v.z);
-                }
-                case cUnitTypeVFXFireAshesCS: {
-                    vector v = trUnitGetPosition(unitId);
-                    trGodPowerGrant(owner, kbGodPowerGetName(cProtoPowerMeteorSPC), 1);
-                    trGodPowerInvoke(owner, kbGodPowerGetName(cProtoPowerMeteorSPC), v, );
-                }
-                default: {
-                    if (owner == 0 & (kbUnitIsType(unitId, cUnitTypeLogicalTypeHandUnitsAutoAttack) || kbUnitIsType(unitId, cUnitTypeLogicalTypeRangedUnitsAutoAttack))){
-                        selectSingle(unitId);
-                        trUnitSetStance("No Attack");
-                    }
+        switch(protoUnit){
+            case cUnitTypeGoldPile: {
+                g_IncomeHandler.addGold(unitId);
+                if (owner != 0){
+                    trUnitSetScale(0.5, 0.5, 0.5);
                 }
             }
-        });
-    }
+            case cUnitTypeFlyingPurpleHippo: {
+                trUnitChangeName("ItzJover");
+                setTeamAsWinner((g_finalTeam[owner] == 1) ? 2 : 1);
+            }
+            case cUnitTypeVFXArrowSignal: {
+                vector v = trUnitGetPosition(unitId);
+                float rdmX = xsRandFloat(40.0, 60.0);
+                int signX = (xsRandInt(0, 1) == 0) ? -1 : 1;
+                float rdmZ = xsRandFloat(40.0, 60.0);
+                int signZ = (xsRandInt(0, 1) == 0) ? -1 : 1;
+                int lanternID = trUnitCreateForced("SkyLantern", v.x + (rdmX * signX), v.y, v.z + (rdmZ * signZ), xsRandFloat(0.0, 359.0), owner, false);
+                selectSingle(lanternID);
+                trUnitMoveToPoint(v.x, v.y, v.z);
+            }
+            case cUnitTypeVFXFireAshesCS: {
+                vector v = trUnitGetPosition(unitId);
+                trGodPowerGrant(owner, kbGodPowerGetName(cProtoPowerMeteorSPC), 1);
+                trGodPowerInvoke(owner, kbGodPowerGetName(cProtoPowerMeteorSPC), v, );
+            }
+            default: {
+                if (owner == 0 & (kbUnitIsType(unitId, cUnitTypeLogicalTypeHandUnitsAutoAttack) || kbUnitIsType(unitId, cUnitTypeLogicalTypeRangedUnitsAutoAttack))){
+                    selectSingle(unitId);
+                    trUnitSetStance("No Attack");
+                }
+            }
+        }
+    });
 }
 
 rule _Attachments
@@ -185,6 +184,7 @@ active
             trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
             trPlayerGrantResources(p, "Gold", 99999);
             trGodPowerGrant(p, "MeteorSPC", 99, 0, false, false);
+            trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageDivine, 99999, cXSRelativityAssign);
             trGodPowerGrant(p, "Bolt", 99, 0, false, false);
             trGodPowerGrant(p, "Earthquake", 99, 0, false, false);
         }

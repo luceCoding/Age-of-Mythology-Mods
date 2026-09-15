@@ -7,4 +7,5 @@ class UUID {
     }
 };
 
+const int NullUUID = cMinInt;
 UUID g_uuid;

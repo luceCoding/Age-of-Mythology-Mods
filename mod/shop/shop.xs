@@ -269,7 +269,7 @@ class Shop {
         refreshShop(p);
     }
 
-    void buy(int p = 0, int uuid = -1){
+    void buy(int p = 0, int uuid = NullUUID){
         BenchData bench = m_benches[p];
         DrawData currDraw = m_currDraws[p];
         CardData card = currDraw.getCardByUUID(uuid);
@@ -300,7 +300,7 @@ class Shop {
         }
     }
 
-    void lock(int p = 0, int uuid = -1){
+    void lock(int p = 0, int uuid = NullUUID){
         DrawData currDraw = m_currDraws[p];
         for(int i = 0; i < currDraw.getSize(); i++) {
             CardData currCard = currDraw.getCard(i);
@@ -343,7 +343,7 @@ class Shop {
         return copiedCard;
     }
 
-    void sell(int p = 0, int uuid = -1){
+    void sell(int p = 0, int uuid = NullUUID){
         BenchData bench = m_benches[p];
         CardData removedCard = bench.removeCardByUUID(uuid);
         if (removedCard.isNull() == false){
@@ -373,21 +373,21 @@ class Shop {
         refreshShop(p);
     }
 
-    void deploy(int p = 0, int uuid = -1){
+    void deploy(int p = 0, int uuid = NullUUID){
         BenchData bench = m_benches[p];
         bench.deployCard(uuid);
         m_benches[p] = bench;
         refreshShop(p);
     }
 
-    void withdraw(int p = 0, int uuid = -1){
+    void withdraw(int p = 0, int uuid = NullUUID){
         BenchData bench = m_benches[p];
         bench.withdrawCard(uuid);
         m_benches[p] = bench;
         refreshShop(p);
     }
 
-    void identify(int p = 0, int uuid = -1){
+    void identify(int p = 0, int uuid = NullUUID){
         BenchData bench = m_benches[p];
         bool isIdentified = bench.identifyCard(uuid, p);
         if (isIdentified) { bench.deployCard(uuid); }
@@ -395,21 +395,21 @@ class Shop {
         refreshShop(p);
     }
 
-    void rerollRarity(int p = 0, int uuid = -1){
+    void rerollRarity(int p = 0, int uuid = NullUUID){
         BenchData bench = m_benches[p];
         bench.rerollRarity(uuid, p);
         m_benches[p] = bench;
         refreshShop(p);
     }
 
-    void addSocket(int p = 0, int uuid = -1){
+    void addSocket(int p = 0, int uuid = NullUUID){
         BenchData bench = m_benches[p];
         bench.addSocket(uuid, p);
         m_benches[p] = bench;
         refreshShop(p);
     }
 
-    void rerollUpgrade(int p = 0, int uuid = -1, int upgradeIndex = 0){
+    void rerollUpgrade(int p = 0, int uuid = NullUUID, int upgradeIndex = 0){
         BenchData bench = m_benches[p];
         bench.rerollUpgrade(uuid, p, upgradeIndex);
         m_benches[p] = bench;
@@ -692,62 +692,7 @@ void hideWorldPrompts(int p = 1){
     }
 }
 
-bool respawnDeployedCards(ref BenchData bench){
-    bool wasThereAChange = false;
-    int currtime = xsGetTimeMS();
-
-    for(int i = 0; i < bench.m_cardSize; i++) {
-        CardData card = bench.m_cardArray[i];
-        if (card.isNull() || card.isDeployed() == false || card.isRespawning()) { continue; }
-        int unitId = card.getDeployedUnitID();
-        selectSingle(unitId);
-        if (trUnitDead()){
-            card.setIsRespawning(true);
-            bench.m_cardArray[i] = card;
-            wasThereAChange = true;
-            int respawnTimeMS = RESPAWN_TIME_MS_BASE + (((currtime - g_timeMSGameStarted) / 60000) * RESPAWN_TIME_ADDITIONAL_MS);
-            int cardUUID = card.getUuid();
-            schedulerWithIntInt.add(respawnTimeMS, bench.m_player, cardUUID, [](int iterations = 1, int p = 0, int cardUUID = 0) -> bool {
-                BenchData bench = g_shop.m_benches[p];
-                for (int i = 0; i < bench.m_cardSize; i++) {
-                    CardData deadCard = bench.m_cardArray[i];
-                    if (deadCard.isNull() || deadCard.getUuid() != cardUUID) { continue; }
-                    if (deadCard.isDeployed() == false || deadCard.isRespawning() == false) { return false; }
-                    if (bench.spawnCard(deadCard, false)) {
-                        trSoundsetPlayPlayer(p, "HeroRevive");
-                        bench.m_cardArray[i] = deadCard;
-                        g_shop.m_benches[p] = bench;
-                    }
-                    return false;
-                }
-                return false;
-            });
-        }
-    }
-    return wasThereAChange;
-}
-
-int[] g_unitLostCache = default;
-
 void startShopTimers(){
-
-    g_unitLostCache = new int(cNumberPlayers-1, 0);
-
-    // Shop respawner
-    scheduler.add(2003, [](int iterations = 1) -> bool {
-        for (int p = 1; p <= cNumberPlayers - 2; p++){
-            int unitsLost = kbGetStatValueInt(p, cStatTypeUnitsLost);
-            // Only run the heavy card-loop if the total cumulative deaths have increased 
-            if (unitsLost > g_unitLostCache[p]) {
-                BenchData bench = g_shop.m_benches[p];
-                if (respawnDeployedCards(bench)){
-                    g_shop.m_benches[p] = bench;
-                }
-                g_unitLostCache[p] = unitsLost;
-            }
-        }
-        return true;
-    });
 
     // Reduce shop costs over time
     scheduler.add(SHOP_COST_REDUCTION_MS_INTERVAL, [](int iterations = 1) -> bool {

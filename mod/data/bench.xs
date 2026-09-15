@@ -1,4 +1,6 @@
 mutable bool purchase(int goldAmount = 0, int p = 0) { return false; }
+mutable void addToRespawn(ref CardData card, int p = 0) { return; }
+mutable void removeFromRespawn(ref CardData card) { return; }
 
 IntToIntHashMap g_CardUUIDToIndex;
 StringToIntHashMap g_ProtoUnitToIndex;
@@ -23,7 +25,7 @@ class BenchData {
         return m_playerShopId;
     }
 
-    int findIdentifiedProtoIndex(string proto = "", int ignoreUUID = -1){
+    int findIdentifiedProtoIndex(string proto = "", int ignoreUUID = NullUUID){
         for (int i = 0; i < m_cardSize; i++) {
             CardData candidate = m_cardArray[i];
             if (candidate.isNull() == false && candidate.isIdentified() && candidate.getProtoName() == proto && candidate.getUuid() != ignoreUUID) {
@@ -33,7 +35,7 @@ class BenchData {
         return -1;
     }
 
-    bool isThereADuplicateCard(string proto = "", int ignoreUUID = -1){
+    bool isThereADuplicateCard(string proto = "", int ignoreUUID = NullUUID){
         int i = g_ProtoUnitToIndex.get(proto + m_player);
         if (i >= 0 && i < m_cardSize) {
             CardData candidate = m_cardArray[i];
@@ -64,7 +66,16 @@ class BenchData {
         return true;
     }
 
-    CardData removeCardByUUID(int uuid = -1){        
+    CardData getCardbyUUID(int uuid = NullUUID){
+        int i = g_CardUUIDToIndex.get(uuid);
+        if (i < 0 || i >= m_cardSize) {
+            CardData emptyCard;
+            return emptyCard;
+        }
+        return m_cardArray[i];
+    }
+
+    CardData removeCardByUUID(int uuid = NullUUID){        
         int i = g_CardUUIDToIndex.get(uuid);
         if (i < 0 || i >= m_cardSize) {
             CardData emptyCard;
@@ -242,7 +253,6 @@ class BenchData {
             return false;
         }
         card.deploy(unitID);
-        card.setIsRespawning(false);
         if (applyCardHealth) {
             card.applyRarityHealth(m_player);
         }
@@ -276,7 +286,7 @@ class BenchData {
         return emptyCard;
     }
 
-    void deployCard(int uuid = -1){
+    void deployCard(int uuid = NullUUID){
         int i = g_CardUUIDToIndex.get(uuid);
         if (i < 0 || i >= m_cardSize) return;
 
@@ -319,20 +329,21 @@ class BenchData {
             addCard(card);
             return;
         }
-        card.applyUpgrades(m_player);
-        addSynergy(card, m_player);
         if (card.isOsirisPieceBoxCard()) {
             m_osirisDeployedCount++;
         }
         m_cardArray[i] = card;
         if (card.isIdentified() && card.isDeployed()) {
+            card.applyUpgrades(m_player);
+            addSynergy(card, m_player);
+            addToRespawn(card, m_player);
             g_ProtoUnitToIndex.put(card.getProtoName() + m_player, i);
+            trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
         }
-        trSoundsetPlayPlayer(m_player, "AotgBlessingEquip");
         return;
     }
 
-    bool withdrawCard(int uuid = -1){
+    bool withdrawCard(int uuid = NullUUID){
         int i = g_CardUUIDToIndex.get(uuid);
         if (i < 0 || i >= m_cardSize) return false;
 
@@ -345,6 +356,7 @@ class BenchData {
                 float distance = kbUnitGetDistanceToPoint(unitID, shopLocation);
                 if (distance <= 10){
                     trUnitDestroy(true);
+                    removeFromRespawn(cardToWithdraw);
                     cardToWithdraw.resetRarityHealth(m_player);
                     cardToWithdraw.resetUpgrades(m_player);
                     cardToWithdraw.withdraw();
@@ -377,7 +389,7 @@ class BenchData {
         return false;
     }
 
-    bool identifyCard(int uuid = -1, int p = 0){
+    bool identifyCard(int uuid = NullUUID, int p = 0){
         int i = g_CardUUIDToIndex.get(uuid);
         if (i < 0 || i >= m_cardSize) {
             return false;
@@ -428,7 +440,7 @@ class BenchData {
         return false;
     }
 
-    bool rerollRarity(int uuid = -1, int p = 0){
+    bool rerollRarity(int uuid = NullUUID, int p = 0){
         int i = g_CardUUIDToIndex.get(uuid);
         if (i < 0 || i >= m_cardSize) return false;
 
@@ -454,7 +466,7 @@ class BenchData {
         return false;
     }
 
-    bool addSocket(int uuid = -1, int p = 0){
+    bool addSocket(int uuid = NullUUID, int p = 0){
         int i = g_CardUUIDToIndex.get(uuid);
         if (i < 0 || i >= m_cardSize) return false;
 
@@ -474,7 +486,7 @@ class BenchData {
         return false;
     }
 
-    bool rerollUpgrade(int uuid = -1, int p = 0, int upgradeIdx = 0){
+    bool rerollUpgrade(int uuid = NullUUID, int p = 0, int upgradeIdx = 0){
         int i = g_CardUUIDToIndex.get(uuid);
         if (i < 0 || i >= m_cardSize) return false;
 

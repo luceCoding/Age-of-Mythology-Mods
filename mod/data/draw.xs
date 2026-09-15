@@ -61,7 +61,7 @@ class DrawData {
         return removedCard;
     }
 
-    CardData getCardByUUID(int uuid = -1){
+    CardData getCardByUUID(int uuid = NullUUID){
         ensureInitialised();
         int i = g_CardUUIDToIndex.get(uuid);
         if (i >= 0 && i < m_cardArray.size() && m_occupied[i]) {
@@ -74,7 +74,7 @@ class DrawData {
         return emptyCard;
     }
 
-    CardData removeCardByUUID(int uuid = -1){
+    CardData removeCardByUUID(int uuid = NullUUID){
         ensureInitialised();
         int i = g_CardUUIDToIndex.get(uuid);
         if (i >= 0 && i < m_cardArray.size() && m_occupied[i]) {

@@ -27,6 +27,10 @@ void generate()
     createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
     createTypedUnitScheduler("unitSchedulerWithVector", buildStringTypeArray("Vector"));
 
+    defineHashMapDefinition("string", "float", "0.0", "");
+    defineHashMapDefinition("string", "int", "-1", "");
+    defineHashMapDefinition("int", "int", "cMinInt", "");
+
     // common/ui/ui1.xs
     //// common/ui/ui2.xs
     // common/ui/ui3.xs
@@ -44,9 +48,6 @@ void generate()
     // mod/data/cardParameters.xs
 
     defineHashMapDefinition("string", "CardParameters", "", "");
-    defineHashMapDefinition("string", "float", "0.0", "");
-    defineHashMapDefinition("string", "int", "-1", "");
-    defineHashMapDefinition("int", "int", "-1", "");
 
     // mod/map/teams.xs
 
@@ -67,6 +68,7 @@ void generate()
     // mod/shop/temple.xs
     // mod/shop/refresh.xs
     // mod/shop/commands.xs
+    // mod/shop/respawn.xs
 
     // mod/map/utils.xs
     // mod/map/lane.xs
