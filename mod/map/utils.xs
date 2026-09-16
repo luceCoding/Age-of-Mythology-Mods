@@ -94,7 +94,7 @@ void setupCreepWaveUnit(string unitType = "", int p = 0){
     trModifyProtounitData(unitType, p, cXSProtoEffectLOS, 15, cXSRelativityAssign);
 }
 
-void setupBoss(string protoName = "", float killReward = 0.0){
+void setupBoss(string protoName = "", string spawnProtoName = "", float killReward = 0.0){
     setupForAllUnits(protoName, 0);
     trModifyProtounitData(protoName, 0, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
     trProtoUnitSetUnitType(0, protoName, "MythUnit", false);
@@ -103,7 +103,7 @@ void setupBoss(string protoName = "", float killReward = 0.0){
     trProtoUnitSetIcon(protoName, 0, "", "ui\minimap\minimap_titan_gate");
     trProtoUnitMovementType(protoName, 0, "land");
     trModifyProtounitData(protoName, 0, cXSProtoEffectLOS, GAIA_CREEP_LOS, cXSRelativityAssign);
-    trModifyProtounitResource(protoName, "Wood", 0, cXSPUResourceEffectKillReward, killReward, cXSRelativityAbsolute);
+    trProtounitModifySpawnData(protoName, 0, spawnProtoName, 0, 1.0, 1, -1, 1.0);
 }
 
 void forbidBuilding(int p = 0){
@@ -148,10 +148,6 @@ void setupForPoisonSynergy(int p = 0){
 
 void setupForFireSynergy(int p = 0){
     trTechSetStatus(p, cTechSkyFire, cTechStatusActive);
-    trProtoUnitSetFlag(p, "VFXArrowSignal", "NotKBTracked", false);
-    trProtoUnitSetFlag(p, "VFXArrowSignal", "KBTracked", true);
-    trProtoUnitSetFlag(p, "VFXFireAshesCS", "NotKBTracked", false);
-    trProtoUnitSetFlag(p, "VFXFireAshesCS", "KBTracked", true);
     trProtounitAddCommand("SkyLantern", p, "Delete", 3, 5);
     trProtoUnitSetUnitType(p, "SkyLantern", "LogicalTypeRangedUnitsAutoAttack", true);
     trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamagePierce, 50.0, cXSRelativityAssign);

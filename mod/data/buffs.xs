@@ -36,6 +36,13 @@ class Buff {
     string[] m_unitTypes = default;
     int[] m_synergyTypes = default;
 
+    // Optional Lambda Callback
+    void(string, int, float) m_callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {};
+
+    void setCallback(void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
+        m_callback = callback;
+    }
+
     void setBuffData(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
         m_buffType = BUFF_TYPE_PROTO_DATA;
         m_synergyTypes = synergyTypes;
@@ -113,6 +120,9 @@ class Buff {
             applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, cOnHitEffectAttach, "All", m_attachProtoUnit,
                 g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration")), 0.0);
         }
+
+        // Trigger custom callback lambda
+        m_callback(targetProto, p, delta);
     }
 
     void applyBuff(int p = 0) {
@@ -227,8 +237,8 @@ class Buff {
                 case cSpawnEventTypeRevertToSocket: eventName = "Revert to Socket";
                 case cSpawnEventTypeHitWater: eventName = "Hit Water";
                 case cSpawnEventTypeSelfDestruct: eventName = "Self Destruct";
-            }
-            fieldName = spawnName + " on " + eventName;
+    }
+fieldName = spawnName + " on " + eventName;
         } 
         else {
             switch (m_buffType) {
@@ -451,56 +461,72 @@ class Buff {
     }
 };
 
-Buff createBuffData(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1){
+Buff createBuffData(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1,
+                    void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     Buff buff;
     buff.setBuffData(synergyIndex, synergyTypes, puField, delta, relativity);
+    buff.setCallback(callback);
     return buff;
 }
 
-Buff createBuffAction(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1){
+Buff createBuffAction(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1,
+                      void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     Buff buff;
     buff.setBuffAction(synergyIndex, synergyTypes, puField, delta, relativity);
+    buff.setCallback(callback);
     return buff;
 }
 
-Buff createBuffActionUnitType(int synergyIndex = -1, int[] synergyTypes = default, string[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1){
+Buff createBuffActionUnitType(int synergyIndex = -1, int[] synergyTypes = default, string[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1,
+                              void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     Buff buff;
     buff.setBuffActionUnitType(synergyIndex, synergyTypes, unitTypes, puField, delta, relativity);
+    buff.setCallback(callback);
     return buff;
 }
 
-Buff createBuffSpecialAction(int synergyIndex = -1, int[] synergyTypes = default, int effectField = -1, int dmgType = -1, float duration = 0.0, float delta = 0.0, string attachProtoUnit = ""){
+Buff createBuffSpecialAction(int synergyIndex = -1, int[] synergyTypes = default, int effectField = -1, int dmgType = -1, float duration = 0.0, float delta = 0.0, string attachProtoUnit = "",
+                             void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     Buff buff;
     buff.setBuffSpecialAction(synergyIndex, synergyTypes, effectField, dmgType, duration, delta, attachProtoUnit);
+    buff.setCallback(callback);
     return buff;
 }
 
-Buff createBuffSpawnAction(int synergyIndex = -1, int[] synergyTypes = default, int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){
+Buff createBuffSpawnAction(int synergyIndex = -1, int[] synergyTypes = default, int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0,
+                           void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     Buff buff;
     buff.setBuffSpawnAction(synergyIndex, synergyTypes, spawnProtoID, eventType, delta, relativity, chance, lifespan);
+    buff.setCallback(callback);
     return buff;
 }
 
-Buff createBuffActionSingle(int synergyIndex = -1, string unitType = "", int puField = -1, float delta = 0.0, int relativity = -1){
+Buff createBuffActionSingle(int synergyIndex = -1, string unitType = "", int puField = -1, float delta = 0.0, int relativity = -1,
+                            void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     int[] synergyTypes = new int(0, -1);
     Buff buff;
     buff.setBuffAction(synergyIndex, synergyTypes, puField, delta, relativity);
     buff.m_unitType = unitType;
+    buff.setCallback(callback);
     return buff;
 }
 
-Buff createBuffDataSingle(int synergyIndex = -1, string unitType = "", int puField = -1, float delta = 0.0, int relativity = -1){
+Buff createBuffDataSingle(int synergyIndex = -1, string unitType = "", int puField = -1, float delta = 0.0, int relativity = -1,
+                          void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     int[] synergyTypes = new int(0, -1);
     Buff buff;
     buff.setBuffData(synergyIndex, synergyTypes, puField, delta, relativity);
     buff.m_unitType = unitType;
+    buff.setCallback(callback);
     return buff;
 }
 
-Buff createBuffSpawnActionSingle(int synergyIndex = -1, string unitType = "", int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){
+Buff createBuffSpawnActionSingle(int synergyIndex = -1, string unitType = "", int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0,
+                                 void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     int[] synergyTypes = new int(0, -1);
     Buff buff;
     buff.setBuffSpawnAction(synergyIndex, synergyTypes, spawnProtoID, eventType, delta, relativity, chance, lifespan);
     buff.m_unitType = unitType;
+    buff.setCallback(callback);
     return buff;
 }

@@ -133,71 +133,74 @@ Parameters createParametersWorkAround(){
     return params;
 }
 
-void checkTopBossBuff(){
-    if (g_topBossCamp.areAllDead()){
-        for (int p = 1; p <= cNumberPlayers - 2; p++){
-            int woodStockpiled = kbGetResourceAmount(p, kbGetResourceID("Wood"));
-            if (woodStockpiled == 1){
-                int team = g_finalTeam[p];
-                float buffAmount = getMinsPastSinceStart() / 2.0;
-                int[] playersInTeam = getPlayersInTeam(team);
-                for (int i = 0; i < playersInTeam.size(); i++){
-                    int teamPlayer = playersInTeam[i];
-                    Parameters params = createParametersWorkAround();
-                    params.ints.add(teamPlayer);
-                    params.floats.add(buffAmount);
-                    applyProtoDataToAllCards(teamPlayer, cXSProtoEffectUnitRegenRate, buffAmount, cXSRelativityAbsolute);
-                    attachTopBuffToAllDeployedCards(teamPlayer, BUFF_DURATION_MS);
-                    g_TopBossBuffMsEnd[teamPlayer] = xsGetTimeMS() + BUFF_DURATION_MS;
-                    schedulerWithParameters.add(BUFF_DURATION_MS, params, [](int iterations = 1, ref Parameters params) -> bool {
-                        applyProtoDataToAllCards(params.ints[0], cXSProtoEffectUnitRegenRate, -params.floats[0], cXSRelativityAbsolute);
-                        return false;
-                    });
-                }
-                trSoundsetPlay("UI_MajorGodSelectSet");
-                string icon = "resources/talking_heads/gouard/gouard_good.png";
-                trChatSend(getTeamsAIPlayer(team), "Team " + team + " has gained green buff!\n" + displayCompensatedIcon(128, 128, icon));
-                trPlayerGrantResources(p, "Wood", -1);
-                break;
-            }
-        }
+void applyTopBossBufToPlayerTeam(int p = 0){
+    int team = g_finalTeam[p];
+    float buffAmount = getMinsPastSinceStart() / 2.0;
+    int[] playersInTeam = getPlayersInTeam(team);
+    for (int i = 0; i < playersInTeam.size(); i++){
+        int teamPlayer = playersInTeam[i];
+        Parameters params = createParametersWorkAround();
+        params.ints.add(teamPlayer);
+        params.floats.add(buffAmount);
+        applyProtoDataToAllCards(teamPlayer, cXSProtoEffectUnitRegenRate, buffAmount, cXSRelativityAbsolute);
+        attachTopBuffToAllDeployedCards(teamPlayer, BUFF_DURATION_MS);
+        g_TopBossBuffMsEnd[teamPlayer] = xsGetTimeMS() + BUFF_DURATION_MS;
+        schedulerWithParameters.add(BUFF_DURATION_MS, params, [](int iterations = 1, ref Parameters params) -> bool {
+            applyProtoDataToAllCards(params.ints[0], cXSProtoEffectUnitRegenRate, -params.floats[0], cXSRelativityAbsolute);
+            return false;
+        });
     }
+    trSoundsetPlay("UI_MajorGodSelectSet");
+    string icon = "resources/talking_heads/gouard/gouard_good.png";
+    trChatSend(getTeamsAIPlayer(team), "Team " + team + " has gained green buff!\n" + displayCompensatedIcon(128, 128, icon));
 }
 
-void checkBotBossBuff(){
-    if (g_botBossCamp.areAllDead()){
-        for (int p = 1; p <= cNumberPlayers - 2; p++){
-            int woodStockpiled = kbGetResourceAmount(p, kbGetResourceID("Wood"));
-            if (woodStockpiled == 2){
-                int team = g_finalTeam[p];
-                float buffAmount = getMinsPastSinceStart() / 2.0 * 0.75;
-                int[] playersInTeam = getPlayersInTeam(team);
-                for (int i = 0; i < playersInTeam.size(); i++){
-                    int teamPlayer = playersInTeam[i];
-                    Parameters params = createParametersWorkAround();
-                    params.ints.add(teamPlayer);
-                    params.floats.add(buffAmount);
-                    applyProtoActionToAllCards(teamPlayer, cXSActionEffectDamageDivine, buffAmount, cXSRelativityAbsolute);
-                    attachBotBuffToAllDeployedCards(teamPlayer, BUFF_DURATION_MS);
-                    g_BotBossBuffMsEnd[teamPlayer] = xsGetTimeMS() + BUFF_DURATION_MS;
-                    schedulerWithParameters.add(BUFF_DURATION_MS, params, [](int iterations = 1, ref Parameters params) -> bool {
-                        applyProtoActionToAllCards(params.ints[0], cXSActionEffectDamageDivine, -params.floats[0], cXSRelativityAbsolute);
-                        return false;
-                    });
-                }
-                trSoundsetPlay("UI_MajorGodSelectZeus");
-                string icon = "resources/talking_heads/gouard/gouard_bad.png";
-                trChatSend(getTeamsAIPlayer(team), "Team " + team + " has gained red buff!\n" + displayCompensatedIcon(128, 128, icon));
-                trPlayerGrantResources(p, "Wood", -2);
-                break;
-            }
+void applyBotBossBuffToPlayerTeam(int p = 0){
+    int team = g_finalTeam[p];
+    float buffAmount = getMinsPastSinceStart() / 2.0 * 0.75;
+    int[] playersInTeam = getPlayersInTeam(team);
+    for (int i = 0; i < playersInTeam.size(); i++){
+        int teamPlayer = playersInTeam[i];
+        Parameters params = createParametersWorkAround();
+        params.ints.add(teamPlayer);
+        params.floats.add(buffAmount);
+        applyProtoActionToAllCards(teamPlayer, cXSActionEffectDamageDivine, buffAmount, cXSRelativityAbsolute);
+        attachBotBuffToAllDeployedCards(teamPlayer, BUFF_DURATION_MS);
+        g_BotBossBuffMsEnd[teamPlayer] = xsGetTimeMS() + BUFF_DURATION_MS;
+        schedulerWithParameters.add(BUFF_DURATION_MS, params, [](int iterations = 1, ref Parameters params) -> bool {
+            applyProtoActionToAllCards(params.ints[0], cXSActionEffectDamageDivine, -params.floats[0], cXSRelativityAbsolute);
+            return false;
+        });
+    }
+    trSoundsetPlay("UI_MajorGodSelectZeus");
+    string icon = "resources/talking_heads/gouard/gouard_bad.png";
+    trChatSend(getTeamsAIPlayer(team), "Team " + team + " has gained red buff!\n" + displayCompensatedIcon(128, 128, icon));
+}
+
+IntToIntHashMap g_cUnitTypeToKillCount;
+
+int[] getWhoKilledUnitType(int cUnitType = -1){
+    int[] players = new int(0, 0);
+    for (int p = 1; p <= cNumberPlayers - 2; p++){
+        int currKills = kbGetNumberUnitTypeKilled(kbProtoUnitGetName(cUnitType), p);
+        int key = (p * cNumberProtoUnits) + cUnitType;
+        int lastKills = g_cUnitTypeToKillCount.get(key);
+        
+        if (lastKills < 0) {
+            g_cUnitTypeToKillCount.put(key, 0);
+            lastKills = 0;
+        }
+
+        if (currKills > lastKills){
+            g_cUnitTypeToKillCount.put(key, currKills);
+            players.add(p);
+            log(-1, ""+p+" "+lastKills+" "+currKills);
         }
     }
+    return players;
 }
 
 void startBoss(){
-    g_TopBossBuffMsEnd = new int(cNumberPlayers+1, -1);
-    g_BotBossBuffMsEnd = new int(cNumberPlayers+1, -1);
 
     scheduler.add(60017, [](int iterations = 1) -> bool {
         trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
@@ -209,11 +212,36 @@ void startBoss(){
         return true;
     });
 
-    scheduler.add(1051, [](int iterations = 1) -> bool {
+    g_TopBossBuffMsEnd = new int(cNumberPlayers+1, -1);
+    g_BotBossBuffMsEnd = new int(cNumberPlayers+1, -1);
+
+    // Top Boss
+    g_OnCreationEventManager.register(0, cUnitTypeRockGoldSmall, [](int unitId = -1) -> void {
+            int[] players = getWhoKilledUnitType(kbProtoUnitGetID(TOP_BOSS_PROTO));
+            if (players.size() == 1){
+                applyTopBossBufToPlayerTeam(players[0]);
+            }
+            else {
+                errorLog("More than one player killed the boss?");
+            }
+        }
+    );
+
+    // Bottom Boss
+    g_OnCreationEventManager.register(0, cUnitTypeRockGoldTiny, [](int unitId = -1) -> void {
+            int[] players = getWhoKilledUnitType(kbProtoUnitGetID(BOT_BOSS_PROTO));
+            if (players.size() == 1){
+                applyBotBossBuffToPlayerTeam(players[0]);
+            }
+            else {
+                errorLog("More than one player killed the boss?");
+            }
+        }
+    );
+
+    scheduler.add(2011, [](int iterations = 1) -> bool {
         g_topBossCamp.processCamp();
-        checkTopBossBuff();
         g_botBossCamp.processCamp();
-        checkBotBossBuff();
         return true;
     });
 }

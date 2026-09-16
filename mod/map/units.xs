@@ -395,12 +395,31 @@ void postModifyPlayerData(){
         }
     }
 
-    // Boss
-    setupBoss(TOP_BOSS_PROTO, 1);
-    setupBoss(BOT_BOSS_PROTO, 2);
+    // Last 2 AIs
+    for(int p = cNumberPlayers - 1; p <= cNumberPlayers; p++) {
+        g_OnCreationEventManager.register(p, cUnitTypeFlyingPurpleHippo, [](int unitId = -1) -> void {
+                selectSingle(unitId);
+                trUnitChangeName("Creator: ItzJover");
+                setTeamAsWinner((g_finalTeam[kbUnitGetPlayerID(unitId)] == 1) ? 2 : 1);
+            }
+        );
+    }
+
+    // Only Gaia
+    setupBoss(TOP_BOSS_PROTO, "RockGoldSmall", 1);
+    setupBoss(BOT_BOSS_PROTO, "RockGoldTiny", 2);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "RangedAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(BOT_BOSS_PROTO, "HandAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+
+    g_OnCreationEventManager.register(0, -1, [](int unitId = -1) -> void {
+            int owner = kbUnitGetPlayerID(unitId);
+            if (owner == 0){
+                selectSingle(unitId);
+                trUnitSetStance("No Attack");
+            }
+        }
+    );
 }

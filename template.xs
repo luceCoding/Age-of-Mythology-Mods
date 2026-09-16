@@ -37,7 +37,7 @@ void generate()
     // common/ui/ui4.xs
     
     // common/attachment/attachments.xs
-    // common/search.xs
+    // common/onCreationEvent.xs
     // common/terrain.xs
     // common/sound.xs
     // common/unitCache.xs

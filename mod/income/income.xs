@@ -85,10 +85,14 @@ class IncomeHandler {
 IncomeHandler g_IncomeHandler;
 
 void startIncome(){
-    scheduler.add(307, [](int iterations = 1) -> bool {
+
+    // Check gold pickups
+    scheduler.add(503, [](int iterations = 1) -> bool {
         g_IncomeHandler.processGold();
         return true;
     });
+
+    // Increase gold bounty over time
     scheduler.add(60013, [](int iterations = 1) -> bool {
 
         CardParameters[] params = g_protoNameToCardParametersMap.getValues();
@@ -113,4 +117,13 @@ void startIncome(){
         
         return true;
     });
+
+    for (int p = 0; p <= cNumberPlayers; p++){
+        g_OnCreationEventManager.register(p, cUnitTypeGoldPile, [](int unitId = -1) -> void {
+                g_IncomeHandler.addGold(unitId);
+                selectSingle(unitId);
+                trUnitSetScale(0.5, 0.5, 0.5);
+            }
+        );
+    }
 }

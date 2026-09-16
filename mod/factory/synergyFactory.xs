@@ -32,7 +32,7 @@ void initializeSynergies(){
         synergy.m_icon = icons[i];
         synergy.m_rolloverName = rolloverNames[i];
         synergy.m_rolloverDescription = "";
-        synergy.m_buffs = new Buff(MAX_CARDS_IN_BENCH);
+        synergy.m_buffs = new Buff(MAX_CARDS_IN_BENCH+1);
         g_synergies.add(synergy);
     }
 
@@ -168,11 +168,48 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_FIRE];
-        synergy.m_buffs[2] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 0.75, "VFXScorchingFeathers");
-        synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.03);
-        synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.25, "VFXScorchingFeathers");
-        synergy.m_buffs[8] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "SkylanternFireAreaGround", cUnitTypeVFXFireAshesCS, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 1.0);
-        synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.5, "VFXScorchingFeathers");
+        synergy.m_buffs[2] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 0.5, "VFXScorchingFeathers");
+        synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.5, 10.0,
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){
+                                        g_OnCreationEventManager.register(p, cUnitTypeVFXArrowSignal, [](int unitId = -1) -> void {
+                                                selectSingle(unitId);
+                                                vector v = trUnitGetPosition(unitId);
+                                                float rdmX = xsRandFloat(40.0, 60.0);
+                                                int signX = (xsRandInt(0, 1) == 0) ? -1 : 1;
+                                                float rdmZ = xsRandFloat(40.0, 60.0);
+                                                int signZ = (xsRandInt(0, 1) == 0) ? -1 : 1;
+                                                int owner = kbUnitGetPlayerID(unitId);
+                                                int lanternID = trUnitCreateForced("SkyLantern", v.x + (rdmX * signX), v.y, v.z + (rdmZ * signZ), xsRandFloat(0.0, 359.0), owner, false);
+                                                selectSingle(lanternID);
+                                                trUnitMoveToPoint(v.x, v.y, v.z);
+                                            }
+                                        );
+                                    }
+                                    else {
+                                        g_OnCreationEventManager.deregister(p, cUnitTypeVFXArrowSignal);
+                                    }
+                                }
+                            );
+        synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.0, "VFXScorchingFeathers");
+        synergy.m_buffs[8] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "SkylanternFireAreaGround", cUnitTypeVFXFireAshesCS, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 1.0, 10.0,
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){
+                                        g_OnCreationEventManager.register(p, cUnitTypeSkylanternFireAreaGround, [](int unitId = -1) -> void {
+                                                selectSingle(unitId);
+                                                int owner = kbUnitGetPlayerID(unitId);
+                                                vector v = trUnitGetPosition(unitId);
+                                                trGodPowerGrant(owner, kbGodPowerGetName(cProtoPowerMeteorSPC), 1);
+                                                trGodPowerInvoke(owner, kbGodPowerGetName(cProtoPowerMeteorSPC), v);
+                                            }
+                                        );
+                                    }
+                                    else {
+                                        g_OnCreationEventManager.deregister(p, cUnitTypeSkylanternFireAreaGround);
+                                    }
+                                }
+                            );
+        synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.25, "VFXScorchingFeathers");
         synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_POISON, "MeteorSPC", cXSActionEffectDamagePierce, 50, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_FIRE] = synergy;
     }
