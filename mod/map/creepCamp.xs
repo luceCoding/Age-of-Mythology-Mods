@@ -156,6 +156,7 @@ class CreepCamp {
             int newUnitId = trUnitCreate(m_protoUnit, m_campPosition.x, configMapBaseHeight, m_campPosition.z, xsRandInt(0, 359), 0);
             selectSingle(newUnitId);
             trUnitSetScale(m_unitScale, m_unitScale, m_unitScale);
+            trUnitSetStance("No Attack");
             if (newUnitId != -1) {
                 if (m_unitSize < m_unitIds.size()) {
                     m_unitIds[m_unitSize] = newUnitId;

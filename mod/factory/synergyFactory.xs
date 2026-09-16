@@ -175,9 +175,9 @@ void initializeSynergies(){
                                         g_OnCreationEventManager.register(p, cUnitTypeVFXArrowSignal, [](int unitId = -1) -> void {
                                                 selectSingle(unitId);
                                                 vector v = trUnitGetPosition(unitId);
-                                                float rdmX = xsRandFloat(40.0, 60.0);
+                                                float rdmX = xsRandFloat(30.0, 50.0);
                                                 int signX = (xsRandInt(0, 1) == 0) ? -1 : 1;
-                                                float rdmZ = xsRandFloat(40.0, 60.0);
+                                                float rdmZ = xsRandFloat(30.0, 50.0);
                                                 int signZ = (xsRandInt(0, 1) == 0) ? -1 : 1;
                                                 int owner = kbUnitGetPlayerID(unitId);
                                                 int lanternID = trUnitCreateForced("SkyLantern", v.x + (rdmX * signX), v.y, v.z + (rdmZ * signZ), xsRandFloat(0.0, 359.0), owner, false);

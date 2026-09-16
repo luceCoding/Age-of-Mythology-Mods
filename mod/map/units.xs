@@ -415,13 +415,4 @@ void postModifyPlayerData(){
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(BOT_BOSS_PROTO, "HandAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-
-    g_OnCreationEventManager.register(0, -1, [](int unitId = -1) -> void {
-            int owner = kbUnitGetPlayerID(unitId);
-            if (owner == 0){
-                selectSingle(unitId);
-                trUnitSetStance("No Attack");
-            }
-        }
-    );
 }

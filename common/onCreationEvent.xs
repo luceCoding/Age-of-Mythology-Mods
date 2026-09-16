@@ -10,8 +10,7 @@ class OnCreationEventManager {
     }
 
     int makeKey(int p = 0, int cUnitType = -1) {
-        int typeId = (cUnitType == -1) ? cNumberProtoUnits : cUnitType;
-        return (p * (cNumberProtoUnits + 1)) + typeId;
+        return (p * cNumberProtoUnits) + cUnitType;
     }
 
     void process() {
@@ -31,17 +30,11 @@ class OnCreationEventManager {
                 void(int) event = m_events[index];
                 event(unitId);
             }
-
-            int wildcardKey = makeKey(p, -1);
-            int wildcardIndex = cUnitTypeToIndex.get(wildcardKey);
-            if (wildcardIndex != cMinInt) {
-                void(int) wildcardEvent = m_events[wildcardIndex];
-                wildcardEvent(unitId);
-            }
         }
     }
 
     void register(int p = 0, int cUnitType = -1, void(int) event = [](int unitId = -1) -> void {}) {
+        if (cUnitType == -1) { return; }
         int key = makeKey(p, cUnitType);
         int existingIdx = cUnitTypeToIndex.get(key);
         if (existingIdx != cMinInt) {
@@ -57,17 +50,16 @@ class OnCreationEventManager {
             m_keys.add(key);
         }
 
-        if (cUnitType != -1) {
-            string protoName = kbProtoUnitGetName(cUnitType);
-            trProtoUnitSetFlag(p, protoName, "NotKBTracked", false);
-            trProtoUnitSetFlag(p, protoName, "KBTracked", true);
-        }
+        string protoName = kbProtoUnitGetName(cUnitType);
+        trProtoUnitSetFlag(p, protoName, "NotKBTracked", false);
+        trProtoUnitSetFlag(p, protoName, "KBTracked", true);
 
         cUnitTypeToIndex.put(key, m_size);
         m_size++;
     }
 
     void deregister(int p = 0, int cUnitType = -1) {
+        if (cUnitType == -1) { return; }
         int key = makeKey(p, cUnitType);
 
         int targetIdx = cUnitTypeToIndex.get(key);
@@ -87,11 +79,9 @@ class OnCreationEventManager {
         m_events[m_size] = [](int unitId = -1) -> void {};
         m_keys[m_size] = cMinInt;
 
-        //if (cUnitType != -1) {
-        //    string protoName = kbProtoUnitGetName(cUnitType);
-        //    trProtoUnitSetFlag(p, protoName, "KBTracked", false);
-        //    trProtoUnitSetFlag(p, protoName, "NotKBTracked", true);
-        //}
+        //string protoName = kbProtoUnitGetName(cUnitType);
+        //trProtoUnitSetFlag(p, protoName, "KBTracked", false);
+        //trProtoUnitSetFlag(p, protoName, "NotKBTracked", true);
     }
 };
 
