@@ -139,6 +139,7 @@ class CardParameters {
             case cUnitTypeShadeSPC: return true;
             case cUnitTypeMummy: return true;
             case cUnitTypeMictlantecuhtli: return true;
+            case cUnitTypeHadesShade: return true;
         }
         return false;
     }

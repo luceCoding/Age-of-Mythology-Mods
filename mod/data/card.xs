@@ -34,7 +34,7 @@ class CardData {
 
     int rerollUpgrade(int upgradeSlot = 0){
         if (upgradeSlot > m_upgrades.size()) {return -1;}
-        int rngUpgrade = xsRandInt(0, 10);
+        int rngUpgrade = xsRandInt(0, 9);
         switch(rngUpgrade){
             case 0: {m_upgrades[upgradeSlot] = UPGRADE_HACK_ARMOR; return UPGRADE_HACK_ARMOR;}
             case 1: {m_upgrades[upgradeSlot] = UPGRADE_PIERCE_ARMOR; return UPGRADE_PIERCE_ARMOR;}
@@ -46,7 +46,6 @@ class CardData {
             case 7: {m_upgrades[upgradeSlot] = UPGRADE_HACK_ATTACK; return UPGRADE_HACK_ATTACK;}
             case 8: {m_upgrades[upgradeSlot] = UPGRADE_PIERCE_ATTACK; return UPGRADE_PIERCE_ATTACK;}
             case 9: {m_upgrades[upgradeSlot] = UPGRADE_CRUSH_ATTACK; return UPGRADE_CRUSH_ATTACK;}
-            case 10: {m_upgrades[upgradeSlot] = UPGRADE_ROF; return UPGRADE_ROF;}
         }
         return -1;
     }
@@ -60,12 +59,9 @@ class CardData {
         float absDelta = 2.0 * (1.0 + m_rarity) * sign;
 
         switch(puFIELD){
-            case UPGRADE_HACK_ARMOR: 
-                trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorHack, absDelta / 100.0 * 2, cXSRelativityAbsolute);
-            case UPGRADE_PIERCE_ARMOR: 
-                trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorPierce, absDelta / 100.0 * 2, cXSRelativityAbsolute);
-            case UPGRADE_CRUSH_ARMOR: 
-                trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorCrush, absDelta / 100.0 * 2, cXSRelativityAbsolute);
+            case UPGRADE_HACK_ARMOR: trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorHack, absDelta / 100.0 * 2, cXSRelativityAbsolute);
+            case UPGRADE_PIERCE_ARMOR: trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorPierce, absDelta / 100.0 * 2, cXSRelativityAbsolute);
+            case UPGRADE_CRUSH_ARMOR: trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorCrush, absDelta / 100.0 * 2, cXSRelativityAbsolute);
             case UPGRADE_HITPOINTS: {
                 absDelta = 20 * (1.0 + m_rarity) * sign;
                 trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, absDelta, cXSRelativityAbsolute);
@@ -75,24 +71,12 @@ class CardData {
                 trModifyProtounitData(m_protoName, p, cXSProtoEffectMaxShieldPoints, absDelta, cXSRelativityAbsolute);
             }
             case UPGRADE_SPEED: {
-                float pctDelta = (sign > 0) ? (1.0 + (0.05 * (m_rarity + 1))) : (1.0 - (0.05 * (m_rarity + 1)));
-                trModifyProtounitData(m_protoName, p, cXSProtoEffectSpeed, pctDelta, cXSRelativityBasePercent);
+                trModifyProtounitData(m_protoName, p, cXSProtoEffectSpeed, absDelta * 0.1, cXSRelativityAbsolute);
             }
-            case UPGRADE_HP_REGEN: 
-                trModifyProtounitData(m_protoName, p, cXSProtoEffectUnitRegenRate, 0.1 * absDelta, cXSRelativityAbsolute);
-            case UPGRADE_HACK_ATTACK: {
-                applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute);
-            }
-            case UPGRADE_PIERCE_ATTACK: {
-                applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute);
-            }
-            case UPGRADE_CRUSH_ATTACK: {
-                applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute);
-            }
-            case UPGRADE_ROF: {
-                float pctDelta = (sign > 0) ? (1.0 - (0.05 * (m_rarity + 1))) : (1.0 + (0.05 * (m_rarity + 1)));
-                applyProtoActionToTarget(m_protoName, p, cXSActionEffectROF, pctDelta, cXSRelativityBasePercent);
-            }
+            case UPGRADE_HP_REGEN: trModifyProtounitData(m_protoName, p, cXSProtoEffectUnitRegenRate, absDelta * 0.1, cXSRelativityAbsolute);
+            case UPGRADE_HACK_ATTACK: applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute);
+            case UPGRADE_PIERCE_ATTACK: applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute);
+            case UPGRADE_CRUSH_ATTACK: applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute);
         }
     }
 

@@ -54,7 +54,6 @@ const int UPGRADE_HP_REGEN = 6;
 const int UPGRADE_HACK_ATTACK = 7;
 const int UPGRADE_PIERCE_ATTACK = 8;
 const int UPGRADE_CRUSH_ATTACK = 9;
-const int UPGRADE_ROF = 10;
 
 const int TOTAL_AGES = 5;
 const float SELL_MULTIPLIER = 0.75;

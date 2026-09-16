@@ -158,8 +158,6 @@ class Shop {
                                                                         getIconPathFormat("resources/in_game/stat_pierce_dmg.png", miniIconSize), "Upgrade: Pierce Damage", "", uiIconBackgroundElement);
                 case UPGRADE_CRUSH_ATTACK: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
                                                                        getIconPathFormat("resources/in_game/stat_crush_dmg.png", miniIconSize), "Upgrade: Crush Damage", "", uiIconBackgroundElement);
-                case UPGRADE_ROF: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                              getIconPathFormat("resources/in_game/stat_rof.png", miniIconSize), "Upgrade: Rate of Fire", "", uiIconBackgroundElement);
             }
             leftPosY = leftPosY - miniIconYOffset * iconMultiplier; 
         }

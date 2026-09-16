@@ -64,12 +64,12 @@ void initializeSynergies(){
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_CAVALRY];
         synergy.m_buffs[2] = createBuffData(SYNERGY_INDEX_CAVALRY, emptySynergyType, cXSProtoEffectArmorPierce, 0.1, cXSRelativityAbsolute);
-        synergy.m_buffs[4] = createBuffData(SYNERGY_INDEX_CAVALRY, emptySynergyType, cXSProtoEffectSpeed, 1.1, cXSRelativityBasePercent);
+        synergy.m_buffs[4] = createBuffData(SYNERGY_INDEX_CAVALRY, emptySynergyType, cXSProtoEffectSpeed, 0.25, cXSRelativityAbsolute);
         synergy.m_buffs[5] = createBuffData(SYNERGY_INDEX_CAVALRY, emptySynergyType, cXSProtoEffectHitpoints, 50, cXSRelativityAbsolute);
         synergy.m_buffs[6] = createBuffData(SYNERGY_INDEX_CAVALRY, emptySynergyType, cXSProtoEffectArmorPierce, 0.15, cXSRelativityAbsolute);
-        synergy.m_buffs[8] = createBuffData(SYNERGY_INDEX_CAVALRY, emptySynergyType, cXSProtoEffectSpeed, 1.15, cXSRelativityBasePercent);
+        synergy.m_buffs[8] = createBuffData(SYNERGY_INDEX_CAVALRY, emptySynergyType, cXSProtoEffectSpeed, 0.5, cXSRelativityAbsolute);
         synergy.m_buffs[10] = createBuffData(SYNERGY_INDEX_CAVALRY, emptySynergyType, cXSProtoEffectHitpoints, 100, cXSRelativityAbsolute);
-        synergy.m_buffs[12] = createBuffData(SYNERGY_INDEX_CAVALRY, emptySynergyType, cXSProtoEffectSpeed, 1.20, cXSRelativityBasePercent);
+        synergy.m_buffs[12] = createBuffData(SYNERGY_INDEX_CAVALRY, emptySynergyType, cXSProtoEffectSpeed, 1.0, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_CAVALRY] = synergy;
     }
 

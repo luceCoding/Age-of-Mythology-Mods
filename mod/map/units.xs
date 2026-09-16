@@ -198,8 +198,8 @@ void preModifyPlayerData(){
 
     // Only Humans
     for(int p = 1; p <= cNumberPlayers-2; p++) {
-        trModifyProtounitData("Market", p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityBasePercent);
-        trModifyProtounitData("Market", p, cXSProtoEffectObstructionRadiusZ, 0.0, cXSRelativityBasePercent);
+        trModifyProtounitData("Market", p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityAssign);
+        trModifyProtounitData("Market", p, cXSProtoEffectObstructionRadiusZ, 0.0, cXSRelativityAssign);
         trProtoUnitSetUnitType(p, "Market", "LogicalTypeBuildingThatCanBeEmpowered", false);
         trProtounitRemoveCommand("Market", p, "Delete");
         trProtounitRemoveCommand("Market", p, "MarketBuy1");
@@ -209,6 +209,8 @@ void preModifyPlayerData(){
         trProtounitRemoveTech("Market", p, cTechCoinage);
         trProtounitRemoveTech("Market", p, cTechSilkRoad);
         trProtoUnitSetFlag(p, "Market", "Invulnerable", true);
+        trProtoUnitSetFlag(p, "Market", "CollidesWithProjectiles", false);
+        trProtoUnitSetFlag(p, "Market", "NonCollideable", true);
         trPlayerModifyData(p, 0, -1, 999, 0); // Add population
         trTechSetStatus(p, cTechRelicRingOfNibelung, cTechStatusActive);
         trTechSetStatus(p, cTechOracle, cTechStatusActive);
@@ -328,7 +330,7 @@ void preModifyPlayerData(){
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeRangedUnitsAttack", false);
 
         trProtoUnitActionSetEnabled("HealingSpring", p, "AutoConvert", false);
-        trModifyProtounitAction("HealingSpring", "AreaHeal", p, cXSActionEffectModifyRate, 5, cXSRelativityAssign);
+        trModifyProtounitAction("HealingSpring", "AreaHeal", p, cXSActionEffectModifyRate, 10, cXSRelativityAssign);
         trModifyProtounitAction("HealingSpring", "AreaHeal", p, cXSActionEffectRange, 15, cXSRelativityAssign);
 
         for (int i=0; i < g_waveTypes.size(); i++){

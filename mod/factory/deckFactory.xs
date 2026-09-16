@@ -30,7 +30,6 @@ void addCardsIntoDeck(int age = 0, int protoID = -1, int cost = -1){
 
 void initializeCardParametersMap(){
 
-    addCardsIntoDeck(0, cUnitTypeOrpheus);
     addCardsIntoDeck(0, cUnitTypeMilitia);
     addCardsIntoDeck(0, cUnitTypePriest);
     addCardsIntoDeck(0, cUnitTypePharaoh, 120);
@@ -45,6 +44,11 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(0, cUnitTypeSpearman);
     addCardsIntoDeck(0, cUnitTypeAxeman);
     addCardsIntoDeck(0, cUnitTypeSlinger);
+    addCardsIntoDeck(0, cUnitTypeJason);
+    addCardsIntoDeck(0, cUnitTypeAjax);
+    addCardsIntoDeck(0, cUnitTypeTheseus);
+    addCardsIntoDeck(0, cUnitTypeOrpheus);
+    addCardsIntoDeck(0, cUnitTypeHadesShade);
 
     addCardsIntoDeck(1, cUnitTypeCaravanGreek);
     addCardsIntoDeck(2, cUnitTypePiXiu);
