@@ -394,6 +394,7 @@ void postModifyPlayerData(){
         string[] protoNames = g_protoNameToCardParametersMap.getKeys();
         for (int i=0; i<protoNames.size(); i++){
             setAsCardUnit(protoNames[i], p);
+            g_AttachmentManager.addAttackAttachmentToProtoUnit(kbProtoUnitGetID(protoNames[i]), p);
         }
     }
 

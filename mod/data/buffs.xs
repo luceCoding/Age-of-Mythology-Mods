@@ -20,7 +20,7 @@ class Buff {
     int m_relativity = cXSRelativityAbsolute;
 
     string m_unitType = ""; // For targeting a single unit type
-    string m_attachProtoUnit = ""; // For attaching VFXs
+    string m_withProtoUnit = "";
 
     // Fields for trProtounitActionSpecialEffect
     int m_effectField = -1;
@@ -71,14 +71,14 @@ class Buff {
         m_synergyIndex = synergyIndex;
     }
 
-    void setBuffSpecialAction(int synergyIndex = -1, int[] synergyTypes = default, int effectField = -1, int dmgType = -1, float duration = 0.0, float delta = 0.0, string attachProtoUnit = "") {
+    void setBuffSpecialAction(int synergyIndex = -1, int[] synergyTypes = default, int effectField = -1, int dmgType = -1, float duration = 0.0, float delta = 0.0, string withProtoUnit = "") {
         m_buffType = BUFF_TYPE_PROTO_ACTION_SPECIAL;
         m_synergyTypes = synergyTypes;
         m_effectField = effectField;
         m_dmgType = dmgType;
         m_duration = duration;
         m_delta = delta;
-        m_attachProtoUnit = attachProtoUnit;
+        m_withProtoUnit = withProtoUnit;
         m_synergyIndex = synergyIndex;
     }
 
@@ -115,10 +115,6 @@ class Buff {
             case BUFF_TYPE_PROTO_ACTION_SPAWN: {
                 applyProtoActionSpawnToTarget(targetProto, p, m_spawnProtoID, m_eventType, delta, m_relativity, m_chance, m_lifespan);
             }
-        }
-        if (m_attachProtoUnit != ""){
-            applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, cOnHitEffectAttach, "All", m_attachProtoUnit,
-                g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration")), 0.0);
         }
 
         // Trigger custom callback lambda

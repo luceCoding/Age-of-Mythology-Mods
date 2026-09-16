@@ -79,6 +79,7 @@ active
     initialiseUiSystems(false);
     performProportionCalculation();
     g_OnCreationEventManager.init();
+    g_AttachmentManager.init();
     xsDisableSelf();
 }
 

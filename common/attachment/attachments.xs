@@ -5,11 +5,48 @@ void scheduleDelete(int unitId = -1, int timeMs = 0){
     });
 }
 
+// Allows multiple pseudo attachments for attacks using only one universal attachment.
 class AttachmentManager {
     int m_size = 0; // Tracks active items without shrinking arrays
     int m_walkAnimationID = -1;
+    int m_cUnitTypeAttackAttachment = -1; // Reserve this unit type for attachments ONLY!
     int[] m_attachmentIds = default;
     int[] m_attachmentTargetIds = default;
+
+    void init(int cUnitTypeAttackAttachment = cUnitTypePlantJapaneseFern){
+        m_cUnitTypeAttackAttachment = cUnitTypeAttackAttachment;
+        string attachmentName = kbProtoUnitGetName(m_cUnitTypeAttackAttachment);
+        for (int p = 0; p <= cNumberPlayers; p++){
+            trProtoUnitSetFlag(p, attachmentName, "Invulnerable", true);
+            trProtoUnitSetFlag(p, attachmentName, "ForceToNature", false);
+            trProtoUnitSetFlag(p, attachmentName, "CollidesWithProjectiles", false);
+            trProtoUnitSetFlag(p, attachmentName, "NonAutoFormedUnit", false);
+            trProtoUnitSetFlag(p, attachmentName, "StartOnNoUpdate", false);
+            trProtoUnitSetUnitType(p, attachmentName, "NatureClass", false);
+            trProtoUnitSetFlag(p, attachmentName, "CorpseDecays", true);
+            trProtoUnitSetFlag(p, attachmentName, "DoNotShowOnMiniMap", true);
+            trProtoUnitSetFlag(p, attachmentName, "OnlyInEditor", true);
+            trModifyProtounitData(attachmentName, p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityAssign);
+            trModifyProtounitData(attachmentName, p, cXSProtoEffectObstructionRadiusZ, 0.0, cXSRelativityAssign);
+        }
+    }
+
+    void addAttackAttachmentToProtoUnit(int cUnitTypeProtoUnit = -1, int p = 0, string targetType = "All"){
+        applyProtoActionSpecialEffectProtoUnitToTarget(kbProtoUnitGetName(cUnitTypeProtoUnit), p, cOnHitEffectAttach, targetType, kbProtoUnitGetName(m_cUnitTypeAttackAttachment), 1.0, 0.0);
+    }
+
+    void addAttackAttachment(int p = 0, int cUnitTypeAttachment = -1, int eventType = cSpawnEventTypeDead, float chance = -1, float duration = 0.0){
+        trProtounitModifySpawnData(kbProtoUnitGetName(m_cUnitTypeAttackAttachment), p, kbProtoUnitGetName(cUnitTypeAttachment), eventType, 1.0, cXSRelativityAbsolute, chance, duration);
+        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeAttachment), "ForceToNature", false);
+        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeAttachment), "NonAutoFormedUnit", false);
+        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeAttachment), "StartOnNoUpdate", false);
+        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeAttachment), "DoNotShowOnMiniMap", true);
+        trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeAttachment), "NatureClass", false);
+    }
+
+    void removeAttackAttachment(int p = 0, int cUnitTypeAttachment = -1, int eventType = cSpawnEventTypeDead, float chance = -1, float duration = 0.0){
+        trProtounitModifySpawnData(kbProtoUnitGetName(m_cUnitTypeAttackAttachment), p, kbProtoUnitGetName(cUnitTypeAttachment), eventType, -1.0, cXSRelativityAbsolute, chance, duration);
+    }
 
     void add(int attachmentId = -1, int targetId = -1) {
         if (m_walkAnimationID == -1){

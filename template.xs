@@ -36,8 +36,8 @@ void generate()
     // common/ui/ui3.xs
     // common/ui/ui4.xs
     
-    // common/attachment/attachments.xs
-    // common/onCreationEvent.xs
+    // common/creation/onCreationManager.xs
+
     // common/terrain.xs
     // common/sound.xs
     // common/unitCache.xs
@@ -71,6 +71,7 @@ void generate()
     // mod/shop/respawn.xs
 
     // mod/map/utils.xs
+    // common/attachment/attachments.xs
     // mod/map/lane.xs
     // mod/map/base.xs
     // mod/map/objectives.xs

@@ -135,9 +135,29 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_FROST];
-        synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(1 * 1000.0), 1.0, 0.1, "VFXCold");
-        synergy.m_buffs[12] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(2 * 1000.0), 1.0, 0.1, "VFXCold");
-        synergy.m_buffs[18] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(3 * 1000.0), 1.0, 0.1, "VFXCold");
+        synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(1 * 1000.0), 1.0, 0.1, "",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (protoUnit != "Militia") { return; } // Only apply this once.
+                                    if (delta > 0){
+                                        g_AttachmentManager.addAttackAttachment(p, cUnitTypeIceBlock, cSpawnEventTypeBirth, -1, 1.0);
+                                    }
+                                    else {
+                                        g_AttachmentManager.removeAttackAttachment(p, cUnitTypeIceBlock, cSpawnEventTypeBirth, -1, 1.0);
+                                    }
+                                }
+                            );
+        synergy.m_buffs[12] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(2 * 1000.0), 1.0, 0.1, "",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (protoUnit != "Militia") { return; } // Only apply this once.
+                                    if (delta > 0){
+                                        g_AttachmentManager.addAttackAttachment(p, cUnitTypeIceBlockLarge, cSpawnEventTypeBirth, -1, 1.0);
+                                    }
+                                    else {
+                                        g_AttachmentManager.removeAttackAttachment(p, cUnitTypeIceBlockLarge, cSpawnEventTypeBirth, -1, 1.0);
+                                    }
+                                }
+                            );
+        synergy.m_buffs[18] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(3 * 1000.0), 1.0, 0.1);
         g_synergies[SYNERGY_INDEX_FROST] = synergy;
     }
 
@@ -157,7 +177,17 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_POISON];
-        synergy.m_buffs[3] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 0.5);
+        synergy.m_buffs[3] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 0.5, "",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (protoUnit != "Militia") { return; } // Only apply this once.
+                                    if (delta > 0){
+                                        g_AttachmentManager.addAttackAttachment(p, cUnitTypeVFXPoison, cSpawnEventTypeBirth, -1, 1.0);
+                                    }
+                                    else {
+                                        g_AttachmentManager.removeAttackAttachment(p, cUnitTypeVFXPoison, cSpawnEventTypeBirth, -1, 1.0);
+                                    }
+                                }
+                            );
         synergy.m_buffs[5] = createBuffSpawnActionSingle(SYNERGY_INDEX_POISON, UNIT_TYPE_UNIT, cUnitTypeArgusAcidBlobDamage, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
         synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 1);
         synergy.m_buffs[9] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 1.5,);
@@ -168,8 +198,18 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_FIRE];
-        synergy.m_buffs[2] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 0.5, "VFXScorchingFeathers");
-        synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.5, 10.0,
+        synergy.m_buffs[2] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 0.5, "",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (protoUnit != "Militia") { return; } // Only apply this once.
+                                    if (delta > 0){
+                                        g_AttachmentManager.addAttackAttachment(p, cUnitTypeVFXScorchingFeathers, cSpawnEventTypeBirth, -1, 1.0);
+                                    }
+                                    else {
+                                        g_AttachmentManager.removeAttackAttachment(p, cUnitTypeVFXScorchingFeathers, cSpawnEventTypeBirth, -1, 1.0);
+                                    }
+                                }
+                            );
+        synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.03, 10.0,
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
                                         g_OnCreationEventManager.register(p, cUnitTypeVFXArrowSignal, [](int unitId = -1) -> void {
@@ -191,7 +231,17 @@ void initializeSynergies(){
                                     }
                                 }
                             );
-        synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.0, "VFXScorchingFeathers");
+        synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.0, "",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (protoUnit != "Militia") { return; } // Only apply this once.
+                                    if (delta > 0){
+                                        g_AttachmentManager.addAttackAttachment(p, cUnitTypeProjectileOnmyojiAttack, cSpawnEventTypeBirth, -1, 1.0);
+                                    }
+                                    else {
+                                        g_AttachmentManager.removeAttackAttachment(p, cUnitTypeProjectileOnmyojiAttack, cSpawnEventTypeBirth, -1, 1.0);
+                                    }
+                                }
+                            );
         synergy.m_buffs[8] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "SkylanternFireAreaGround", cUnitTypeVFXFireAshesCS, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 1.0, 10.0,
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
@@ -209,7 +259,7 @@ void initializeSynergies(){
                                     }
                                 }
                             );
-        synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.25, "VFXScorchingFeathers");
+        synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.25);
         synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_POISON, "MeteorSPC", cXSActionEffectDamagePierce, 50, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_FIRE] = synergy;
     }
