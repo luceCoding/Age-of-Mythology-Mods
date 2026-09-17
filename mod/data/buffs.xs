@@ -3,6 +3,7 @@ const int BUFF_TYPE_PROTO_ACTION = 1; // trModifyProtounitAction
 const int BUFF_TYPE_PROTO_ACTION_UNIT_TYPE = 2; // trModifyProtounitActionUnitType
 const int BUFF_TYPE_PROTO_ACTION_SPECIAL = 3; // trProtounitActionSpecialEffect
 const int BUFF_TYPE_PROTO_ACTION_SPAWN = 4; // trProtounitModifySpawnData
+const int BUFF_TYPE_LAMBDA_ONLY = 5;
 
 string[] g_allProtounits = default;
 
@@ -443,6 +444,7 @@ fieldName = spawnName + " on " + eventName;
                         case SYNERGY_INDEX_UNDEAD: sName = "Undead";
                         case SYNERGY_INDEX_POISON: sName = "Poisonous";
                         case SYNERGY_INDEX_FIRE: sName = "Fire";
+                        case SYNERGY_INDEX_LIGHTNING: sName = "Lightning";
                     }
                     
                     if (i > 0) { 

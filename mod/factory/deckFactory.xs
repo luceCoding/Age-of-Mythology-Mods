@@ -160,6 +160,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(2, cUnitTypeYumiHorseArcher);
     addCardsIntoDeck(2, cUnitTypeTanuki);
     addCardsIntoDeck(2, cUnitTypeShogun);
+    addCardsIntoDeck(2, cUnitTypeRaiju);
 
     addCardsIntoDeck(3, cUnitTypeCangJie, 600);
 

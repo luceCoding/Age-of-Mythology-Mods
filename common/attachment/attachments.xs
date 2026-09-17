@@ -31,11 +31,11 @@ class AttachmentManager {
         }
     }
 
-    void addAttackAttachmentToProtoUnit(int cUnitTypeProtoUnit = -1, int p = 0, string targetType = "All"){
+    void addOnHitAttachmentToProtoUnit(int cUnitTypeProtoUnit = -1, int p = 0, string targetType = "All"){
         applyProtoActionSpecialEffectProtoUnitToTarget(kbProtoUnitGetName(cUnitTypeProtoUnit), p, cOnHitEffectAttach, targetType, kbProtoUnitGetName(m_cUnitTypeAttackAttachment), 1.0, 0.0);
     }
 
-    void addAttackAttachment(int p = 0, int cUnitTypeAttachment = -1, int eventType = cSpawnEventTypeDead, float chance = -1, float duration = 0.0){
+    void addOnHitAttachment(int p = 0, int cUnitTypeAttachment = -1, int eventType = cSpawnEventTypeDead, float chance = -1, float duration = 0.0){
         trProtounitModifySpawnData(kbProtoUnitGetName(m_cUnitTypeAttackAttachment), p, kbProtoUnitGetName(cUnitTypeAttachment), eventType, 1.0, cXSRelativityAbsolute, chance, duration);
         trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeAttachment), "ForceToNature", false);
         trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeAttachment), "NonAutoFormedUnit", false);
@@ -44,7 +44,7 @@ class AttachmentManager {
         trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeAttachment), "NatureClass", false);
     }
 
-    void removeAttackAttachment(int p = 0, int cUnitTypeAttachment = -1, int eventType = cSpawnEventTypeDead, float chance = -1, float duration = 0.0){
+    void removeOnHitAttachment(int p = 0, int cUnitTypeAttachment = -1, int eventType = cSpawnEventTypeDead, float chance = -1, float duration = 0.0){
         trProtounitModifySpawnData(kbProtoUnitGetName(m_cUnitTypeAttackAttachment), p, kbProtoUnitGetName(cUnitTypeAttachment), eventType, -1.0, cXSRelativityAbsolute, chance, duration);
     }
 

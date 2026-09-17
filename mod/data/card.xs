@@ -19,7 +19,7 @@ class CardData {
         m_protoName = params.getProtoUnit();
         m_uuid = g_uuid.getNextUUID();
         m_deckIndex = params.getAge();
-        m_isIdentified = xsRandBool(0.85);
+        m_isIdentified = xsRandBool(IDENTIFIED_TO_UNIDENTIFIED_CARDS_RATIO);
     }
 
     CardParameters getCardParameters(){

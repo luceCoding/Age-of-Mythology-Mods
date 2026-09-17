@@ -8,7 +8,7 @@ string preparePlant(int p = 1, int plantType = -1,
     string plantName = kbProtoUnitGetName(plantType);
 
     // Register event handler directly with the event manager
-    g_OnCreationEventManager.register(p, plantType, event);
+    g_OnCreationListener.register(p, plantType, event);
 
     // Configure Protounit
     trProtoUnitSetFlag(p, plantName, "OnlyInEditor", true);
@@ -137,7 +137,7 @@ void addForgeCommands(int p = -1) {
 
 void removeForgeCommands(int p = -1) {
     trProtounitRemoveTrain("Market", p, kbProtoUnitGetName(cUnitTypePlantGreekShrub));
-    g_OnCreationEventManager.deregister(p, cUnitTypePlantGreekShrub);
+    g_OnCreationListener.deregister(p, cUnitTypePlantGreekShrub);
 }
 
 void addArmoryCommands(int p = -1) {
@@ -156,7 +156,7 @@ void addArmoryCommands(int p = -1) {
 
 void removeArmoryCommands(int p = -1) {
     trProtounitRemoveTrain("Market", p, kbProtoUnitGetName(cUnitTypePlantGreekGrass));
-    g_OnCreationEventManager.deregister(p, cUnitTypePlantGreekGrass);
+    g_OnCreationListener.deregister(p, cUnitTypePlantGreekGrass);
 }
 
 void addTempleCommands(int p = -1) {
@@ -176,7 +176,7 @@ void addTempleCommands(int p = -1) {
 
 void removeTempleCommands(int p = -1) {
     trProtounitRemoveTrain("Market", p, kbProtoUnitGetName(cUnitTypePlantGreekWeeds));
-    g_OnCreationEventManager.deregister(p, cUnitTypePlantGreekWeeds);
+    g_OnCreationListener.deregister(p, cUnitTypePlantGreekWeeds);
 }
 
 void addShrineCommands(int p = -1) {
@@ -195,7 +195,7 @@ void addShrineCommands(int p = -1) {
 
 void removeShrineCommands(int p = -1) {
     trProtounitRemoveTrain("Market", p, kbProtoUnitGetName(cUnitTypePlantGreekFern));
-    g_OnCreationEventManager.deregister(p, cUnitTypePlantGreekFern);
+    g_OnCreationListener.deregister(p, cUnitTypePlantGreekFern);
 }
 
 void initPlayerCommands() {

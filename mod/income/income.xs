@@ -119,7 +119,7 @@ void startIncome(){
     });
 
     for (int p = 0; p <= cNumberPlayers; p++){
-        g_OnCreationEventManager.register(p, cUnitTypeGoldPile, [](int unitId = -1) -> void {
+        g_OnCreationListener.register(p, cUnitTypeGoldPile, [](int unitId = -1) -> void {
                 g_IncomeHandler.addGold(unitId);
                 selectSingle(unitId);
                 trUnitSetScale(0.5, 0.5, 0.5);

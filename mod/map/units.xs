@@ -386,6 +386,7 @@ void postModifyPlayerData(){
             setupForPoisonSynergy(p);
             setupForFireSynergy(p);
             setupForHealSynergy(p);
+            setupForLightningSynergy(p);
         }
     }
 
@@ -394,13 +395,13 @@ void postModifyPlayerData(){
         string[] protoNames = g_protoNameToCardParametersMap.getKeys();
         for (int i=0; i<protoNames.size(); i++){
             setAsCardUnit(protoNames[i], p);
-            g_AttachmentManager.addAttackAttachmentToProtoUnit(kbProtoUnitGetID(protoNames[i]), p);
+            g_AttachmentManager.addOnHitAttachmentToProtoUnit(kbProtoUnitGetID(protoNames[i]), p);
         }
     }
 
     // Last 2 AIs
     for(int p = cNumberPlayers - 1; p <= cNumberPlayers; p++) {
-        g_OnCreationEventManager.register(p, cUnitTypeFlyingPurpleHippo, [](int unitId = -1) -> void {
+        g_OnCreationListener.register(p, cUnitTypeFlyingPurpleHippo, [](int unitId = -1) -> void {
                 selectSingle(unitId);
                 trUnitChangeName("Creator: ItzJover");
                 setTeamAsWinner((g_finalTeam[kbUnitGetPlayerID(unitId)] == 1) ? 2 : 1);

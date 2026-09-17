@@ -78,7 +78,7 @@ active
     trSetCommunityObjectivesVisibility(false);
     initialiseUiSystems(false);
     performProportionCalculation();
-    g_OnCreationEventManager.init();
+    g_OnCreationListener.init();
     g_AttachmentManager.init();
     xsDisableSelf();
 }
@@ -98,7 +98,7 @@ rule LOOP
 highFrequency
 active
 {
-    g_OnCreationEventManager.process();
+    g_OnCreationListener.process();
     g_AttachmentManager.process();
 }
 

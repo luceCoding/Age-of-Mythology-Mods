@@ -1,4 +1,8 @@
 void initializeSynergies(){
+    g_isSpawningChain = new bool(cNumberPlayers+1, false);
+    g_lightningMaxChains = new int(cNumberPlayers+1, 0);
+    g_lastLightningTime = new float(cNumberPlayers+1, 0.0);
+
     string[] icons = new string(MAX_SYNERGIES, "");
     icons[SYNERGY_INDEX_INFANTRY] = "resources/in_game/gamepad_quick_select/Icon_MeleeUnit.png";
     icons[SYNERGY_INDEX_RANGED] = "resources/in_game/gamepad_quick_select/Icon_RangedUnit.png";
@@ -12,6 +16,7 @@ void initializeSynergies(){
     icons[SYNERGY_INDEX_UNDEAD] = "resources/egyptian/static_color/god_powers/ancestors_icon.png";
     icons[SYNERGY_INDEX_POISON] = "resources/aztec/static_color/technologies/sting_of_yappan_icon.png";
     icons[SYNERGY_INDEX_FIRE] = "resources/achievements/achievement_set_the_world_on_fire.png";
+    icons[SYNERGY_INDEX_LIGHTNING] = "resources/greek/static_color/god_powers/lightning_storm_icon.png";
 
     string[] rolloverNames = new string(MAX_SYNERGIES, "");
     rolloverNames[SYNERGY_INDEX_INFANTRY] = "Synergy: Infantry";
@@ -26,6 +31,7 @@ void initializeSynergies(){
     rolloverNames[SYNERGY_INDEX_UNDEAD] = "Synergy: Undead";
     rolloverNames[SYNERGY_INDEX_POISON] = "Synergy: Poisonous";
     rolloverNames[SYNERGY_INDEX_FIRE] = "Synergy: Fire";
+    rolloverNames[SYNERGY_INDEX_LIGHTNING] = "Synergy: Lightning";
 
     for (int i = 0; i < icons.size(); i++) {
         SynergyData synergy;
@@ -135,29 +141,29 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_FROST];
-        synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(1 * 1000.0), 1.0, 0.1, "",
+        synergy.m_buffs[5] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(1 * 1000.0), 1.0, 0.1, "",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (protoUnit != "Militia") { return; } // Only apply this once.
                                     if (delta > 0){
-                                        g_AttachmentManager.addAttackAttachment(p, cUnitTypeIceBlock, cSpawnEventTypeBirth, -1, 1.0);
+                                        g_AttachmentManager.addOnHitAttachment(p, cUnitTypeIceBlock, cSpawnEventTypeBirth, -1, 1.0);
                                     }
                                     else {
-                                        g_AttachmentManager.removeAttackAttachment(p, cUnitTypeIceBlock, cSpawnEventTypeBirth, -1, 1.0);
+                                        g_AttachmentManager.removeOnHitAttachment(p, cUnitTypeIceBlock, cSpawnEventTypeBirth, -1, 1.0);
                                     }
                                 }
                             );
-        synergy.m_buffs[12] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(2 * 1000.0), 1.0, 0.1, "",
+        synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(2 * 1000.0), 1.0, 0.1, "",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (protoUnit != "Militia") { return; } // Only apply this once.
                                     if (delta > 0){
-                                        g_AttachmentManager.addAttackAttachment(p, cUnitTypeIceBlockLarge, cSpawnEventTypeBirth, -1, 1.0);
+                                        g_AttachmentManager.addOnHitAttachment(p, cUnitTypeIceBlockLarge, cSpawnEventTypeBirth, -1, 1.0);
                                     }
                                     else {
-                                        g_AttachmentManager.removeAttackAttachment(p, cUnitTypeIceBlockLarge, cSpawnEventTypeBirth, -1, 1.0);
+                                        g_AttachmentManager.removeOnHitAttachment(p, cUnitTypeIceBlockLarge, cSpawnEventTypeBirth, -1, 1.0);
                                     }
                                 }
                             );
-        synergy.m_buffs[18] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(3 * 1000.0), 1.0, 0.1);
+        synergy.m_buffs[15] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(3 * 1000.0), 1.0, 0.1);
         g_synergies[SYNERGY_INDEX_FROST] = synergy;
     }
 
@@ -181,10 +187,10 @@ void initializeSynergies(){
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (protoUnit != "Militia") { return; } // Only apply this once.
                                     if (delta > 0){
-                                        g_AttachmentManager.addAttackAttachment(p, cUnitTypeVFXPoison, cSpawnEventTypeBirth, -1, 1.0);
+                                        g_AttachmentManager.addOnHitAttachment(p, cUnitTypeVFXPoison, cSpawnEventTypeBirth, -1, 1.0);
                                     }
                                     else {
-                                        g_AttachmentManager.removeAttackAttachment(p, cUnitTypeVFXPoison, cSpawnEventTypeBirth, -1, 1.0);
+                                        g_AttachmentManager.removeOnHitAttachment(p, cUnitTypeVFXPoison, cSpawnEventTypeBirth, -1, 1.0);
                                     }
                                 }
                             );
@@ -202,17 +208,17 @@ void initializeSynergies(){
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (protoUnit != "Militia") { return; } // Only apply this once.
                                     if (delta > 0){
-                                        g_AttachmentManager.addAttackAttachment(p, cUnitTypeVFXScorchingFeathers, cSpawnEventTypeBirth, -1, 1.0);
+                                        g_AttachmentManager.addOnHitAttachment(p, cUnitTypeVFXScorchingFeathers, cSpawnEventTypeBirth, -1, 1.0);
                                     }
                                     else {
-                                        g_AttachmentManager.removeAttackAttachment(p, cUnitTypeVFXScorchingFeathers, cSpawnEventTypeBirth, -1, 1.0);
+                                        g_AttachmentManager.removeOnHitAttachment(p, cUnitTypeVFXScorchingFeathers, cSpawnEventTypeBirth, -1, 1.0);
                                     }
                                 }
                             );
         synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.03, 10.0,
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
-                                        g_OnCreationEventManager.register(p, cUnitTypeVFXArrowSignal, [](int unitId = -1) -> void {
+                                        g_OnCreationListener.register(p, cUnitTypeVFXArrowSignal, [](int unitId = -1) -> void {
                                                 selectSingle(unitId);
                                                 vector v = trUnitGetPosition(unitId);
                                                 float rdmX = xsRandFloat(30.0, 50.0);
@@ -227,7 +233,7 @@ void initializeSynergies(){
                                         );
                                     }
                                     else {
-                                        g_OnCreationEventManager.deregister(p, cUnitTypeVFXArrowSignal);
+                                        g_OnCreationListener.deregister(p, cUnitTypeVFXArrowSignal);
                                     }
                                 }
                             );
@@ -235,17 +241,17 @@ void initializeSynergies(){
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (protoUnit != "Militia") { return; } // Only apply this once.
                                     if (delta > 0){
-                                        g_AttachmentManager.addAttackAttachment(p, cUnitTypeProjectileOnmyojiAttack, cSpawnEventTypeBirth, -1, 1.0);
+                                        g_AttachmentManager.addOnHitAttachment(p, cUnitTypeProjectileOnmyojiAttack, cSpawnEventTypeBirth, -1, 1.0);
                                     }
                                     else {
-                                        g_AttachmentManager.removeAttackAttachment(p, cUnitTypeProjectileOnmyojiAttack, cSpawnEventTypeBirth, -1, 1.0);
+                                        g_AttachmentManager.removeOnHitAttachment(p, cUnitTypeProjectileOnmyojiAttack, cSpawnEventTypeBirth, -1, 1.0);
                                     }
                                 }
                             );
         synergy.m_buffs[8] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "SkylanternFireAreaGround", cUnitTypeVFXFireAshesCS, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 1.0, 10.0,
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
-                                        g_OnCreationEventManager.register(p, cUnitTypeSkylanternFireAreaGround, [](int unitId = -1) -> void {
+                                        g_OnCreationListener.register(p, cUnitTypeSkylanternFireAreaGround, [](int unitId = -1) -> void {
                                                 selectSingle(unitId);
                                                 int owner = kbUnitGetPlayerID(unitId);
                                                 vector v = trUnitGetPosition(unitId);
@@ -255,12 +261,65 @@ void initializeSynergies(){
                                         );
                                     }
                                     else {
-                                        g_OnCreationEventManager.deregister(p, cUnitTypeSkylanternFireAreaGround);
+                                        g_OnCreationListener.deregister(p, cUnitTypeSkylanternFireAreaGround);
                                     }
                                 }
                             );
         synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.25);
         synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_POISON, "MeteorSPC", cXSActionEffectDamagePierce, 50, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_FIRE] = synergy;
+    }
+
+    {
+        SynergyData synergy = g_synergies[SYNERGY_INDEX_LIGHTNING];
+        synergy.m_buffs[2] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute,
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+            if (protoUnit != "Militia") { return; }
+
+                if (delta > 0) {
+                    g_lightningMaxChains[p] = 1;
+                    g_AttachmentManager.addOnHitAttachment(p, cUnitTypeGauntletChaosLightningStrike, cSpawnEventTypeBirth, 0.01, 2.0);
+                    g_OnCreationListener.register(p, cUnitTypeGauntletChaosLightningStrike, handleLightningOnCreation);
+                } else {
+                    g_AttachmentManager.removeOnHitAttachment(p, cUnitTypeGauntletChaosLightningStrike, cSpawnEventTypeBirth, -1, 2.0);
+                    g_OnCreationListener.deregister(p, cUnitTypeGauntletChaosLightningStrike);
+                    g_lightningMaxChains[p] = 0;
+                    g_lastLightningTime[p] = 0.0;
+                }
+            }
+        );
+
+        synergy.m_buffs[4] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute,
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (delta > 0) {
+                    g_lightningMaxChains[p] = g_lightningMaxChains[p] + 1;
+                } else {
+                    g_lightningMaxChains[p] = g_lightningMaxChains[p] - 1;
+                }
+            }
+        );
+
+        synergy.m_buffs[6] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute,
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (delta > 0) {
+                    g_lightningMaxChains[p] = g_lightningMaxChains[p] + 1;
+                } else {
+                    g_lightningMaxChains[p] = g_lightningMaxChains[p] - 1;
+                }
+            }
+        );
+
+        synergy.m_buffs[8] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute,
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (delta > 0) {
+                    g_lightningMaxChains[p] = g_lightningMaxChains[p] + 1;
+                } else {
+                    g_lightningMaxChains[p] = g_lightningMaxChains[p] - 1;
+                }
+            }
+        );
+
+        synergy.m_buffs[10] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectNumBounces, 1, cXSRelativityAbsolute);
+        g_synergies[SYNERGY_INDEX_LIGHTNING] = synergy;
     }
 }

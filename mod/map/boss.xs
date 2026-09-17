@@ -216,7 +216,7 @@ void startBoss(){
     g_BotBossBuffMsEnd = new int(cNumberPlayers+1, -1);
 
     // Top Boss
-    g_OnCreationEventManager.register(0, cUnitTypeRockGoldSmall, [](int unitId = -1) -> void {
+    g_OnCreationListener.register(0, cUnitTypeRockGoldSmall, [](int unitId = -1) -> void {
             int[] players = getWhoKilledUnitType(kbProtoUnitGetID(TOP_BOSS_PROTO));
             if (players.size() == 1){
                 applyTopBossBufToPlayerTeam(players[0]);
@@ -228,7 +228,7 @@ void startBoss(){
     );
 
     // Bottom Boss
-    g_OnCreationEventManager.register(0, cUnitTypeRockGoldTiny, [](int unitId = -1) -> void {
+    g_OnCreationListener.register(0, cUnitTypeRockGoldTiny, [](int unitId = -1) -> void {
             int[] players = getWhoKilledUnitType(kbProtoUnitGetID(BOT_BOSS_PROTO));
             if (players.size() == 1){
                 applyBotBossBuffToPlayerTeam(players[0]);

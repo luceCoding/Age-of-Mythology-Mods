@@ -1,6 +1,7 @@
 //// mod/globals.xs
 //// common/nottud.xs
 //// common/collections/hashMap.xs
+//// common/collections/hashSet.xs
 
 void generate()
 {
@@ -30,13 +31,16 @@ void generate()
     defineHashMapDefinition("string", "float", "0.0", "");
     defineHashMapDefinition("string", "int", "-1", "");
     defineHashMapDefinition("int", "int", "cMinInt", "");
+    defineSetDefinition("int", "");
 
     // common/ui/ui1.xs
     //// common/ui/ui2.xs
     // common/ui/ui3.xs
     // common/ui/ui4.xs
     
-    // common/creation/onCreationManager.xs
+    // common/creation/onCreationListener.xs
+
+    // common/kbQueries.xs
 
     // common/terrain.xs
     // common/sound.xs
@@ -87,6 +91,7 @@ void generate()
 
     // mod/income/income.xs
 
+    // mod/factory/utils.xs
     // mod/factory/deckFactory.xs
     // mod/factory/synergyFactory.xs
 

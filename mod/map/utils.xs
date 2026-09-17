@@ -161,3 +161,6 @@ void setupForHealSynergy(int p = 0){
     //trProtounitActionSetFlag(p, "VFXForestProtectionArea", "AllyHealModify", "NoStack", false);
     //trProtounitAssignAction("Priest", "VFXForestProtectionArea", "AllyHealModify", p);
 }
+
+void setupForLightningSynergy(int p = 0){
+}

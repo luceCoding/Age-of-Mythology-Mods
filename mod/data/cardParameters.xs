@@ -100,6 +100,7 @@ class CardParameters {
     bool isUndead(){ return m_unitTypes[14];}
     bool isPoison(){ return m_unitTypes[15];}
     bool isFire(){ return m_unitTypes[16];}
+    bool isLightning(){ return m_unitTypes[17];}
 
     bool isGreek() { return xsStringFindFirst(getIconPath(), "greek", 0, false) != -1; }
     bool isNorse() { return xsStringFindFirst(getIconPath(), "norse", 0, false) != -1; }
@@ -123,6 +124,7 @@ class CardParameters {
             case SYNERGY_INDEX_UNDEAD: return isUndead();
             case SYNERGY_INDEX_POISON: return isPoison();
             case SYNERGY_INDEX_FIRE: return isFire();
+            case SYNERGY_INDEX_LIGHTNING: return isLightning();
         }
         return false;
     }
@@ -189,6 +191,22 @@ class CardParameters {
         return isChinese() & isArcher();
     }
 
+    bool isUnitLightningType(int protoID = -1){
+        switch(protoID){
+            case cUnitTypeOsiris: return true;
+            case cUnitTypeArkantosGod: return true;
+            case cUnitTypeYingLong: return true;
+            case cUnitTypeManOWar: return true;
+            case cUnitTypeTeixiptlaQuetz: return true;
+            case cUnitTypeSuperTeixiptlaQuetz: return true;
+            case cUnitTypeJunkozosen: return true;
+            case cUnitTypeShinigami: return true;
+            case cUnitTypeCirce: return true;
+            case cUnitTypeRaiju: return true;
+        }
+        return (isGreek() || isJapanese()) & (isInfantry() || isCavalry()) & isArcher() == false;
+    }
+
     void setCardParameters(int age = 0, int protoID = -1, int cost = -1){
         Parameters params = createParameters();
         params.ints.add(-1); // placeholder for data
@@ -208,7 +226,7 @@ class CardParameters {
         m_params = params;
         m_uuid = g_uuid.getNextUUID();
 
-        m_unitTypes = new bool(17, false);
+        m_unitTypes = new bool(18, false);
         m_unitTypes[0] = isUnitType(UNIT_TYPE_INFANTRY);
         m_unitTypes[1] = isUnitType(UNIT_TYPE_ARCHER);
         m_unitTypes[2] = isUnitType(UNIT_TYPE_CAVALRY);
@@ -226,6 +244,7 @@ class CardParameters {
         m_unitTypes[14] = isUnitUndeadType(protoID);
         m_unitTypes[15] = isUnitPoisonType(protoID);
         m_unitTypes[16] = isUnitFireType(protoID);
+        m_unitTypes[17] = isUnitLightningType(protoID);
     }
 };
 
