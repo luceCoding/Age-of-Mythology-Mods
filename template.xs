@@ -6,6 +6,7 @@
 void generate()
 {
     // mod/globals.xs
+    // mod/localization/english.xs
     // mod/mutables.xs
     // common/logs.xs
     // common/uuid.xs

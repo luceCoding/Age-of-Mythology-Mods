@@ -170,13 +170,13 @@ void initializeSynergies(){
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_UNDEAD];
         synergy.m_buffs[2] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeMinion, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
-        synergy.m_buffs[3] = createBuffSpecialAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, -1, 0, 1.0, "Minion");
+        synergy.m_buffs[3] = createBuffSpecialActionWithProto(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, cUnitTypeMinion, 1.0);
         synergy.m_buffs[4] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeMinion, cSpawnEventTypeDead, 2.0, cXSRelativityAbsolute);
-        synergy.m_buffs[5] = createBuffSpecialAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, -1, 0, 2.0, "Minion");
+        synergy.m_buffs[5] = createBuffSpecialActionWithProto(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, cUnitTypeMinion, 1.0);
         synergy.m_buffs[6] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTlacanexquimilliSPC, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
-        synergy.m_buffs[7] = createBuffSpecialAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, -1, 0, 1.0, "TlacanexquimilliSPC");
+        synergy.m_buffs[7] = createBuffSpecialActionWithProto(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, cUnitTypeTlacanexquimilliSPC, 1.0);
         synergy.m_buffs[8] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTartarianSpawn, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
-        synergy.m_buffs[9] = createBuffSpecialAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTartarianSpawn, -1, 0, 1.0, "TartarianSpawn");
+        synergy.m_buffs[9] = createBuffSpecialActionWithProto(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTartarianSpawn, cUnitTypeTartarianSpawn, 1.0);
         synergy.m_buffs[10] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTartarianSpawn, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_UNDEAD] = synergy;
     }
@@ -194,10 +194,10 @@ void initializeSynergies(){
                                     }
                                 }
                             );
-        synergy.m_buffs[5] = createBuffSpawnActionSingle(SYNERGY_INDEX_POISON, UNIT_TYPE_UNIT, cUnitTypeArgusAcidBlobDamage, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
+        synergy.m_buffs[5] = createBuffSpawnActionSingle(SYNERGY_INDEX_POISON, UNIT_TYPE_UNIT, cUnitTypeArgusAcidBlobDamage, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute, -1.0, -1.0, POISON_SYNERGY_TEXT1);
         synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 1);
         synergy.m_buffs[9] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 1.5,);
-        synergy.m_buffs[10] = createBuffActionSingle(SYNERGY_INDEX_POISON, "ArgusAcidBlobDamage", cXSActionEffectDamageHack, 50, cXSRelativityAbsolute);
+        synergy.m_buffs[10] = createBuffActionSingle(SYNERGY_INDEX_POISON, "ArgusAcidBlobDamage", cXSActionEffectDamageHack, 50, cXSRelativityAbsolute, POISON_SYNERGY_TEXT1);
         synergy.m_buffs[12] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 2);
         g_synergies[SYNERGY_INDEX_POISON] = synergy;
     }
@@ -215,7 +215,7 @@ void initializeSynergies(){
                                     }
                                 }
                             );
-        synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.03, 10.0,
+        synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.03, 10.0, FIRE_SYNERGY_TEXT1,
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
                                         g_OnCreationListener.register(p, cUnitTypeVFXArrowSignal, [](int unitId = -1) -> void {
@@ -248,7 +248,7 @@ void initializeSynergies(){
                                     }
                                 }
                             );
-        synergy.m_buffs[8] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "SkylanternFireAreaGround", cUnitTypeVFXFireAshesCS, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 1.0, 10.0,
+        synergy.m_buffs[8] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "SkylanternFireAreaGround", cUnitTypeVFXFireAshesCS, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 1.0, 10.0, FIRE_SYNERGY_TEXT2,
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
                                         g_OnCreationListener.register(p, cUnitTypeSkylanternFireAreaGround, [](int unitId = -1) -> void {
@@ -266,13 +266,13 @@ void initializeSynergies(){
                                 }
                             );
         synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.25);
-        synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_POISON, "MeteorSPC", cXSActionEffectDamagePierce, 50, cXSRelativityAbsolute);
+        synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_POISON, "MeteorSPC", cXSActionEffectDamagePierce, 50, cXSRelativityAbsolute, FIRE_SYNERGY_TEXT3);
         g_synergies[SYNERGY_INDEX_FIRE] = synergy;
     }
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_LIGHTNING];
-        synergy.m_buffs[2] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute,
+        synergy.m_buffs[2] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute, LIGHTNING_SYNERGY_TEXT1,
             [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
             if (protoUnit != "Militia") { return; }
 
@@ -289,7 +289,7 @@ void initializeSynergies(){
             }
         );
 
-        synergy.m_buffs[4] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute,
+        synergy.m_buffs[4] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute, LIGHTNING_SYNERGY_TEXT2,
             [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                 if (delta > 0) {
                     g_lightningMaxChains[p] = g_lightningMaxChains[p] + 1;
@@ -299,7 +299,7 @@ void initializeSynergies(){
             }
         );
 
-        synergy.m_buffs[6] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute,
+        synergy.m_buffs[6] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute, LIGHTNING_SYNERGY_TEXT3,
             [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                 if (delta > 0) {
                     g_lightningMaxChains[p] = g_lightningMaxChains[p] + 1;
@@ -309,7 +309,7 @@ void initializeSynergies(){
             }
         );
 
-        synergy.m_buffs[8] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute,
+        synergy.m_buffs[8] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectDamageDivine, 1, cXSRelativityAbsolute, LIGHTNING_SYNERGY_TEXT3,
             [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                 if (delta > 0) {
                     g_lightningMaxChains[p] = g_lightningMaxChains[p] + 1;
@@ -319,7 +319,15 @@ void initializeSynergies(){
             }
         );
 
-        synergy.m_buffs[10] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectNumBounces, 1, cXSRelativityAbsolute);
+        synergy.m_buffs[10] = createBuffAction(SYNERGY_INDEX_LIGHTNING, emptySynergyType, cXSActionEffectNumBounces, 1, cXSRelativityAbsolute, LIGHTNING_SYNERGY_TEXT4,
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (delta > 0) {
+                    g_lightningMaxChains[p] = g_lightningMaxChains[p] + 1;
+                } else {
+                    g_lightningMaxChains[p] = g_lightningMaxChains[p] - 1;
+                }
+            }
+        );
         g_synergies[SYNERGY_INDEX_LIGHTNING] = synergy;
     }
 }

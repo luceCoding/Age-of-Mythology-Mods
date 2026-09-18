@@ -42,7 +42,7 @@ bool applyLightningBounceImpact(int owner = 0, int targetUnitID = -1, ref vector
     
     vector v = kbUnitGetTruePosition(targetUnitID);
     int secondaryID = trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXLightningWeaponsUnitImpact), v.x, v.y, v.z, xsRandInt(0, 359), owner, false);
-    scheduleDelete(secondaryID, 5.0);
+    scheduleDelete(secondaryID, 5000);
 
     createLightningShock(secondaryID);
 
