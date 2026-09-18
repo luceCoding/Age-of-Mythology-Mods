@@ -318,7 +318,7 @@ void spawnLane(){
 // ==========================================
 void setupInvulnerabilityTriggers() {
     // 1. Team 1 Top Lane Invulnerability Progression
-    scheduler.add(3011, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(3011, [](int iterations = 1) -> bool {
         g_T1TopLane.updateInvulnerability();
         // Return false to stop looping once T3 and Barracks are vulnerable/dead
         if (g_T1TopLane.m_barracksVulnerable) {
@@ -328,7 +328,7 @@ void setupInvulnerabilityTriggers() {
     });
 
     // 2. Team 1 Mid Lane Invulnerability Progression
-    scheduler.add(3019, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(3019, [](int iterations = 1) -> bool {
         g_T1MidLane.updateInvulnerability();
         if (g_T1MidLane.m_barracksVulnerable) {
             return false;
@@ -337,7 +337,7 @@ void setupInvulnerabilityTriggers() {
     });
 
     // 3. Team 1 Bot Lane Invulnerability Progression
-    scheduler.add(3023, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(3023, [](int iterations = 1) -> bool {
         g_T1BotLane.updateInvulnerability();
         if (g_T1BotLane.m_barracksVulnerable) {
             return false;
@@ -346,7 +346,7 @@ void setupInvulnerabilityTriggers() {
     });
 
     // 4. Team 2 Top Lane Invulnerability Progression
-    scheduler.add(3037, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(3037, [](int iterations = 1) -> bool {
         g_T2TopLane.updateInvulnerability();
         if (g_T2TopLane.m_barracksVulnerable) {
             return false;
@@ -355,7 +355,7 @@ void setupInvulnerabilityTriggers() {
     });
 
     // 5. Team 2 Mid Lane Invulnerability Progression
-    scheduler.add(3041, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(3041, [](int iterations = 1) -> bool {
         g_T2MidLane.updateInvulnerability();
         if (g_T2MidLane.m_barracksVulnerable) {
             return false;
@@ -364,7 +364,7 @@ void setupInvulnerabilityTriggers() {
     });
 
     // 6. Team 2 Bot Lane Invulnerability Progression
-    scheduler.add(3049, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(3049, [](int iterations = 1) -> bool {
         g_T2BotLane.updateInvulnerability();
         if (g_T2BotLane.m_barracksVulnerable) {
             return false;
@@ -373,7 +373,7 @@ void setupInvulnerabilityTriggers() {
     });
 
     // 7. Team 1 Fortress Invulnerability Check
-    scheduler.add(3061, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(3061, [](int iterations = 1) -> bool {
         updateTeamFortressInvulnerability(g_T1TopLane, g_T1MidLane, g_T1BotLane, g_t1FortressId);
         // If any T3 tower is dead, the fortress drops invulnerability and we can stop checking
         if (g_T1TopLane.isT3Dead() || g_T1MidLane.isT3Dead() || g_T1BotLane.isT3Dead()) {
@@ -383,7 +383,7 @@ void setupInvulnerabilityTriggers() {
     });
 
     // 8. Team 2 Fortress Invulnerability Check
-    scheduler.add(3067, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(3067, [](int iterations = 1) -> bool {
         updateTeamFortressInvulnerability(g_T2TopLane, g_T2MidLane, g_T2BotLane, g_t2FortressId);
         if (g_T2TopLane.isT3Dead() || g_T2MidLane.isT3Dead() || g_T2BotLane.isT3Dead()) {
             return false;
@@ -393,11 +393,11 @@ void setupInvulnerabilityTriggers() {
 }
 
 void startLanes(){
-    scheduler.add(30000, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(30000, [](int iterations = 1) -> bool {
         spawnLane();
         return true;
     });
-    scheduler.add(3109, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(3109, [](int iterations = 1) -> bool {
         
         g_T1TopLane.moveUnits();
         g_T1MidLane.moveUnits();
@@ -413,7 +413,7 @@ void startLanes(){
     setupInvulnerabilityTriggers();
 
     // Medium upgrades
-    scheduler.add(600000, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(600000, [](int iterations = 1) -> bool {
         for (int p = cNumberPlayers-1; p <= cNumberPlayers; p++){
             trTechSetStatus(p, 394, 2); // Archers
             trTechSetStatus(p, 397, 2); // Cav
@@ -423,7 +423,7 @@ void startLanes(){
     });
 
     // Heavy upgrades
-    scheduler.add(1200000, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(1200000, [](int iterations = 1) -> bool {
         for (int p = cNumberPlayers-1; p <= cNumberPlayers; p++){
             trTechSetStatus(p, 395, 2);
             trTechSetStatus(p, 398, 2);
@@ -433,7 +433,7 @@ void startLanes(){
     });
 
     // Champion upgrades
-    scheduler.add(1800000, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(1800000, [](int iterations = 1) -> bool {
         for (int p = cNumberPlayers-1; p <= cNumberPlayers; p++){
             trTechSetStatus(p, 396, 2);
             trTechSetStatus(p, 399, 2);
@@ -442,7 +442,7 @@ void startLanes(){
         return false;
     });
 
-    scheduler.add(600000, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(600000, [](int iterations = 1) -> bool {
         for (int p = cNumberPlayers-1; p <= cNumberPlayers; p++){
             trTechSetStatus(p, 66, 2); // Dionysia
         }

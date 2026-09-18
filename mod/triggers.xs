@@ -107,7 +107,7 @@ highFrequency
 active
 {
     if (xsGetTimeMS() - cActivationTime >= SUDDEN_DEATH_MS) {
-        scheduler.add(ADD_OSIRIS_CARD_INTERVAL_MS, [](int iterations = 1) -> bool {
+        lowFreqScheduler.add(ADD_OSIRIS_CARD_INTERVAL_MS, [](int iterations = 1) -> bool {
             addOsirisCardIntoDeck();
             return true;
         });

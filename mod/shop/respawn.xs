@@ -110,7 +110,7 @@ class RespawnManager {
         int respawnTimeMS = RESPAWN_TIME_MS_BASE + (((xsGetTimeMS() - g_timeMSGameStarted) / 60000) * RESPAWN_TIME_ADDITIONAL_MS);
 
         // Schedule unit revival
-        schedulerWithIntInt.add(respawnTimeMS, owner, cardUUID, [](int iterations = 1, int p = 0, int cardUUID = 0) -> bool {
+        lowFreqSchedulerWithIntInt.add(respawnTimeMS, owner, cardUUID, [](int iterations = 1, int p = 0, int cardUUID = 0) -> bool {
             if (p > cNumberPlayers - 2) return false;
 
             BenchData bench = g_shop.m_benches[p];
@@ -179,7 +179,7 @@ void startRespawn(){
     g_RespawnManager.init();
 
     // Shop respawner loop
-    scheduler.add(2003, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(2003, [](int iterations = 1) -> bool {
         g_RespawnManager.process();
         return true;
     });

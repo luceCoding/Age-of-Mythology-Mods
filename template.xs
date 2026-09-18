@@ -1,5 +1,6 @@
 //// mod/globals.xs
 //// common/nottud.xs
+//// common/schedulers.xs
 //// common/collections/hashMap.xs
 //// common/collections/hashSet.xs
 
@@ -23,12 +24,15 @@ void generate()
         rmTriggerAddScriptLine("int[] units = default;");
     rmTriggerAddScriptLine("};");
 
-    createTypedScheduler("scheduler", buildStringTypeArray());
-    createTypedScheduler("schedulerWithIntInt", buildStringTypeArray("Int", "Int"));
-    createTypedScheduler("schedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"));
-    createTypedUnitScheduler("unitScheduler", buildStringTypeArray());
-    createTypedUnitScheduler("unitSchedulerWithVector", buildStringTypeArray("Vector"));
+    // UI schedulers
+    createTypedScheduler("highFreqScheduler", buildStringTypeArray(), 50, 2);
+    createTypedScheduler("highFreqSchedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"), 50, 2);
 
+    createTypedUnitScheduler("midFreqSchedulerWithVector", buildStringTypeArray("Vector"), 500, 2);
+
+    createTypedScheduler("lowFreqScheduler", buildStringTypeArray(), 1000, 256);
+    createTypedScheduler("lowFreqSchedulerWithIntInt", buildStringTypeArray("Int", "Int"), 1000, 256);
+    
     defineHashMapDefinition("string", "float", "0.0", "");
     defineHashMapDefinition("string", "int", "-1", "");
     defineHashMapDefinition("int", "int", "cMinInt", "");

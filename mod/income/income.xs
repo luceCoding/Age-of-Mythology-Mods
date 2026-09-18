@@ -87,13 +87,13 @@ IncomeHandler g_IncomeHandler;
 void startIncome(){
 
     // Check gold pickups
-    scheduler.add(503, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(503, [](int iterations = 1) -> bool {
         g_IncomeHandler.processGold();
         return true;
     });
 
     // Increase gold bounty over time
-    scheduler.add(60013, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(60013, [](int iterations = 1) -> bool {
 
         CardParameters[] params = g_protoNameToCardParametersMap.getValues();
         for (int i = 0; i < params.size(); i++) {

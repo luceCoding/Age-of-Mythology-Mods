@@ -686,7 +686,7 @@ void initialiseUiSystems(bool debug = false)
         trProtoUnitSetFlag(p, UI_SYSTEM_UNIT2, "Relic", true);
     }
 
-    scheduler.add(1, [](int iteration = 0) -> bool
+    highFreqScheduler.add(50, [](int iteration = 0) -> bool
     {
         _processUiSystems();
         return true;

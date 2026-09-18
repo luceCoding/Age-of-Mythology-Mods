@@ -15,7 +15,7 @@ void postRatioCalculation(){
     cameraTrack.play(true, 0);
     setUiVisible(true);
     trSetObscuredUnits(true);
-    scheduler.add(1000, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(1000, [](int iterations = 1) -> bool {
         startGame();
         return false;
     });
@@ -26,7 +26,7 @@ void performProportionCalculation(){
     cameraTrack.create(vector(0.5 * kbGetMapXSize(), -999.0, 0.5 * kbGetMapZSize()), 1.0, 90.0, 90.0, 1.0);
     cameraTrack.addWaypoint(100000, vector(0.5 * kbGetMapXSize(), -999.0, 0.5 * kbGetMapZSize()), 1.0, 90.0, 90.0, 1.0);
     cameraTrack.play();
-    scheduler.add(2000, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(2000, [](int iterations = 1) -> bool {
         float startX = 0.5 * kbGetMapXSize();
         float posZ = 0.5 * kbGetMapZSize();
         IntUnitDeletionTracker tracker;
@@ -70,7 +70,7 @@ void performProportionCalculation(){
                 trExecuteConsoleCommand("uiDeleteSelectedUnit(true)");
             }
         }
-        schedulerWithIntUnitDeletionTracker.add(0, tracker, [](int iteration = 0, ref IntUnitDeletionTracker tracker) -> bool {
+        highFreqSchedulerWithIntUnitDeletionTracker.add(50, tracker, [](int iteration = 0, ref IntUnitDeletionTracker tracker) -> bool {
             int[] controlUnits = tracker.controlUnits;
             int[] units = tracker.units;
             for(int p = 1; p <= c; p++){

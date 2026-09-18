@@ -14,7 +14,7 @@ void setTeamAsWinner(int team = 0){
 }
 
 void startTeamResignedCheck(){
-    scheduler.add(3001, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(3001, [](int iterations = 1) -> bool {
         if (isTeamStillActive(1) == false){
             setTeamAsWinner(2);
         }

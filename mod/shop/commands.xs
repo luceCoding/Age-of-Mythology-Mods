@@ -65,7 +65,7 @@ void addRecallCommand(int p = 0, string protoUnit = "") {
                                             setUnitCacheValue(targetId, kbUnitGetStatFloat(targetId, cUnitStatCurrHP));
                                             playUnitSound(targetId, "VortexBirth", SOUND_SET);
 
-                                            unitSchedulerWithVector.add(targetId, 500, shopVector, [](int targetId = 0, int iteration = 0, vector shopVector = cInvalidVector) -> bool {
+                                            midFreqSchedulerWithVector.add(targetId, 500, shopVector, [](int targetId = 0, int iteration = 0, vector shopVector = cInvalidVector) -> bool {
                                                 float currHP = kbUnitGetStatFloat(targetId, cUnitStatCurrHP);
                                                 if (currHP < getUnitCacheValue(targetId)) {
                                                     selectSingle(targetId);

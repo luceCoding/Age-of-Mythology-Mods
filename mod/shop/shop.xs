@@ -693,7 +693,7 @@ void hideWorldPrompts(int p = 1){
 void startShopTimers(){
 
     // Reduce shop costs over time
-    scheduler.add(SHOP_COST_REDUCTION_MS_INTERVAL, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(SHOP_COST_REDUCTION_MS_INTERVAL, [](int iterations = 1) -> bool {
         g_shrineShopCost = max(g_shrineShopCost - SHOP_COST_REDUCTION, 10);
         g_templeShopCost = max(g_templeShopCost - SHOP_COST_REDUCTION, 10);
         g_armoryShopCost = max(g_armoryShopCost - SHOP_COST_REDUCTION, 10);

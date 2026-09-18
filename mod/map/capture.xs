@@ -253,7 +253,7 @@ void startCapturePoints(){
     g_templeCapturePoint.init(ShopTypeToUnitIDMap.get(SHOP_TYPE_TEMPLE), SHOP_TYPE_TEMPLE, SHARED_SHOP_CAPTURE_TIME, SHARED_SHOP_CAPTURE_RADIUS);
     g_forgeCapturePoint.init(ShopTypeToUnitIDMap.get(SHOP_TYPE_FORGE), SHOP_TYPE_FORGE, SHARED_SHOP_CAPTURE_TIME, SHARED_SHOP_CAPTURE_RADIUS);
 
-    scheduler.add(1013, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(1013, [](int iterations = 1) -> bool {
         g_armoryCapturePoint.processCapturePoint();
         g_shrineCapturePoint.processCapturePoint();
         g_templeCapturePoint.processCapturePoint();

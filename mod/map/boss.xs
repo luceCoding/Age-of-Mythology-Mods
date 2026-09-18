@@ -194,7 +194,6 @@ int[] getWhoKilledUnitType(int cUnitType = -1){
         if (currKills > lastKills){
             g_cUnitTypeToKillCount.put(key, currKills);
             players.add(p);
-            log(-1, ""+p+" "+lastKills+" "+currKills);
         }
     }
     return players;
@@ -202,7 +201,7 @@ int[] getWhoKilledUnitType(int cUnitType = -1){
 
 void startBoss(){
 
-    scheduler.add(60017, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(60017, [](int iterations = 1) -> bool {
         trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
         trModifyProtounitData(BOT_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
         trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectHitpoints, 100, cXSRelativityAbsolute);
@@ -239,7 +238,7 @@ void startBoss(){
         }
     );
 
-    scheduler.add(2011, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(2011, [](int iterations = 1) -> bool {
         g_topBossCamp.processCamp();
         g_botBossCamp.processCamp();
         return true;

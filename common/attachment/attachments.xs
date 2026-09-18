@@ -1,5 +1,6 @@
 void scheduleDelete(int unitId = -1, int timeMs = 0){
-    unitScheduler.add(unitId, timeMs, [](int unitId = 0, int iteration = 0) -> bool {
+    lowFreqSchedulerWithIntInt.add(timeMs, unitId, 0, [](int iteration = 0, int unitId = 0, int _ = 0) -> bool {
+        selectSingle(unitId);
         trUnitDestroy();
         return false;
     });
