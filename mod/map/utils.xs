@@ -137,6 +137,15 @@ int getMinsPastSinceStart(){
     return ((xsGetTimeMS() - g_timeMSGameStarted) / 60000);
 }
 
+void applyProxyDOT(int cUnitTypeTarget = -1, int p = 0, float range = 20.0, float dot = -20.0){
+    string protoUnit = kbProtoUnitGetName(cUnitTypeFafnirBoss);
+    trModifyProtounitAction(protoUnit, "BillowingSmog", p, cXSActionEffectRange, range, cXSRelativityAbsolute);
+    trModifyProtounitAction(protoUnit, "BillowingSmog", p, cXSActionEffectModifyRate, dot, cXSRelativityAbsolute);
+    trProtounitAssignAction(kbProtoUnitGetName(cUnitTypeTarget), protoUnit, "BillowingSmog", 2);
+    trModifyProtounitAction(protoUnit, "BillowingSmog", p, cXSActionEffectRange, range * -1, cXSRelativityAbsolute);
+    trModifyProtounitAction(protoUnit, "BillowingSmog", p, cXSActionEffectModifyRate, dot * -1, cXSRelativityAbsolute);
+}
+
 void setupForPoisonSynergy(int p = 0){
     trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageDivine, 0.0, cXSRelativityAssign);
     trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageHack, 50.0, cXSRelativityAssign);

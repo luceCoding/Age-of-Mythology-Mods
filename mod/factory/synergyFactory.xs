@@ -169,14 +169,60 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_UNDEAD];
-        synergy.m_buffs[2] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeMinion, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
+        synergy.m_buffs[2] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeMinionReincarnated, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
         synergy.m_buffs[3] = createBuffSpecialActionWithProto(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, cUnitTypeMinion, 1.0);
-        synergy.m_buffs[4] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeMinion, cSpawnEventTypeDead, 2.0, cXSRelativityAbsolute);
-        synergy.m_buffs[5] = createBuffSpecialActionWithProto(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, cUnitTypeMinion, 1.0);
+        synergy.m_buffs[4] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeMinionReincarnated, cSpawnEventTypeDead, 2.0, cXSRelativityAbsolute);
+        synergy.m_buffs[5] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+2 Minion on kill",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){
+                                        g_OnCreationListener.register(p, cUnitTypeMinion, [](int unitId = -1) -> void {
+                                                selectSingle(unitId);
+                                                int owner = kbUnitGetPlayerID(unitId);
+                                                vector v = trUnitGetPosition(unitId);
+                                                trUnitCreate(kbProtoUnitGetName(cUnitTypeMinionReincarnated), v.x, v.y, v.z, xsRandFloat(0.0, 359.0), owner, false);
+                                                trUnitCreate(kbProtoUnitGetName(cUnitTypeMinionReincarnated), v.x, v.y, v.z, xsRandFloat(0.0, 359.0), owner, false);
+                                            }
+                                        );
+                                    }
+                                    else {
+                                        g_OnCreationListener.deregister(p, cUnitTypeMinion);
+                                    }
+                                }
+                            );
         synergy.m_buffs[6] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTlacanexquimilliSPC, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
-        synergy.m_buffs[7] = createBuffSpecialActionWithProto(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, cUnitTypeTlacanexquimilliSPC, 1.0);
+        synergy.m_buffs[7] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+1 Tlacanexquimilli on kill",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){
+                                        g_OnCreationListener.register(p, cUnitTypeMinion, [](int unitId = -1) -> void {
+                                                selectSingle(unitId);
+                                                int owner = kbUnitGetPlayerID(unitId);
+                                                vector v = trUnitGetPosition(unitId);
+                                                trUnitCreate(kbProtoUnitGetName(cUnitTypeTlacanexquimilliSPC), v.x, v.y, v.z, xsRandFloat(0.0, 359.0), owner, false);
+                                            }
+                                        );
+                                    }
+                                    else {
+                                        g_OnCreationListener.deregister(p, cUnitTypeMinion, 1);
+                                    }
+                                }
+                            );
         synergy.m_buffs[8] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTartarianSpawn, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
-        synergy.m_buffs[9] = createBuffSpecialActionWithProto(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTartarianSpawn, cUnitTypeTartarianSpawn, 1.0);
+        synergy.m_buffs[9] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+1 Tartarian Spawn on kill",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){
+                                        g_OnCreationListener.register(p, cUnitTypeMinion, [](int unitId = -1) -> void {
+                                                selectSingle(unitId);
+                                                int owner = kbUnitGetPlayerID(unitId);
+                                                vector v = trUnitGetPosition(unitId);
+                                                trUnitCreate(kbProtoUnitGetName(cUnitTypeTartarianSpawn), v.x, v.y, v.z, xsRandFloat(0.0, 359.0), owner, false);
+                                            }
+                                        );
+                                    }
+                                    else {
+                                        g_OnCreationListener.deregister(p, cUnitTypeMinion, 2);
+                                    }
+                                }
+                            );
         synergy.m_buffs[10] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTartarianSpawn, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
         g_synergies[SYNERGY_INDEX_UNDEAD] = synergy;
     }

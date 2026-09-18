@@ -1,4 +1,5 @@
-//// mod/globals.xs
+const int configMapTileX = 160;
+const int configMapTileZ = 160;
 //// common/nottud.xs
 //// common/schedulers.xs
 //// common/collections/hashMap.xs
@@ -84,7 +85,7 @@ void generate()
     // mod/map/lane.xs
     // mod/map/base.xs
     // mod/map/objectives.xs
-    // mod/map/units.xs
+    // mod/map/protoUnits.xs
     // mod/map/roads.xs
     // mod/map/trees.xs
     // mod/map/creepCamp.xs

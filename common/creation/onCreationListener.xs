@@ -123,7 +123,11 @@ class OnCreationListener {
 
     // Option B: Deregisters a SPECIFIC lambda slot (if passing targetSubIndex)
     void deregister(int p = 0, int cUnitType = -1, int targetSubIndex = -1) {
-        if (cUnitType == -1 || targetSubIndex < 0) { return; }
+        if (cUnitType == -1) { return; }
+        if (targetSubIndex < 0) {
+            deregisterAll(p, cUnitType);
+            return;
+        }
 
         int baseKey = makeBaseKey(p, cUnitType);
         int count = cUnitTypeCountMap.get(baseKey);
@@ -135,9 +139,10 @@ class OnCreationListener {
         // If last element was removed, fix the last subKey index mapping
         if (targetSubIndex < count - 1) {
             int lastSubKey = makeSubKey(baseKey, count - 1);
-            int targetIdx = cUnitTypeToIndex.get(targetSubKey);
+            int targetIdx = cUnitTypeToIndex.get(lastSubKey);
             
             // Relabel last slot to target slot position to preserve linear bounds
+            m_keys[targetIdx] = targetSubKey;
             cUnitTypeToIndex.put(targetSubKey, targetIdx);
             cUnitTypeToIndex.remove(lastSubKey);
         }

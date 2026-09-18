@@ -53,6 +53,13 @@ class Buff {
         m_descTemplate = templateStr;
     }
 
+    void setBuffLambdaOnly(int synergyIndex = -1, int[] synergyTypes = default) {
+        m_buffType = BUFF_TYPE_LAMBDA_ONLY;
+        m_synergyTypes = synergyTypes;
+        m_delta = 1.0;
+        m_synergyIndex = synergyIndex;
+    }
+
     void setBuffData(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
         m_buffType = BUFF_TYPE_PROTO_DATA;
         m_synergyTypes = synergyTypes;
@@ -118,6 +125,10 @@ class Buff {
 
     void _executeCommand(string targetProto = "", int p = -1, float delta = 0.0) {
         switch(m_buffType){
+            case BUFF_TYPE_LAMBDA_ONLY: {
+                // Skips protounit engine modifications; executes only m_callback below
+                break;
+            }
             case BUFF_TYPE_PROTO_DATA: { 
                 trModifyProtounitData(targetProto, p, m_puField, delta, m_relativity); 
             }
@@ -150,6 +161,11 @@ class Buff {
 
     void applyBuff(int p = 0) {
         if (isEmpty()) { return; }
+
+        if (m_buffType == BUFF_TYPE_LAMBDA_ONLY) {
+            _executeCommand("", p, m_delta);
+            return;
+        }
 
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL){
             float currDmgType = g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"));
@@ -197,6 +213,11 @@ class Buff {
             invDelta = -m_delta;
         } else {
             invDelta = 1.0 - (m_delta - 1.0);
+        }
+
+        if (m_buffType == BUFF_TYPE_LAMBDA_ONLY) {
+            _executeCommand("", p, invDelta);
+            return;
         }
 
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL){
@@ -469,6 +490,16 @@ class Buff {
         return result;
     }
 };
+
+Buff createBuffLambdaOnly(int synergyIndex = -1, int[] synergyTypes = default,
+                          string templateStr = "",
+                          void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
+    Buff buff;
+    buff.setBuffLambdaOnly(synergyIndex, synergyTypes);
+    buff.setTemplate(templateStr);
+    buff.setCallback(callback);
+    return buff;
+}
 
 Buff createBuffData(int synergyIndex = -1, int[] synergyTypes = default, int puField = -1, float delta = 0.0, int relativity = -1,
                     string templateStr = "",

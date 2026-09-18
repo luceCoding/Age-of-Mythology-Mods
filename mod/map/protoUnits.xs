@@ -1,132 +1,3 @@
-void createShops(){
-    int team1Placed = 0;
-    int team2Placed = 0;
-    
-    // 1 tile = 2 meters in the AoM engine
-    float mapMeterX = configMapTileX * 2.0;
-    float mapMeterZ = configMapTileZ * 2.0;
-    
-    // Map edge margins (keeps shops hugging the boundary)
-    float marginX = mapMeterX * 0.025;
-    float marginZ = mapMeterZ * 0.025;
-    
-    // Distance between shops along the map walls
-    float wallSpacing = 10.0; 
-    
-    // Corner Vertices
-    // Team 1 (Left Corner): X near 0, Z near max
-    float t1CornerX = marginX;
-    float t1CornerZ = mapMeterZ - marginZ;
-    
-    // Team 2 (Right Corner): X near max, Z near 0
-    float t2CornerX = mapMeterX - marginX;
-    float t2CornerZ = marginZ;
-
-    int maxHumanPlayer = cNumberPlayers - 2;
-
-    for(int p = 1; p <= maxHumanPlayer; p = p + 1) {
-        float spawnX = 0.0;
-        float spawnZ = 0.0;
-        float offsetX = 0.0;
-        float offsetZ = 0.0;
-        
-        int placed = 0;
-
-        if (g_finalTeam[p] == 1) {
-            placed = team1Placed;
-            team1Placed = team1Placed + 1;
-        } else if (g_finalTeam[p] == 2) {
-            placed = team2Placed;
-            team2Placed = team2Placed + 1;
-        } else {
-            continue;
-        }
-
-        // L-shaped wall placement (alternates stepping along adjacent walls)
-        if (g_finalTeam[p] == 1) {
-            if (placed == 0) {
-                offsetX = 0.0; offsetZ = 0.0; // Corner vertex
-            } else if (placed == 1) {
-                offsetX = wallSpacing; offsetZ = 0.0; // Top wall (+X)
-            } else if (placed == 2) {
-                offsetX = 0.0; offsetZ = 0.0 - wallSpacing; // Left wall (-Z)
-            } else if (placed == 3) {
-                offsetX = wallSpacing * 2.0; offsetZ = 0.0; // Top wall (+2X)
-            } else if (placed == 4) {
-                offsetX = 0.0; offsetZ = 0.0 - (wallSpacing * 2.0); // Left wall (-2Z)
-            } else {
-                offsetX = wallSpacing * (placed - 2); offsetZ = 0.0;
-            }
-            
-            spawnX = t1CornerX + offsetX;
-            spawnZ = t1CornerZ + offsetZ;
-
-        } else if (g_finalTeam[p] == 2) {
-            if (placed == 0) {
-                offsetX = 0.0; offsetZ = 0.0; // Corner vertex
-            } else if (placed == 1) {
-                offsetX = 0.0; offsetZ = wallSpacing; // Right wall (+Z)
-            } else if (placed == 2) {
-                offsetX = 0.0 - wallSpacing; offsetZ = 0.0; // Bottom wall (-X)
-            } else if (placed == 3) {
-                offsetX = 0.0; offsetZ = wallSpacing * 2.0; // Right wall (+2Z)
-            } else if (placed == 4) {
-                offsetX = 0.0 - (wallSpacing * 2.0); offsetZ = 0.0; // Bottom wall (-2X)
-            } else {
-                offsetX = 0.0; offsetZ = wallSpacing * (placed - 2);
-            }
-
-            spawnX = t2CornerX + offsetX;
-            spawnZ = t2CornerZ + offsetZ;
-        }
-
-        // Spawn and scale market
-        int shopId = trUnitCreateForced("Market", spawnX, configMapBaseHeight, spawnZ, xsRandFloat(0.0, 360.0), p);
-        selectSingle(shopId);
-        trUnitSetScale(0.5, 0.5, 0.5);
-        trUnitChangeName("Card Shop");
-
-        BenchData bench = g_shop.m_benches[p];
-        bench.init(p, shopId);
-        g_shop.m_benches[p] = bench;
-    }
-}
-
-void createHealingSprings() {
-    // 1 tile = 2 meters in the AoM engine
-    float mapMeterX = configMapTileX * 2.0;
-    float mapMeterZ = configMapTileZ * 2.0;
-    
-    float marginX = mapMeterX * 0.025;
-    float marginZ = mapMeterZ * 0.025;
-    
-    // Control how far inward the spring is pushed from the corner vertex
-    float cornerMargin = 10.0; 
-    
-    // Corner Vertices
-    float t1CornerX = marginX;
-    float t1CornerZ = mapMeterZ - marginZ;
-    
-    float t2CornerX = mapMeterX - marginX;
-    float t2CornerZ = marginZ;
-
-    {
-        float springX = t1CornerX + cornerMargin;
-        float springZ = t1CornerZ - cornerMargin;
-        int t1Spring = trUnitCreateForced("HealingSpring", springX, configMapBaseHeight, springZ, 0.0, getTeamsAIPlayer(1));
-        selectSingle(t1Spring);
-        trUnitSetScale(0.75, 0.75, 0.75);
-    }
-
-    {
-        float springX = t2CornerX - cornerMargin;
-        float springZ = t2CornerZ + cornerMargin;
-        int t2Spring = trUnitCreateForced("HealingSpring", springX, configMapBaseHeight, springZ, 0.0, getTeamsAIPlayer(2));
-        selectSingle(t2Spring);
-        trUnitSetScale(0.75, 0.75, 0.75);
-    }
-}
-
 void preModifyPlayerData(){
 
     // All players
@@ -317,7 +188,7 @@ void preModifyPlayerData(){
         trModifyProtounitData("Fortress", p, cXSProtoEffectHitpoints, 24000, cXSRelativityAssign);
         trModifyProtounitData("Fortress", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 50, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 60, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
         setupAsTower("Fortress", p);
         trProtoUnitSetIcon("Fortress", p, "", "ui\minimap\minimap_wonder");
@@ -397,6 +268,7 @@ void postModifyPlayerData(){
             setAsCardUnit(protoNames[i], p);
             g_AttachmentManager.addOnHitAttachmentToProtoUnit(kbProtoUnitGetID(protoNames[i]), p);
         }
+        applyProxyDOT(cUnitTypeMarket, p, 6.0, -19.0);
     }
 
     // Last 2 AIs
