@@ -524,7 +524,10 @@ void renderBench(int p = 1, int shopType = 0) {
 
     float propPosX = getLeftAnchorX(UI_LEFT_BUFFER + 200, 128.0, p);
     if (shopType == DEFAULT_SHOP_TYPE){
-        bench.renderSynergies(propPosX, 0.35, p);
+        bool hasChanged = bench.renderSynergies(propPosX, 0.35, p);
+        if (hasChanged){
+            g_shop.m_benches[p] = bench;
+        }
     }
 
     int totalCards = bench.getNumberOfCardsHeld();

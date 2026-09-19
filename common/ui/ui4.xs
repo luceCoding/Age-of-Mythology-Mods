@@ -70,7 +70,7 @@ void performProportionCalculation(){
                 trExecuteConsoleCommand("uiDeleteSelectedUnit(true)");
             }
         }
-        highFreqSchedulerWithIntUnitDeletionTracker.add(50, tracker, [](int iteration = 0, ref IntUnitDeletionTracker tracker) -> bool {
+        highFreqSchedulerWithIntUnitDeletionTracker.add(25, tracker, [](int iteration = 0, ref IntUnitDeletionTracker tracker) -> bool {
             int[] controlUnits = tracker.controlUnits;
             int[] units = tracker.units;
             for(int p = 1; p <= c; p++){

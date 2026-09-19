@@ -166,9 +166,11 @@ class CardParameters {
 
     bool isUnitFrostType(int protoID = -1){
         switch(protoID){
+            case cUnitTypeKingFolstag: return true;
             case cUnitTypeYukiOnna: return true;
             case cUnitTypeFireGiant: return false;
             case cUnitTypeFafnir: return false;
+            case cUnitTypeGauntletLegendHalogi: return false;
         }
         return isNorse();
     }
@@ -187,13 +189,14 @@ class CardParameters {
             case cUnitTypeChimera: return true;
             case cUnitTypeTeixiptlaHuitz: return true;
             case cUnitTypeSuperTeixiptlaHuitz: return true;
+            case cUnitTypeGauntletLegendHalogi: return true;
         }
         return isChinese() & isArcher();
     }
 
     bool isUnitLightningType(int protoID = -1){
         switch(protoID){
-            case cUnitTypeOsiris: return true;
+            case cUnitTypeSonOfOsiris: return true;
             case cUnitTypeArkantosGod: return true;
             case cUnitTypeYingLong: return true;
             case cUnitTypeManOWar: return true;
@@ -203,6 +206,7 @@ class CardParameters {
             case cUnitTypeShinigami: return true;
             case cUnitTypeCirce: return true;
             case cUnitTypeRaiju: return true;
+            case cUnitTypeHarumotoBlessed: return true;
         }
         return (isGreek() || isJapanese()) & (isInfantry() || isCavalry()) & isArcher() == false;
     }

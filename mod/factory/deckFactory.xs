@@ -222,6 +222,8 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(4, cUnitTypeHarumotoBlessed, 800);
     addCardsIntoDeck(4, cUnitTypeGuardian, 1000);
     addCardsIntoDeck(4, cUnitTypeMictlantecuhtli, 1000);
+    addCardsIntoDeck(4, cUnitTypeKingFolstag, 750);
+    addCardsIntoDeck(4, cUnitTypeGauntletLegendHalogi, 750);
 
     addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 1000, -1, TIER_LEGENDARY, false);
 }

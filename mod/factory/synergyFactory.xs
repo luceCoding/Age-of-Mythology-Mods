@@ -141,28 +141,8 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_FROST];
-        synergy.m_buffs[5] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(1 * 1000.0), 1.0, 0.1, "",
-                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
-                                    if (protoUnit != "Militia") { return; } // Only apply this once.
-                                    if (delta > 0){
-                                        g_AttachmentManager.addOnHitAttachment(p, cUnitTypeIceBlock, cSpawnEventTypeBirth, -1, 1.0);
-                                    }
-                                    else {
-                                        g_AttachmentManager.removeOnHitAttachment(p, cUnitTypeIceBlock, cSpawnEventTypeBirth, -1, 1.0);
-                                    }
-                                }
-                            );
-        synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(2 * 1000.0), 1.0, 0.1, "",
-                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
-                                    if (protoUnit != "Militia") { return; } // Only apply this once.
-                                    if (delta > 0){
-                                        g_AttachmentManager.addOnHitAttachment(p, cUnitTypeIceBlockLarge, cSpawnEventTypeBirth, -1, 1.0);
-                                    }
-                                    else {
-                                        g_AttachmentManager.removeOnHitAttachment(p, cUnitTypeIceBlockLarge, cSpawnEventTypeBirth, -1, 1.0);
-                                    }
-                                }
-                            );
+        synergy.m_buffs[5] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(1 * 1000.0), 1.0, 0.1);
+        synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(2 * 1000.0), 1.0, 0.1);
         synergy.m_buffs[15] = createBuffSpecialAction(SYNERGY_INDEX_FROST, emptySynergyType, cOnHitEffectProgFreezeSpeed, xsFloatToInt(3 * 1000.0), 1.0, 0.1);
         g_synergies[SYNERGY_INDEX_FROST] = synergy;
     }

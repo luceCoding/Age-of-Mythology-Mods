@@ -13,10 +13,20 @@ class BenchData {
     int[] m_synergyCounter = default;
     CardData[] m_cardArray = default;
 
+    // Cache variables
+    string[] m_cachedSynergyText = default;
+    bool[] m_synergyDirty = default;
+    int[] m_cachedSynergyOrder = default;
+    int m_cachedSynergyCount = 0;
+
     void init(int p = -1, int shopId = -1){
         m_player = p;
         m_playerShopId = shopId;
         m_synergyCounter = new int(MAX_SYNERGIES, 0);
+        m_cachedSynergyText = new string(MAX_SYNERGIES, "");
+        m_synergyDirty = new bool(MAX_SYNERGIES, true);
+        m_cachedSynergyOrder = new int(MAX_SYNERGIES, -1);
+        m_cachedSynergyCount = 0;
         m_cardSize = 0;
         m_osirisDeployedCount = 0;
     }
@@ -98,8 +108,11 @@ class BenchData {
                 CardData movedCard = m_cardArray[m_cardSize];
                 m_cardArray[i] = movedCard;
                 g_CardUUIDToIndex.put(movedCard.getUuid(), i);
-                if (movedCard.isIdentified() && movedCard.isDeployed() && movedCard.getProtoName() == currProto) {
-                    g_ProtoUnitToIndex.put(currProto + m_player, i);
+                if (movedCard.isIdentified()) {
+                    string movedProto = movedCard.getProtoName();
+                    if (g_ProtoUnitToIndex.get(movedProto + m_player) == m_cardSize) {
+                        g_ProtoUnitToIndex.put(movedProto + m_player, i);
+                    }
                 }
             }
             
@@ -108,7 +121,12 @@ class BenchData {
             m_cardArray[m_cardSize] = nullCard;
             g_CardUUIDToIndex.remove(currCard.getUuid());
             if (currWasMapped) {
-                g_ProtoUnitToIndex.remove(currProto + m_player);
+                int newIndex = findIdentifiedProtoIndex(currProto, NullUUID);
+                if (newIndex >= 0) {
+                    g_ProtoUnitToIndex.put(currProto + m_player, newIndex);
+                } else {
+                    g_ProtoUnitToIndex.remove(currProto + m_player);
+                }
             }
 
             log(3, "Removed card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
@@ -141,8 +159,11 @@ class BenchData {
             CardData movedCard = m_cardArray[m_cardSize];
             m_cardArray[index] = movedCard;
             g_CardUUIDToIndex.put(movedCard.getUuid(), index);
-            if (movedCard.isIdentified() && movedCard.isDeployed() && movedCard.getProtoName() == currProto) {
-                g_ProtoUnitToIndex.put(currProto + m_player, index);
+            if (movedCard.isIdentified()) {
+                string movedProto = movedCard.getProtoName();
+                if (g_ProtoUnitToIndex.get(movedProto + m_player) == m_cardSize) {
+                    g_ProtoUnitToIndex.put(movedProto + m_player, index);
+                }
             }
         }
         
@@ -151,7 +172,12 @@ class BenchData {
         m_cardArray[m_cardSize] = nullCard;
         g_CardUUIDToIndex.remove(currCard.getUuid());
         if (currWasMapped) {
-            g_ProtoUnitToIndex.remove(currProto + m_player);
+            int newIndex = findIdentifiedProtoIndex(currProto, NullUUID);
+            if (newIndex >= 0) {
+                g_ProtoUnitToIndex.put(currProto + m_player, newIndex);
+            } else {
+                g_ProtoUnitToIndex.remove(currProto + m_player);
+            }
         }
 
         log(3, "Removed card from index " + index + " (UUID: " + currCard.getUuid() + "), size: " + m_cardSize);
@@ -159,7 +185,7 @@ class BenchData {
     }
 
     void removeAllDeployedOsirisPieceCards(){        
-        for(int i = 0; i < m_cardSize; i++) {
+        for (int i = 0; i < m_cardSize; i++) {
             CardData currCard = m_cardArray[i];
             if (currCard.isOsirisPieceBoxCard() && currCard.isDeployed()) {
                 selectSingle(currCard.getDeployedUnitID());
@@ -175,21 +201,29 @@ class BenchData {
                     CardData movedCard = m_cardArray[m_cardSize];
                     m_cardArray[i] = movedCard;
                     g_CardUUIDToIndex.put(movedCard.getUuid(), i);
-                    if (movedCard.isIdentified() && movedCard.isDeployed() && movedCard.getProtoName() == currProto) {
-                        g_ProtoUnitToIndex.put(currProto + m_player, i);
+                    if (movedCard.isIdentified()) {
+                        string movedProto = movedCard.getProtoName();
+                        if (g_ProtoUnitToIndex.get(movedProto + m_player) == m_cardSize) {
+                            g_ProtoUnitToIndex.put(movedProto + m_player, i);
+                        }
                     }
-                    i--; // Recheck the card moved into this slot
                 }
                 
                 // Clear the vacated slot to prevent ghost card rendering
                 CardData nullCard;
                 m_cardArray[m_cardSize] = nullCard;
                 g_CardUUIDToIndex.remove(currCard.getUuid());
-                if (currWasMapped && (i >= m_cardSize || currCard.getProtoName() != currProto)) {
-                    g_ProtoUnitToIndex.remove(currProto + m_player);
+                if (currWasMapped) {
+                    int newIndex = findIdentifiedProtoIndex(currProto, NullUUID);
+                    if (newIndex >= 0) {
+                        g_ProtoUnitToIndex.put(currProto + m_player, newIndex);
+                    } else {
+                        g_ProtoUnitToIndex.remove(currProto + m_player);
+                    }
                 }
 
                 log(3, "Removed osiris card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
+                i--; // Recheck the card moved into this slot
             }
         }
         m_osirisDeployedCount = 0;
@@ -212,6 +246,7 @@ class BenchData {
         for (int SYNERGY_INDEX = 0; SYNERGY_INDEX < MAX_SYNERGIES; SYNERGY_INDEX++){
             if (params.isASynergy(SYNERGY_INDEX)){
                 m_synergyCounter[SYNERGY_INDEX] = m_synergyCounter[SYNERGY_INDEX] + 1;
+                m_synergyDirty[SYNERGY_INDEX] = true;
                 SynergyData synergy = g_synergies[SYNERGY_INDEX];
                 if (m_synergyCounter[SYNERGY_INDEX] < synergy.m_buffs.size()){
                     Buff buff = synergy.m_buffs[m_synergyCounter[SYNERGY_INDEX]];
@@ -231,6 +266,7 @@ class BenchData {
                     buff.resetBuff(p);
                 }
                 m_synergyCounter[SYNERGY_INDEX] = m_synergyCounter[SYNERGY_INDEX] - 1;
+                m_synergyDirty[SYNERGY_INDEX] = true;
             }
         }
     }
@@ -263,7 +299,9 @@ class BenchData {
 
     CardData getAndUpgradeDuplicateDeployedCard(string proto = "", ref CardData duplicateCard){
         int i = g_ProtoUnitToIndex.get(proto + m_player);
-        if (i > 0 && i <= m_cardSize) {
+        if (i < 0 || i >= m_cardSize) {
+            i = findIdentifiedProtoIndex(proto, duplicateCard.getUuid());
+        } else {
             CardData candidate = m_cardArray[i];
             if (candidate.isNull() || candidate.isIdentified() == false || candidate.getProtoName() != proto || candidate.getUuid() == duplicateCard.getUuid()) {
                 i = findIdentifiedProtoIndex(proto, duplicateCard.getUuid());
@@ -365,7 +403,12 @@ class BenchData {
                         m_osirisDeployedCount--;
                     }
                     if (cardToWithdraw.isIdentified() && g_ProtoUnitToIndex.get(cardToWithdraw.getProtoName() + m_player) == i) {
-                        g_ProtoUnitToIndex.remove(cardToWithdraw.getProtoName() + m_player);
+                        int newIndex = findIdentifiedProtoIndex(cardToWithdraw.getProtoName(), cardToWithdraw.getUuid());
+                        if (newIndex >= 0) {
+                            g_ProtoUnitToIndex.put(cardToWithdraw.getProtoName() + m_player, newIndex);
+                        } else {
+                            g_ProtoUnitToIndex.remove(cardToWithdraw.getProtoName() + m_player);
+                        }
                     }
                     m_cardArray[i] = cardToWithdraw;
                     trSoundsetPlayPlayer(m_player, "AotgBlessingUnequip");
@@ -405,7 +448,9 @@ class BenchData {
                     int existingIndex = g_ProtoUnitToIndex.get(card.getProtoName() + m_player);
                     CardData existingCard;
 
-                    if (existingIndex >= 0 && existingIndex < m_cardSize) {
+                    if (existingIndex < 0 || existingIndex >= m_cardSize) {
+                        existingIndex = findIdentifiedProtoIndex(card.getProtoName(), card.getUuid());
+                    } else {
                         existingCard = m_cardArray[existingIndex];
                         if (existingCard.isNull() || existingCard.isIdentified() == false || existingCard.getProtoName() != card.getProtoName() || existingCard.getUuid() == card.getUuid()) {
                             existingIndex = findIdentifiedProtoIndex(card.getProtoName(), card.getUuid());
@@ -503,7 +548,7 @@ class BenchData {
                 g_armoryShopCost = g_armoryShopCost + ARMORY_COST_INCREMENT;
                 m_cardArray[i] = card;
                 trSoundsetPlayPlayer(m_player, "ArmorySelect");
-                log(3, "Player " + m_player + " socketed a card.");
+                log(3, "Player " + m_player + " rerolled upgrade " + upgradeIdx + " on card " + uuid + ".");
                 return true;
             }
         }
@@ -511,6 +556,10 @@ class BenchData {
     }
 
     string getSynergyText(int synergyIndex = 0) {
+        if (m_synergyDirty[synergyIndex] == false) {
+            return m_cachedSynergyText[synergyIndex];
+        }
+
         string text = "";
         SynergyData synergy = g_synergies[synergyIndex];
         Buff[] buffs = synergy.m_buffs;
@@ -550,6 +599,9 @@ class BenchData {
                 text = text + "<color=0.5,0.5,0.5>" + i + "</color>";
             }
         }
+
+        m_cachedSynergyText[synergyIndex] = text;
+        m_synergyDirty[synergyIndex] = false;
         return text;
     }
 
@@ -568,54 +620,77 @@ class BenchData {
         return activeTierIndex;
     }
 
-    void renderSynergies(float posX = 0.0, float posY = 0.0, int p = 1) {
+    bool renderSynergies(float posX = 0.0, float posY = 0.0, int p = 1) {
         float width = 0.1;
         float height = 0.025;
         float posYOffset = 0.0325;
 
-        // 1. Initialize index map array for every configured synergy.
-        int[] sortedIndices = new int(MAX_SYNERGIES, 0);
-        for (int i = 0; i < sortedIndices.size(); i++) {
-            sortedIndices[i] = i;
+        bool hasChanged = false;
+        for (int i = 0; i < MAX_SYNERGIES; i++) {
+            if (m_synergyDirty[i]) {
+                hasChanged = true;
+                break;
+            }
         }
 
-        // 2. Bubble sort: Primary = Counter (Descending), Secondary = Active Tier (Descending)
-        for (int i = 0; i < sortedIndices.size()-1; i++) {
-            int j = 0;
-            for (j = 0; j < sortedIndices.size() - 1 - i; j++) {
-                int idxA = sortedIndices[j];
-                int idxB = sortedIndices[j + 1];
+        if (hasChanged) {
+            // Collect only active synergies and pre-cache their tier levels.
+            int[] activeIndices = new int(0, 0);
+            int[] activeTiers = new int(0, 0);
 
-                int countA = m_synergyCounter[idxA];
-                int countB = m_synergyCounter[idxB];
-                int tierA = getActiveTier(idxA);
-                int tierB = getActiveTier(idxB);
+            for (int i = 0; i < MAX_SYNERGIES; i++) {
+                if (m_synergyCounter[i] > 0) {
+                    activeIndices.add(i);
+                    activeTiers.add(getActiveTier(i));
+                } else {
+                    m_synergyDirty[i] = false;
+                }
+            }
 
-                bool swap = false;
-                if (countA < countB) {
-                    swap = true;
-                } else if (countA == countB) {
-                    if (tierA < tierB) {
+            int activeCount = activeIndices.size();
+
+            // Sort active synergies only when their state changed.
+            for (int i = 0; i < activeCount - 1; i++) {
+                for (int j = 0; j < activeCount - 1 - i; j++) {
+                    int idxA = activeIndices[j];
+                    int idxB = activeIndices[j + 1];
+
+                    int countA = m_synergyCounter[idxA];
+                    int countB = m_synergyCounter[idxB];
+                    int tierA = activeTiers[j];
+                    int tierB = activeTiers[j + 1];
+
+                    bool swap = false;
+                    if (countA < countB) {
                         swap = true;
+                    } else if (countA == countB) {
+                        if (tierA < tierB) {
+                            swap = true;
+                        }
+                    }
+
+                    if (swap) {
+                        activeIndices[j] = idxB;
+                        activeIndices[j + 1] = idxA;
+                        activeTiers[j] = tierB;
+                        activeTiers[j + 1] = tierA;
                     }
                 }
+            }
 
-                if (swap) {
-                    sortedIndices[j] = idxB;
-                    sortedIndices[j + 1] = idxA;
-                }
+            m_cachedSynergyCount = activeCount;
+            for (int i = 0; i < activeCount; i++) {
+                m_cachedSynergyOrder[i] = activeIndices[i];
             }
         }
 
-        // 3. Render using sorted indices (renderSynergyIcon will naturally skip count == 0)
-        for (int i = 0; i < sortedIndices.size(); i++) {
-            int idx = sortedIndices[i];
-            if (m_synergyCounter[idx] > 0) {
-                SynergyData synergy = g_synergies[idx];
-                renderSynergyIcon(p, posX, posY, width, height, 32, idx, false, " " + m_synergyCounter[idx] + " : " + getSynergyText(idx));
-                posY = posY - posYOffset;
-            }
+        // Render using the cached sorted order.
+        for (int i = 0; i < m_cachedSynergyCount; i++) {
+            int idx = m_cachedSynergyOrder[i];
+            renderSynergyIcon(p, posX, posY, width, height, 32, idx, false, " " + m_synergyCounter[idx] + " : " + getSynergyText(idx));
+            posY = posY - posYOffset;
         }
+        return hasChanged;
     }
 
     int[] getDeployedUnitIDs(){
