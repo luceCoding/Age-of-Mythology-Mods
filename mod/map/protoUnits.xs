@@ -256,6 +256,7 @@ void postModifyPlayerData(){
             trProtounitRemoveCommand(shopType, p, "Delete");
             setupForPoisonSynergy(p);
             setupForFireSynergy(p);
+            setupForUndeadSynergy(p);
             setupForHealSynergy(p);
             setupForLightningSynergy(p);
         }

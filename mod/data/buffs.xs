@@ -144,6 +144,11 @@ class Buff {
             case BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO: {
                 applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, "All", m_withProtoUnitType,
                     g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO, "duration")), 0.0);
+                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, kbProtoUnitGetName(cUnitTypeBuilding), m_withProtoUnitType, 0.0, 0.0);
+                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, kbProtoUnitGetName(cUnitTypeSkyLantern), m_withProtoUnitType, 0.0, 0.0);
+                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, kbProtoUnitGetName(cUnitTypeMinionReincarnated), m_withProtoUnitType, 0.0, 0.0);
+                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, kbProtoUnitGetName(cUnitTypeTlacanexquimilli), m_withProtoUnitType, 0.0, 0.0);
+                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, kbProtoUnitGetName(cUnitTypeTartarianSpawn),, m_withProtoUnitType, 0.0, 0.0);
             }
             case BUFF_TYPE_PROTO_ACTION_UNIT_TYPE: {
                 for (int u = 0; u < m_unitTypes.size(); u++) {
@@ -181,13 +186,17 @@ class Buff {
         }
 
         if (m_unitType == ""){
-            CardParameters[] params = g_protoNameToCardParametersMap.getValues();
-            for (int i = 0; i < params.size(); i++) {
-                CardParameters param = params[i];
-                if (m_synergyTypes.size() == 0){ // Apply to all cards
-                    _executeCommand(param.getProtoUnit(), p, m_delta);
+
+            if (m_synergyTypes.size() == 0){ // Apply to all cards
+                string[] protoNames = g_protoNameToCardParametersMap.getKeys();
+                for (int i = 0; i < protoNames.size(); i++) {
+                    _executeCommand(protoNames[i], p, m_delta);
                 }
-                else{
+            }
+            else { // Apply to only certain synergies
+                CardParameters[] params = g_protoNameToCardParametersMap.getValues();
+                for (int i = 0; i < params.size(); i++){
+                    CardParameters param = params[i];
                     for (int j = 0; j < m_synergyTypes.size(); j++) {
                         int synergyType = m_synergyTypes[j];
                         if (param.isASynergy(synergyType)){

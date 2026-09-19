@@ -2,13 +2,19 @@ bool[] g_isSpawningChain = default;
 int[] g_lightningMaxChains = default; // player -> maxChains limit
 float[] g_lastLightningTime = default;
 
+bool isValidPlayerIndex(int player = 0){
+    return player >= 0 && player <= cNumberPlayers;
+}
+
 void createLightningShock(int unitId = -1){
     selectSingle(unitId);
     vector v = kbUnitGetTruePosition(unitId);
     int owner = kbUnitGetPlayerID(unitId);
+    if (isValidPlayerIndex(owner) == false) { return; }
+
     for (int p = 0; p <= cNumberPlayers; p++){
         if (g_finalTeam[owner] == g_finalTeam[p]) { continue; }
-        applyToUnitsInArea(v, 1, p, cUnitTypeMilitaryUnit, cUnitStateAlive,
+        applyToUnitsInArea(v, LIGHTNING_SHOCK_RADIUS, p, cUnitTypeMilitaryUnit, cUnitStateAlive,
             [](int unitID = -1) -> void {
                 selectSingle(unitID);
                 trUnitApplyEffect(cOnHitEffectStun, LIGHTNING_STUN_DURATION);
@@ -22,11 +28,13 @@ void createLightningShock(int unitId = -1){
 }
 
 int findNextLightningTarget(int owner = 0, ref vector currentPos, ref IntSet hitUnits) {
+    if (isValidPlayerIndex(owner) == false) { return -1; }
+
     for (int targetP = 0; targetP <= cNumberPlayers; targetP++) {
         if (g_finalTeam[owner] == g_finalTeam[targetP]) { continue; }
 
         for (int attempt = 0; attempt < 3; attempt++) {
-            int candidate = getRandomUnitInArea(currentPos, 20.0, targetP, cUnitTypeMilitaryUnit, cUnitStateAlive);
+            int candidate = getRandomUnitInArea(currentPos, CHAIN_LIGHTNING_SEARCH_RADIUS, targetP, cUnitTypeMilitaryUnit, cUnitStateAlive);
             if (candidate == -1) { break; }
 
             if (hitUnits.contains(candidate) == false) {
@@ -38,10 +46,11 @@ int findNextLightningTarget(int owner = 0, ref vector currentPos, ref IntSet hit
 }
 
 bool applyLightningBounceImpact(int owner = 0, int targetUnitID = -1, ref vector outNewPos) {
+    if (isValidPlayerIndex(owner) == false) { return false; }
     g_isSpawningChain[owner] = true;
     
     vector v = kbUnitGetTruePosition(targetUnitID);
-    int secondaryID = trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXLightningWeaponsUnitImpact), v.x, v.y, v.z, xsRandInt(0, 359), owner, false);
+    int secondaryID = trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXLightningCS05OP), v.x, v.y, v.z, xsRandInt(0, 359), owner, false);
     scheduleDelete(secondaryID, 5000);
 
     createLightningShock(secondaryID);
@@ -57,6 +66,7 @@ bool applyLightningBounceImpact(int owner = 0, int targetUnitID = -1, ref vector
 
 void handleLightningOnCreation(int unitId = -1) {
     int owner = kbUnitGetPlayerID(unitId);
+    if (isValidPlayerIndex(owner) == false) { return; }
 
     // Reentrancy Guard
     if (g_isSpawningChain[owner]) { return; }

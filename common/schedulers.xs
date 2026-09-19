@@ -1,3 +1,5 @@
+// Implements a Hashed Wheel Timer
+
 string g_TriggerName = "";
 
 void createTypedScheduler(string name = "", string[] typeArray = default, int tickMS = 250, int wheelSize = 256){

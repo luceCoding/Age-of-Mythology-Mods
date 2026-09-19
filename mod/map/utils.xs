@@ -166,6 +166,11 @@ void setupForFireSynergy(int p = 0){
     trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_MYTH, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
 }
 
+void setupForUndeadSynergy(int p = 0){  
+    trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeTlacanexquimilli), "NotCommandable", false);
+    trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeTlacanexquimilli), "Commandable", true);
+}
+
 void setupForHealSynergy(int p = 0){
     //trProtounitActionSetFlag(p, "VFXForestProtectionArea", "AllyHealModify", "NoStack", false);
     //trProtounitAssignAction("Priest", "VFXForestProtectionArea", "AllyHealModify", p);
