@@ -145,7 +145,7 @@ void applyTopBossBufToPlayerTeam(int p = 0){
         applyProtoDataToAllCards(teamPlayer, cXSProtoEffectUnitRegenRate, buffAmount, cXSRelativityAbsolute);
         attachTopBuffToAllDeployedCards(teamPlayer, BUFF_DURATION_MS);
         g_TopBossBuffMsEnd[teamPlayer] = xsGetTimeMS() + BUFF_DURATION_MS;
-        schedulerWithParameters.add(BUFF_DURATION_MS, params, [](int iterations = 1, ref Parameters params) -> bool {
+        midFreqSchedulerWithParameters.add(BUFF_DURATION_MS, params, [](int iterations = 1, ref Parameters params) -> bool {
             applyProtoDataToAllCards(params.ints[0], cXSProtoEffectUnitRegenRate, -params.floats[0], cXSRelativityAbsolute);
             return false;
         });
@@ -167,7 +167,7 @@ void applyBotBossBuffToPlayerTeam(int p = 0){
         applyProtoActionToAllCards(teamPlayer, cXSActionEffectDamageDivine, buffAmount, cXSRelativityAbsolute);
         attachBotBuffToAllDeployedCards(teamPlayer, BUFF_DURATION_MS);
         g_BotBossBuffMsEnd[teamPlayer] = xsGetTimeMS() + BUFF_DURATION_MS;
-        schedulerWithParameters.add(BUFF_DURATION_MS, params, [](int iterations = 1, ref Parameters params) -> bool {
+        midFreqSchedulerWithParameters.add(BUFF_DURATION_MS, params, [](int iterations = 1, ref Parameters params) -> bool {
             applyProtoActionToAllCards(params.ints[0], cXSActionEffectDamageDivine, -params.floats[0], cXSRelativityAbsolute);
             return false;
         });

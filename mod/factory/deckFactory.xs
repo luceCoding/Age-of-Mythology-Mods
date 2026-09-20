@@ -19,9 +19,9 @@ void addCardsIntoDeck(int age = 0, int protoID = -1, int cost = -1){
     int upgrade = -1;
     for(int i = 0; i < MAX_CARD_COPIES; i++) {
         switch(i){
-            case 1: upgrade = UPGRADE_HACK_ARMOR;
-            case 2: upgrade = UPGRADE_PIERCE_ARMOR;
-            case 3: upgrade = UPGRADE_SHIELDS;
+            case 1: { upgrade = UPGRADE_HACK_ARMOR; break; }
+            case 2: { upgrade = UPGRADE_PIERCE_ARMOR; break; }
+            case 3: { upgrade = UPGRADE_SHIELDS; break; }
             default: upgrade = UPGRADE_HITPOINTS;
         }
         addCardIntoDeck(age, protoID, cost, upgrade, -1, true);

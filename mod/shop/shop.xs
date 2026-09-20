@@ -51,10 +51,10 @@ class Shop {
         }
         int shopType = m_shopTypeOpened[p];
         switch(shopType){
-            case SHOP_TYPE_SHRINE: cost = g_shrineShopCost;
-            case SHOP_TYPE_TEMPLE: cost = g_templeShopCost;
-            case SHOP_TYPE_FORGE: cost = g_forgeShopCost;
-            case SHOP_TYPE_ARMORY: cost = g_armoryShopCost;
+            case SHOP_TYPE_SHRINE: { cost = g_shrineShopCost; break; }
+            case SHOP_TYPE_TEMPLE: { cost = g_templeShopCost; break; }
+            case SHOP_TYPE_FORGE: { cost = g_forgeShopCost; break; }
+            case SHOP_TYPE_ARMORY: { cost = g_armoryShopCost; break; }
         }
         return cost;
     }
@@ -83,11 +83,11 @@ class Shop {
         }
         int uiRarityElement = -1;
         switch(rarity){
-            case 0: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unit.png", mainIconSize));
-            case 1: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_special.png", mainIconSize));
-            case 2: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unitcmd.png", mainIconSize));
-            case 3: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_myth.png", mainIconSize));
-            case 4: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_tech.png", mainIconSize));
+            case 0: { uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unit.png", mainIconSize)); break; }
+            case 1: { uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_special.png", mainIconSize)); break; }
+            case 2: { uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_unitcmd.png", mainIconSize)); break; }
+            case 3: { uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_myth.png", mainIconSize)); break; }
+            case 4: { uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_tech.png", mainIconSize)); break; }
             default: uiRarityElement = minimapSafeDisplay(p, posX, posY, getIconPathFormat("resources/in_game/hud/icon_frame_cmd.png", mainIconSize));
         }
 
@@ -143,21 +143,26 @@ class Shop {
             int upgrade = upgrades[i];
             int uiIconBackgroundElement = minimapSafeDisplay(p, leftPosX, leftPosY, getIconPathFormat("resources/spectator/timeline/tim_playericon.png", miniIconSize), uiMainIconElement);
             switch(upgrade){
-                case UPGRADE_HACK_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "", uiIconBackgroundElement);
-                case UPGRADE_PIERCE_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                                       getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize), "Upgrade: Pierce Armor", "", uiIconBackgroundElement);
-                case UPGRADE_CRUSH_ARMOR: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_crush_armor.png", miniIconSize), "Upgrade: Crush Armor", "", uiIconBackgroundElement);
-                case UPGRADE_HITPOINTS: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "", uiIconBackgroundElement);
-                case UPGRADE_SHIELDS: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize), "Upgrade: Shields", "", uiIconBackgroundElement);
-                case UPGRADE_SPEED: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, getIconPathFormat("resources/in_game/stat_speed.png", miniIconSize), "Upgrade: Speed", "", uiIconBackgroundElement);
-                case UPGRADE_HP_REGEN: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                                   getIconPathFormat("resources/in_game/stat_hp_regen.png", miniIconSize), "Upgrade: Health Regeneration", "", uiIconBackgroundElement);
-                case UPGRADE_HACK_ATTACK: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                                      getIconPathFormat("resources/in_game/stat_hack_dmg.png", miniIconSize), "Upgrade: Hack Damage", "", uiIconBackgroundElement);
-                case UPGRADE_PIERCE_ATTACK: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                                        getIconPathFormat("resources/in_game/stat_pierce_dmg.png", miniIconSize), "Upgrade: Pierce Damage", "", uiIconBackgroundElement);
-                case UPGRADE_CRUSH_ATTACK: minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
-                                                                       getIconPathFormat("resources/in_game/stat_crush_dmg.png", miniIconSize), "Upgrade: Crush Damage", "", uiIconBackgroundElement);
+                case UPGRADE_HACK_ARMOR: { minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
+                                                                    getIconPathFormat("resources/in_game/stat_hack_armor.png", miniIconSize), "Upgrade: Hack Armor", "", uiIconBackgroundElement); break; }
+                case UPGRADE_PIERCE_ARMOR: { minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
+                                                                       getIconPathFormat("resources/in_game/stat_pierce_armor.png", miniIconSize), "Upgrade: Pierce Armor", "", uiIconBackgroundElement); break; }
+                case UPGRADE_CRUSH_ARMOR: { minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height,
+                                                                    getIconPathFormat("resources/in_game/stat_crush_armor.png", miniIconSize), "Upgrade: Crush Armor", "", uiIconBackgroundElement); break; }
+                case UPGRADE_HITPOINTS: { minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height,
+                                                                    getIconPathFormat("resources/in_game/stat_hp.png", miniIconSize), "Upgrade: Health", "", uiIconBackgroundElement); break; }
+                case UPGRADE_SHIELDS: { minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height,
+                                                                getIconPathFormat("resources/in_game/stat_shield.png", miniIconSize), "Upgrade: Shields", "", uiIconBackgroundElement); break; }
+                case UPGRADE_SPEED: { minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height,
+                                                                getIconPathFormat("resources/in_game/stat_speed.png", miniIconSize), "Upgrade: Speed", "", uiIconBackgroundElement); break; }
+                case UPGRADE_HP_REGEN: { minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
+                                                                   getIconPathFormat("resources/in_game/stat_hp_regen.png", miniIconSize), "Upgrade: Health Regeneration", "", uiIconBackgroundElement); break; }
+                case UPGRADE_HACK_ATTACK: { minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
+                                                                      getIconPathFormat("resources/in_game/stat_hack_dmg.png", miniIconSize), "Upgrade: Hack Damage", "", uiIconBackgroundElement); break; }
+                case UPGRADE_PIERCE_ATTACK: { minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
+                                                                        getIconPathFormat("resources/in_game/stat_pierce_dmg.png", miniIconSize), "Upgrade: Pierce Damage", "", uiIconBackgroundElement); break; }
+                case UPGRADE_CRUSH_ATTACK: { minimapSafeDisplayWithHover(p, leftPosX, leftPosY, width, height, 
+                                                                       getIconPathFormat("resources/in_game/stat_crush_dmg.png", miniIconSize), "Upgrade: Crush Damage", "", uiIconBackgroundElement); break; }
             }
             leftPosY = leftPosY - miniIconYOffset * iconMultiplier; 
         }
@@ -576,11 +581,11 @@ void renderBench(int p = 1, int shopType = 0) {
         g_shop.renderCard(currCard, p, posX, posY + 0.1, true);
 
         switch(shopType){
-            case DEFAULT_SHOP_TYPE: createShopCardButtons(currCard, p, posX, posY);
-            case SHOP_TYPE_SHRINE: createShrineCardButtons(currCard, p, posX, posY);
-            case SHOP_TYPE_TEMPLE: createTempleCardButtons(currCard, p, posX, posY);
-            case SHOP_TYPE_FORGE: createForgeCardButtons(currCard, p, posX, posY);
-            case SHOP_TYPE_ARMORY: createArmoryCardButtons(currCard, p, posX, posY);
+            case DEFAULT_SHOP_TYPE: { createShopCardButtons(currCard, p, posX, posY); break; }
+            case SHOP_TYPE_SHRINE: { createShrineCardButtons(currCard, p, posX, posY); break; }
+            case SHOP_TYPE_TEMPLE: { createTempleCardButtons(currCard, p, posX, posY); break; }
+            case SHOP_TYPE_FORGE: { createForgeCardButtons(currCard, p, posX, posY); break; }
+            case SHOP_TYPE_ARMORY: { createArmoryCardButtons(currCard, p, posX, posY); break; }
             default: createShopCardButtons(currCard, p, posX, posY);
         }
         visibleIndex = visibleIndex + 1;
@@ -697,12 +702,23 @@ void startShopTimers(){
 
     // Reduce shop costs over time
     lowFreqScheduler.add(SHOP_COST_REDUCTION_MS_INTERVAL, [](int iterations = 1) -> bool {
-        g_shrineShopCost = max(g_shrineShopCost - SHOP_COST_REDUCTION, 10);
-        g_templeShopCost = max(g_templeShopCost - SHOP_COST_REDUCTION, 10);
-        g_armoryShopCost = max(g_armoryShopCost - SHOP_COST_REDUCTION, 10);
-        g_forgeShopCost = max(g_forgeShopCost - SHOP_COST_REDUCTION, 10);
-        for (int p=1; p<=cNumberPlayers-2; p++){
-            refreshShop(p);
+        int previousShrineCost = g_shrineShopCost;
+        int previousTempleCost = g_templeShopCost;
+        int previousArmoryCost = g_armoryShopCost;
+        int previousForgeCost = g_forgeShopCost;
+
+        g_shrineShopCost = max(previousShrineCost - SHOP_COST_REDUCTION, 10);
+        g_templeShopCost = max(previousTempleCost - SHOP_COST_REDUCTION, 10);
+        g_armoryShopCost = max(previousArmoryCost - SHOP_COST_REDUCTION, 10);
+        g_forgeShopCost = max(previousForgeCost - SHOP_COST_REDUCTION, 10);
+
+        if (g_shrineShopCost != previousShrineCost ||
+            g_templeShopCost != previousTempleCost ||
+            g_armoryShopCost != previousArmoryCost ||
+            g_forgeShopCost != previousForgeCost){
+            for (int p=1; p<=cNumberPlayers-2; p++){
+                refreshShop(p);
+            }
         }
         return true;
     });

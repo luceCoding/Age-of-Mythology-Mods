@@ -34,17 +34,20 @@ void generate()
 
     createTypedScheduler("lowFreqScheduler", buildStringTypeArray(), 1000, 256);
     createTypedScheduler("lowFreqSchedulerWithIntInt", buildStringTypeArray("Int", "Int"), 1000, 256);
-    
+
     defineHashMapDefinition("string", "float", "0.0", "");
     defineHashMapDefinition("string", "int", "-1", "");
     defineHashMapDefinition("int", "int", "cMinInt", "");
     defineSetDefinition("int", "");
 
     // common/ui/ui1.xs
+    createTypedScheduler("highFreqSchedulerWithParameters", buildStringTypeArray("Parameters"), 1, 2);
     //// common/ui/ui2.xs
     // common/ui/ui3.xs
     // common/ui/ui4.xs
     
+    createTypedScheduler("midFreqSchedulerWithParameters", buildStringTypeArray("Parameters"), 500, 2);
+
     // common/creation/onCreationListener.xs
 
     // common/kbQueries.xs

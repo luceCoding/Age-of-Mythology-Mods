@@ -129,7 +129,7 @@ void preModifyPlayerData(){
         trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorPierce, 0.75, cXSRelativityAssign);
         trModifyProtounitData("LivingPoseidonStatue", p, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
 
-        trModifyProtounitData("ArkantosGod", p, cXSProtoEffectHitpoints, 1000, cXSRelativityAssign);
+        trModifyProtounitData("ArkantosGod", p, cXSProtoEffectHitpoints, 800, cXSRelativityAssign);
         trModifyProtounitAction("ArkantosGod", "HandAttack", p, cXSActionEffectDamageHack, 25, cXSRelativityAssign);
         trModifyProtounitAction("ArkantosGod", "BuckAttack", p, cXSActionEffectDamageHack, 25, cXSRelativityAssign);
         trModifyProtounitData("ArkantosGod", p, cXSProtoEffectArmorHack, 0.6, cXSRelativityAssign);
@@ -247,10 +247,10 @@ void postModifyPlayerData(){
             int shopId = ShopTypeToUnitIDMap.get(k);
             selectSingle(shopId);
             switch(k){
-                case SHOP_TYPE_FORGE: trUnitChangeName("Forge (Add Sockets)");
-                case SHOP_TYPE_ARMORY: trUnitChangeName("Armory (Roll Upgrades)");
-                case SHOP_TYPE_TEMPLE: trUnitChangeName("Temple (Roll Rarities)");
-                case SHOP_TYPE_SHRINE: trUnitChangeName("Library (Identification)");
+                case SHOP_TYPE_FORGE: { trUnitChangeName("Forge (Add Sockets)"); break; }
+                case SHOP_TYPE_ARMORY: { trUnitChangeName("Armory (Roll Upgrades)"); break; }
+                case SHOP_TYPE_TEMPLE: { trUnitChangeName("Temple (Roll Rarities)"); break; }
+                case SHOP_TYPE_SHRINE: { trUnitChangeName("Library (Identification)"); break; }
             }
             trProtoUnitSetFlag(p, shopType, "Invulnerable", true);
             trProtounitRemoveCommand(shopType, p, "Delete");

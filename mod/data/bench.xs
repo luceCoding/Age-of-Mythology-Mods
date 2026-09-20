@@ -498,10 +498,10 @@ class BenchData {
                 g_templeShopCost = g_templeShopCost + TEMPLE_COST_INCREMENT;
                 m_cardArray[i] = card;
                 switch(rarity){
-                    case TIER_UNCOMMON: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
-                    case TIER_RARE: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedHeroic");
-                    case TIER_EPIC: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedMythic");
-                    case TIER_LEGENDARY: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedDivine");
+                    case TIER_UNCOMMON: { trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine"); break; }
+                    case TIER_RARE: { trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedHeroic"); break; }
+                    case TIER_EPIC: { trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedMythic"); break; }
+                    case TIER_LEGENDARY: { trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedDivine"); break; }
                     default: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedSimple");
                 }
                 log(3, "Player " + m_player + " rarity a card.");

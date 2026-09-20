@@ -1,4 +1,4 @@
-const string POISON_SYNERGY_TEXT1 = "+50 Hack Damage on death";
+const string POISON_SYNERGY_TEXT1 = "50 hack damage explosion on death";
 
 const string FIRE_SYNERGY_TEXT1 = "3% chance to signal for Sky Lanterns on hit";
 const string FIRE_SYNERGY_TEXT2 = "Sky Lanterns rain down Meteors on death";

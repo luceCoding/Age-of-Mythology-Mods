@@ -115,10 +115,10 @@ class CapturePoint {
         for (int p = 1; p <= cNumberPlayers; p++) {
             if (g_finalTeam[p] == teamID) {
                 switch(m_shopType){
-                    case SHOP_TYPE_FORGE: addForgeCommands(p);
-                    case SHOP_TYPE_ARMORY: addArmoryCommands(p);
-                    case SHOP_TYPE_TEMPLE: addTempleCommands(p);
-                    case SHOP_TYPE_SHRINE: addShrineCommands(p);
+                    case SHOP_TYPE_FORGE: { addForgeCommands(p); break; }
+                    case SHOP_TYPE_ARMORY: { addArmoryCommands(p); break; }
+                    case SHOP_TYPE_TEMPLE: { addTempleCommands(p); break; }
+                    case SHOP_TYPE_SHRINE: { addShrineCommands(p); break; }
                 }
             }
         }
@@ -131,10 +131,10 @@ class CapturePoint {
             if (g_finalTeam[p] == teamID) {
                 closeShop(p, m_shopType);
                 switch(m_shopType){
-                    case SHOP_TYPE_FORGE: removeForgeCommands(p);
-                    case SHOP_TYPE_ARMORY: removeArmoryCommands(p);
-                    case SHOP_TYPE_TEMPLE: removeTempleCommands(p);
-                    case SHOP_TYPE_SHRINE: removeShrineCommands(p);
+                    case SHOP_TYPE_FORGE: { removeForgeCommands(p); break; }
+                    case SHOP_TYPE_ARMORY: { removeArmoryCommands(p); break; }
+                    case SHOP_TYPE_TEMPLE: { removeTempleCommands(p); break; }
+                    case SHOP_TYPE_SHRINE: { removeShrineCommands(p); break; }
                 }
                 trSoundsetPlayPlayer(p, "AutoqueueOff");
             }

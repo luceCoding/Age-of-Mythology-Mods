@@ -1,6 +1,5 @@
 include "lib/rm_core.xs";
 
-int c = cNumberPlayers;
 const int VERTICAL_UI_PIXELS = 1080;
 float[] playerScreenRatio = default;
 float[] playerScreenIconSizeCompensationValue = default;

@@ -261,7 +261,7 @@ void postEnterUiSystem(int p = 1, int swapOutTime = 1)
 
     if (swapOutTime > 0)
     {
-        schedulerWithParameters.add(swapOutTime, parameters, [](int iteration = 1, ref Parameters parameters) -> bool
+        highFreqSchedulerWithParameters.add(swapOutTime, parameters, [](int iteration = 1, ref Parameters parameters) -> bool
         {
             if (parameters.ints[0] == trCurrentPlayer())
             {
@@ -526,33 +526,45 @@ void _processUiSystems()
 {
     int currentTime = xsGetTimeMS();
     int currentPlayer = trCurrentPlayer();
+
     for (int p = 1; p <= cNumberPlayers; p++)
     {
         uiSystemClickedIndexArray[p] = -1;
+
         if (!uiSystemActiveArray[p]) continue;
-        int dynamicCount = uiEntryLastTimeArraySize(p);
-        for (int i = 0; i < dynamicCount; i++)
+
+        // 1. DYNAMIC TEXT PROMPT UPDATES (Local Player Only)
+        if (p == currentPlayer)
         {
-            int frequency = uiEntryFrequencyArrayGet(p, i);
-            int lastTime = uiEntryLastTimeArrayGet(p, i);
-            if (currentTime - frequency >= lastTime)
+            // Moved dynamicCount lookup inside the local player check
+            int dynamicCount = uiEntryLastTimeArraySize(p);
+            for (int i = 0; i < dynamicCount; i++)
             {
-                uiEntryLastTimeArraySet(p, i, currentTime);
-                if (p == currentPlayer)
+                int frequency = uiEntryFrequencyArrayGet(p, i);
+                int lastTime = uiEntryLastTimeArrayGet(p, i);
+
+                if (currentTime - frequency >= lastTime)
                 {
+                    uiEntryLastTimeArraySet(p, i, currentTime);
+
                     UiEntryStringParameterised getContentWrapper = uiEntryDynamicGetContentWrapperArrayGet(p, i);
                     Parameters parameters = getContentWrapper.parameters;
                     string(int, ref Parameters) getContent = getContentWrapper.getContent;
                     string newContent = getContent(p, parameters);
+
                     int outerIndex = uiEntryOuterIndexInDynamicArrayGet(p, i);
                     if (newContent != uiEntryContentArrayGet(p, outerIndex))
                     {
                         uiEntryContentArraySet(p, outerIndex, newContent);
                         uiSystemContentCacheArray[outerIndex] = newContent;
+
                         if (newContent != "")
                         {
-                            trWorldSpacePromptArea("UiSystem" + uiSystemIdCacheArray[outerIndex], uiSystemPositionWorkingCacheArray[outerIndex],
-                                "<icon=(1,10000)(0)>\n" + newContent, cOriginVector, false);
+                            trWorldSpacePromptArea("UiSystem" + uiSystemIdCacheArray[outerIndex], 
+                                uiSystemPositionWorkingCacheArray[outerIndex],
+                                "<icon=(1,10000)(0)>\n" + newContent, 
+                                cOriginVector, 
+                                false);
                         }
                         else
                         {
@@ -563,15 +575,18 @@ void _processUiSystems()
             }
         }
 
-        int clickedEntryIndex = -1;
-        bool validClick = true;
+        // 2. CLICK DETECTION VIA PROXY UNIT DEATH
         int count = uiEntryUnitDataIndexInClickableArraySize(p);
         if (count > 0)
         {
+            int clickedEntryIndex = -1;
+            bool validClick = true;
+
             for (int i = 0; i < count; i++)
             {
                 int unitDataIndex = uiEntryUnitDataIndexInClickableArrayGet(p, i);
                 int unitId = uiEntryUnitArrayGet(p, unitDataIndex);
+
                 if (unitId >= 0)
                 {
                     selectSingle(unitId);
@@ -590,32 +605,27 @@ void _processUiSystems()
                     }
                 }
             }
-        }
 
-        if (validClick && clickedEntryIndex >= 0)
-        {
-            uiSystemClickedIndexArray[p] = clickedEntryIndex;
-        }
-
-        if (currentPlayer == p && (trUnitTypeIsSelected(UI_SYSTEM_UNIT, true) || trUnitTypeIsSelected(UI_SYSTEM_UNIT2, true)))
-        {
-            if (xsGetTimeMS() >= uiSystemThrottleClickArray[p])
+            // 3. INLINE CLICK HANDLER DISPATCH
+            if (validClick && clickedEntryIndex >= 0)
             {
-                uiSystemThrottleClickArray[p] = xsGetTimeMS() + 500;
-                trExecuteConsoleCommand("uiDeleteSelectedUnit(true)");
+                uiSystemClickedIndexArray[p] = clickedEntryIndex;
+
+                UiEntryParameterised wrapperHandler = uiEntryClickableHandlerArrayGet(p, clickedEntryIndex);
+                Parameters parameters = wrapperHandler.parameters;
+                void(int, ref Parameters) handler = wrapperHandler.handler;
+                handler(p, parameters);
             }
         }
-    }
 
-    for (int p = 1; p <= cNumberPlayers; p++)
-    {
-        int index = uiSystemClickedIndexArray[p];
-        if (index >= 0)
+        // 4. AUTO-DELETE CONSOLE COMMAND (Local Player Only)
+        if (currentPlayer == p && (trUnitTypeIsSelected(UI_SYSTEM_UNIT, true) || trUnitTypeIsSelected(UI_SYSTEM_UNIT2, true)))
         {
-            UiEntryParameterised wrapperHandler = uiEntryClickableHandlerArrayGet(p, index);
-            Parameters parameters = wrapperHandler.parameters;
-            void(int, ref Parameters) handler = wrapperHandler.handler;
-            handler(p, parameters);
+            if (currentTime >= uiSystemThrottleClickArray[p])
+            {
+                uiSystemThrottleClickArray[p] = currentTime + 500;
+                trExecuteConsoleCommand("uiDeleteSelectedUnit(true)");
+            }
         }
     }
 }

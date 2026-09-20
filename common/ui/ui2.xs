@@ -1,5 +1,3 @@
-createTypedScheduler("schedulerWithParameters", buildStringTypeArray("Parameters"));
-
 // Custom UI building
 
 rmTriggerAddScriptLine("const string UI_SYSTEM_UNIT = \"Crate\";");

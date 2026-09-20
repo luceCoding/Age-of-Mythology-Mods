@@ -130,33 +130,34 @@ class Buff {
                 break;
             }
             case BUFF_TYPE_PROTO_DATA: { 
-                trModifyProtounitData(targetProto, p, m_puField, delta, m_relativity); 
+                trModifyProtounitData(targetProto, p, m_puField, delta, m_relativity);
+                break;
             }
             case BUFF_TYPE_PROTO_ACTION: { 
-                applyProtoActionToTarget(targetProto, p, m_puField, delta, m_relativity); 
+                applyProtoActionToTarget(targetProto, p, m_puField, delta, m_relativity);
+                break;
             }
             case BUFF_TYPE_PROTO_ACTION_SPECIAL: { 
                 applyProtoActionSpecialEffectToTarget(targetProto, p, m_effectField, "All", 
                     g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType")),
                     g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "duration")), 
                     g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "value")));
+                break;
             }
             case BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO: {
-                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, "All", m_withProtoUnitType,
+                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, "MilitaryUnit", m_withProtoUnitType,
                     g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO, "duration")), 0.0);
-                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, kbProtoUnitGetName(cUnitTypeBuilding), m_withProtoUnitType, 0.0, 0.0);
-                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, kbProtoUnitGetName(cUnitTypeSkyLantern), m_withProtoUnitType, 0.0, 0.0);
-                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, kbProtoUnitGetName(cUnitTypeMinionReincarnated), m_withProtoUnitType, 0.0, 0.0);
-                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, kbProtoUnitGetName(cUnitTypeTlacanexquimilli), m_withProtoUnitType, 0.0, 0.0);
-                applyProtoActionSpecialEffectProtoUnitToTarget(targetProto, p, m_effectField, kbProtoUnitGetName(cUnitTypeTartarianSpawn),, m_withProtoUnitType, 0.0, 0.0);
+                break;
             }
             case BUFF_TYPE_PROTO_ACTION_UNIT_TYPE: {
                 for (int u = 0; u < m_unitTypes.size(); u++) {
                     applyProtoActionUnitTypeToTarget(targetProto, m_unitTypes[u], p, m_puField, delta, m_relativity);
                 }
+                break;
             }
             case BUFF_TYPE_PROTO_ACTION_SPAWN: {
                 applyProtoActionSpawnToTarget(targetProto, p, m_spawnProtoID, m_eventType, delta, m_relativity, m_chance, m_lifespan);
+                break;
             }
         }
 

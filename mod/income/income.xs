@@ -87,7 +87,7 @@ IncomeHandler g_IncomeHandler;
 void startIncome(){
 
     // Check gold pickups
-    lowFreqScheduler.add(503, [](int iterations = 1) -> bool {
+    midFreqScheduler.add(503, [](int iterations = 1) -> bool {
         g_IncomeHandler.processGold();
         return true;
     });

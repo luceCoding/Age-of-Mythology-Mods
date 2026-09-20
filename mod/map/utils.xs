@@ -169,6 +169,13 @@ void setupForFireSynergy(int p = 0){
 void setupForUndeadSynergy(int p = 0){  
     trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeTlacanexquimilli), "NotCommandable", false);
     trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeTlacanexquimilli), "Commandable", true);
+
+    // Do not spawn minions for the following:
+    trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeMinionReincarnated), "MilitaryUnit", false);
+    trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeMinion), "MilitaryUnit", false);
+    trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeTlacanexquimilli), "MilitaryUnit", false);
+    trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeTartarianSpawn), "MilitaryUnit", false);
+    trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeSkyLantern), "MilitaryUnit", false);
 }
 
 void setupForHealSynergy(int p = 0){

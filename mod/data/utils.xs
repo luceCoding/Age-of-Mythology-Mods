@@ -3,10 +3,10 @@ StringToCardParametersHashMap g_protoNameToCardParametersMap;
 string getDisplayName(int rarity = 0, ref string name){
     string displayName = name;
     switch(rarity){
-        case 1: displayName = "<color=0.10,0.58,0.37,0,0,0>" + name + "</color>";
-        case 2: displayName = "<color=0.15,0.32,0.49,0,0,0>" + name + "</color>";
-        case 3: displayName = "<color=0.60,0.00,0.73,0,0,0>" + name + "</color>";
-        case 4: displayName = "<color=0.71,0.58,0.00,0,0,0>" + name + "</color>";
+        case 1: { displayName = "<color=0.10,0.58,0.37,0,0,0>" + name + "</color>"; break; }
+        case 2: { displayName = "<color=0.15,0.32,0.49,0,0,0>" + name + "</color>"; break; }
+        case 3: { displayName = "<color=0.60,0.00,0.73,0,0,0>" + name + "</color>"; break; }
+        case 4: { displayName = "<color=0.71,0.58,0.00,0,0,0>" + name + "</color>"; break; }
         default: displayName = "<color=1,1,1,0,0,0>" + name + "</color>";
     }
     return displayName;
@@ -32,6 +32,7 @@ void enableProtoActionAttach(string targetProto = "", int p = 0){
     trProtounitActionSpecialEffectActive(targetProto, "BuildingAttack", p, cOnHitEffectAttach, "All", -1, true);
     trProtounitActionSpecialEffectActive(targetProto, "AntiWallAttack", p, cOnHitEffectAttach, "All", -1, true);
     trProtounitActionSpecialEffectActive(targetProto, "LightningAttack", p, cOnHitEffectAttach, "All", -1, true);
+    trProtounitActionSpecialEffectActive(targetProto, "BeamAttack", p, cOnHitEffectAttach, "All", -1, true);
 }
 
 void applyProtoActionToTarget(string targetProto = "", int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
@@ -45,6 +46,7 @@ void applyProtoActionToTarget(string targetProto = "", int p = 0, int puField = 
     trModifyProtounitAction(targetProto, "BuildingAttack", p, puField, deltaVal, relativity);
     trModifyProtounitAction(targetProto, "AntiWallAttack", p, puField, deltaVal, relativity);
     trModifyProtounitAction(targetProto, "LightningAttack", p, puField, deltaVal, relativity);
+    trModifyProtounitAction(targetProto, "BeamAttack", p, puField, deltaVal, relativity);
 }
 
 void applyProtoActionUnitTypeToTarget(string targetProto = "", string unitType = "", int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
@@ -58,6 +60,7 @@ void applyProtoActionUnitTypeToTarget(string targetProto = "", string unitType =
     trModifyProtounitActionUnitType(targetProto, "BuildingAttack", unitType, p, puField, deltaVal, relativity);
     trModifyProtounitActionUnitType(targetProto, "AntiWallAttack", unitType, p, puField, deltaVal, relativity);
     trModifyProtounitActionUnitType(targetProto, "LightningAttack", unitType, p, puField, deltaVal, relativity);
+    trModifyProtounitActionUnitType(targetProto, "BeamAttack", unitType, p, puField, deltaVal, relativity);
 }
 
 void applyProtoActionSpecialEffectToTarget(string targetProto = "", int p = 0, int effectField = cOnHitEffectStun, string targetType = "All", int dmgType = -1, float duration = 0.0, float value = 0.0){
@@ -74,6 +77,7 @@ void applyProtoActionSpecialEffectToTarget(string targetProto = "", int p = 0, i
     trProtounitActionSpecialEffect(targetProto, "BuildingAttack", p, effectField, targetType, dmgType, duration, value);
     trProtounitActionSpecialEffect(targetProto, "AntiWallAttack", p, effectField, targetType, dmgType, duration, value);
     trProtounitActionSpecialEffect(targetProto, "LightningAttack", p, effectField, targetType, dmgType, duration, value);
+    trProtounitActionSpecialEffect(targetProto, "BeamAttack", p, effectField, targetType, dmgType, duration, value);
 }
 
 void applyProtoActionSpecialEffectProtoUnitToTarget(string targetProto = "", int p = 0, int effectField = cOnHitEffectStun, string targetType = "All", string protoUnitType = "", float duration = 1.0, float value = 0.0){
@@ -90,6 +94,7 @@ void applyProtoActionSpecialEffectProtoUnitToTarget(string targetProto = "", int
     trProtounitActionSpecialEffectProtoUnit(targetProto, "BuildingAttack", p, effectField, targetType, protoUnitType, duration, value);
     trProtounitActionSpecialEffectProtoUnit(targetProto, "AntiWallAttack", p, effectField, targetType, protoUnitType, duration, value);
     trProtounitActionSpecialEffectProtoUnit(targetProto, "LightningAttack", p, effectField, targetType, protoUnitType, duration, value);
+    trProtounitActionSpecialEffectProtoUnit(targetProto, "BeamAttack", p, effectField, targetType, protoUnitType, duration, value);
 }
 
 void applyProtoActionSpawnToTarget(string targetProto = "", int p = 0, int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0){

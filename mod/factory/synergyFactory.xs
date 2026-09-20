@@ -164,7 +164,7 @@ void initializeSynergies(){
                                         );
                                     }
                                     else {
-                                        g_OnCreationListener.deregister(p, cUnitTypeMinion, 1);
+                                        g_OnCreationListener.deregister(p, cUnitTypeMinion, 0);
                                     }
                                 }
                             );
@@ -181,7 +181,7 @@ void initializeSynergies(){
                                         );
                                     }
                                     else {
-                                        g_OnCreationListener.deregister(p, cUnitTypeMinion, 2);
+                                        g_OnCreationListener.deregister(p, cUnitTypeMinion, 1);
                                     }
                                 }
                             );

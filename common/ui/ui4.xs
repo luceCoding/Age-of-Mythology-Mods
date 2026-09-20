@@ -30,7 +30,7 @@ void performProportionCalculation(){
         float startX = 0.5 * kbGetMapXSize();
         float posZ = 0.5 * kbGetMapZSize();
         IntUnitDeletionTracker tracker;
-        for(int p = 1; p <= c; p++){
+        for(int p = 1; p <= cNumberPlayers; p++){
             trPlayerModifyLOS(p, true, 0);
         }
         trProtoUnitSetFlag(0, UI_SYSTEM_UNIT, "VisibleUnderFog", true);
@@ -46,10 +46,10 @@ void performProportionCalculation(){
         }
         trUnitDestroy();
         trProtoUnitSetFlag(0, UI_SYSTEM_UNIT, "VisibleUnderFog", false);
-        for(int p = 1; p <= c; p++){
+        for(int p = 1; p <= cNumberPlayers; p++){
             trPlayerModifyLOS(p, false, 0);
         }
-        for(int p = 1; p <= c; p++){
+        for(int p = 1; p <= cNumberPlayers; p++){
             int controlUnitId = trUnitCreateForced(UI_SYSTEM_UNIT, 0.5 * kbGetMapXSize(), 0.0, 0.5 * kbGetMapZSize(), 0, p);
             tracker.controlUnits.add(controlUnitId);
             for(int i = 0; i < BINARY_CONVERSION_DIGITS; i++){
@@ -73,15 +73,15 @@ void performProportionCalculation(){
         highFreqSchedulerWithIntUnitDeletionTracker.add(25, tracker, [](int iteration = 0, ref IntUnitDeletionTracker tracker) -> bool {
             int[] controlUnits = tracker.controlUnits;
             int[] units = tracker.units;
-            for(int p = 1; p <= c; p++){
+            for(int p = 1; p <= cNumberPlayers; p++){
                 selectSingle(controlUnits[p - 1]);
                 if(trUnitAlive() && trPlayerIsDefeatedOrResigned(p) == false && kbPlayerIsHuman(p)){
                     return true;
                 }
             }
-            playerScreenRatio.resize((c+1), 0.0);
-            playerScreenIconSizeCompensationValue.resize((c+1), 0.0);
-            for(int p = 1; p <= c; p++){
+            playerScreenRatio.resize((cNumberPlayers+1), 0.0);
+            playerScreenIconSizeCompensationValue.resize((cNumberPlayers+1), 0.0);
+            for(int p = 1; p <= cNumberPlayers; p++){
                 if(trPlayerIsDefeatedOrResigned(p) || kbPlayerIsHuman(p) == false){
                     playerScreenRatio[p] = DEFAULT_SCREEN_RATIO;
                     playerScreenIconSizeCompensationValue[p] = 1.0;

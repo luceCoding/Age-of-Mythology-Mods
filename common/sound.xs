@@ -4,9 +4,9 @@ const int SOUND_DIALOG = 2;
 
 void playSound(string sound = "", int soundType = SOUND_NORMAL){
     switch(soundType){
-        case SOUND_NORMAL: trSoundPlayPaused(sound);
-        case SOUND_SET: trSoundsetPlay(sound);
-        case SOUND_DIALOG: trSoundPlayDialogue(0, "", "", "", sound);
+        case SOUND_NORMAL: {trSoundPlayPaused(sound); break;}
+        case SOUND_SET: {trSoundsetPlay(sound); break;}
+        case SOUND_DIALOG: {trSoundPlayDialogue(0, "", "", "", sound); break;}
     }
 }
 
