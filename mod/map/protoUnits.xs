@@ -185,8 +185,13 @@ void preModifyPlayerData(){
         trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
         setupAsTower("StatueOfLightning", p);
 
+        trProtounitModifySpawnData("SentryTower", p, "CinematicBlockArea", 0, 1.0, cXSRelativityAbsolute, -1, 1.0);
+        trProtounitModifySpawnData("MirrorTower", p, "CinematicBlockArea", 0, 1.0, cXSRelativityAbsolute, -1, 1.0);
+        trProtounitModifySpawnData("StatueOfLightning", p, "CinematicBlockArea", 0, 1.0, cXSRelativityAbsolute, -1, 1.0);
+
         trModifyProtounitData("Fortress", p, cXSProtoEffectHitpoints, 24000, cXSRelativityAssign);
         trModifyProtounitData("Fortress", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectNumBounces, 1, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 60, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
@@ -205,8 +210,7 @@ void preModifyPlayerData(){
         trModifyProtounitAction("HealingSpring", "AreaHeal", p, cXSActionEffectRange, 15, cXSRelativityAssign);
 
         for (int i=0; i < g_waveTypes.size(); i++){
-            string waveType = g_waveTypes[i];
-            setupCreepWaveUnit(waveType, p);
+            setupCreepWaveUnit(g_waveTypes[i], p);
         }
     }
 
@@ -278,6 +282,22 @@ void postModifyPlayerData(){
                 selectSingle(unitId);
                 trUnitChangeName("Creator: ItzJover");
                 setTeamAsWinner((g_finalTeam[kbUnitGetPlayerID(unitId)] == 1) ? 2 : 1);
+            }
+        );
+        g_OnCreationListener.register(p, cUnitTypeCinematicBlockArea, [](int unitId = -1) -> void {
+                selectSingle(unitId);
+                int owner = kbUnitGetPlayerID(unitId);
+                vector v = trUnitGetPosition(unitId);
+                trChatSend(owner, "A tower has fallen!");
+                for (int p2 = 1; p2 <= cNumberPlayers-2; p2++){
+                    trMinimapFlare(p2, 10.0, v, true);
+                }
+                for (int i = 0; i < g_waveTypes.size(); i++){
+                    string unitType = g_waveTypes[i];
+                    trModifyProtounitData(unitType, owner, cXSProtoEffectMaxShieldPoints, 5, cXSRelativityAbsolute);
+                    trModifyProtounitData(unitType, owner, cXSProtoEffectInitialShieldPoints, 5, cXSRelativityAbsolute);
+                }
+                trUnitDestroy();
             }
         );
     }

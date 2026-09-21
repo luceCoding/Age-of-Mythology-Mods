@@ -95,6 +95,7 @@ class OnCreationListener {
             string protoName = kbProtoUnitGetName(cUnitType);
             trProtoUnitSetFlag(p, protoName, "NotKBTracked", false);
             trProtoUnitSetFlag(p, protoName, "KBTracked", true);
+            trProtoUnitSetFlag(p, protoName, "ForceToNature", false);
         }
 
         cUnitTypeToIndex.put(subKey, m_size);

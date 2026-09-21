@@ -393,7 +393,7 @@ void setupInvulnerabilityTriggers() {
 }
 
 void startLanes(){
-    lowFreqScheduler.add(30000, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(40000, [](int iterations = 1) -> bool {
         spawnLane();
         return true;
     });
@@ -440,12 +440,5 @@ void startLanes(){
             trTechSetStatus(p, 393, 2);
         }
         return false;
-    });
-
-    lowFreqScheduler.add(600000, [](int iterations = 1) -> bool {
-        for (int p = cNumberPlayers-1; p <= cNumberPlayers; p++){
-            trTechSetStatus(p, 66, 2); // Dionysia
-        }
-        return true;
     });
 }

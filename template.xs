@@ -41,7 +41,7 @@ void generate()
     defineSetDefinition("int", "");
 
     // common/ui/ui1.xs
-    createTypedScheduler("highFreqSchedulerWithParameters", buildStringTypeArray("Parameters"), 1, 2);
+    createTypedScheduler("highFreqSchedulerWithParameters", buildStringTypeArray("Parameters"), 25, 2);
     //// common/ui/ui2.xs
     // common/ui/ui3.xs
     // common/ui/ui4.xs

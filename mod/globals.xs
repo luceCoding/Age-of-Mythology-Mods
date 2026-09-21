@@ -111,7 +111,7 @@ const float T3_CAMP_SPAWN_TIME = 240.0;
 
 const int STARTING_GOLD = 300;
 const float CATCHUP_GOLD_DIFF = 0.9;
-const float CATCHUP_GOLD_MECHANIC = 1.1;
+const float CATCHUP_GOLD_MECHANIC = 1.15;
 const float SHARED_GOLD_COEFFICIENT = 0.25;
 
 const float SHARED_SHOP_CAPTURE_RADIUS = 10.0;

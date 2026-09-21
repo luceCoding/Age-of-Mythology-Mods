@@ -92,6 +92,7 @@ void setupCreepWaveUnit(string unitType = "", int p = 0){
     setupForAllUnits(unitType, p);
     trModifyProtounitData(unitType, p, cXSProtoEffectSpeed, 4, cXSRelativityAssign);
     trModifyProtounitData(unitType, p, cXSProtoEffectLOS, 15, cXSRelativityAssign);
+    trModifyProtounitData(unitType, p, cXSProtoEffectShieldRegenRate, 0.2, cXSRelativityAbsolute);
 }
 
 void setupBoss(string protoName = "", string spawnProtoName = "", float killReward = 0.0){

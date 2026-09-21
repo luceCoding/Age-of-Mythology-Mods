@@ -149,10 +149,10 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_UNDEAD];
-        synergy.m_buffs[2] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeMinionReincarnated, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
-        synergy.m_buffs[3] = createBuffSpecialActionWithProto(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, cUnitTypeMinion, 1.0);
-        synergy.m_buffs[5] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTlacanexquimilli, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
-        synergy.m_buffs[6] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+1 Tlacanexquimilli on kill",
+        synergy.m_buffs[3] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeMinionReincarnated, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
+        synergy.m_buffs[4] = createBuffSpecialActionWithProto(SYNERGY_INDEX_UNDEAD, emptySynergyType, cOnHitEffectReincarnation, cUnitTypeMinion, 1.0);
+        synergy.m_buffs[7] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTlacanexquimilli, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
+        synergy.m_buffs[8] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+1 Tlacanexquimilli on kill",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
                                         g_OnCreationListener.register(p, cUnitTypeMinion, [](int unitId = -1) -> void {
@@ -168,8 +168,8 @@ void initializeSynergies(){
                                     }
                                 }
                             );
-        synergy.m_buffs[8] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTartarianSpawn, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
-        synergy.m_buffs[9] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+1 Tartarian Spawn on kill",
+        synergy.m_buffs[11] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTartarianSpawn, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
+        synergy.m_buffs[12] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+1 Tartarian Spawn on kill",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
                                         g_OnCreationListener.register(p, cUnitTypeMinion, [](int unitId = -1) -> void {

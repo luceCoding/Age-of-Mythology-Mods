@@ -110,103 +110,104 @@ class CardParameters {
     bool isJapanese() { return xsStringFindFirst(getIconPath(), "japan", 0, false) != -1; }
     bool isAztec() { return xsStringFindFirst(getIconPath(), "aztec", 0, false) != -1; }
 
-    bool isASynergy(int synergy = -1){
-        switch(synergy){
-            case SYNERGY_INDEX_INFANTRY: return isInfantry();
-            case SYNERGY_INDEX_RANGED: return isArcher();
-            case SYNERGY_INDEX_CAVALRY: return isCavalry();
-            case SYNERGY_INDEX_MYTH: return isMythUnit();
-            case SYNERGY_INDEX_HERO: return isHero();
-            case SYNERGY_INDEX_HEALER: return isHealer();
-            case SYNERGY_INDEX_SIEGE: return isSiege();
-            case SYNERGY_INDEX_SOLDIER: return isSoldier();
-            case SYNERGY_INDEX_FROST: return isFrost();
-            case SYNERGY_INDEX_UNDEAD: return isUndead();
-            case SYNERGY_INDEX_POISON: return isPoison();
-            case SYNERGY_INDEX_FIRE: return isFire();
-            case SYNERGY_INDEX_LIGHTNING: return isLightning();
+    bool isASynergy(int synergy = -1) {
+        switch(synergy) {
+            case SYNERGY_INDEX_INFANTRY: { return isInfantry(); break; }
+            case SYNERGY_INDEX_RANGED: { return isArcher(); break; }
+            case SYNERGY_INDEX_CAVALRY: { return isCavalry(); break; }
+            case SYNERGY_INDEX_MYTH: { return isMythUnit(); break; }
+            case SYNERGY_INDEX_HERO: { return isHero(); break; }
+            case SYNERGY_INDEX_HEALER: { return isHealer(); break; }
+            case SYNERGY_INDEX_SIEGE: { return isSiege(); break; }
+            case SYNERGY_INDEX_SOLDIER: { return isSoldier(); break; }
+            case SYNERGY_INDEX_FROST: { return isFrost(); break; }
+            case SYNERGY_INDEX_UNDEAD: { return isUndead(); break; }
+            case SYNERGY_INDEX_POISON: { return isPoison(); break; }
+            case SYNERGY_INDEX_FIRE: { return isFire(); break; }
+            case SYNERGY_INDEX_LIGHTNING: { return isLightning(); break; }
         }
         return false;
     }
 
     bool isUnitUndeadType(int protoID = -1){
         switch(protoID){
-            case cUnitTypeTzitzimitl: return true;
-            case cUnitTypeOnmoraki: return true;
-            case cUnitTypeShinigami: return true;
-            case cUnitTypeSoulGuide: return true;
-            case cUnitTypeAnubite: return true;
-            case cUnitTypeDraugr: return true;
-            case cUnitTypeEinheri: return true;
-            case cUnitTypeShadeSPC: return true;
-            case cUnitTypeMummy: return true;
-            case cUnitTypeMictlantecuhtli: return true;
-            case cUnitTypeHadesShade: return true;
+            case cUnitTypeTzitzimitl: { return true; break; }
+            case cUnitTypeOnmoraki: { return true; break; }
+            case cUnitTypeShinigami: { return true; break; }
+            case cUnitTypeSoulGuide: { return true; break; }
+            case cUnitTypeAnubite: { return true; break; }
+            case cUnitTypeDraugr: { return true; break; }
+            case cUnitTypeEinheri: { return true; break; }
+            case cUnitTypeShadeSPC: { return true; break; }
+            case cUnitTypeMummy: { return true; break; }
+            case cUnitTypeMictlantecuhtli: { return true; break; }
+            case cUnitTypeHadesShade: { return true; break; }
         }
         return false;
     }
 
     bool isUnitPoisonType(int protoID = -1){
         switch(protoID){
-            case cUnitTypeScorpionMan: return true;
-            case cUnitTypeWadjet: return true;
-            case cUnitTypeScarab: return true;
-            case cUnitTypeArgus: return true;
-            case cUnitTypeFafnir: return true;
-            case cUnitTypeMaquizcoatl: return true;
-            case cUnitTypeXuanWu: return true;
-            case cUnitTypePopocatepetl: return true;
-            case cUnitTypeJorogumo: return true;
-            case cUnitTypeMagumo: return true;
-            case cUnitTypeMedusa: return true;
-            case cUnitTypeChimera: return true;
+            case cUnitTypeScorpionMan: { return true; break; }
+            case cUnitTypeWadjet: { return true; break; }
+            case cUnitTypeScarab: { return true; break; }
+            case cUnitTypeArgus: { return true; break; }
+            case cUnitTypeFafnir: { return true; break; }
+            case cUnitTypeMaquizcoatl: { return true; break; }
+            case cUnitTypeXuanWu: { return true; break; }
+            case cUnitTypePopocatepetl: { return true; break; }
+            case cUnitTypeJorogumo: { return true; break; }
+            case cUnitTypeMagumo: { return true; break; }
+            case cUnitTypeMedusa: { return true; break; }
+            case cUnitTypeChimera: { return true; break; }
+            case cUnitTypePerseus: { return true; break; }
         }
         return isAztec() && isSoldier();
     }
 
     bool isUnitFrostType(int protoID = -1){
         switch(protoID){
-            case cUnitTypeKingFolstag: return true;
-            case cUnitTypeYukiOnna: return true;
-            case cUnitTypeFireGiant: return false;
-            case cUnitTypeFafnir: return false;
-            case cUnitTypeGauntletLegendHalogi: return false;
+            case cUnitTypeKingFolstag: { return true; break; }
+            case cUnitTypeYukiOnna: { return true; break; }
+            case cUnitTypeFireGiant: { return false; break; }
+            case cUnitTypeFafnir: { return false; break; }
+            case cUnitTypeGauntletLegendHalogi: { return false; break; }
         }
         return isNorse();
     }
 
     bool isUnitFireType(int protoID = -1){
         switch(protoID){
-            case cUnitTypeFireGiant: return true;
-            case cUnitTypeNidhogg: return true;
-            case cUnitTypeZhuQue: return true;
-            case cUnitTypeQiLin: return true;
-            case cUnitTypeWanyudo: return true;
-            case cUnitTypeAsura: return true;
-            case cUnitTypeFafnir: return true;
-            case cUnitTypePhoenix: return true;
-            case cUnitTypeFireSiphon: return true;
-            case cUnitTypeChimera: return true;
-            case cUnitTypeTeixiptlaHuitz: return true;
-            case cUnitTypeSuperTeixiptlaHuitz: return true;
-            case cUnitTypeGauntletLegendHalogi: return true;
+            case cUnitTypeFireGiant: { return true; break; }
+            case cUnitTypeNidhogg: { return true; break; }
+            case cUnitTypeZhuQue: { return true; break; }
+            case cUnitTypeQiLin: { return true; break; }
+            case cUnitTypeWanyudo: { return true; break; }
+            case cUnitTypeAsura: { return true; break; }
+            case cUnitTypeFafnir: { return true; break; }
+            case cUnitTypePhoenix: { return true; break; }
+            case cUnitTypeFireSiphon: { return true; break; }
+            case cUnitTypeChimera: { return true; break; }
+            case cUnitTypeTeixiptlaHuitz: { return true; break; }
+            case cUnitTypeSuperTeixiptlaHuitz: { return true; break; }
+            case cUnitTypeGauntletLegendHalogi: { return true; break; }
         }
         return isChinese() & isArcher();
     }
 
     bool isUnitLightningType(int protoID = -1){
         switch(protoID){
-            case cUnitTypeSonOfOsiris: return true;
-            case cUnitTypeArkantosGod: return true;
-            case cUnitTypeYingLong: return true;
-            case cUnitTypeManOWar: return true;
-            case cUnitTypeTeixiptlaQuetz: return true;
-            case cUnitTypeSuperTeixiptlaQuetz: return true;
-            case cUnitTypeJunkozosen: return true;
-            case cUnitTypeShinigami: return true;
-            case cUnitTypeCirce: return true;
-            case cUnitTypeRaiju: return true;
-            case cUnitTypeHarumotoBlessed: return true;
+            case cUnitTypeSonOfOsiris: { return true; break; }
+            case cUnitTypeArkantosGod: { return true; break; }
+            case cUnitTypeYingLong: { return true; break; }
+            case cUnitTypeManOWar: { return true; break; }
+            case cUnitTypeTeixiptlaQuetz: { return true; break; }
+            case cUnitTypeSuperTeixiptlaQuetz: { return true; break; }
+            case cUnitTypeJunkozosen: { return true; break; }
+            case cUnitTypeShinigami: { return true; break; }
+            case cUnitTypeCirce: { return true; break; }
+            case cUnitTypeRaiju: { return true; break; }
+            case cUnitTypeHarumotoBlessed: { return true; break; }
         }
         return (isGreek() || isJapanese()) & (isInfantry() || isCavalry()) & isArcher() == false;
     }
