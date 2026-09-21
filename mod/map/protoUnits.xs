@@ -271,7 +271,7 @@ void postModifyPlayerData(){
         string[] protoNames = g_protoNameToCardParametersMap.getKeys();
         for (int i=0; i<protoNames.size(); i++){
             setAsCardUnit(protoNames[i], p);
-            g_AttachmentManager.addOnHitAttachmentToProtoUnit(kbProtoUnitGetID(protoNames[i]), p);
+            g_AttachmentManager.registerAttachmentOntoProtoUnit(kbProtoUnitGetID(protoNames[i]), p);
         }
         applyProxyDOT(cUnitTypeMarket, p, 6.0, -19.0);
     }
@@ -288,7 +288,7 @@ void postModifyPlayerData(){
                 selectSingle(unitId);
                 int owner = kbUnitGetPlayerID(unitId);
                 vector v = trUnitGetPosition(unitId);
-                trChatSend(owner, "A tower has fallen!");
+                trChatSend(owner, FALLEN_TOWER_TEXT);
                 for (int p2 = 1; p2 <= cNumberPlayers-2; p2++){
                     trMinimapFlare(p2, 10.0, v, true);
                 }

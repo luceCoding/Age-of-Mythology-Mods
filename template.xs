@@ -48,7 +48,7 @@ void generate()
     
     createTypedScheduler("midFreqSchedulerWithParameters", buildStringTypeArray("Parameters"), 500, 2);
 
-    // common/creation/onCreationListener.xs
+    // common/listeners/onCreationListener.xs
 
     // common/kbQueries.xs
 

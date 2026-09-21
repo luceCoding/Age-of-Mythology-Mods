@@ -14,7 +14,7 @@ class AttachmentManager {
     int[] m_attachmentIds = default;
     int[] m_attachmentTargetIds = default;
 
-    void init(int cUnitTypeAttackAttachment = cUnitTypePlantJapaneseFern){
+    void init(int cUnitTypeAttackAttachment = cUnitTypeCinematicBlockSpawnPoint){
         m_cUnitTypeAttackAttachment = cUnitTypeAttackAttachment;
         string attachmentName = kbProtoUnitGetName(m_cUnitTypeAttackAttachment);
         for (int p = 0; p <= cNumberPlayers; p++){
@@ -32,7 +32,7 @@ class AttachmentManager {
         }
     }
 
-    void addOnHitAttachmentToProtoUnit(int cUnitTypeProtoUnit = -1, int p = 0, string targetType = "All"){
+    void registerAttachmentOntoProtoUnit(int cUnitTypeProtoUnit = -1, int p = 0, string targetType = "All"){
         applyProtoActionSpecialEffectProtoUnitToTarget(kbProtoUnitGetName(cUnitTypeProtoUnit), p, cOnHitEffectAttach, targetType, kbProtoUnitGetName(m_cUnitTypeAttackAttachment), 1.0, 0.0);
     }
 

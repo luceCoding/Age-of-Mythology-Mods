@@ -536,7 +536,6 @@ void _processUiSystems()
         // 1. DYNAMIC TEXT PROMPT UPDATES (Local Player Only)
         if (p == currentPlayer)
         {
-            // Moved dynamicCount lookup inside the local player check
             int dynamicCount = uiEntryLastTimeArraySize(p);
             for (int i = 0; i < dynamicCount; i++)
             {
@@ -579,42 +578,44 @@ void _processUiSystems()
         int count = uiEntryUnitDataIndexInClickableArraySize(p);
         if (count > 0)
         {
-            int clickedEntryIndex = -1;
-            bool validClick = true;
+            if (count != kbUnitTypeCount(UI_SYSTEM_UNIT, p, cUnitStateABQ)) {
+                int clickedEntryIndex = -1;
+                bool validClick = true;
 
-            for (int i = 0; i < count; i++)
-            {
-                int unitDataIndex = uiEntryUnitDataIndexInClickableArrayGet(p, i);
-                int unitId = uiEntryUnitArrayGet(p, unitDataIndex);
-
-                if (unitId >= 0)
+                for (int i = 0; i < count; i++)
                 {
-                    selectSingle(unitId);
-                    if (trUnitAlive() == false)
+                    int unitDataIndex = uiEntryUnitDataIndexInClickableArrayGet(p, i);
+                    int unitId = uiEntryUnitArrayGet(p, unitDataIndex);
+
+                    if (unitId >= 0)
                     {
-                        uiSystemThrottleClickArray[p] = 0;
-                        if (clickedEntryIndex == -1)
+                        selectSingle(unitId);
+                        if (trUnitAlive() == false)
                         {
-                            clickedEntryIndex = i;
+                            uiSystemThrottleClickArray[p] = 0;
+                            if (clickedEntryIndex == -1)
+                            {
+                                clickedEntryIndex = i;
+                            }
+                            else
+                            {
+                                validClick = false;
+                            }
+                            _uiSystemRefreshUiUnit(p, uiEntryOuterIndexInClickableArrayGet(p, i));
                         }
-                        else
-                        {
-                            validClick = false;
-                        }
-                        _uiSystemRefreshUiUnit(p, uiEntryOuterIndexInClickableArrayGet(p, i));
                     }
                 }
-            }
 
-            // 3. INLINE CLICK HANDLER DISPATCH
-            if (validClick && clickedEntryIndex >= 0)
-            {
-                uiSystemClickedIndexArray[p] = clickedEntryIndex;
+                // 3. INLINE CLICK HANDLER DISPATCH
+                if (validClick && clickedEntryIndex >= 0)
+                {
+                    uiSystemClickedIndexArray[p] = clickedEntryIndex;
 
-                UiEntryParameterised wrapperHandler = uiEntryClickableHandlerArrayGet(p, clickedEntryIndex);
-                Parameters parameters = wrapperHandler.parameters;
-                void(int, ref Parameters) handler = wrapperHandler.handler;
-                handler(p, parameters);
+                    UiEntryParameterised wrapperHandler = uiEntryClickableHandlerArrayGet(p, clickedEntryIndex);
+                    Parameters parameters = wrapperHandler.parameters;
+                    void(int, ref Parameters) handler = wrapperHandler.handler;
+                    handler(p, parameters);
+                }
             }
         }
 
@@ -683,6 +684,12 @@ void initialiseUiSystems(bool debug = false)
             trProtoUnitSetFlag(p, systemUnit, "HasLOS", true);
             trProtoUnitSetFlag(p, systemUnit, "ObscuredByUnits", true);
             trProtoUnitSetUnitType(p, systemUnit, "Building", true);
+
+            if (systemUnit == UI_SYSTEM_UNIT){
+                trProtoUnitSetFlag(p, systemUnit, "NotKBTracked", false);
+                trProtoUnitSetFlag(p, systemUnit, "KBTracked", true);
+                trProtoUnitSetFlag(p, systemUnit, "StartOnNoUpdate", false);
+            }
 
             if (p != trCurrentPlayer())
             {
