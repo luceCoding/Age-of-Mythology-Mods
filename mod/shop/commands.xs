@@ -60,7 +60,7 @@ void addRecallCommand(int p = 0, string protoUnit = "") {
                                             vector shopVector = kbUnitGetPosition(shopId);
                                             selectSingle(targetId);
                                             vector v2 = kbUnitGetTruePosition(targetId);
-                                            trUnitApplyEffect(cOnHitEffectStun, 10.0);
+                                            trUnitApplyEffect(cOnHitEffectStun, RECALL_CAST_TIME);
                                             trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXVortexFinish), v2.x, v2.y, v2.z, -1, 0);
                                             setUnitCacheValue(targetId, kbUnitGetStatFloat(targetId, cUnitStatCurrHP));
                                             playUnitSound(targetId, "VortexBirth", SOUND_SET);

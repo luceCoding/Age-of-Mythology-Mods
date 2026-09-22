@@ -59,13 +59,38 @@ void setAsPlaceholder(string unitType = "", int p = 0){
     trProtoUnitSetFlag(p, unitType, "DoNotShowOnMiniMap", true);
 }
 
-void setupAutoRespawn(string campUnitType = "", string placeholderUnitType = "", float respawnSecs = -1.0){
+void setupAsBreakableLoot(string lootUnitType = "", string placeholderUnitType = "", float respawnSecs = -1.0){
     setAsPlaceholder(placeholderUnitType, 0);
-    trProtoUnitMovementType(campUnitType, 0, "air");
-    trProtounitModifySpawnData(campUnitType, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-    trProtounitModifySpawnData(campUnitType, 0, placeholderUnitType, 1, 1.0, 1, -1, respawnSecs);
-    trProtounitModifySpawnData(placeholderUnitType, 0, campUnitType, 0, 1.0, 1, -1, -1);
-    trProtoUnitSetFlag(0, campUnitType, "ObscuredByUnits", true);
+    trProtoUnitChangeName(lootUnitType, 0, "Loot", "Gold Loot", "Gold Loot");
+    trProtoUnitSetUnitType(0, lootUnitType, "LogicalTypeHandUnitsAttack", true);
+    trProtoUnitSetUnitType(0, lootUnitType, "LogicalTypeRangedUnitsAttack", true);
+    trProtoUnitSetUnitType(0, lootUnitType, "Unit", true);
+    trProtoUnitMovementType(lootUnitType, 0, "air");
+    trProtounitModifySpawnData(lootUnitType, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN+10);
+    trProtounitModifySpawnData(lootUnitType, 0, placeholderUnitType, 1, 1.0, 1, -1, respawnSecs);
+    trProtounitModifySpawnData(placeholderUnitType, 0, lootUnitType, 0, 1.0, 1, -1, -1);
+    trProtoUnitSetFlag(0, lootUnitType, "ObscuredByUnits", true);
+    trProtoUnitSetFlag(0, lootUnitType, "NotSelectable", false);
+    trProtoUnitSetFlag(0, lootUnitType, "Selectable", true);
+    trProtoUnitSetFlag(0, lootUnitType, "Invulnerable", false);
+    trProtoUnitSetFlag(0, lootUnitType, "DoNotShowOnMiniMap", false);
+    trProtoUnitSetFlag(0, lootUnitType, "ShowOnMiniMap", true);
+    trProtoUnitSetFlag(0, lootUnitType, "CorpseDecays", true);
+    trProtoUnitSetFlag(0, lootUnitType, "NonAutoFormedUnit", false);
+    trProtoUnitSetFlag(0, lootUnitType, "AutoFormedUnit", true);
+    trProtoUnitSetFlag(0, lootUnitType, "NonCollideable", false);
+    trProtoUnitSetFlag(0, lootUnitType, "Collideable", true);
+    trProtoUnitSetFlag(0, lootUnitType, "Immoveable", true);
+    trProtoUnitSetFlag(0, lootUnitType, "NoUnitAI", false);
+
+    // Workaround fix to the unit display
+    g_OnCreationListener.register(0, kbProtoUnitGetID(lootUnitType), [](int unitId = -1) -> void {
+            trProtoUnitSetIcon(kbProtoUnitGetName(kbUnitGetProtoUnitID(unitId)), 0, "resources\nature\relics\relic_coins_icon.png", "ui\minimap\minimap_gold");
+            trProtoUnitChangeName(kbProtoUnitGetName(kbUnitGetProtoUnitID(unitId)), 0, "Loot", "Gold Loot", "Gold Loot");
+            selectSingle(unitId);
+            trUnitSetScale(1.5, 1.5, 1.5);
+        }
+    );
 }
 
 void setupAsSharedShop(string shopUnitType = "", int p = 0){

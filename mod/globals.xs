@@ -101,9 +101,7 @@ const float GAIA_CREEP_LOS = 8.0;
 int[] g_TopBossBuffMsEnd = default;
 int[] g_BotBossBuffMsEnd = default;
 
-const float T1_CRATE_SPAWN_TIME = 90.0;
-const float T2_CRATE_SPAWN_TIME = 120.0;
-const float T3_CRATE_SPAWN_TIME = 150.0;
+const float WHEELBARROW_LOOT_SPAWN_TIME = 90.0;
 
 const float T1_CAMP_SPAWN_TIME = 120.0;
 const float T2_CAMP_SPAWN_TIME = 180.0;
@@ -115,10 +113,12 @@ const float CATCHUP_GOLD_MECHANIC = 1.15;
 const float SHARED_GOLD_COEFFICIENT = 0.25;
 
 const float SHARED_SHOP_CAPTURE_RADIUS = 10.0;
-const float SHARED_SHOP_CAPTURE_TIME = 20;
+const float SHARED_SHOP_CAPTURE_TIME = 20.0;
 
 const int RESPAWN_TIME_MS_BASE = 5000;
 const int RESPAWN_TIME_ADDITIONAL_MS = 1500;
+
+const float RECALL_CAST_TIME = 10.0;
 
 string[] g_shopTypes = default;
 string[] g_roadTypes = default;
@@ -127,6 +127,7 @@ string[] g_treeTypes = default;
 string[] g_creepCampPlaceholderTypes = default;
 string[] g_creepCampTypes = default;
 string[] g_waveTypes = default;
+string[] g_lootTypes = default;
 
 void initializeGlobals(){
     g_shopTypes = new string(4, "");
@@ -164,4 +165,7 @@ void initializeGlobals(){
     g_colosseumRoadTypes.add("Egypt Sand 1");
     g_colosseumRoadTypes.add("Norse Cliff 2");
     g_colosseumRoadTypes.add("Norse Dirt Rocks 2");
+
+    g_lootTypes.add("CanopicJars");
+    g_lootTypes.add("DwarvenWheelbarrow");
 }

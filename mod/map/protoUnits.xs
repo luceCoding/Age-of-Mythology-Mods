@@ -34,15 +34,6 @@ void preModifyPlayerData(){
         trPlayerEnableBuildingChain(p, false);
         trPlayerKillAllGodPowers(p);
 
-        int food = kbGetResourceAmount(p, kbGetResourceID("Food"));
-        int wood = kbGetResourceAmount(p, kbGetResourceID("Wood"));
-        int gold = kbGetResourceAmount(p, kbGetResourceID("Gold"));
-        int favor = kbGetResourceAmount(p, kbGetResourceID("Favor"));
-        trPlayerGrantResources(p, "Food", -food);
-        trPlayerGrantResources(p, "Wood", -wood);
-        trPlayerGrantResources(p, "Gold", -gold);
-        trPlayerGrantResources(p, "Favor", -favor);
-        trPlayerGrantResources(p, "Gold", STARTING_GOLD);
         
         // For card synergies
         trProtoUnitSetUnitType(p, "Tanuki", UNIT_TYPE_HEALER, true);
@@ -215,20 +206,10 @@ void preModifyPlayerData(){
     }
 
     // Only Gaia
-    setupAutoRespawn("Storehouse", "CinematicBlockStartPoint", T1_CRATE_SPAWN_TIME);
-    setupAutoRespawn("MiningCampJapanese", "CinematicBlockEndPoint", T2_CRATE_SPAWN_TIME);
-    setupAutoRespawn("MiningCamp", "CinematicBlockWaypoint", T3_CRATE_SPAWN_TIME);
-    trProtoUnitSetIcon("Storehouse", 0, "", "ui\minimap\minimap_gold");
-    trProtoUnitSetIcon("MiningCampJapanese", 0, "", "ui\minimap\minimap_gold");
-    trProtoUnitSetIcon("MiningCamp", 0, "", "ui\minimap\minimap_gold");
-
-    trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectHitpoints, 2, cXSRelativityBasePercent);
-    trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectArmorHack, 1.2, cXSRelativityBasePercent);
-    trModifyProtounitData("MiningCampJapanese", 0, cXSProtoEffectArmorCrush, 0.1, cXSRelativityAbsolute);
-
-    trModifyProtounitData("MiningCamp", 0, cXSProtoEffectHitpoints, 4, cXSRelativityBasePercent);
-    trModifyProtounitData("MiningCamp", 0, cXSProtoEffectArmorHack, 1.4, cXSRelativityBasePercent);
-    trModifyProtounitData("MiningCamp", 0, cXSProtoEffectArmorCrush, 0.2, cXSRelativityAbsolute);
+    setupAsBreakableLoot("DwarvenWheelbarrow", "CinematicBlockStartPoint", WHEELBARROW_LOOT_SPAWN_TIME);
+    trModifyProtounitData("DwarvenWheelbarrow", 0, cXSProtoEffectHitpoints, 300, cXSRelativityAssign);
+    setupAsBreakableLoot("CanopicJars", "CinematicBlockEndPoint", WHEELBARROW_LOOT_SPAWN_TIME);
+    trModifyProtounitData("CanopicJars", 0, cXSProtoEffectHitpoints, 100, cXSRelativityAssign);
 
     for (int i = 0; i < g_creepCampTypes.size(); i++) {
         string creepCampType = g_creepCampTypes[i];
