@@ -59,6 +59,7 @@ void startGame(){
     startIncome();
     startTeamResignedCheck();
     startRespawn();
+    startLanes();
 }
 
 rule FIRE_FIRST_IMMEDIATELY_TRIGGER
@@ -81,17 +82,6 @@ active
     g_OnCreationListener.init();
     g_AttachmentManager.init();
     xsDisableSelf();
-}
-
-rule FIRE_AFTER_30_SECONDS_TRIGGER
-highFrequency
-active
-{
-   if ((((xsGetTime() - (cActivationTime / 1000)) >= 30) != false))
-   {
-        startLanes();
-        xsDisableSelf();
-   }
 }
 
 rule LOOP

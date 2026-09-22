@@ -14,18 +14,24 @@ class AttachmentManager {
     int[] m_attachmentIds = default;
     int[] m_attachmentTargetIds = default;
 
-    void init(int cUnitTypeAttackAttachment = cUnitTypeCinematicBlockSpawnPoint){
+    void setForAllAttachements(int p = 0, string attachmentName = ""){
+        trProtoUnitSetFlag(p, attachmentName, "Invulnerable", true);
+        trProtoUnitSetFlag(p, attachmentName, "ForceToNature", false);
+        trProtoUnitSetFlag(p, attachmentName, "CollidesWithProjectiles", false);
+        trProtoUnitSetFlag(p, attachmentName, "NonAutoFormedUnit", false);
+        trProtoUnitSetFlag(p, attachmentName, "StartOnNoUpdate", false);
+        trProtoUnitSetFlag(p, attachmentName, "DoNotShowOnMiniMap", true);
+        trProtoUnitSetFlag(p, attachmentName, "CorpseDecays", true);
+        trProtoUnitSetFlag(p, attachmentName, "NotSelectable", true);
+        trProtoUnitSetUnitType(p, attachmentName, "NatureClass", false);
+    }
+
+    // DO NOT USE units that don't die with lifespan, cUnitTypePlants are ready to use out of the box for this purpose
+    void init(int cUnitTypeAttackAttachment = cUnitTypePlantJapaneseFern){
         m_cUnitTypeAttackAttachment = cUnitTypeAttackAttachment;
         string attachmentName = kbProtoUnitGetName(m_cUnitTypeAttackAttachment);
         for (int p = 0; p <= cNumberPlayers; p++){
-            trProtoUnitSetFlag(p, attachmentName, "Invulnerable", true);
-            trProtoUnitSetFlag(p, attachmentName, "ForceToNature", false);
-            trProtoUnitSetFlag(p, attachmentName, "CollidesWithProjectiles", false);
-            trProtoUnitSetFlag(p, attachmentName, "NonAutoFormedUnit", false);
-            trProtoUnitSetFlag(p, attachmentName, "StartOnNoUpdate", false);
-            trProtoUnitSetUnitType(p, attachmentName, "NatureClass", false);
-            trProtoUnitSetFlag(p, attachmentName, "CorpseDecays", true);
-            trProtoUnitSetFlag(p, attachmentName, "DoNotShowOnMiniMap", true);
+            setForAllAttachements(p, attachmentName);
             trProtoUnitSetFlag(p, attachmentName, "OnlyInEditor", true);
             trModifyProtounitData(attachmentName, p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityAssign);
             trModifyProtounitData(attachmentName, p, cXSProtoEffectObstructionRadiusZ, 0.0, cXSRelativityAssign);
@@ -38,11 +44,7 @@ class AttachmentManager {
 
     void addOnHitAttachment(int p = 0, int cUnitTypeAttachment = -1, int eventType = cSpawnEventTypeDead, float chance = -1, float duration = 0.0){
         trProtounitModifySpawnData(kbProtoUnitGetName(m_cUnitTypeAttackAttachment), p, kbProtoUnitGetName(cUnitTypeAttachment), eventType, 1.0, cXSRelativityAbsolute, chance, duration);
-        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeAttachment), "ForceToNature", false);
-        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeAttachment), "NonAutoFormedUnit", false);
-        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeAttachment), "StartOnNoUpdate", false);
-        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeAttachment), "DoNotShowOnMiniMap", true);
-        trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeAttachment), "NatureClass", false);
+        setForAllAttachements(p, kbProtoUnitGetName(cUnitTypeAttachment));
     }
 
     void removeOnHitAttachment(int p = 0, int cUnitTypeAttachment = -1, int eventType = cSpawnEventTypeDead, float chance = -1, float duration = 0.0){

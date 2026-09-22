@@ -640,23 +640,20 @@ void renderShop(int p = 1){
             }, EMPTY_PARAMETERS
         );
     if (shopLevel < MAX_SHOP_LEVEL && shopLevel < g_shopLevels.size()){
-        minimapSafeDisplayWithHover(p, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
-                                    "<color=1,1,1,0,0,0>" +
-                                    "\nLevel: " + shopLevel + "\n" + 
-                                    "XP: " + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded,
-                                    "Shop Level Drop Chances" +
-                                    "</color>",
-                                    shopChances);
+        minimapSafeDisplay(p, drawPosx - 0.015, drawPosYStart + 0.1, 
+                            "<color=1,1,1,0,0,0>" +
+                            "\nLevel: " + shopLevel + "\n" + 
+                            "XP: " + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded);
     }
     else {
-        minimapSafeDisplayWithHover(p, drawPosx - 0.015, drawPosYStart + 0.1, 0.075, 0.075, 
-                                    "<color=1,1,1,0,0,0>" +
-                                    "\nLevel: " + MAX_SHOP_LEVEL + 
-                                    "\nXP: MAX",
-                                    "Shop Level Drop Chances" +
-                                    "</color>",
-                                    shopChances);
+        minimapSafeDisplay(p, drawPosx - 0.015, drawPosYStart + 0.1,
+                            "<color=1,1,1,0,0,0>" +
+                            "\nLevel: " + MAX_SHOP_LEVEL + 
+                            "\nXP: MAX");
     }
+
+    minimapSafeDisplay(p, drawPosx - 0.15, drawPosYStart - 0.05,
+                        "<color=1,1,1,0,0,0>Draw Chances:\n" + shopChances + "</color>");
 
     // Buy XP
     float drawPosY = drawPosYStart;
