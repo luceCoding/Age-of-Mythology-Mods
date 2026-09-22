@@ -57,6 +57,7 @@ void setAsPlaceholder(string unitType = "", int p = 0){
     trProtoUnitSetUnitType(p, unitType, "NatureClass", false);
     trProtoUnitSetFlag(p, unitType, "CorpseDecays", true);
     trProtoUnitSetFlag(p, unitType, "DoNotShowOnMiniMap", true);
+    trProtoUnitSetFlag(p, unitType, "OnlyInEditor", true);
 }
 
 void setupAsBreakableLoot(string lootUnitType = "", string placeholderUnitType = "", float respawnSecs = -1.0){

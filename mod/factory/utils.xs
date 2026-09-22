@@ -17,11 +17,16 @@ void createLightningShock(int unitId = -1){
         applyToUnitsInArea(v, LIGHTNING_SHOCK_RADIUS, p, cUnitTypeMilitaryUnit, cUnitStateAlive,
             [](int unitID = -1) -> void {
                 selectSingle(unitID);
+                if (unitID < 0 || trUnitDead()) { return; }
                 trUnitApplyEffect(cOnHitEffectStun, LIGHTNING_STUN_DURATION);
                 // Armor debuff application
                 trUnitAddModifier(cModifyTypeArmorSpecific, cXSDamageTypeHack, 0.8, LIGHTNING_STUN_DURATION);
                 trUnitAddModifier(cModifyTypeArmorSpecific, cXSDamageTypePierce, 0.8, LIGHTNING_STUN_DURATION);
                 trUnitAddModifier(cModifyTypeArmorSpecific, cXSDamageTypeCrush, 0.25, LIGHTNING_STUN_DURATION);
+                vector v = kbUnitGetTruePosition(unitID);
+                int secondaryID = trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXLightningCS05OP), v.x, v.y, v.z, xsRandInt(0, 359), 0, false);
+                scheduleDelete(secondaryID, 3000);
+                playUnitSound(unitID, "LightningStrike", SOUND_SET);
             }
         );
     }
@@ -36,7 +41,6 @@ void handleLightningOnCreation(int unitId = -1) {
 
     // Always fire primary shock on unit creation
     createLightningShock(unitId);
-    playUnitSound(unitId, "LightningStrike", SOUND_SET);
 
     int extraChains = g_lightningMaxChains[owner] - 1;
     if (extraChains <= 0) { return; }
@@ -53,9 +57,6 @@ void handleLightningOnCreation(int unitId = -1) {
     applyUptoXRandomUnitsInAreaForPlayers(extraChains, currentPos, CHAIN_LIGHTNING_SEARCH_RADIUS, enemyPlayers, cUnitTypeMilitaryUnit, cUnitStateAlive, 
         [](int unitID = -1) -> void {
             createLightningShock(unitID);
-            vector v = kbUnitGetTruePosition(unitID);
-            int secondaryID = trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXLightningCS05OP), v.x, v.y, v.z, xsRandInt(0, 359), 0, false);
-            scheduleDelete(secondaryID, 3000);
         }
     );
     g_isSpawningChain[owner] = false;
