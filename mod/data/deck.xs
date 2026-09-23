@@ -49,4 +49,36 @@ class DeckData {
     int getSize() {
         return m_cardSize;
     }
+
+    CardData drawCardWithSynergy(int synergy = -1) {
+        if (m_cardSize <= 0 || synergy < 0 || synergy > MAX_SYNERGIES) {
+            return EMPTY_CARD;
+        }
+        // Pass 1: Quick stride pass
+        for (int i = 0; i < m_cardSize; i += MAX_CARD_COPIES) {
+            CardData card = m_cardArray[i];
+            CardParameters params = card.getCardParameters();
+            if (params.isASynergy(synergy)) {
+                return drawCardAtIndex(i);
+            }
+        }
+
+        // Pass 2: Fallback scan to check skipped indices
+        for (int i = 0; i < m_cardSize; i++) {
+            if (i % MAX_CARD_COPIES == 0) continue; // Already checked in Pass 1
+            
+            CardData card = m_cardArray[i];
+            CardParameters params = card.getCardParameters();
+            if (params.isASynergy(synergy)) {
+                return drawCardAtIndex(i);
+            }
+        }
+
+        return EMPTY_CARD;
+    }
+
+    // Helper: Get current active deck size
+    int getSize() {
+        return m_cardSize;
+    }
 };

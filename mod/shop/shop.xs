@@ -5,6 +5,9 @@ include "data/card.xs";
 include "data/cardParameters.xs";
 
 IntToIntHashMap ShopTypeToUnitIDMap;
+int[] g_prayerSynergy = default;
+int[] g_synergyPityCosts = default;
+int[] g_selectedSynergy = default;
 
 class Shop {
     DeckData[] m_decks = default;
@@ -13,15 +16,21 @@ class Shop {
     int[] m_totalShopExp = default;
     int[] m_currShopLevel = default;
     int[] m_shopTypeOpened = default;
+    int[] m_pityDrawChances = default;
 
     void init(){
         m_decks = new DeckData(TOTAL_AGES);
         m_currDraws = new DrawData(cNumberPlayers - 1);
         m_benches = new BenchData(cNumberPlayers - 1);
-        g_selectedUUIDs = new int(cNumberPlayers - 1, -1);
         m_totalShopExp = new int(cNumberPlayers - 1, 0);
         m_currShopLevel = new int(cNumberPlayers - 1, 0);
         m_shopTypeOpened = new int(cNumberPlayers - 1, DEFAULT_SHOP_TYPE);
+        m_pityDrawChances = new  int(cNumberPlayers - 1, 0);
+
+        g_selectedUUIDs = new int(cNumberPlayers - 1, -1);
+        g_prayerSynergy = new  int(cNumberPlayers - 1, -1);
+        g_selectedSynergy = new  int(cNumberPlayers - 1, -1);
+        g_synergyPityCosts = new  int(MAX_SYNERGIES, g_templeShopCost);
     }
 
     int getDrawCost(int p = 0){
@@ -202,6 +211,13 @@ class Shop {
         return drawnCard;
     }
 
+    CardData drawFromDeckWithSynergy(int d = 0, int synergyIndex = -1){
+        DeckData deck = m_decks[d];
+        CardData drawnCard = deck.drawCardWithSynergy(synergyIndex);
+        m_decks[d] = deck;
+        return drawnCard;
+    }
+
     bool addCardIntoDraw(ref DrawData currDraw, ref CardData card){
         if (card.isNull() == false){
             return currDraw.addCard(card);
@@ -259,7 +275,23 @@ class Shop {
         while (cardsDrew < numberOfCardsToDraw && attempts < 100) {
             attempts = attempts + 1;
             int tier = getRandomTier(m_currShopLevel[p]);
-            CardData drawnCard = drawFromDeck(tier);
+            CardData drawnCard = EMPTY_CARD;
+            if (g_prayerSynergy[p] >= 0 & m_pityDrawChances[p] >= xsRandInt(0, 400)){
+                drawnCard = drawFromDeckWithSynergy(tier, g_prayerSynergy[p]);
+                if (drawnCard.isNull() == false){
+                    trChatSendToPlayer(p, p, "What a pity...");
+                    trSoundsetPlayPlayer(p, "AotgLegendDeath");
+                    m_pityDrawChances[p] = 0;
+                    g_prayerSynergy[p] = -1;
+                    g_selectedSynergy[p] = -1;
+                }
+            }
+            else {
+                drawnCard = drawFromDeck(tier);
+                if (g_prayerSynergy[p] >= 0){
+                    m_pityDrawChances[p] = m_pityDrawChances[p] + 1;
+                }
+            }
             if (addCardIntoDraw(currDraw, drawnCard) == false){
                 addCardToDeck(drawnCard, tier);
             }
@@ -700,20 +732,27 @@ void startShopTimers(){
     // Reduce shop costs over time
     lowFreqScheduler.add(SHOP_COST_REDUCTION_MS_INTERVAL, [](int iterations = 1) -> bool {
         int previousShrineCost = g_shrineShopCost;
-        int previousTempleCost = g_templeShopCost;
         int previousArmoryCost = g_armoryShopCost;
         int previousForgeCost = g_forgeShopCost;
 
         g_shrineShopCost = max(previousShrineCost - SHOP_COST_REDUCTION, 10);
-        g_templeShopCost = max(previousTempleCost - SHOP_COST_REDUCTION, 10);
         g_armoryShopCost = max(previousArmoryCost - SHOP_COST_REDUCTION, 10);
         g_forgeShopCost = max(previousForgeCost - SHOP_COST_REDUCTION, 10);
 
-        if (g_shrineShopCost != previousShrineCost ||
-            g_templeShopCost != previousTempleCost ||
-            g_armoryShopCost != previousArmoryCost ||
-            g_forgeShopCost != previousForgeCost){
-            for (int p=1; p<=cNumberPlayers-2; p++){
+        bool costsChanged = (g_shrineShopCost != previousShrineCost) ||
+                            (g_armoryShopCost != previousArmoryCost) ||
+                            (g_forgeShopCost != previousForgeCost);
+
+        for (int i = 0; i < g_synergyPityCosts.size(); i++) {
+            int previousPityCost = g_synergyPityCosts[i];
+            g_synergyPityCosts[i] = max(g_synergyPityCosts[i] - SHOP_COST_REDUCTION, 10);
+            if (g_synergyPityCosts[i] != previousPityCost) {
+                costsChanged = true;
+            }
+        }
+
+        if (costsChanged) {
+            for (int p = 1; p <= cNumberPlayers - 2; p++) {
                 refreshShop(p);
             }
         }
