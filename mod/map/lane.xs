@@ -1,5 +1,3 @@
-const int aiTeamA = cNumberPlayers - 1;
-const int aiTeamB = cNumberPlayers;
 int g_t1FortressId = -1;
 int g_t2FortressId = -1;
 

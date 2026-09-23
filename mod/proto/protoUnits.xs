@@ -176,9 +176,9 @@ void preModifyPlayerData(){
         trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
         setupAsTower("StatueOfLightning", p);
 
-        trProtounitModifySpawnData("SentryTower", p, kbProtoUnitGetName(cUnitTypePlantJapaneseWeeds), 0, 1.0, cXSRelativityAbsolute, -1, 1.0);
-        trProtounitModifySpawnData("MirrorTower", p, kbProtoUnitGetName(cUnitTypePlantJapaneseWeeds), 0, 1.0, cXSRelativityAbsolute, -1, 1.0);
-        trProtounitModifySpawnData("StatueOfLightning", p, kbProtoUnitGetName(cUnitTypePlantJapaneseWeeds), 0, 1.0, cXSRelativityAbsolute, -1, 1.0);
+        trProtounitModifySpawnData("SentryTower", p, "CinematicBlockArea", 0, 1.0, cXSRelativityAbsolute, -1, 1.0);
+        trProtounitModifySpawnData("MirrorTower", p, "CinematicBlockArea", 0, 1.0, cXSRelativityAbsolute, -1, 1.0);
+        trProtounitModifySpawnData("StatueOfLightning", p, "CinematicBlockArea", 0, 1.0, cXSRelativityAbsolute, -1, 1.0);
 
         trModifyProtounitData("Fortress", p, cXSProtoEffectHitpoints, 24000, cXSRelativityAssign);
         trModifyProtounitData("Fortress", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
@@ -206,9 +206,9 @@ void preModifyPlayerData(){
     }
 
     // Only Gaia
-    setupAsBreakableLoot("DwarvenWheelbarrow", kbProtoUnitGetName(cUnitTypePlantJapaneseGrass), WHEELBARROW_LOOT_SPAWN_TIME);
+    setupAsBreakableLoot("DwarvenWheelbarrow", kbProtoUnitGetName(cUnitTypeCinematicBlockWaypoint), LOOT_SPAWN_TIME);
     trModifyProtounitData("DwarvenWheelbarrow", 0, cXSProtoEffectHitpoints, 300, cXSRelativityAssign);
-    setupAsBreakableLoot("CanopicJars", kbProtoUnitGetName(cUnitTypePlantJapaneseShrub), WHEELBARROW_LOOT_SPAWN_TIME);
+    setupAsBreakableLoot("CanopicJars", kbProtoUnitGetName(cUnitTypeCinematicBlockSpawnPoint), LOOT_SPAWN_TIME);
     trModifyProtounitData("CanopicJars", 0, cXSProtoEffectHitpoints, 100, cXSRelativityAssign);
 
     for (int i = 0; i < g_creepCampTypes.size(); i++) {
@@ -265,7 +265,7 @@ void postModifyPlayerData(){
                 setTeamAsWinner((g_finalTeam[kbUnitGetPlayerID(unitId)] == 1) ? 2 : 1);
             }
         );
-        g_OnCreationListener.register(p, cUnitTypePlantJapaneseWeeds, true, [](int unitId = -1) -> void {
+        g_OnCreationListener.register(p, cUnitTypeCinematicBlockArea, true, [](int unitId = -1) -> void {
                 selectSingle(unitId);
                 int owner = kbUnitGetPlayerID(unitId);
                 vector v = trUnitGetPosition(unitId);

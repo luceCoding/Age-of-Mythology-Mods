@@ -91,7 +91,7 @@ int g_forgeShopCost = 10;
 const float INITIAL_GOLD_REWARD = 5;
 const float GOLDPILE_LIFESPAN = 20.0;
 
-const float BOSS_SPAWN_TIME = 360.0;
+const float BOSS_SPAWN_TIME = 600.0;
 const string TOP_BOSS_PROTO = "Fafnir";
 const string BOT_BOSS_PROTO = "Scylla";
 const string TOP_BOSS_PLACEHOLDER_PROTO = "TitanGate";
@@ -101,7 +101,7 @@ const float GAIA_CREEP_LOS = 8.0;
 int[] g_TopBossBuffMsEnd = default;
 int[] g_BotBossBuffMsEnd = default;
 
-const float WHEELBARROW_LOOT_SPAWN_TIME = 90.0;
+const float LOOT_SPAWN_TIME = 90.0;
 
 const float T1_CAMP_SPAWN_TIME = 120.0;
 const float T2_CAMP_SPAWN_TIME = 180.0;

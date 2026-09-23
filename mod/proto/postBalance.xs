@@ -1,4 +1,3 @@
-
 void applyHeroNerfAgainstSoldier(ref CardParameters params){
     if (params.isHero()){
         string protoName = params.getProtoUnit();
