@@ -19,8 +19,7 @@ class DeckData {
     // Fast removal at a specific index using logical size tracking
     CardData drawCardAtIndex(int index = 0) {
         if (index < 0 || index >= m_cardSize) {
-            CardData emptyCard;
-            return emptyCard;
+            return EMPTY_CARD;
         }
 
         CardData drawnCard = m_cardArray[index];
@@ -38,8 +37,7 @@ class DeckData {
     // Utility: Draw a completely random card from anywhere in the deck
     CardData drawRandomCard() {
         if (m_cardSize <= 0) {
-            CardData emptyCard;
-            return emptyCard;
+            return EMPTY_CARD;
         }
 
         // Pick a random index between 0 and active size - 1

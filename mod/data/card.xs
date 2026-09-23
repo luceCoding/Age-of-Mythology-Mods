@@ -264,3 +264,5 @@ class CardData {
         m_upgrades.add(selectedUpgrade);
     }
 };
+
+CardData EMPTY_CARD;
