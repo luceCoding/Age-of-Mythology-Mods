@@ -3,6 +3,7 @@ class OnCreationListener {
     int m_size = 0;
     void(int)[] m_events = default;
     int[] m_keys = default;
+    bool[] m_deleteUnits = default; // Track auto-delete setting per slot
     
     IntToIntHashMap cUnitTypeToIndex;
     IntToIntHashMap cUnitTypeCountMap; // BaseKey -> Registered Lambda Count
@@ -39,13 +40,25 @@ class OnCreationListener {
 
             // Execute all lambdas registered for this (p, cUnitType)
             if (count != cMinInt && count > 0) {
+                bool shouldDelete = false;
+
                 for (int k = 0; k < count; k++) {
                     int subKey = makeSubKey(baseKey, k);
                     int index = cUnitTypeToIndex.get(subKey);
                     if (index != cMinInt) {
                         void(int) event = m_events[index];
                         event(unitId);
+
+                        if (m_deleteUnits[index]) {
+                            shouldDelete = true;
+                        }
                     }
+                }
+
+                // Delete the unit after running all callbacks
+                if (shouldDelete) {
+                    selectSingle(unitId);
+                    trUnitDestroy();
                 }
             }
         }
@@ -61,6 +74,7 @@ class OnCreationListener {
             int lastKey = m_keys[lastIdx];
             m_events[targetIdx] = m_events[lastIdx];
             m_keys[targetIdx] = lastKey;
+            m_deleteUnits[targetIdx] = m_deleteUnits[lastIdx];
             cUnitTypeToIndex.put(lastKey, targetIdx);
         }
 
@@ -69,10 +83,11 @@ class OnCreationListener {
 
         m_events[m_size] = [](int unitId = -1) -> void {};
         m_keys[m_size] = cMinInt;
+        m_deleteUnits[m_size] = false;
     }
 
     // Automatically assigns subIndex based on current count
-    int register(int p = 0, int cUnitType = -1, void(int) event = [](int unitId = -1) -> void {}) {
+    int register(int p = 0, int cUnitType = -1, bool deleteUnit = false, void(int) event = [](int unitId = -1) -> void {}) {
         if (cUnitType == -1) { return -1; }
         
         int baseKey = makeBaseKey(p, cUnitType);
@@ -85,9 +100,11 @@ class OnCreationListener {
         if (m_size < m_events.size()) {
             m_events[m_size] = event;
             m_keys[m_size] = subKey;
+            m_deleteUnits[m_size] = deleteUnit;
         } else {
             m_events.add(event);
             m_keys.add(subKey);
+            m_deleteUnits.add(deleteUnit);
         }
 
         // Enable KB Tracking flags on first registration

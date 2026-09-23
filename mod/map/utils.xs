@@ -85,7 +85,7 @@ void setupAsBreakableLoot(string lootUnitType = "", string placeholderUnitType =
     trProtoUnitSetFlag(0, lootUnitType, "NoUnitAI", false);
 
     // Workaround fix to the unit display
-    g_OnCreationListener.register(0, kbProtoUnitGetID(lootUnitType), [](int unitId = -1) -> void {
+    g_OnCreationListener.register(0, kbProtoUnitGetID(lootUnitType), false, [](int unitId = -1) -> void {
             trProtoUnitSetIcon(kbProtoUnitGetName(kbUnitGetProtoUnitID(unitId)), 0, "resources\nature\relics\relic_coins_icon.png", "ui\minimap\minimap_gold");
             trProtoUnitChangeName(kbProtoUnitGetName(kbUnitGetProtoUnitID(unitId)), 0, "Loot", "Gold Loot", "Gold Loot");
             selectSingle(unitId);

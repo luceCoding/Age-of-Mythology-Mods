@@ -8,7 +8,7 @@ string preparePlant(int p = 1, int plantType = -1,
     string plantName = kbProtoUnitGetName(plantType);
 
     // Register event handler directly with the event manager
-    g_OnCreationListener.register(p, plantType, event);
+    g_OnCreationListener.register(p, plantType, true, event);
 
     // Configure Protounit
     trProtoUnitSetFlag(p, plantName, "OnlyInEditor", true);
@@ -160,7 +160,6 @@ void removeArmoryCommands(int p = -1) {
 }
 
 void addTempleCommands(int p = -1) {
-    return; // TODO: Disabled for now
     string plantName = preparePlant(p, cUnitTypePlantGreekWeeds, 
                                     "Open temple (R)",
                                     "Reroll rarities for your cards.",

@@ -259,13 +259,13 @@ void postModifyPlayerData(){
 
     // Last 2 AIs
     for(int p = cNumberPlayers - 1; p <= cNumberPlayers; p++) {
-        g_OnCreationListener.register(p, cUnitTypeFlyingPurpleHippo, [](int unitId = -1) -> void {
+        g_OnCreationListener.register(p, cUnitTypeFlyingPurpleHippo, false, [](int unitId = -1) -> void {
                 selectSingle(unitId);
                 trUnitChangeName("Creator: ItzJover");
                 setTeamAsWinner((g_finalTeam[kbUnitGetPlayerID(unitId)] == 1) ? 2 : 1);
             }
         );
-        g_OnCreationListener.register(p, cUnitTypePlantJapaneseWeeds, [](int unitId = -1) -> void {
+        g_OnCreationListener.register(p, cUnitTypePlantJapaneseWeeds, true, [](int unitId = -1) -> void {
                 selectSingle(unitId);
                 int owner = kbUnitGetPlayerID(unitId);
                 vector v = trUnitGetPosition(unitId);
@@ -278,7 +278,6 @@ void postModifyPlayerData(){
                     trModifyProtounitData(unitType, owner, cXSProtoEffectMaxShieldPoints, 5, cXSRelativityAbsolute);
                     trModifyProtounitData(unitType, owner, cXSProtoEffectInitialShieldPoints, 5, cXSRelativityAbsolute);
                 }
-                trUnitDestroy();
             }
         );
     }

@@ -155,7 +155,7 @@ void initializeSynergies(){
         synergy.m_buffs[8] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+1 Tlacanexquimilli on kill",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
-                                        g_OnCreationListener.register(p, cUnitTypeMinion, [](int unitId = -1) -> void {
+                                        g_OnCreationListener.register(p, cUnitTypeMinion, false, [](int unitId = -1) -> void {
                                                 selectSingle(unitId);
                                                 int owner = kbUnitGetPlayerID(unitId);
                                                 vector v = trUnitGetPosition(unitId);
@@ -172,7 +172,7 @@ void initializeSynergies(){
         synergy.m_buffs[12] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+1 Tartarian Spawn on kill",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
-                                        g_OnCreationListener.register(p, cUnitTypeMinion, [](int unitId = -1) -> void {
+                                        g_OnCreationListener.register(p, cUnitTypeMinion, false, [](int unitId = -1) -> void {
                                                 selectSingle(unitId);
                                                 int owner = kbUnitGetPlayerID(unitId);
                                                 vector v = trUnitGetPosition(unitId);
@@ -225,7 +225,7 @@ void initializeSynergies(){
         synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.03, 10.0, FIRE_SYNERGY_TEXT1,
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
-                                        g_OnCreationListener.register(p, cUnitTypeVFXArrowSignal, [](int unitId = -1) -> void {
+                                        g_OnCreationListener.register(p, cUnitTypeVFXArrowSignal, false, [](int unitId = -1) -> void {
                                                 selectSingle(unitId);
                                                 vector v = trUnitGetPosition(unitId);
                                                 float rdmX = xsRandFloat(30.0, 50.0);
@@ -258,7 +258,7 @@ void initializeSynergies(){
         synergy.m_buffs[8] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "SkylanternFireAreaGround", cUnitTypeVFXFireAshesCS, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 1.0, 10.0, FIRE_SYNERGY_TEXT2,
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
-                                        g_OnCreationListener.register(p, cUnitTypeSkylanternFireAreaGround, [](int unitId = -1) -> void {
+                                        g_OnCreationListener.register(p, cUnitTypeSkylanternFireAreaGround, false, [](int unitId = -1) -> void {
                                                 selectSingle(unitId);
                                                 int owner = kbUnitGetPlayerID(unitId);
                                                 vector v = trUnitGetPosition(unitId);
@@ -286,7 +286,7 @@ void initializeSynergies(){
                 if (delta > 0) {
                     g_lightningMaxChains[p] = 1;
                     g_AttachmentManager.addOnHitAttachment(p, cUnitTypeGauntletChaosLightningStrike, cSpawnEventTypeBirth, 0.01, 2.0);
-                    g_OnCreationListener.register(p, cUnitTypeGauntletChaosLightningStrike, handleLightningOnCreation);
+                    g_OnCreationListener.register(p, cUnitTypeGauntletChaosLightningStrike, false, handleLightningOnCreation);
                 } else {
                     g_AttachmentManager.removeOnHitAttachment(p, cUnitTypeGauntletChaosLightningStrike, cSpawnEventTypeBirth, -1, 2.0);
                     g_OnCreationListener.deregister(p, cUnitTypeGauntletChaosLightningStrike);
