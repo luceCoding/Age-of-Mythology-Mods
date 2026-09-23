@@ -79,8 +79,7 @@ class BenchData {
     CardData getCardbyUUID(int uuid = NullUUID){
         int i = g_CardUUIDToIndex.get(uuid);
         if (i < 0 || i >= m_cardSize) {
-            CardData emptyCard;
-            return emptyCard;
+            return EMPTY_CARD;
         }
         return m_cardArray[i];
     }
@@ -88,8 +87,7 @@ class BenchData {
     CardData removeCardByUUID(int uuid = NullUUID){        
         int i = g_CardUUIDToIndex.get(uuid);
         if (i < 0 || i >= m_cardSize) {
-            CardData emptyCard;
-            return emptyCard;
+            return EMPTY_CARD;
         }
 
         CardData currCard = m_cardArray[i];
@@ -133,15 +131,13 @@ class BenchData {
             return currCard;
         }
         
-        CardData emptyCard;
-        return emptyCard;
+        return EMPTY_CARD;
     }
 
     CardData removeCardByIndex(int index = -1){ 
         // Validate index bounds
         if (index < 0 || index >= m_cardSize) {
-            CardData emptyCard;
-            return emptyCard;
+            return EMPTY_CARD;
         }
 
         CardData currCard = m_cardArray[index];
@@ -309,8 +305,7 @@ class BenchData {
         }
 
         if (i < 0 || i >= m_cardSize) {
-            CardData emptyCard;
-            return emptyCard;
+            return EMPTY_CARD;
         }
 
         CardData card = m_cardArray[i];
@@ -320,8 +315,7 @@ class BenchData {
             g_ProtoUnitToIndex.put(proto + m_player, i);
             return card;
         }
-        CardData emptyCard;
-        return emptyCard;
+        return EMPTY_CARD;
     }
 
     void deployCard(int uuid = NullUUID){
