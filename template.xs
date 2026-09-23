@@ -89,7 +89,10 @@ void generate()
     // mod/map/lane.xs
     // mod/map/base.xs
     // mod/map/objectives.xs
-    // mod/map/protoUnits.xs
+
+    // mod/proto/utils.xs
+    // mod/proto/protoUnits.xs
+
     // mod/map/roads.xs
     // mod/map/trees.xs
     // mod/map/creepCamp.xs
@@ -105,7 +108,7 @@ void generate()
     // mod/factory/deckFactory.xs
     // mod/factory/synergyFactory.xs
 
-    // mod/map/postBalance.xs
+    // mod/proto/postBalance.xs
 
     // mod/victory/victory.xs
 

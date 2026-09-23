@@ -1,41 +1,5 @@
-bool isAreaClearOf(string unitType = "Building", float x = 0.0, float z = 0.0, float clearanceRadius = 0.0) {
-    int tempUnitId = trUnitCreateForced("CinematicBlockWaypoint", x, configMapBaseHeight, z, -1, 0);
-
-    int team0Buildings = kbUnitTypeCountInArea(unitType, 0, cUnitStateAlive, tempUnitId, clearanceRadius);
-    int teamABuildings = kbUnitTypeCountInArea(unitType, aiTeamA, cUnitStateAlive, tempUnitId, clearanceRadius);
-    int teamBBuildings = kbUnitTypeCountInArea(unitType, aiTeamB, cUnitStateAlive, tempUnitId, clearanceRadius);
-
-    selectSingle(tempUnitId);
-    trUnitDestroy();
-
-    if (team0Buildings > 0 || teamABuildings > 0 || teamBBuildings > 0) {
-        return false; // Spot is blocked
-    }
-    return true; // Spot is clear
-}
-
-bool isAnyTerrainNear(float x = 0.0, float z = 0.0, float radius = 0.0, string[] targetTerrains = default) {
-    float radiusSq = radius * radius;
-    float step = 2.0;
-
-    for (float dx = 0.0 - radius; dx <= radius; dx = dx + step) {
-        for (float dz = 0.0 - radius; dz <= radius; dz = dz + step) {
-            if ((dx * dx + dz * dz) <= radiusSq) {
-                vector samplePos = vector(x + dx, configMapBaseHeight, z + dz);
-
-                for (int t = 0; t < targetTerrains.size(); t++) {
-                    if (trTerrainAtPosition(targetTerrains[t], samplePos)) {
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-    return false;
-}
-
-int[] generateCreepCamps(string creepName = "", int targetTotalCamps = 20, 
-                        float clearanceRadius = 25.0, float roadAvoidanceRadius = 10.0) {
+int[] generateCamps(string creepName = "", int targetTotalCamps = 20, 
+                    float clearanceRadius = 25.0, float roadAvoidanceRadius = 10.0) {
 
     float mapX = configMapTileX * 2.0;
     float mapZ = configMapTileZ * 2.0;
@@ -123,19 +87,19 @@ CreepCamp creepCampClassInstanceWorkaround(){
 }
 
 void generateAllCamps(){
-    int[] t3CreepCamp = generateCreepCamps(g_creepCampPlaceholderTypes[2], 4, 25.0, 20.0);
+    int[] t3CreepCamp = generateCamps(g_creepCampPlaceholderTypes[2], 4, 25.0, 20.0);
     for(int i = 0; i < t3CreepCamp.size(); i++){
         CreepCamp creepCamp = creepCampClassInstanceWorkaround();
         creepCamp.init(t3CreepCamp[i], T3_CAMP_SPAWN_TIME, g_creepCampTypes[2], 1, T3_CAMP_SPAWN_TIME + 60, 1.25);
         g_creepCamps.add(creepCamp);
     }
-    int[] t2CreepCamp = generateCreepCamps(g_creepCampPlaceholderTypes[1], 6, 25.0, 20.0);
+    int[] t2CreepCamp = generateCamps(g_creepCampPlaceholderTypes[1], 6, 25.0, 20.0);
     for(int i = 0; i < t2CreepCamp.size(); i++){
         CreepCamp creepCamp = creepCampClassInstanceWorkaround();
         creepCamp.init(t2CreepCamp[i], T2_CAMP_SPAWN_TIME, g_creepCampTypes[1], 1, T2_CAMP_SPAWN_TIME + 60, 1.25);
         g_creepCamps.add(creepCamp);
     }
-    int[] t1CreepCamp = generateCreepCamps(g_creepCampPlaceholderTypes[0], 8, 25.0, 20.0);
+    int[] t1CreepCamp = generateCamps(g_creepCampPlaceholderTypes[0], 8, 25.0, 20.0);
     for(int i = 0; i < t1CreepCamp.size(); i++){
         CreepCamp creepCamp = creepCampClassInstanceWorkaround();
         creepCamp.init(t1CreepCamp[i], T1_CAMP_SPAWN_TIME, g_creepCampTypes[0], 1, T1_CAMP_SPAWN_TIME + 60, 1.25);
@@ -151,7 +115,7 @@ void generateAllCamps(){
         return true;
     });
 
-    generateCreepCamps("MiningCamp", 6, 25.0, 12.0);
-    generateCreepCamps("MiningCampJapanese", 8, 20.0, 12.0);
-    generateCreepCamps("Storehouse", 10, 20.0, 12.0);
+    generateCamps("MiningCamp", 6, 25.0, 12.0);
+    generateCamps("MiningCampJapanese", 8, 20.0, 12.0);
+    generateCamps("Storehouse", 10, 20.0, 12.0);
 }
