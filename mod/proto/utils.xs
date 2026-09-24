@@ -179,7 +179,7 @@ void applyProxyDOT(int cUnitTypeTarget = -1, int p = 0, float range = 20.0, floa
     string protoUnit = kbProtoUnitGetName(cUnitTypeFafnirBoss);
     trModifyProtounitAction(protoUnit, "BillowingSmog", p, cXSActionEffectRange, range, cXSRelativityAbsolute);
     trModifyProtounitAction(protoUnit, "BillowingSmog", p, cXSActionEffectModifyRate, dot, cXSRelativityAbsolute);
-    trProtounitAssignAction(kbProtoUnitGetName(cUnitTypeTarget), protoUnit, "BillowingSmog", 2);
+    trProtounitAssignAction(kbProtoUnitGetName(cUnitTypeTarget), protoUnit, "BillowingSmog", p);
     trModifyProtounitAction(protoUnit, "BillowingSmog", p, cXSActionEffectRange, range * -1, cXSRelativityAbsolute);
     trModifyProtounitAction(protoUnit, "BillowingSmog", p, cXSActionEffectModifyRate, dot * -1, cXSRelativityAbsolute);
 }

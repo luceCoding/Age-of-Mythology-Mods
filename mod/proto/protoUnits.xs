@@ -182,7 +182,7 @@ void preModifyPlayerData(){
 
         trModifyProtounitData("Fortress", p, cXSProtoEffectHitpoints, 24000, cXSRelativityAssign);
         trModifyProtounitData("Fortress", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectNumBounces, 1, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageArea, 2, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 60, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
@@ -254,7 +254,7 @@ void postModifyPlayerData(){
             setAsCardUnit(protoNames[i], p);
             g_AttachmentManager.registerAttachmentOntoProtoUnit(kbProtoUnitGetID(protoNames[i]), p);
         }
-        applyProxyDOT(cUnitTypeMarket, p, 6.0, -19.0);
+        applyProxyDOT(cUnitTypeMarket, p, 11.0, -19.0);
     }
 
     // Last 2 AIs
