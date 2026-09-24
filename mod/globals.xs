@@ -120,6 +120,10 @@ const float SHARED_SHOP_CAPTURE_TIME = 20;
 const int RESPAWN_TIME_MS_BASE = 5000;
 const int RESPAWN_TIME_ADDITIONAL_MS = 1500;
 
+const float RECALL_CAST_TIME = 10.0;
+
+const int CREEP_WAVE_SPAWN_INTERVAL_MS = 45000;
+
 string[] g_shopTypes = default;
 string[] g_roadTypes = default;
 string[] g_colosseumRoadTypes = default;

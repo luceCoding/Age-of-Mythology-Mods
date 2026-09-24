@@ -391,7 +391,7 @@ void setupInvulnerabilityTriggers() {
 }
 
 void startLanes(){
-    lowFreqScheduler.add(40000, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(CREEP_WAVE_SPAWN_INTERVAL_MS, [](int iterations = 1) -> bool {
         spawnLane();
         return true;
     });
