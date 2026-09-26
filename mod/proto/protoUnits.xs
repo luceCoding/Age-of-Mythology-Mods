@@ -56,6 +56,7 @@ void preModifyPlayerData(){
         trProtoUnitSetUnitType(p, "Chiron", UNIT_TYPE_MYTH_RANGED, true);
         trProtoUnitSetUnitType(p, "Quinametzin", UNIT_TYPE_SIEGE, true);
         trProtoUnitSetUnitType(p, "Otontin", UNIT_TYPE_SIEGE, true);
+        trProtoUnitSetUnitType(p, "Achilles", UNIT_TYPE_CAVALRY, true);
     }
 
     // Only Humans
@@ -157,6 +158,7 @@ void preModifyPlayerData(){
         trModifyProtounitAction("SentryTower", "RangedAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, cXSActionEffectDamageDivine, 20, cXSRelativityAssign);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, cXSActionEffectROF, 1, cXSRelativityAssign);
+        trModifyProtounitAction("SentryTower", "RangedAttack", p, cXSActionEffectRange, 22, cXSRelativityAssign);
         trModifyProtounitAction("SentryTower", "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
         setupAsTower("SentryTower", p);
 
@@ -164,7 +166,7 @@ void preModifyPlayerData(){
         trModifyProtounitData("MirrorTower", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, cXSActionEffectDamageDivine, 50, cXSRelativityAssign);
-        trModifyProtounitAction("MirrorTower", "BeamAttack", p, cXSActionEffectRange, 18, cXSRelativityAssign);
+        trModifyProtounitAction("MirrorTower", "BeamAttack", p, cXSActionEffectRange, 22, cXSRelativityAssign);
         trModifyProtounitAction("MirrorTower", "BeamAttack", p, cXSActionEffectROF, 1, cXSRelativityAssign);
         setupAsTower("MirrorTower", p);
 
@@ -173,6 +175,7 @@ void preModifyPlayerData(){
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectDamageDivine, 60, cXSRelativityAssign);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectROF, 3, cXSRelativityAssign);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectNumBounces, 3, cXSRelativityAssign);
+        trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectRange, 22, cXSRelativityAssign);
         trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
         setupAsTower("StatueOfLightning", p);
 
@@ -184,13 +187,21 @@ void preModifyPlayerData(){
         trModifyProtounitData("Fortress", p, cXSProtoEffectArmorCrush, 0.3, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageArea, 2, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamagePierce, 0, cXSRelativityAssign);
-        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 60, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageDivine, 70, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectRange, 22, cXSRelativityAssign);
         trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
+        trModifyProtounitAction("Fortress", "RangedAttack", p, cXSActionEffectDamageArea, 2, cXSRelativityAssign);
         setupAsTower("Fortress", p);
         trProtoUnitSetIcon("Fortress", p, "", "ui\minimap\minimap_wonder");
         trProtounitModifySpawnData("Fortress", p, "FlyingPurpleHippo", 0, 1.0, 1, -1, -1); // For win condition
 
         trModifyProtounitData("MilitaryAcademy", p, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
+
+        trProtoUnitSetFlag(p, "SentryTower", "Repairable", false);
+        trProtoUnitSetFlag(p, "MirrorTower", "Repairable", false);
+        trProtoUnitSetFlag(p, "StatueOfLightning", "Repairable", false);
+        trProtoUnitSetFlag(p, "Fortress", "Repairable", false);
+        trProtoUnitSetFlag(p, "MilitaryAcademy", "Repairable", false);
 
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeVillagersAttack", false);
         trProtoUnitSetUnitType(p, "WallOfAtlantisConnector", "LogicalTypeHandUnitsAttack", false);
@@ -234,17 +245,17 @@ void postModifyPlayerData(){
             switch(k){
                 case SHOP_TYPE_FORGE: { trUnitChangeName("Forge (Add Sockets)"); break; }
                 case SHOP_TYPE_ARMORY: { trUnitChangeName("Armory (Roll Upgrades)"); break; }
-                case SHOP_TYPE_TEMPLE: { trUnitChangeName("Temple (Roll Rarities)"); break; }
+                case SHOP_TYPE_TEMPLE: { trUnitChangeName("Temple (Draw Pity)"); break; }
                 case SHOP_TYPE_SHRINE: { trUnitChangeName("Library (Identification)"); break; }
             }
             trProtoUnitSetFlag(p, shopType, "Invulnerable", true);
             trProtounitRemoveCommand(shopType, p, "Delete");
-            setupForPoisonSynergy(p);
-            setupForFireSynergy(p);
-            setupForUndeadSynergy(p);
-            setupForHealSynergy(p);
-            setupForLightningSynergy(p);
         }
+        setupForPoisonSynergy(p);
+        setupForFireSynergy(p);
+        setupForUndeadSynergy(p);
+        setupForHealSynergy(p);
+        setupForLightningSynergy(p);
     }
 
     // For humans

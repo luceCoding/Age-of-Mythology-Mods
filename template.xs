@@ -26,7 +26,7 @@ void generate()
     rmTriggerAddScriptLine("};");
 
     // UI schedulers
-    createTypedScheduler("highFreqScheduler", buildStringTypeArray(), 25, 2);
+    createTypedScheduler("highFreqScheduler", buildStringTypeArray(), 25, 32);
     createTypedScheduler("highFreqSchedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"), 25, 2);
 
     createTypedScheduler("midFreqScheduler", buildStringTypeArray(), 500, 2);

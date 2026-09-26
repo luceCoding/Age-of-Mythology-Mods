@@ -70,6 +70,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeShadeSPC, 100);
     addCardsIntoDeck(1, cUnitTypeMinotaur);
     addCardsIntoDeck(1, cUnitTypeCentaur);
+    addCardsIntoDeck(1, cUnitTypeAchilles);
 
     addCardsIntoDeck(1, cUnitTypeWadjet);
     addCardsIntoDeck(1, cUnitTypeAnubite);
@@ -111,6 +112,10 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(2, cUnitTypeTzitzimitl);
     addCardsIntoDeck(2, cUnitTypePopocatepetl, 250);
 
+    addCardsIntoDeck(2, cUnitTypeBrokk, 250);
+    addCardsIntoDeck(2, cUnitTypeEitri, 250);
+    addCardsIntoDeck(2, cUnitTypeSetna, 250);
+
     addCardsIntoDeck(2, cUnitTypeChariotArcher);
     addCardsIntoDeck(2, cUnitTypeCamelRider);
     addCardsIntoDeck(2, cUnitTypeWarElephant);
@@ -147,6 +152,8 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(2, cUnitTypeHypaspist);
     addCardsIntoDeck(2, cUnitTypeHydra);
     addCardsIntoDeck(2, cUnitTypeHamadryad);
+    addCardsIntoDeck(2, cUnitTypePerseus);
+    addCardsIntoDeck(2, cUnitTypeChiron);
 
     addCardsIntoDeck(2, cUnitTypeSage);
     addCardsIntoDeck(2, cUnitTypeChuKoNu);
@@ -187,14 +194,13 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(3, cUnitTypeGastraphetoros);
     addCardsIntoDeck(3, cUnitTypeHetairos);
     addCardsIntoDeck(3, cUnitTypeMyrmidon);
-    addCardsIntoDeck(3, cUnitTypePerseus);
     addCardsIntoDeck(3, cUnitTypePolyphemus);
     addCardsIntoDeck(3, cUnitTypeBellerophon);
     addCardsIntoDeck(3, cUnitTypeColossus);
     addCardsIntoDeck(3, cUnitTypeMedusa);
     addCardsIntoDeck(3, cUnitTypeHelepolis, 400);
-    addCardsIntoDeck(3, cUnitTypeChiron);
     addCardsIntoDeck(3, cUnitTypeXuanWu);
+    addCardsIntoDeck(3, cUnitTypeMidas);
 
     addCardsIntoDeck(3, cUnitTypeFenrisWolfBrood);
     addCardsIntoDeck(3, cUnitTypeBallista);

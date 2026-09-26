@@ -186,7 +186,7 @@ void applyProxyDOT(int cUnitTypeTarget = -1, int p = 0, float range = 20.0, floa
 
 void setupForPoisonSynergy(int p = 0){
     trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageDivine, 0.0, cXSRelativityAssign);
-    trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageHack, 50.0, cXSRelativityAssign);
+    trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageHack, 25.0, cXSRelativityAssign);
     trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
     trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_MYTH, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
     trModifyProtounitActionUnitType("SkylanternFireAreaGround", "SelfDestructAttack", UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
@@ -197,7 +197,7 @@ void setupForFireSynergy(int p = 0){
     trTechSetStatus(p, cTechSkyFire, cTechStatusActive);
     trProtounitAddCommand("SkyLantern", p, "Delete", 3, 5);
     trProtoUnitSetUnitType(p, "SkyLantern", "LogicalTypeRangedUnitsAutoAttack", true);
-    trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamagePierce, 50.0, cXSRelativityAssign);
+    trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamagePierce, 40.0, cXSRelativityAssign);
     trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageCrush, 50.0, cXSRelativityAssign);
     trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageDivine, 0.0, cXSRelativityAssign);
     trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);

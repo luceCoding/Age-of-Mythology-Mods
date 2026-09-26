@@ -77,8 +77,8 @@ const int SHOP_TYPE_TEMPLE = 3;
 const float IDENTIFIED_TO_UNIDENTIFIED_CARDS_RATIO = 0.9;
 const int UNIDENTIFIED_CARD_BASE_COST = 75;
 const int BUY_XP_COST_MULTIPLIER = 3;
-const int SHOP_COST_REDUCTION = 5;
-const int SHOP_COST_REDUCTION_MS_INTERVAL = 30000;
+const int SHOP_COST_REDUCTION = cNumberPlayers - 2;
+const int SHOP_COST_REDUCTION_MS_INTERVAL = 60000;
 const int SHRINE_COST_INCREMENT = 10;
 const int TEMPLE_COST_INCREMENT = 10;
 const int ARMORY_COST_INCREMENT = 5;
@@ -101,7 +101,7 @@ const float GAIA_CREEP_LOS = 8.0;
 int[] g_TopBossBuffMsEnd = default;
 int[] g_BotBossBuffMsEnd = default;
 
-const float LOOT_SPAWN_TIME = 90.0;
+const float LOOT_SPAWN_TIME = 120.0;
 
 const float T1_CAMP_SPAWN_TIME = 120.0;
 const float T2_CAMP_SPAWN_TIME = 180.0;
