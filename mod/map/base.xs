@@ -392,6 +392,8 @@ void createShops(){
         trUnitSetScale(0.5, 0.5, 0.5);
         trUnitChangeName("Card Shop");
 
+        paintCircle(vector(spawnX, configMapBaseHeight, spawnZ), 15.0, "SPC Mining Dirt Rocks 1");
+
         BenchData bench = g_shop.m_benches[p];
         bench.init(p, shopId);
         g_shop.m_benches[p] = bench;

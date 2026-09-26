@@ -2,6 +2,7 @@ void preModifyPlayerData(){
 
     // All players
     for(int p = 0; p <= cNumberPlayers; p++) {
+
         trTechSetStatus(p, cTechClassicalAgeGeneral, cTechStatusActive);
         trTechSetStatus(p, cTechClassicalAgeEgyptian, cTechStatusActive);
         trTechSetStatus(p, cTechClassicalAgeNorse, cTechStatusActive);
@@ -33,7 +34,6 @@ void preModifyPlayerData(){
         trPlayerEnablePartisans(p, false);
         trPlayerEnableBuildingChain(p, false);
         trPlayerKillAllGodPowers(p);
-
         
         // For card synergies
         trProtoUnitSetUnitType(p, "Tanuki", UNIT_TYPE_HEALER, true);
@@ -77,7 +77,6 @@ void preModifyPlayerData(){
         trTechSetStatus(p, cTechRelicRingOfNibelung, cTechStatusActive);
         trTechSetStatus(p, cTechOracle, cTechStatusActive);
         forbidBuilding(p);
-        modifyBuildingCosts(p);
 
         trTechRemove(p, "Armory", cTechCopperArmor);
         trTechRemove(p, "Armory", cTechCopperShields);
@@ -85,6 +84,10 @@ void preModifyPlayerData(){
         trTechRemove(p, "Armory", cTechBallistics);
         trTechRemove(p, "DwarvenArmory", cTechBurningPitch);
         trTechRemove(p, "Market", cTechTaxCollectors);
+        trTechRemove(p, "SentryTower", cTechGuardTower);
+        trTechRemove(p, "HillFort", cTechDraftHorses);
+        trTechRemove(p, "HillFort", cTechEngineers);
+        trTechRemove(p, "HillFort", cTechAdvancedFortifications);
 
         // Hide teammates's gold
         if (trCurrentPlayer() == p){
@@ -244,6 +247,7 @@ void postModifyPlayerData(){
             setupForUndeadSynergy(p);
             setupForHealSynergy(p);
             setupForLightningSynergy(p);
+            setupForBuilderSynergy(p);
         }
     }
 

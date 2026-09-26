@@ -50,7 +50,6 @@ class IncomeHandler {
                     trPlayerGrantResources(p, "gold", goldAmount);
                     trSoundsetPlayPlayer(p, "TributeReceived");
                     
-                    //int totalGoldGenerated = goldAmount; // Track total wealth added to the team
                     int sharedAmount = goldAmount * SHARED_GOLD_COEFFICIENT; // Shared gold
 
                     // 2. Loop to find and reward teammates
@@ -59,16 +58,9 @@ class IncomeHandler {
                         
                         if (g_finalTeam[ally] == pTeam) {
                             trPlayerGrantResources(ally, "gold", sharedAmount);
-                            //totalGoldGenerated = totalGoldGenerated + sharedAmount;
                         }
                     }
 
-                    // 3. Update team trackers with the combined total wealth generated
-                    //if (pTeam == 1){
-                    //    g_team1_gold = g_team1_gold + totalGoldGenerated;
-                    //} else {
-                    //    g_team2_gold = g_team2_gold + totalGoldGenerated;
-                    //}
                     trUnitDestroy();
                     
                     // Remove collected gold unit via swap-and-pop

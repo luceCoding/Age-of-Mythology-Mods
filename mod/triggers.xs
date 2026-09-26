@@ -116,7 +116,7 @@ active
             trGodPowerGrant(p, "MeteorSPC", 99, 0, false, false);
             trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageDivine, 99999, cXSRelativityAssign);
             trGodPowerGrant(p, "Bolt", 99, 0, false, false);
-            trGodPowerGrant(p, "Earthquake", 99, 0, false, false);
+            trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerMonolithOfTlaloc), 99, 0, false, false);
         }
         xsDisableSelf();
     }

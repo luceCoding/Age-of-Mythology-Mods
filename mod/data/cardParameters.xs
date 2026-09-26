@@ -101,6 +101,7 @@ class CardParameters {
     bool isPoison(){ return m_unitTypes[15];}
     bool isFire(){ return m_unitTypes[16];}
     bool isLightning(){ return m_unitTypes[17];}
+    bool isBuilder(){ return m_unitTypes[18];}
 
     bool isGreek() { return xsStringFindFirst(getIconPath(), "greek", 0, false) != -1; }
     bool isNorse() { return xsStringFindFirst(getIconPath(), "norse", 0, false) != -1; }
@@ -125,6 +126,7 @@ class CardParameters {
             case SYNERGY_INDEX_POISON: { return isPoison(); break; }
             case SYNERGY_INDEX_FIRE: { return isFire(); break; }
             case SYNERGY_INDEX_LIGHTNING: { return isLightning(); break; }
+            case SYNERGY_INDEX_BUILDER: { return isBuilder(); break; }
         }
         return false;
     }
@@ -212,6 +214,16 @@ class CardParameters {
         return (isGreek() || isJapanese()) & (isInfantry() || isCavalry()) & isArcher() == false;
     }
 
+    bool isUnitBuilderType(int protoID = -1){
+        int[] actions = kbProtoUnitGetActionIDs(0, protoID);
+        for (int i = 0; i < actions.size(); i++){
+            if (actions[i] == cActionTypeBuild){
+                return true;
+            }
+        }
+        return false;
+    }
+
     void setCardParameters(int age = 0, int protoID = -1, int cost = -1){
         Parameters params = createParameters();
         params.ints.add(-1); // placeholder for data
@@ -231,7 +243,7 @@ class CardParameters {
         m_params = params;
         m_uuid = g_uuid.getNextUUID();
 
-        m_unitTypes = new bool(18, false);
+        m_unitTypes = new bool(19, false);
         m_unitTypes[0] = isUnitType(UNIT_TYPE_INFANTRY);
         m_unitTypes[1] = isUnitType(UNIT_TYPE_ARCHER);
         m_unitTypes[2] = isUnitType(UNIT_TYPE_CAVALRY);
@@ -250,6 +262,7 @@ class CardParameters {
         m_unitTypes[15] = isUnitPoisonType(protoID);
         m_unitTypes[16] = isUnitFireType(protoID);
         m_unitTypes[17] = isUnitLightningType(protoID);
+        m_unitTypes[18] = isUnitBuilderType(protoID);
     }
 };
 

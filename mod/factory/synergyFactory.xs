@@ -17,6 +17,7 @@ void initializeSynergies(){
     icons[SYNERGY_INDEX_POISON] = "resources/aztec/static_color/technologies/sting_of_yappan_icon.png";
     icons[SYNERGY_INDEX_FIRE] = "resources/achievements/achievement_set_the_world_on_fire.png";
     icons[SYNERGY_INDEX_LIGHTNING] = "resources/greek/static_color/god_powers/lightning_storm_icon.png";
+    icons[SYNERGY_INDEX_BUILDER] = "resources/in_game/minimap/Icon_CycleViewEconomic.png";
 
     string[] rolloverNames = new string(MAX_SYNERGIES, "");
     rolloverNames[SYNERGY_INDEX_INFANTRY] = "Synergy: Infantry";
@@ -32,8 +33,9 @@ void initializeSynergies(){
     rolloverNames[SYNERGY_INDEX_POISON] = "Synergy: Poisonous";
     rolloverNames[SYNERGY_INDEX_FIRE] = "Synergy: Fire";
     rolloverNames[SYNERGY_INDEX_LIGHTNING] = "Synergy: Lightning";
+    rolloverNames[SYNERGY_INDEX_BUILDER] = "Synergy: Builder";
 
-    for (int i = 0; i < icons.size(); i++) {
+    for (int i = 0; i < MAX_SYNERGIES; i++) {
         SynergyData synergy;
         synergy.m_icon = icons[i];
         synergy.m_rolloverName = rolloverNames[i];
@@ -336,5 +338,65 @@ void initializeSynergies(){
             }
         );
         g_synergies[SYNERGY_INDEX_LIGHTNING] = synergy;
+    }
+
+    {
+        SynergyData synergy = g_synergies[SYNERGY_INDEX_BUILDER];
+        synergy.m_buffs[2] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Shennong's Farm",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){ 
+                                        unforbidTrainBuilding(p, cUnitTypeFarmShennong);
+                                        g_OnCreationListener.register(p, cUnitTypeFarmShennong, false, [](int unitId = -1) -> void {
+                                                lowFreqSchedulerWithIntInt.add(1000, unitId, 0, [](int iteration = 0, int unitId = 0, int _ = 0) -> bool {
+                                                    selectSingle(unitId);
+                                                    if (trUnitAlive() && kbUnitGetStatInt(unitId, cUnitStatBuildProgressPercent) < 100){ return true; }
+                                                    if (trUnitAlive()) {
+                                                        int owner = kbUnitGetPlayerID(unitId);
+                                                        trUnitChangeProtoUnit(kbProtoUnitGetName(cUnitTypeFarm), true);
+                                                        trGodPowerGrantAtSlot(owner, kbGodPowerGetName(cProtoPowerProsperousSeeds), 1, 3);
+                                                        trGodPowerInvoke(owner, kbGodPowerGetName(cProtoPowerProsperousSeeds), vector(0,0,0), vector(0,0,0), false);
+                                                    }
+                                                    return false;
+                                                });
+                                            }
+                                        );
+                                    }
+                                    else { 
+                                        forbidTrainBuilding(p, cUnitTypeFarmShennong);
+                                        g_OnCreationListener.deregister(p, cUnitTypeFarmShennong);
+                                    }
+                                }
+                            );
+        synergy.m_buffs[3] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Watch Tower",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeSentryTower); }
+                                    else { forbidTrainBuilding(p, cUnitTypeSentryTower); }
+                                }
+                            );
+        synergy.m_buffs[5] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Sky Passage",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeSkyPassageSPC); }
+                                    else { forbidTrainBuilding(p, cUnitTypeSkyPassageSPC); }
+                                }
+                            );
+        synergy.m_buffs[6] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Mirror Tower",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeMirrorTower); }
+                                    else { forbidTrainBuilding(p, cUnitTypeMirrorTower); }
+                                }
+                            );
+        synergy.m_buffs[9] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Hill Fort",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeHillFort); }
+                                    else { forbidTrainBuilding(p, cUnitTypeHillFort); }
+                                }
+                            );
+        synergy.m_buffs[12] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Pillar of Tlaloc",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeMonolithOfTlaloc); }
+                                    else { forbidTrainBuilding(p, cUnitTypeMonolithOfTlaloc); }
+                                }
+                            );
+        g_synergies[SYNERGY_INDEX_BUILDER] = synergy;
     }
 }
