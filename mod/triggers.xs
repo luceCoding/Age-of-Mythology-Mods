@@ -81,15 +81,12 @@ active
     performProportionCalculation();
     g_OnCreationListener.init();
     g_AttachmentManager.init();
+    highFreqScheduler.add(100, [](int iterations = 1) -> bool {
+        g_OnCreationListener.process();
+        g_AttachmentManager.process();
+        return true;
+    });
     xsDisableSelf();
-}
-
-rule LOOP
-highFrequency
-active
-{
-    g_OnCreationListener.process();
-    g_AttachmentManager.process();
 }
 
 rule SUDDEN_DEATH

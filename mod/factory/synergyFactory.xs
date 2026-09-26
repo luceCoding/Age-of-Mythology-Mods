@@ -204,7 +204,7 @@ void initializeSynergies(){
         synergy.m_buffs[5] = createBuffSpawnActionSingle(SYNERGY_INDEX_POISON, UNIT_TYPE_UNIT, cUnitTypeArgusAcidBlobDamage, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute, -1.0, -1.0, POISON_SYNERGY_TEXT1);
         synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 1);
         synergy.m_buffs[9] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 1.5,);
-        synergy.m_buffs[10] = createBuffActionSingle(SYNERGY_INDEX_POISON, "ArgusAcidBlobDamage", cXSActionEffectDamageHack, 50, cXSRelativityAbsolute, POISON_SYNERGY_TEXT1);
+        synergy.m_buffs[10] = createBuffActionSingle(SYNERGY_INDEX_POISON, "ArgusAcidBlobDamage", cXSActionEffectDamageHack, 25, cXSRelativityAbsolute, POISON_SYNERGY_TEXT1);
         synergy.m_buffs[12] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 2);
         g_synergies[SYNERGY_INDEX_POISON] = synergy;
     }
@@ -273,7 +273,7 @@ void initializeSynergies(){
                                 }
                             );
         synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 5.0, 1.25);
-        synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_POISON, "MeteorSPC", cXSActionEffectDamagePierce, 50, cXSRelativityAbsolute, FIRE_SYNERGY_TEXT3);
+        synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_POISON, "MeteorSPC", cXSActionEffectDamagePierce, 40, cXSRelativityAbsolute, FIRE_SYNERGY_TEXT3);
         g_synergies[SYNERGY_INDEX_FIRE] = synergy;
     }
 

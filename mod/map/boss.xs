@@ -92,8 +92,8 @@ void createBossPits() {
     g_topBossCamp.init(topBossPlaceholderID, BOSS_SPAWN_TIME, TOP_BOSS_PROTO, 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, "Top Boss is under attack!", "WonderSelect");
     g_botBossCamp.init(botBossPlaceholderID, BOSS_SPAWN_TIME, BOT_BOSS_PROTO, 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, "Bottom Boss is under attack!", "WonderSelect");
 
-    buildBossPit(vector(topCornerX, h, topCornerZ), 22.0, 2.0, 2, 4, g_colosseumRoadTypes[3], g_colosseumRoadTypes[2]);
-    buildBossPit(vector(botCornerX, h, botCornerZ), 22.0, 2.0, 2, 4, g_colosseumRoadTypes[1], g_colosseumRoadTypes[0]);
+    buildBossPit(vector(topCornerX, h, topCornerZ), 20.0, 2.0, 2, 4, g_colosseumRoadTypes[3], g_colosseumRoadTypes[2]);
+    buildBossPit(vector(botCornerX, h, botCornerZ), 20.0, 2.0, 2, 4, g_colosseumRoadTypes[1], g_colosseumRoadTypes[0]);
 }
 
 void attachTopBossBuff(int unitID = 0, int durationMs = 0, int p = 0){
