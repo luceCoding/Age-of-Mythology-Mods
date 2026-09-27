@@ -469,6 +469,7 @@ class Buff {
                         case SYNERGY_INDEX_POISON: sName = "Poisonous"; 
                         case SYNERGY_INDEX_FIRE: sName = "Fire"; 
                         case SYNERGY_INDEX_LIGHTNING: sName = "Lightning"; 
+                        case SYNERGY_INDEX_BUILDER: sName = "Builder"; 
                     }
                     
                     if (i > 0) { targetStr = targetStr + ", "; }

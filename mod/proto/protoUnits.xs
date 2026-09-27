@@ -2,6 +2,15 @@ void preModifyPlayerData(){
 
     // All players
     for(int p = 0; p <= cNumberPlayers; p++) {
+
+        for (int cUnitType = 0; cUnitType < cNumberProtoUnits; cUnitType++) {
+            trForbidProtounit(p, kbProtoUnitGetName(cUnitType));
+        }
+
+        for (int cTech = 0; cTech < cNumberTechs; cTech++) {
+            trTechSetStatus(p, cTech, cTechStatusUnobtainable);
+        }
+
         trTechSetStatus(p, cTechClassicalAgeGeneral, cTechStatusActive);
         trTechSetStatus(p, cTechClassicalAgeEgyptian, cTechStatusActive);
         trTechSetStatus(p, cTechClassicalAgeNorse, cTechStatusActive);
@@ -13,16 +22,8 @@ void preModifyPlayerData(){
 
         setAsPlaceholder("GoldPile", p);
         trProtoUnitSetFlag(p, "GoldPile", "ObscuredByUnits", true);
+        trProtoUnitSetFlag(p, "GoldPile", "VisibleUnderFog", false);
         trModifyProtounitData("GoldPile", p, cXSProtoEffectLifespan, GOLDPILE_LIFESPAN, cXSRelativityAssign);
-
-        // Forbid
-        trForbidProtounit(p, "CaravanAtlantean");
-        trForbidProtounit(p, "CaravanAztec");
-        trForbidProtounit(p, "CaravanChinese");
-        trForbidProtounit(p, "CaravanEgyptian");
-        trForbidProtounit(p, "CaravanGreek");
-        trForbidProtounit(p, "CaravanJapanese");
-        trForbidProtounit(p, "CaravanNorse");
 
         trPlayerAllowBonusUnitSpawning(p, false);
         trPlayerEnableCombatXP(p, false);
@@ -70,21 +71,13 @@ void preModifyPlayerData(){
         trProtounitRemoveCommand("Market", p, "MarketSell2");
         trProtounitRemoveTech("Market", p, cTechCoinage);
         trProtounitRemoveTech("Market", p, cTechSilkRoad);
+        trProtounitRemoveTech("Market", p, cTechTaxCollectors);
         trProtoUnitSetFlag(p, "Market", "Invulnerable", true);
         trProtoUnitSetFlag(p, "Market", "CollidesWithProjectiles", false);
         trProtoUnitSetFlag(p, "Market", "NonCollideable", true);
         trPlayerModifyData(p, 0, -1, 999, 0); // Add population
         trTechSetStatus(p, cTechRelicRingOfNibelung, cTechStatusActive);
         trTechSetStatus(p, cTechOracle, cTechStatusActive);
-        forbidBuilding(p);
-        modifyBuildingCosts(p);
-
-        trTechRemove(p, "Armory", cTechCopperArmor);
-        trTechRemove(p, "Armory", cTechCopperShields);
-        trTechRemove(p, "Armory", cTechCopperWeapons);
-        trTechRemove(p, "Armory", cTechBallistics);
-        trTechRemove(p, "DwarvenArmory", cTechBurningPitch);
-        trTechRemove(p, "Market", cTechTaxCollectors);
 
         // Hide teammates's gold
         if (trCurrentPlayer() == p){
@@ -265,6 +258,7 @@ void postModifyPlayerData(){
         setupForUndeadSynergy(p);
         setupForHealSynergy(p);
         setupForLightningSynergy(p);
+        setupForBuilderSynergy(p);
     }
 
     // For humans
