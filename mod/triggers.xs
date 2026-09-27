@@ -42,7 +42,7 @@ void startGame(){
     trChatSend(cNumberPlayers, "Created by ItzJover.");
 
     for (int p=1; p <= cNumberPlayers-2; p++){
-        BenchData bench = g_shop.m_benches[trCurrentPlayer()];
+        BenchData bench = g_shop.getBench(trCurrentPlayer());
         int shopId = bench.m_playerShopId;
         vector v = kbUnitGetTruePosition(shopId);
         if (trCurrentPlayer() == p){

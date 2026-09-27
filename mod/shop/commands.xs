@@ -39,7 +39,7 @@ void addRecallCommand(int p = 0, string protoUnit = "") {
                                         int pPlayer = kbUnitGetPlayerID(unitId);
                                         vector v = kbUnitGetTruePosition(unitId);
 
-                                        BenchData bench = g_shop.m_benches[pPlayer];
+                                        BenchData bench = g_shop.getBench(pPlayer);
                                         int[] unitIds = bench.getDeployedUnitIDs();
                                         int[] closestUnitIds = new int(0, -1);
 

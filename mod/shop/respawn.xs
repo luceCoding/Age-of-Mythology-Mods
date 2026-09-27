@@ -113,7 +113,7 @@ class RespawnManager {
         lowFreqSchedulerWithIntInt.add(respawnTimeMS, owner, cardUUID, [](int iterations = 1, int p = 0, int cardUUID = 0) -> bool {
             if (p > cNumberPlayers - 2) return false;
 
-            BenchData bench = g_shop.m_benches[p];
+            BenchData bench = g_shop.getBench(p);
             int cIndex = g_CardUUIDToIndex.get(cardUUID);
             if (cIndex < 0 || cIndex >= bench.getNumberOfCardsHeld()) return false;
 

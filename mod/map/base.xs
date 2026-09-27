@@ -392,7 +392,7 @@ void createShops(){
         trUnitSetScale(0.5, 0.5, 0.5);
         trUnitChangeName("Card Shop");
 
-        BenchData bench = g_shop.m_benches[p];
+        BenchData bench = g_shop.getBench(p);
         bench.init(p, shopId);
         g_shop.m_benches[p] = bench;
     }

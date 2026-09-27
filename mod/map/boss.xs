@@ -105,7 +105,7 @@ void attachBotBossBuff(int unitID = 0, int durationMs = 0, int p = 0){
 }
 
 void attachTopBuffToAllDeployedCards(int p = 0, int durationMs = 0){
-    BenchData bench = g_shop.m_benches[p];
+    BenchData bench = g_shop.getBench(p);
     CardData[] cards = bench.getCards();
     for (int i = 0; i < cards.size(); i++){
         CardData card = cards[i];
@@ -117,7 +117,7 @@ void attachTopBuffToAllDeployedCards(int p = 0, int durationMs = 0){
 }
 
 void attachBotBuffToAllDeployedCards(int p = 0, int durationMs = 0){
-    BenchData bench = g_shop.m_benches[p];
+    BenchData bench = g_shop.getBench(p);
     CardData[] cards = bench.getCards();
     for (int i = 0; i < cards.size(); i++){
         CardData card = cards[i];
@@ -139,6 +139,7 @@ void applyTopBossBufToPlayerTeam(int p = 0){
     int[] playersInTeam = getPlayersInTeam(team);
     for (int i = 0; i < playersInTeam.size(); i++){
         int teamPlayer = playersInTeam[i];
+        if (teamPlayer > cNumberPlayers - 2) { continue; }
         Parameters params = createParametersWorkAround();
         params.ints.add(teamPlayer);
         params.floats.add(buffAmount);
@@ -161,6 +162,7 @@ void applyBotBossBuffToPlayerTeam(int p = 0){
     int[] playersInTeam = getPlayersInTeam(team);
     for (int i = 0; i < playersInTeam.size(); i++){
         int teamPlayer = playersInTeam[i];
+        if (teamPlayer > cNumberPlayers - 2) { continue; }
         Parameters params = createParametersWorkAround();
         params.ints.add(teamPlayer);
         params.floats.add(buffAmount);

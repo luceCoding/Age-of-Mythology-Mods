@@ -179,7 +179,7 @@ class CardData {
         if (topBossBuffDurationLeft > 0){
             attachTopBossBuff(unitId, topBossBuffDurationLeft, owner);
         }
-        int botBossBuffDurationLeft = g_BotBossBuffMsEnd[kbUnitGetPlayerID(unitId)] - xsGetTimeMS();
+        int botBossBuffDurationLeft = g_BotBossBuffMsEnd[owner] - xsGetTimeMS();
         if (botBossBuffDurationLeft > 0){
             attachBotBossBuff(unitId, botBossBuffDurationLeft, owner);
         }

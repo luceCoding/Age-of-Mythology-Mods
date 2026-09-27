@@ -6,10 +6,10 @@ int CURRENT_DEBUG_LEVEL = -1; // Higher the level, the more detailed the debug i
 
 void log(int debugLevel = 0, string debug = ""){
     if (CURRENT_DEBUG_LEVEL >= debugLevel){
-        trChatSendSpoofed(0, "DEBUG: " + debug);
+        trChatSend(1, "DEBUG: " + debug);
     }
 }
 
 void errorLog(string error = ""){
-    trChatSendSpoofed(0, "ERROR: " + error);
+    trChatSend(1, "ERROR: " + error);
 }

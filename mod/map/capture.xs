@@ -30,7 +30,7 @@ class CapturePoint {
 
         for (int p = 1; p <= cNumberPlayers; p++) {
             if (p == owner) continue;
-            if (owner != 0 && g_finalTeam[owner] == g_finalTeam[p]) continue;
+            if (owner > 0 && g_finalTeam[owner] == g_finalTeam[p]) continue;
 
             int unitsNear = kbUnitTypeCountInArea("Unit", p, cUnitStateAlive, unitId, radius);
             if (unitsNear > 0) {
@@ -112,7 +112,7 @@ class CapturePoint {
     // Apply shop commands to every player on a specific team
     void addTeamCommands(int teamID = -1) {
         if (teamID == -1) return;
-        for (int p = 1; p <= cNumberPlayers; p++) {
+        for (int p = 1; p <= cNumberPlayers - 2; p++) {
             if (g_finalTeam[p] == teamID) {
                 switch(m_shopType){
                     case SHOP_TYPE_FORGE: { addForgeCommands(p); break; }
@@ -127,7 +127,7 @@ class CapturePoint {
     // Remove shop commands from every player on a specific team that lost control
     void removeTeamCommands(int teamID = -1) {
         if (teamID == -1) return;
-        for (int p = 1; p <= cNumberPlayers; p++) {
+        for (int p = 1; p <= cNumberPlayers - 2; p++) {
             if (g_finalTeam[p] == teamID) {
                 closeShop(p, m_shopType);
                 switch(m_shopType){

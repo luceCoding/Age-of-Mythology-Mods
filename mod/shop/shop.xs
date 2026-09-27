@@ -33,6 +33,16 @@ class Shop {
         g_synergyPityCosts = new  int(MAX_SYNERGIES, g_templeShopCost);
     }
 
+    // p=0 and the last two players (Gaia/observer slots) have no bench; guard against that.
+    BenchData getBench(int p = 0){
+        if (p < 1 || p > cNumberPlayers - 2){
+            errorLog("getBench: invalid player index " + p);
+            BenchData emptyBench;
+            return emptyBench;
+        }
+        return m_benches[p];
+    }
+
     int getDrawCost(int p = 0){
         return (m_currShopLevel[p] * 10) + 10;
     }
@@ -556,7 +566,7 @@ mutable void createTempleCardButtons(ref CardData currCard, int p = 0, ref float
 mutable void createForgeCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){}
 
 void renderBench(int p = 1, int shopType = 0) {
-    BenchData bench = g_shop.m_benches[p];
+    BenchData bench = g_shop.getBench(p);
     CardData[] currCards = bench.getCards();
 
     float propPosX = getLeftAnchorX(UI_LEFT_BUFFER + 200, 128.0, p);
