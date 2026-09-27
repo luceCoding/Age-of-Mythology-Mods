@@ -74,6 +74,9 @@ void generate()
     // mod/data/deck.xs
     // mod/data/draw.xs
 
+    // mod/proto/utils.xs
+    // mod/income/income.xs
+
     // mod/shop/utils.xs
     // mod/shop/shop.xs
     // mod/shop/armory.xs
@@ -90,7 +93,6 @@ void generate()
     // mod/map/base.xs
     // mod/map/objectives.xs
 
-    // mod/proto/utils.xs
     // mod/proto/protoUnits.xs
 
     // mod/map/roads.xs
@@ -101,8 +103,6 @@ void generate()
     // mod/map/boss.xs
     // mod/map/colosseum.xs
     // mod/map/cave.xs
-
-    // mod/income/income.xs
 
     // mod/factory/utils.xs
     // mod/factory/deckFactory.xs

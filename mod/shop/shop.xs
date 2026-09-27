@@ -382,7 +382,7 @@ class Shop {
         BenchData bench = m_benches[p];
         CardData removedCard = bench.removeCardByUUID(uuid);
         if (removedCard.isNull() == false){
-            int goldAmount = getCost(removedCard, p);
+            int cost = getCost(removedCard, p);
 
             if (removedCard.isOsirisPieceBoxCard() == false){
                 int rarity = removedCard.getRarity();
@@ -400,7 +400,7 @@ class Shop {
             }
 
             addCardIntoDeck(removedCard, removedCard.getDeckIndex());
-            trPlayerGrantResources(p, "Gold", goldAmount * SELL_MULTIPLIER);
+            g_IncomeHandler.playerSells(p, cost);
             trSoundsetPlayPlayer(p, "TributeReceived");
             g_selectedUUIDs[p] = -1; // Deselect card
         }

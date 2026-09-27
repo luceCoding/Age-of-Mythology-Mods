@@ -5,7 +5,7 @@ void createButton(int p = 0, float drawPosx = 0.0, float drawPosY = 0.0, string 
 
 bool purchase(int goldAmount = 0, int p = 0){
     if (((kbGetResourceAmount(p, kbGetResourceID("Gold")) >= goldAmount) != false)){
-        trPlayerGrantResources(p, "Gold", -goldAmount);
+        g_IncomeHandler.playerBuys(p, goldAmount);
         return true;
     }
     trSoundsetPlayPlayer(p, "PopCapHit");

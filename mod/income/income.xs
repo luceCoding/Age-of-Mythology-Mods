@@ -1,8 +1,11 @@
+float g_team1_gold_offset = 0;
+float g_team2_gold_offset = 0;
+float g_team1_gold = 0;
+float g_team2_gold = 0;
+
 class IncomeHandler {
     int[] m_goldUnitIDs = default;
     int m_goldSize = 0; // Tracks active gold units without shrinking/reallocating the array
-    int team1_gold = 0;
-    int team2_gold = 0;
 
     void addGold(int unitId = -1){
         if (m_goldSize < m_goldUnitIDs.size()) {
@@ -37,16 +40,16 @@ class IncomeHandler {
 
                     // Catch up mechanic
                     int pTeam = g_finalTeam[p];
-                    if (pTeam == 1 && team2_gold > 0 && (team1_gold <= team2_gold * CATCHUP_GOLD_DIFF)) {
+                    if (pTeam == 1 && g_team2_gold > 0 && (g_team1_gold <= g_team2_gold * CATCHUP_GOLD_DIFF)) {
                         goldAmount = goldAmount * CATCHUP_GOLD_MECHANIC;
-                    } else if (pTeam == 2 && team1_gold > 0 && (team2_gold <= team1_gold * CATCHUP_GOLD_DIFF)) {
+                    } else if (pTeam == 2 && g_team1_gold > 0 && (g_team2_gold <= g_team1_gold * CATCHUP_GOLD_DIFF)) {
                         goldAmount = goldAmount * CATCHUP_GOLD_MECHANIC;
                     }
 
                     // 1. Grant the full gold amount to the collecting player
                     trPlayerGrantResources(p, "gold", goldAmount);
+                    trSoundsetPlayPlayer(p, "TributeReceived");
                     
-                    int totalGoldGenerated = goldAmount; // Track total wealth added to the team
                     int sharedAmount = goldAmount * SHARED_GOLD_COEFFICIENT; // Shared gold
 
                     // 2. Loop to find and reward teammates
@@ -55,17 +58,9 @@ class IncomeHandler {
                         
                         if (g_finalTeam[ally] == pTeam) {
                             trPlayerGrantResources(ally, "gold", sharedAmount);
-                            totalGoldGenerated = totalGoldGenerated + sharedAmount;
                         }
                     }
 
-                    // 3. Update team trackers with the combined total wealth generated
-                    if (pTeam == 1){
-                        team1_gold = team1_gold + totalGoldGenerated;
-                    } else {
-                        team2_gold = team2_gold + totalGoldGenerated;
-                    }
-                    trSoundsetPlayPlayer(p, "TributeReceived");
                     trUnitDestroy();
                     
                     // Remove collected gold unit via swap-and-pop
@@ -80,6 +75,20 @@ class IncomeHandler {
             }
         }
     }
+
+    void playerSells(int p = 0, int amount = 0){
+        int goldAmount = amount * SELL_MULTIPLIER;
+        trPlayerGrantResources(p, "Gold", goldAmount);
+        if (g_finalTeam[p] == 1) {
+            g_team1_gold_offset += goldAmount;
+        } else if (g_finalTeam[p] == 2) {
+            g_team2_gold_offset += goldAmount;
+        }
+    }
+
+    void playerBuys(int p = 0, int amount = 0){
+        trPlayerGrantResources(p, "Gold", -amount);
+    }
 };
 
 IncomeHandler g_IncomeHandler;
@@ -92,7 +101,7 @@ void startIncome(){
         return true;
     });
 
-    // Increase gold bounty over time
+    // Increase gold kill bounties over time
     lowFreqScheduler.add(60013, [](int iterations = 1) -> bool {
 
         CardParameters[] params = g_protoNameToCardParametersMap.getValues();
@@ -114,7 +123,10 @@ void startIncome(){
             trModifyProtounitResource(waveType, "Gold", cNumberPlayers, cXSPUResourceEffectKillReward, 1, cXSRelativityAbsolute);
             trModifyProtounitResource(waveType, "Gold", cNumberPlayers-1, cXSPUResourceEffectKillReward, 1, cXSRelativityAbsolute);
         }
-        
+
+        trModifyProtounitResource(TOP_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 5, cXSRelativityAbsolute);
+        trModifyProtounitResource(BOT_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 5, cXSRelativityAbsolute);
+
         return true;
     });
 
@@ -126,4 +138,46 @@ void startIncome(){
             }
         );
     }
+
+    for(int p = 1; p <= cNumberPlayers - 2; p++) {
+        if (g_finalTeam[p] == 1){
+            g_team1_gold_offset = g_team1_gold_offset + kbGetStatValueFloat(p, cStatTypeResourceCount, 0);
+        }
+        else {
+            g_team2_gold_offset = g_team2_gold_offset + kbGetStatValueFloat(p, cStatTypeResourceCount, 0);
+        }
+        int food = kbGetResourceAmount(p, kbGetResourceID("Food"));
+        int wood = kbGetResourceAmount(p, kbGetResourceID("Wood"));
+        int gold = kbGetResourceAmount(p, kbGetResourceID("Gold"));
+        int favor = kbGetResourceAmount(p, kbGetResourceID("Favor"));
+        trPlayerGrantResources(p, "Food", -food);
+        trPlayerGrantResources(p, "Wood", -wood);
+        trPlayerGrantResources(p, "Gold", -gold);
+        trPlayerGrantResources(p, "Favor", -favor);
+        trPlayerGrantResources(p, "Gold", STARTING_GOLD);
+    }
+
+    trCounterAddTime("title", -999999, 0, "--Total Gold Collected--");
+    trCounterAddTime("t1", -999999, 0, "Team 1: 0");
+    trCounterAddTime("t2", -999999, 0, "Team 2: 0");
+
+    lowFreqScheduler.add(7000, [](int iterations = 1) -> bool {
+        float g_team1_gold_count = 0.0;
+        float g_team2_gold_count = 0.0;
+        for(int p = 1; p <= cNumberPlayers - 2; p++) {
+            if (g_finalTeam[p] == 1){
+                g_team1_gold_count = g_team1_gold_count + kbGetStatValueFloat(p, cStatTypeResourceCount, 0);
+            }
+            else {
+                g_team2_gold_count = g_team2_gold_count + kbGetStatValueFloat(p, cStatTypeResourceCount, 0);
+            }
+        }
+        g_team1_gold = g_team1_gold_count - g_team1_gold_offset;
+        g_team2_gold = g_team2_gold_count - g_team2_gold_offset;
+        trCounterAbort("t1");
+        trCounterAbort("t2");
+        trCounterAddTime("t1", -999999, 0, "Team 1: " + xsFloatToInt(g_team1_gold));
+        trCounterAddTime("t2", -999999, 0, "Team 2: " + xsFloatToInt(g_team2_gold));
+        return true;
+    });
 }

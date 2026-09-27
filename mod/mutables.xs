@@ -6,3 +6,4 @@ mutable void attachTopBossBuff(int unitID = 0, int durationMs = 0, int p = 0){ r
 mutable void attachBotBossBuff(int unitID = 0, int durationMs = 0, int p = 0){ return; }
 mutable void setTeamAsWinner(int team = 0){ return; }
 mutable void renderTemple(int p = 1){ return; }
+mutable void addRecallCommand(int p = 0, string protoUnit = "") { return; }

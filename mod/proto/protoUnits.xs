@@ -33,16 +33,6 @@ void preModifyPlayerData(){
         trPlayerEnablePartisans(p, false);
         trPlayerEnableBuildingChain(p, false);
         trPlayerKillAllGodPowers(p);
-
-        int food = kbGetResourceAmount(p, kbGetResourceID("Food"));
-        int wood = kbGetResourceAmount(p, kbGetResourceID("Wood"));
-        int gold = kbGetResourceAmount(p, kbGetResourceID("Gold"));
-        int favor = kbGetResourceAmount(p, kbGetResourceID("Favor"));
-        trPlayerGrantResources(p, "Food", -food);
-        trPlayerGrantResources(p, "Wood", -wood);
-        trPlayerGrantResources(p, "Gold", -gold);
-        trPlayerGrantResources(p, "Favor", -favor);
-        trPlayerGrantResources(p, "Gold", STARTING_GOLD);
         
         // For card synergies
         trProtoUnitSetUnitType(p, "Tanuki", UNIT_TYPE_HEALER, true);
