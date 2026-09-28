@@ -16,6 +16,36 @@ class IncomeHandler {
         m_goldSize++;
     }
 
+    float getComebackMultiplier(int team = 0){
+        float leadingGold = 0.0;
+        float trailingGold = 0.0;
+
+        if (g_team1_gold > g_team2_gold) {
+            if (team != 2) { return 1.0; }
+            leadingGold = g_team1_gold;
+            trailingGold = g_team2_gold;
+        } else if (g_team2_gold > g_team1_gold) {
+            if (team != 1) { return 1.0; }
+            leadingGold = g_team2_gold;
+            trailingGold = g_team1_gold;
+        } else {
+            return 1.0;
+        }
+
+        if (leadingGold <= 0.0) { return 1.0; }
+
+        float goldDifference = (leadingGold - trailingGold) / leadingGold;
+        if (goldDifference < CATCHUP_GOLD_MIN_DIFFERENCE) { return 1.0; }
+        if (goldDifference >= CATCHUP_GOLD_MAX_DIFFERENCE) {
+            return CATCHUP_GOLD_MAX_MULTIPLIER;
+        }
+
+        float progress = (goldDifference - CATCHUP_GOLD_MIN_DIFFERENCE) /
+            (CATCHUP_GOLD_MAX_DIFFERENCE - CATCHUP_GOLD_MIN_DIFFERENCE);
+        return CATCHUP_GOLD_BASE_MULTIPLIER +
+            progress * (CATCHUP_GOLD_MAX_MULTIPLIER - CATCHUP_GOLD_BASE_MULTIPLIER);
+    }
+
     void processGold(){
         for (int i = 0; i < m_goldSize; i++) {
             int goldUnitId = m_goldUnitIDs[i];
@@ -40,11 +70,8 @@ class IncomeHandler {
 
                     // Catch up mechanic
                     int pTeam = g_finalTeam[p];
-                    if (pTeam == 1 && g_team2_gold > 0 && (g_team1_gold <= g_team2_gold * CATCHUP_GOLD_DIFF)) {
-                        goldAmount = goldAmount * CATCHUP_GOLD_MECHANIC;
-                    } else if (pTeam == 2 && g_team1_gold > 0 && (g_team2_gold <= g_team1_gold * CATCHUP_GOLD_DIFF)) {
-                        goldAmount = goldAmount * CATCHUP_GOLD_MECHANIC;
-                    }
+                    float comebackMultiplier = getComebackMultiplier(pTeam);
+                    goldAmount = goldAmount * comebackMultiplier;
 
                     // 1. Grant the full gold amount to the collecting player
                     trPlayerGrantResources(p, "gold", goldAmount);
@@ -141,10 +168,10 @@ void startIncome(){
 
     for(int p = 1; p <= cNumberPlayers - 2; p++) {
         if (g_finalTeam[p] == 1){
-            g_team1_gold_offset = g_team1_gold_offset + kbGetStatValueFloat(p, cStatTypeResourceCount, 0);
+            g_team1_gold_offset = g_team1_gold_offset + kbGetStatValueFloat(p, cStatTypeResourceCount, 0) + STARTING_GOLD;
         }
         else {
-            g_team2_gold_offset = g_team2_gold_offset + kbGetStatValueFloat(p, cStatTypeResourceCount, 0);
+            g_team2_gold_offset = g_team2_gold_offset + kbGetStatValueFloat(p, cStatTypeResourceCount, 0) + STARTING_GOLD;
         }
         int food = kbGetResourceAmount(p, kbGetResourceID("Food"));
         int wood = kbGetResourceAmount(p, kbGetResourceID("Wood"));
@@ -176,8 +203,20 @@ void startIncome(){
         g_team2_gold = g_team2_gold_count - g_team2_gold_offset;
         trCounterAbort("t1");
         trCounterAbort("t2");
-        trCounterAddTime("t1", -999999, 0, "Team 1: " + xsFloatToInt(g_team1_gold));
-        trCounterAddTime("t2", -999999, 0, "Team 2: " + xsFloatToInt(g_team2_gold));
+        string team1Label = "Team 1";
+        string team2Label = "Team 2";
+        float team1ComebackMultiplier = g_IncomeHandler.getComebackMultiplier(1);
+        if (team1ComebackMultiplier > 1.0) {
+            int team1ComebackPercent = ((team1ComebackMultiplier - 1.0) * 100.0) + 0.5;
+            team1Label = team1Label + "(+" + team1ComebackPercent + "% Gold)";
+        }
+        float team2ComebackMultiplier = g_IncomeHandler.getComebackMultiplier(2);
+        if (team2ComebackMultiplier > 1.0) {
+            int team2ComebackPercent = ((team2ComebackMultiplier - 1.0) * 100.0) + 0.5;
+            team2Label = team2Label + "(+" + team2ComebackPercent + "% Gold)";
+        }
+        trCounterAddTime("t1", -999999, 0, team1Label + ": " + xsFloatToInt(g_team1_gold));
+        trCounterAddTime("t2", -999999, 0, team2Label + ": " + xsFloatToInt(g_team2_gold));
         return true;
     });
 }
