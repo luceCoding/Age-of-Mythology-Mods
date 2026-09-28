@@ -115,7 +115,5 @@ void generateAllCamps(){
         return true;
     });
 
-    generateCamps("MiningCamp", 6, 25.0, 12.0);
-    generateCamps("MiningCampJapanese", 8, 20.0, 12.0);
-    generateCamps("Storehouse", 10, 20.0, 12.0);
+    generateCamps("Storehouse", 24, 20.0, 12.0);
 }

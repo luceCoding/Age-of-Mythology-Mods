@@ -59,13 +59,35 @@ void setAsPlaceholder(string unitType = "", int p = 0){
     trProtoUnitSetFlag(p, unitType, "DoNotShowOnMiniMap", true);
 }
 
-void setupAutoRespawn(string campUnitType = "", string placeholderUnitType = "", float respawnSecs = -1.0){
-    setAsPlaceholder(placeholderUnitType, 0);
-    trProtoUnitMovementType(campUnitType, 0, "air");
-    trProtounitModifySpawnData(campUnitType, 0, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
-    trProtounitModifySpawnData(campUnitType, 0, placeholderUnitType, 1, 1.0, 1, -1, respawnSecs);
-    trProtounitModifySpawnData(placeholderUnitType, 0, campUnitType, 0, 1.0, 1, -1, -1);
-    trProtoUnitSetFlag(0, campUnitType, "ObscuredByUnits", true);
+void setupT1LootAutoRespawn(int cUnitType = cUnitTypeStorehouse, int cUnitTypePlaceholder = cUnitTypeCinematicBlockStartPoint){
+    string unitTypeName = kbProtoUnitGetName(cUnitType);
+    string placeholderUnitTypeName = kbProtoUnitGetName(cUnitTypePlaceholder);
+    setAsPlaceholder(placeholderUnitTypeName, 0);
+    trProtoUnitSetIcon(unitTypeName, 0, "", "ui\minimap\minimap_gold");
+    trProtoUnitMovementType(unitTypeName, 0, "air");
+    trProtounitModifySpawnData(unitTypeName, 0, placeholderUnitTypeName, 1, 1.0, 1, -1, -1);
+    trProtoUnitSetFlag(0, unitTypeName, "ObscuredByUnits", true);
+    g_OnCreationListener.register(0, cUnitTypePlaceholder, false, [](int unitId = -1) -> void {
+            selectSingle(unitId);
+            vector v = trUnitGetPosition(unitId);
+            for (int i = 0; i < T1_LOOT_SPAWN_COUNT; i++) {
+                float angle = xsRandFloat(0, cTwoPi);
+                float minRadius = i;
+                float maxRadius = minRadius + 1.5; 
+                float radius = xsRandFloat(minRadius, maxRadius);
+                float offsetX = radius * cos(angle);
+                float offsetZ = radius * sin(angle);
+                trUnitCreateForced("GoldPile", v.x + offsetX, v.y, v.z + offsetZ, xsRandInt(0, 359), 0);
+            }
+            lowFreqSchedulerWithIntInt.add(T1_LOOT_SPAWN_TIME_MS, unitId, 0, [](int iteration = 0, int unitId = 0, int _ = 0) -> bool {
+                selectSingle(unitId);
+                vector v = trUnitGetPosition(unitId);
+                trUnitCreateForced("Storehouse", v.x, v.y, v.z, xsRandInt(0, 359), 0);
+                trUnitDestroy();
+                return false;
+            });
+        }
+    );
 }
 
 void setupAsSharedShop(string shopUnitType = "", int p = 0){

@@ -104,9 +104,8 @@ const float GAIA_CREEP_LOS = 8.0;
 int[] g_TopBossBuffMsEnd = default;
 int[] g_BotBossBuffMsEnd = default;
 
-const float T1_CRATE_SPAWN_TIME = 90.0;
-const float T2_CRATE_SPAWN_TIME = 120.0;
-const float T3_CRATE_SPAWN_TIME = 150.0;
+const float T1_LOOT_SPAWN_TIME_MS = 120000.0;
+const int T1_LOOT_SPAWN_COUNT = 3;
 
 const float T1_CAMP_SPAWN_TIME = 120.0;
 const float T2_CAMP_SPAWN_TIME = 180.0;
