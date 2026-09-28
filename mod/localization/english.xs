@@ -28,12 +28,12 @@ string SOCKET_TIP_TEXT1 = "Card has max sockets already, upgrade its rarity to i
 string FALLEN_TOWER_TEXT = "A tower has fallen!"; 
 
 string POISON_SYNERGY_TEXT1 = "+25 hack damage explosion on death";
-string POISON_SYNERGY_TEXT2 = "{val} Hack DOT over 10s";
+string POISON_SYNERGY_TEXT2 = "{val} Hack DOT over {s}";
 
 string FIRE_SYNERGY_TEXT1 = "3% chance to signal for Sky Lanterns on hit";
 string FIRE_SYNERGY_TEXT2 = "Sky Lanterns rain down Meteors on death";
 string FIRE_SYNERGY_TEXT3 = "{val} {stat} for Meteors";
-string FIRE_SYNERGY_TEXT4 = "{val} Pierce DOT over 3s";
+string FIRE_SYNERGY_TEXT4 = "{val} Pierce DOT over {s}";
 
 string LIGHTNING_SYNERGY_TEXT1 = "1% chance to cast Bolt on hit, stuns and debuffs armor for 4s";
 string LIGHTNING_SYNERGY_TEXT2 = "+1 to chain lightning every 20s";

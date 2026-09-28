@@ -336,13 +336,53 @@ class Buff {
         return BUFF_UNKNOWN_STAT_TEXT;
     }
 
+    string formatDecimal(float value = 0.0, int maxDecimalPlaces = 2) {
+        float absoluteValue = value;
+        if (absoluteValue < 0.0) { absoluteValue = -absoluteValue; }
+
+        int scale = 1;
+        for (int i = 0; i < maxDecimalPlaces; i++) { scale = scale * 10; }
+
+        int scaledValue = (absoluteValue * scale) + 0.5;
+        int wholePart = scaledValue / scale;
+        int fractionalPart = scaledValue % scale;
+        int decimalPlaces = maxDecimalPlaces;
+        bool trimTrailingZeros = true;
+        while (decimalPlaces > 1 && trimTrailingZeros) {
+            if (fractionalPart % 10 == 0) {
+                fractionalPart = fractionalPart / 10;
+                decimalPlaces = decimalPlaces - 1;
+            } else {
+                trimTrailingZeros = false;
+            }
+        }
+
+        string sign = "";
+        if (value > 0.0) { sign = "+"; }
+        else if (value < 0.0) { sign = "-"; }
+
+        string decimalPart = "" + fractionalPart;
+        while (xsStringLength(decimalPart) < decimalPlaces) {
+            decimalPart = "0" + decimalPart;
+        }
+
+        return sign + wholePart + "." + decimalPart;
+    }
+
+    string formatPercent(int percent = 0, bool positiveUsesMinus = false) {
+        if (percent > 0) {
+            if (positiveUsesMinus) { return "-" + percent + BUFF_PERCENT_SUFFIX; }
+            return "+" + percent + BUFF_PERCENT_SUFFIX;
+        }
+        return "" + percent + BUFF_PERCENT_SUFFIX;
+    }
+
     // Helper 2: Format numeric value into text string
     string getValueString() {
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL) {
             if (m_effectField == cOnHitEffectLifesteal) {
                 int pct = (m_delta * 100.0) + 0.5;
-                if (pct > 0) { return "+" + pct + BUFF_PERCENT_SUFFIX; }
-                else { return "" + pct + BUFF_PERCENT_SUFFIX; }
+                return formatPercent(pct);
             }
             else if (m_effectField == cOnHitEffectProgFreezeSpeed) {
                 int seconds = m_dmgType / 1000;
@@ -351,27 +391,7 @@ class Buff {
                 else { return "" + seconds + BUFF_SECONDS_SUFFIX; }
             }
             else {
-                float absoluteDelta = m_delta;
-                if (absoluteDelta < 0.0) { absoluteDelta = -absoluteDelta; }
-                int thousandthDelta = (absoluteDelta * 1000.0) + 0.5;
-                string sign = "";
-                if (m_delta > 0.0) { sign = "+"; }
-                else if (m_delta < 0.0) { sign = "-"; }
-                int wholePart = thousandthDelta / 1000;
-                int decPart = thousandthDelta % 1000;
-                int decimalPlaces = 3;
-                if (decPart % 100 == 0) {
-                    decPart = decPart / 100;
-                    decimalPlaces = 1;
-                } else if (decPart % 10 == 0) {
-                    decPart = decPart / 10;
-                    decimalPlaces = 2;
-                }
-                string decimalPart = "" + decPart;
-                if (decimalPlaces == 3 && decPart < 10) { decimalPart = "00" + decPart; }
-                else if (decimalPlaces >= 2 && decPart < 10) { decimalPart = "0" + decPart; }
-                else if (decimalPlaces == 3 && decPart < 100) { decimalPart = "0" + decPart; }
-                return sign + wholePart + "." + decimalPart;
+                return formatDecimal(m_delta, 3);
             }
         }
         else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO) {
@@ -388,17 +408,10 @@ class Buff {
         else if (m_relativity == cXSRelativityAbsolute) {
             if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE) {
                 int pct = (m_delta * 100.0) + 0.5;
-                if (pct > 0) { return "+" + pct + BUFF_PERCENT_SUFFIX; }
-                else { return "" + pct + BUFF_PERCENT_SUFFIX; }
+                return formatPercent(pct);
             }
             else if (m_buffType == BUFF_TYPE_PROTO_DATA && (m_puField == cXSProtoEffectUnitRegenRate || m_puField == cXSProtoEffectMaxShieldPoints)) {
-                int tenthDelta = (m_delta * 10.0) + 0.5;
-                string sign = "";
-                if (tenthDelta > 0) { sign = "+"; }
-                int wholePart = tenthDelta / 10;
-                int decPart = tenthDelta % 10;
-                if (decPart < 0) { decPart = -decPart; }
-                return sign + wholePart + "." + decPart;
+                return formatDecimal(m_delta, 2);
             }
             else if (m_buffType == BUFF_TYPE_PROTO_DATA && m_puField == cXSProtoEffectRechargeTime) {
                 int intDelta = m_delta;
@@ -425,12 +438,9 @@ class Buff {
             }
 
             if (m_buffType == BUFF_TYPE_PROTO_DATA && m_puField == cXSProtoEffectRechargeTime) {
-                if (pct > 0) { return "-" + pct + BUFF_PERCENT_SUFFIX; }
-                else { return "" + pct + BUFF_PERCENT_SUFFIX; }
-            } else {
-                if (pct > 0) { return "+" + pct + BUFF_PERCENT_SUFFIX; }
-                else { return "" + pct + BUFF_PERCENT_SUFFIX; }
+                return formatPercent(pct, true);
             }
+            return formatPercent(pct);
         }
 
         return "";
@@ -505,11 +515,14 @@ class Buff {
         string valStr = getValueString();
         string statStr = getFieldName();
         string targetStr = getTargetString();
+        int durationSeconds = m_duration;
+        string durationStr = "" + durationSeconds + BUFF_SECONDS_SUFFIX;
 
         string result = tmpl;
         result = replaceText(result, "{val}", valStr);
         result = replaceText(result, "{stat}", statStr);
         result = replaceText(result, "{target}", targetStr);
+        result = replaceText(result, "{s}", durationStr);
 
         return result;
     }
