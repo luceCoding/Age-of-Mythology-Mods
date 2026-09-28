@@ -72,7 +72,7 @@ void renderPrayerBench(int p = 1) {
                     if (purchase(g_synergyPityCosts[parameters.ints[0]], p)){
                         g_prayerSynergy[p] = parameters.ints[0];
                         g_synergyPityCosts[parameters.ints[0]] = g_synergyPityCosts[parameters.ints[0]] + TEMPLE_COST_INCREMENT;
-                        trChatSendToPlayer(p, p, "Your pity draw is set to " + parameters.strings[0] + " synergy. Only one can be set at a given time.");
+                        trChatSendToPlayer(p, p, PITY_TIP_TEXT1 + parameters.strings[0] + PITY_TIP_TEXT2);
                         refreshShop(p);
                     }
                 }

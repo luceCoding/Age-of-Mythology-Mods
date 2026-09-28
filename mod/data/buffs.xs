@@ -269,71 +269,71 @@ class Buff {
     // Helper 1: Resolve readable field/stat name
     string getFieldName() {
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE) {
-            return "Bonus Damage";
+            return BUFF_BONUS_DAMAGE_TEXT;
         } else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL) {
             switch (m_effectField) {
-                case cOnHitEffectStun: return "stun";
-                case cOnHitEffectSnare: return "snare";
-                case cOnHitEffectDamageOverTime: return "DOT";
-                case cOnHitEffectLifesteal: return "lifesteal";
-                case cOnHitEffectThrow: return "throw";
-                case cOnHitEffectProgFreezeSpeed: return "to progressive freeze";
+                case cOnHitEffectStun: return BUFF_STUN_TEXT;
+                case cOnHitEffectSnare: return BUFF_SNARE_TEXT;
+                case cOnHitEffectDamageOverTime: return BUFF_DOT_TEXT;
+                case cOnHitEffectLifesteal: return BUFF_LIFESTEAL_TEXT;
+                case cOnHitEffectThrow: return BUFF_THROW_TEXT;
+                case cOnHitEffectProgFreezeSpeed: return BUFF_PROGRESSIVE_FREEZE_TEXT;
             }
-            return "Unknown Effect";
+            return BUFF_UNKNOWN_EFFECT_TEXT;
         } else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO) {
             switch (m_effectField) {
-                case cOnHitEffectReincarnation: return "on kill";
+                case cOnHitEffectReincarnation: return BUFF_ON_KILL_TEXT;
             }
-            return "Unknown Effect";
+            return BUFF_UNKNOWN_EFFECT_TEXT;
         } else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPAWN) {
             string spawnName = kbProtoUnitGetName(m_spawnProtoID);
-            string eventName = "Event";
+            string eventName = BUFF_EVENT_TEXT;
             switch (m_eventType) {
-                case cSpawnEventTypeDead: return spawnName + " on death";
-                case cSpawnEventTypeKilled: return spawnName + " on killed";
-                case cSpawnEventTypeBirth: return spawnName + " on birth";
-                case cSpawnEventTypeBuild: return spawnName + " on build";
-                case cSpawnEventTypeMutate: return spawnName + " on mutate";
-                case cSpawnEventTypeHit: return spawnName + " on hit";
-                case cSpawnEventTypeHitGround: return spawnName + " on hit ground";
-                case cSpawnEventTypeRevertToSocket: return spawnName + " on revert to socket";
-                case cSpawnEventTypeHitWater: return spawnName + " on hit water";
-                case cSpawnEventTypeSelfDestruct: return spawnName + " on self destruct";
+                case cSpawnEventTypeDead: return spawnName + BUFF_ON_DEATH_TEXT;
+                case cSpawnEventTypeKilled: return spawnName + BUFF_ON_KILLED_TEXT;
+                case cSpawnEventTypeBirth: return spawnName + BUFF_ON_BIRTH_TEXT;
+                case cSpawnEventTypeBuild: return spawnName + BUFF_ON_BUILD_TEXT;
+                case cSpawnEventTypeMutate: return spawnName + BUFF_ON_MUTATE_TEXT;
+                case cSpawnEventTypeHit: return spawnName + BUFF_ON_HIT_TEXT;
+                case cSpawnEventTypeHitGround: return spawnName + BUFF_ON_HIT_GROUND_TEXT;
+                case cSpawnEventTypeRevertToSocket: return spawnName + BUFF_ON_REVERT_TO_SOCKET_TEXT;
+                case cSpawnEventTypeHitWater: return spawnName + BUFF_ON_HIT_WATER_TEXT;
+                case cSpawnEventTypeSelfDestruct: return spawnName + BUFF_ON_SELF_DESTRUCT_TEXT;
             }
-            return spawnName + " on " + eventName;
+            return spawnName + BUFF_ON_PREFIX + eventName;
         } else {
             switch (m_buffType) {
                 case BUFF_TYPE_PROTO_DATA: {
                     switch (m_puField) {
-                        case cXSProtoEffectArmorHack: return "Hack Armor";
-                        case cXSProtoEffectArmorPierce: return "Pierce Armor";
-                        case cXSProtoEffectArmorCrush: return "Crush Armor";
-                        case cXSProtoEffectHitpoints: return "Max HP";
-                        case cXSProtoEffectSpeed: return "Movement Speed";
-                        case cXSProtoEffectRechargeTime: return "Recharge Rate";
-                        case cXSProtoEffectUnitRegenRate: return "HP Regen";
-                        case cXSProtoEffectMaxShieldPoints: return "Shields";
-                        case cXSActionEffectDamageAll: return "All Damage";
-                        case cXSActionEffectDamageDivine: return "Divine Damage";
+                        case cXSProtoEffectArmorHack: return BUFF_HACK_ARMOR_TEXT;
+                        case cXSProtoEffectArmorPierce: return BUFF_PIERCE_ARMOR_TEXT;
+                        case cXSProtoEffectArmorCrush: return BUFF_CRUSH_ARMOR_TEXT;
+                        case cXSProtoEffectHitpoints: return BUFF_MAX_HP_TEXT;
+                        case cXSProtoEffectSpeed: return BUFF_MOVEMENT_SPEED_TEXT;
+                        case cXSProtoEffectRechargeTime: return BUFF_RECHARGE_RATE_TEXT;
+                        case cXSProtoEffectUnitRegenRate: return BUFF_HP_REGEN_TEXT;
+                        case cXSProtoEffectMaxShieldPoints: return BUFF_SHIELDS_TEXT;
+                        case cXSActionEffectDamageAll: return BUFF_ALL_DAMAGE_TEXT;
+                        case cXSActionEffectDamageDivine: return BUFF_DIVINE_DAMAGE_TEXT;
                     }
                 }
                 case BUFF_TYPE_PROTO_ACTION: {
                     switch (m_puField) {
-                        case cXSActionEffectDamageHack: return "Hack Damage";
-                        case cXSActionEffectDamagePierce: return "Pierce Damage";
-                        case cXSActionEffectDamageCrush: return "Crush Damage";
-                        case cXSActionEffectRange: return "Attack Range";
-                        case cXSActionEffectROF: return "Rate of Fire";
-                        case cXSActionEffectDamageArea: return "Area Damage";
-                        case cXSActionEffectNumProjectiles: return "Projectiles";
-                        case cXSActionEffectDamageAll: return "All Damage";
-                        case cXSActionEffectDamageDivine: return "Divine Damage";
-                        case cXSActionEffectNumBounces: return "Bounces";
+                        case cXSActionEffectDamageHack: return BUFF_HACK_DAMAGE_TEXT;
+                        case cXSActionEffectDamagePierce: return BUFF_PIERCE_DAMAGE_TEXT;
+                        case cXSActionEffectDamageCrush: return BUFF_CRUSH_DAMAGE_TEXT;
+                        case cXSActionEffectRange: return BUFF_ATTACK_RANGE_TEXT;
+                        case cXSActionEffectROF: return BUFF_RATE_OF_FIRE_TEXT;
+                        case cXSActionEffectDamageArea: return BUFF_AREA_DAMAGE_TEXT;
+                        case cXSActionEffectNumProjectiles: return BUFF_PROJECTILES_TEXT;
+                        case cXSActionEffectDamageAll: return BUFF_ALL_DAMAGE_TEXT;
+                        case cXSActionEffectDamageDivine: return BUFF_DIVINE_DAMAGE_TEXT;
+                        case cXSActionEffectNumBounces: return BUFF_BOUNCES_TEXT;
                     }
                 }
             }
         }
-        return "Unknown Stat";
+        return BUFF_UNKNOWN_STAT_TEXT;
     }
 
     // Helper 2: Format numeric value into text string
@@ -341,28 +341,41 @@ class Buff {
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL) {
             if (m_effectField == cOnHitEffectLifesteal) {
                 int pct = (m_delta * 100.0) + 0.5;
-                if (pct > 0) { return "+" + pct + "%"; }
-                else { return "" + pct + "%"; }
+                if (pct > 0) { return "+" + pct + BUFF_PERCENT_SUFFIX; }
+                else { return "" + pct + BUFF_PERCENT_SUFFIX; }
             }
             else if (m_effectField == cOnHitEffectProgFreezeSpeed) {
                 int seconds = m_dmgType / 1000;
                 if (m_duration > 0.0 && seconds == 0) { seconds = 1; }
-                if (seconds > 0) { return "+" + seconds + "s"; }
-                else { return "" + seconds + "s"; }
+                if (seconds > 0) { return "+" + seconds + BUFF_SECONDS_SUFFIX; }
+                else { return "" + seconds + BUFF_SECONDS_SUFFIX; }
             }
             else {
-                int tenthDelta = (m_delta * 10.0) + 0.5;
+                float absoluteDelta = m_delta;
+                if (absoluteDelta < 0.0) { absoluteDelta = -absoluteDelta; }
+                int thousandthDelta = (absoluteDelta * 1000.0) + 0.5;
                 string sign = "";
-                if (tenthDelta > 0) { sign = "+"; }
-                int wholePart = tenthDelta / 10;
-                int decPart = tenthDelta % 10;
-                if (decPart < 0) { decPart = -decPart; }
-                if (decPart > 0) { return sign + wholePart + "." + decPart; }
-                else { return sign + wholePart; }
+                if (m_delta > 0.0) { sign = "+"; }
+                else if (m_delta < 0.0) { sign = "-"; }
+                int wholePart = thousandthDelta / 1000;
+                int decPart = thousandthDelta % 1000;
+                int decimalPlaces = 3;
+                if (decPart % 100 == 0) {
+                    decPart = decPart / 100;
+                    decimalPlaces = 1;
+                } else if (decPart % 10 == 0) {
+                    decPart = decPart / 10;
+                    decimalPlaces = 2;
+                }
+                string decimalPart = "" + decPart;
+                if (decimalPlaces == 3 && decPart < 10) { decimalPart = "00" + decPart; }
+                else if (decimalPlaces >= 2 && decPart < 10) { decimalPart = "0" + decPart; }
+                else if (decimalPlaces == 3 && decPart < 100) { decimalPart = "0" + decPart; }
+                return sign + wholePart + "." + decimalPart;
             }
         }
         else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO) {
-            return "+1 " + m_withProtoUnitType;
+            return BUFF_PLUS_ONE_PREFIX + m_withProtoUnitType;
         }
         else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPAWN) {
             int intDelta = m_delta;
@@ -375,8 +388,8 @@ class Buff {
         else if (m_relativity == cXSRelativityAbsolute) {
             if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE) {
                 int pct = (m_delta * 100.0) + 0.5;
-                if (pct > 0) { return "+" + pct + "%"; }
-                else { return "" + pct + "%"; }
+                if (pct > 0) { return "+" + pct + BUFF_PERCENT_SUFFIX; }
+                else { return "" + pct + BUFF_PERCENT_SUFFIX; }
             }
             else if (m_buffType == BUFF_TYPE_PROTO_DATA && (m_puField == cXSProtoEffectUnitRegenRate || m_puField == cXSProtoEffectMaxShieldPoints)) {
                 int tenthDelta = (m_delta * 10.0) + 0.5;
@@ -389,8 +402,8 @@ class Buff {
             }
             else if (m_buffType == BUFF_TYPE_PROTO_DATA && m_puField == cXSProtoEffectRechargeTime) {
                 int intDelta = m_delta;
-                if (intDelta > 0) { return "-" + intDelta + "s"; }
-                else { return "" + intDelta + "s"; }
+                if (intDelta > 0) { return "-" + intDelta + BUFF_SECONDS_SUFFIX; }
+                else { return "" + intDelta + BUFF_SECONDS_SUFFIX; }
             }
             else {
                 int intDelta = m_delta;
@@ -412,11 +425,11 @@ class Buff {
             }
 
             if (m_buffType == BUFF_TYPE_PROTO_DATA && m_puField == cXSProtoEffectRechargeTime) {
-                if (pct > 0) { return "-" + pct + "%"; }
-                else { return "" + pct + "%"; }
+                if (pct > 0) { return "-" + pct + BUFF_PERCENT_SUFFIX; }
+                else { return "" + pct + BUFF_PERCENT_SUFFIX; }
             } else {
-                if (pct > 0) { return "+" + pct + "%"; }
-                else { return "" + pct + "%"; }
+                if (pct > 0) { return "+" + pct + BUFF_PERCENT_SUFFIX; }
+                else { return "" + pct + BUFF_PERCENT_SUFFIX; }
             }
         }
 
@@ -426,50 +439,50 @@ class Buff {
     // Helper 3: Resolve targeting strings
     string getTargetString() {
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE && m_unitTypes.size() > 0) {
-            string targetStr = "vs ";
+            string targetStr = BUFF_VS_PREFIX;
             for (int u = 0; u < m_unitTypes.size(); u++) {
                 if (u > 0) { targetStr = targetStr + ", "; }
                 
                 string rawName = m_unitTypes[u];
                 string friendlyName = rawName;
                 
-                if (xsStringContains(rawName, "Infantry")) { friendlyName = "Infantry"; }
-                else if (xsStringContains(rawName, "Cavalry")) { friendlyName = "Cavalry"; }
-                else if (xsStringContains(rawName, "Archer")) { friendlyName = "Archers"; }
-                else if (xsStringContains(rawName, "MythUnit")) { friendlyName = "Myth Units"; }
-                else if (xsStringContains(rawName, "Hero")) { friendlyName = "Heroes"; }
-                else if (xsStringContains(rawName, "Siege")) { friendlyName = "Siege"; }
+                if (xsStringContains(rawName, "Infantry")) { friendlyName = BUFF_INFANTRY_TEXT; }
+                else if (xsStringContains(rawName, "Cavalry")) { friendlyName = BUFF_CAVALRY_TEXT; }
+                else if (xsStringContains(rawName, "Archer")) { friendlyName = BUFF_ARCHERS_TEXT; }
+                else if (xsStringContains(rawName, "MythUnit")) { friendlyName = BUFF_MYTH_UNITS_TEXT; }
+                else if (xsStringContains(rawName, "Hero")) { friendlyName = BUFF_HEROES_TEXT; }
+                else if (xsStringContains(rawName, "Siege")) { friendlyName = BUFF_SIEGE_TEXT; }
                 
                 targetStr = targetStr + friendlyName;
             }
             return targetStr;
         } else {
             if (m_unitType != ""){
-                return "for all " + m_unitType + "s";
+                return BUFF_ALL_UNITS_PREFIX + m_unitType + "s";
             }
             else if (m_synergyTypes.size() == 0) {
-                return "for all cards";
+                return BUFF_ALL_CARDS_TEXT;
             } else {
-                string targetStr = "for ";
+                string targetStr = BUFF_TARGET_PREFIX;
                 for (int i = 0; i < m_synergyTypes.size(); i++) {
                     int sType = m_synergyTypes[i];
-                    string sName = "Unknown";
+                    string sName = BUFF_UNKNOWN_TARGET_TEXT;
                     
                     switch (sType) {
-                        case SYNERGY_INDEX_INFANTRY: sName = "Infantry"; 
-                        case SYNERGY_INDEX_RANGED: sName = "Ranged"; 
-                        case SYNERGY_INDEX_CAVALRY: sName = "Cavalry"; 
-                        case SYNERGY_INDEX_MYTH: sName = "Myth Units"; 
-                        case SYNERGY_INDEX_HERO: sName = "Heroes"; 
-                        case SYNERGY_INDEX_HEALER: sName = "Healers"; 
-                        case SYNERGY_INDEX_SIEGE: sName = "Siege"; 
-                        case SYNERGY_INDEX_SOLDIER: sName = "Soldiers"; 
-                        case SYNERGY_INDEX_FROST: sName = "Frost"; 
-                        case SYNERGY_INDEX_UNDEAD: sName = "Undead"; 
-                        case SYNERGY_INDEX_POISON: sName = "Poisonous"; 
-                        case SYNERGY_INDEX_FIRE: sName = "Fire"; 
-                        case SYNERGY_INDEX_LIGHTNING: sName = "Lightning"; 
-                        case SYNERGY_INDEX_BUILDER: sName = "Builder"; 
+                        case SYNERGY_INDEX_INFANTRY: sName = BUFF_INFANTRY_TEXT; 
+                        case SYNERGY_INDEX_RANGED: sName = BUFF_RANGED_TEXT; 
+                        case SYNERGY_INDEX_CAVALRY: sName = BUFF_CAVALRY_TEXT; 
+                        case SYNERGY_INDEX_MYTH: sName = BUFF_MYTH_UNITS_TEXT; 
+                        case SYNERGY_INDEX_HERO: sName = BUFF_HEROES_TEXT; 
+                        case SYNERGY_INDEX_HEALER: sName = BUFF_HEALERS_TEXT; 
+                        case SYNERGY_INDEX_SIEGE: sName = BUFF_SIEGE_TEXT; 
+                        case SYNERGY_INDEX_SOLDIER: sName = BUFF_SOLDIERS_TEXT; 
+                        case SYNERGY_INDEX_FROST: sName = BUFF_FROST_TEXT; 
+                        case SYNERGY_INDEX_UNDEAD: sName = BUFF_UNDEAD_TEXT; 
+                        case SYNERGY_INDEX_POISON: sName = BUFF_POISONOUS_TEXT; 
+                        case SYNERGY_INDEX_FIRE: sName = BUFF_FIRE_TEXT; 
+                        case SYNERGY_INDEX_LIGHTNING: sName = BUFF_LIGHTNING_TEXT; 
+                        case SYNERGY_INDEX_BUILDER: sName = BUFF_BUILDER_TEXT; 
                     }
                     
                     if (i > 0) { targetStr = targetStr + ", "; }
@@ -483,11 +496,11 @@ class Buff {
     }
 
     string getDescription(string overrideTemplate = "") {
-        if (isEmpty()) { return "Empty Buff"; }
+        if (isEmpty()) { return BUFF_EMPTY_TEXT; }
 
         string tmpl = overrideTemplate;
         if (tmpl == "") { tmpl = m_descTemplate; }
-        if (tmpl == "") { tmpl = "{val} {stat} {target}"; } // Default fallback format
+        if (tmpl == "") { tmpl = BUFF_DEFAULT_DESCRIPTION_TEMPLATE; } // Default fallback format
 
         string valStr = getValueString();
         string statStr = getFieldName();

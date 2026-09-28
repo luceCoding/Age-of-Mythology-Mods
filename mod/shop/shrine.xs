@@ -14,7 +14,7 @@ void renderShrine(int p = 1){
 void createShrineCardButtons(ref CardData currCard, int p = 0, ref float posX, ref float posY){
     if (currCard.isNull() || (currCard.getUuid() == g_selectedUUIDs[p]) == false) { return; }
     if (currCard.isIdentified()) {
-        trChatSendToPlayer(p, p, "Card is already identified.");
+        trChatSendToPlayer(p, p, IDENTIFY_TIP_TEXT1);
         trSoundsetPlayPlayer(p, "PopCapHit");
         return;
     }
@@ -32,7 +32,7 @@ void createShrineCardButtons(ref CardData currCard, int p = 0, ref float posX, r
             g_shop.identify(p, parameters.ints[0]);
         }
     );
-    createButton(p, posX, btnPosY, "IDENTIFY");
+    createButton(p, posX, btnPosY, IDENTIFY_BUTTON_TEXT);
 }
 
 void openShrine(int p = 1){

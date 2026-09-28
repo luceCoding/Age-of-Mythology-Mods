@@ -34,7 +34,7 @@ void createArmoryCardButtons(ref CardData currCard, int p = 0, ref float posX, r
                                     g_shop.rerollUpgrade(p, parameters.ints[0], parameters.ints[1]);
                                 }
             );
-            createButton(p, currentX, btnPosY, "UPGRADE " + (i + 1));
+            createButton(p, currentX, btnPosY, UPGRADE_BUTTON_TEXT + (i + 1));
         }
     }
 }

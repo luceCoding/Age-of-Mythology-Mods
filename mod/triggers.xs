@@ -37,9 +37,10 @@ void startGame(){
 
     trPlayerSetName(getTeamsAIPlayer(1), "Team 1");
     trPlayerSetName(getTeamsAIPlayer(2), "Team 2");
-    trChatSend(cNumberPlayers, "Welcome to Deck of the Ages!");
-    trChatSend(cNumberPlayers, "This mod is currently a pre-alpha build and is under development. Everything is subject to change.");
-    trChatSend(cNumberPlayers, "Created by ItzJover.");
+    trChatSend(cNumberPlayers, WELCOME_TEXT1);
+    trChatSend(cNumberPlayers, WELCOME_TEXT2);
+    trChatSend(cNumberPlayers, WELCOME_TEXT3);
+    trChatSend(cNumberPlayers, WELCOME_TEXT4);
 
     for (int p=1; p <= cNumberPlayers-2; p++){
         BenchData bench = g_shop.getBench(trCurrentPlayer());

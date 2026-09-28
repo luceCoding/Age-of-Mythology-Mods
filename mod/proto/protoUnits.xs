@@ -261,6 +261,9 @@ void postModifyPlayerData(){
     // Last 2 AIs
     for(int p = cNumberPlayers - 1; p <= cNumberPlayers; p++) {
         g_OnCreationListener.register(p, cUnitTypeFlyingPurpleHippo, false, [](int unitId = -1) -> void {
+                trChatSend(cNumberPlayers, "GG!");
+                trChatSend(cNumberPlayers, WELCOME_TEXT3);
+                trChatSend(cNumberPlayers, WELCOME_TEXT4);
                 selectSingle(unitId);
                 trUnitChangeName("Creator: ItzJover");
                 setTeamAsWinner((g_finalTeam[kbUnitGetPlayerID(unitId)] == 1) ? 2 : 1);

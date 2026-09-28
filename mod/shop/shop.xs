@@ -289,7 +289,7 @@ class Shop {
             if (g_prayerSynergy[p] >= 0 & m_pityDrawChances[p] >= xsRandInt(0, 400)){
                 drawnCard = drawFromDeckWithSynergy(tier, g_prayerSynergy[p]);
                 if (drawnCard.isNull() == false){
-                    trChatSendToPlayer(p, p, "What a pity...");
+                    trChatSendToPlayer(p, p, PITY_TRIGGERED_TEXT);
                     trSoundsetPlayPlayer(p, "AotgLegendDeath");
                     m_pityDrawChances[p] = 0;
                     g_prayerSynergy[p] = -1;
@@ -508,8 +508,8 @@ void renderDraws(int p = 1) {
                     g_shop.lock(p, parameters.ints[0]);
                 }
             );
-            createButton(p, posX - 0.06, btnPosY, "BUY");
-            createButton(p, posX + 0.06, btnPosY, "(UN)LOCK");
+            createButton(p, posX - 0.06, btnPosY, BUY_BUTTON_TEXT);
+            createButton(p, posX + 0.06, btnPosY, UNLOCK_BUTTON_TEXT);
         }
         posX = posX + offsetX;
     }
@@ -533,7 +533,7 @@ void createShopCardButtons(ref CardData currCard, int p = 0, ref float posX, ref
                 g_shop.withdraw(p, parameters.ints[0]);
             }
         );
-        createButton(p, posX, btnPosY, "WITHDRAW");
+        createButton(p, posX, btnPosY, WITHDRAW_BUTTON_TEXT);
     }
     else {
         float sellPosX = currCard.isIdentified() ? (posX - 0.06) : posX;
@@ -545,7 +545,7 @@ void createShopCardButtons(ref CardData currCard, int p = 0, ref float posX, ref
                 g_shop.sell(p, parameters.ints[0]);
             }
         );
-        createButton(p, sellPosX, btnPosY, "SELL");
+        createButton(p, sellPosX, btnPosY, SELL_BUTTON_TEXT);
         if (currCard.isIdentified()){
             minimapSafeClickable(p, 
                                 posX + 0.06, btnPosY + 0.035, 0.1, 0.055,
@@ -555,7 +555,7 @@ void createShopCardButtons(ref CardData currCard, int p = 0, ref float posX, ref
                     g_shop.deploy(p, parameters.ints[0]);
                 }
             );
-            createButton(p, posX + 0.06, btnPosY, "DEPLOY");
+            createButton(p, posX + 0.06, btnPosY, DEPLOY_BUTTON_TEXT);
         }
     }
 }
@@ -649,7 +649,7 @@ void closeShop(int p = 1, int shopType = SHOP_TYPE_CLOSED){
 void renderExitButton(int p = 1, float drawPosx = 0.55, float drawPosY = -0.425) {
     float drawPosx2 = getRightAnchorX(100, 128.0, p);
     drawPosx = min(drawPosx, drawPosx2);
-    createButton(p, drawPosx, drawPosY, "EXIT");
+    createButton(p, drawPosx, drawPosY, EXIT_BUTTON_TEXT);
     minimapSafeClickable(p, 
                         drawPosx, drawPosY + 0.035, 0.1, 0.055,
                         "",
@@ -684,18 +684,18 @@ void renderShop(int p = 1){
     if (shopLevel < MAX_SHOP_LEVEL && shopLevel < g_shopLevels.size()){
         minimapSafeDisplay(p, drawPosx - 0.015, drawPosYStart + 0.1, 
                             "<color=1,1,1,0,0,0>" +
-                            "\nLevel: " + shopLevel + "\n" + 
+                            "\n" + SHOP_LEVEL_TEXT + ": " + shopLevel + "\n" + 
                             "XP: " + g_shop.m_totalShopExp[p] + " / " + level.m_expNeeded);
     }
     else {
         minimapSafeDisplay(p, drawPosx - 0.015, drawPosYStart + 0.1,
                             "<color=1,1,1,0,0,0>" +
-                            "\nLevel: " + MAX_SHOP_LEVEL + 
+                            "\n" + SHOP_LEVEL_TEXT + ": " + MAX_SHOP_LEVEL + 
                             "\nXP: MAX");
     }
 
     minimapSafeDisplay(p, drawPosx - 0.15, drawPosYStart - 0.05,
-                        "<color=1,1,1,0,0,0>Draw Chances:\n" + shopChances + "</color>");
+                        "<color=1,1,1,0,0,0>" + DRAW_CHANCES_TEXT + ":\n" + shopChances + "</color>");
 
     // Buy XP
     float drawPosY = drawPosYStart;
@@ -709,7 +709,7 @@ void renderShop(int p = 1){
         }
     );
     minimapSafeDisplay(p, drawPosx, drawPosY + 0.03,
-                       "BUY XP\n" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + "<color=0.729,0.557,0.137>" + g_shop.getBuyXPCost(p) + "</color>");
+                       BUYXP_BUTTON_TEXT + "\n" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + "<color=0.729,0.557,0.137>" + g_shop.getBuyXPCost(p) + "</color>");
 
     // Draw
     drawPosY = drawPosY - yOffset;
@@ -723,7 +723,7 @@ void renderShop(int p = 1){
         }
     );
     minimapSafeDisplay(p, drawPosx, drawPosY + 0.03,
-                       "DRAW\n" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + "<color=0.729,0.557,0.137>" + g_shop.getDrawCost(p) + "</color>");
+                       DRAW_BUTTON_TEXT + "\n" + getIconPathFormat("resources/in_game/Villager_Priority/icons_off/Icon_Economic_Off.png", 32) + "<color=0.729,0.557,0.137>" + g_shop.getDrawCost(p) + "</color>");
 
     // Exit Shop Button
     renderExitButton(p);

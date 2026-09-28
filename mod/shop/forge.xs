@@ -18,7 +18,7 @@ void createForgeCardButtons(ref CardData currCard, int p = 0, ref float posX, re
         || currCard.isOsirisPieceBoxCard() 
         || currCard.getNumberOfSockets() >= currCard.getRarity()+1) { return; }
     if (currCard.getNumberOfSockets() >= currCard.getRarity()+1) { 
-        trChatSendToPlayer(p, p, "Card has max sockets already, upgrade its rarity to increase its socket count.");
+        trChatSendToPlayer(p, p, SOCKET_TIP_TEXT1);
         trSoundsetPlayPlayer(p, "PopCapHit");
         return; 
     }
@@ -36,7 +36,7 @@ void createForgeCardButtons(ref CardData currCard, int p = 0, ref float posX, re
             g_shop.addSocket(p, parameters.ints[0]);
         }
     );
-    createButton(p, posX, btnPosY, "ADD SOCKET");
+    createButton(p, posX, btnPosY, SOCKET_BUTTON_TEXT);
 }
 
 void openForge(int p = 1){
