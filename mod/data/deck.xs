@@ -13,7 +13,6 @@ class DeckData {
             m_cardArray.add(card);
         }
         m_cardSize++;
-        log(3, "Added card to deck " + card.getUuid() + " size: " + m_cardSize);
     }
 
     // Fast removal at a specific index using logical size tracking
@@ -29,8 +28,6 @@ class DeckData {
         if (index < m_cardSize) {
             m_cardArray[index] = m_cardArray[m_cardSize];
         }
-
-        log(3, "Popped card from deck, size: " + m_cardSize);
         return drawnCard;
     }
 

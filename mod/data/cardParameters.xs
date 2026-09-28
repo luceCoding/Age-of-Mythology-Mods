@@ -23,11 +23,9 @@ class CardParameters {
         selectSingle(unitID);
         if (kbProtoUnitIsType(kbUnitGetProtoUnitID(unitID), kbGetUnitTypeID(unitType)) != false){
             trUnitDestroy(false);
-            log(3, "Is " + unitType + " unit type.");
             return true;
         }
         trUnitDestroy(false);
-        log(3, "Should never see this message except at the start of the game.");
         return false;
     }
 

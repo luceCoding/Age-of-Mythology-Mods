@@ -72,7 +72,6 @@ class BenchData {
             }
         }
         m_cardSize++;
-        log(3, "Added card to bench " + card.getUuid() + ", size: " + m_cardSize);
         return true;
     }
 
@@ -126,8 +125,6 @@ class BenchData {
                     g_ProtoUnitToIndex.remove(currProto + m_player);
                 }
             }
-
-            log(3, "Removed card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
             return currCard;
         }
         
@@ -175,8 +172,6 @@ class BenchData {
                 g_ProtoUnitToIndex.remove(currProto + m_player);
             }
         }
-
-        log(3, "Removed card from index " + index + " (UUID: " + currCard.getUuid() + "), size: " + m_cardSize);
         return currCard;
     }
 
@@ -217,8 +212,6 @@ class BenchData {
                         g_ProtoUnitToIndex.remove(currProto + m_player);
                     }
                 }
-
-                log(3, "Removed osiris card from bench " + currCard.getUuid() + ", size: " + m_cardSize);
                 i--; // Recheck the card moved into this slot
             }
         }
@@ -289,7 +282,6 @@ class BenchData {
             card.applyRarityHealth(m_player);
         }
         changeDisplayName(card);
-        log(3, "Player " + m_player + " deployed " + protoName + " to shop " + m_playerShopId);
         return true;
     }
 
@@ -406,7 +398,6 @@ class BenchData {
                     }
                     m_cardArray[i] = cardToWithdraw;
                     trSoundsetPlayPlayer(m_player, "AotgBlessingUnequip");
-                    log(3, "Player " + m_player + " withdrew to shop " + m_playerShopId);
                     return true;
                 }
                 else if (trCurrentPlayer() == m_player) {
@@ -461,7 +452,6 @@ class BenchData {
                                 g_selectedUUIDs[p] = -1;
                                 trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
                                 trChatSendToPlayer(m_player, m_player, card.getProtoName() + " card identified and merged.");
-                                log(3, "Player " + m_player + " identified and merged " + card.getProtoName());
                                 return true;
                             }
                         }
@@ -472,7 +462,6 @@ class BenchData {
                 g_selectedUUIDs[p] = -1;
                 trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedFine");
                 trChatSendToPlayer(m_player, m_player, card.getProtoName() + " card identified.");
-                log(3, "Player " + m_player + " identified " + card.getProtoName());
                 return true;
             }
         }
@@ -498,7 +487,6 @@ class BenchData {
                     case TIER_LEGENDARY: { trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedDivine"); break; }
                     default: trSoundsetPlayPlayer(m_player, "AotgBlessingRewardReceivedSimple");
                 }
-                log(3, "Player " + m_player + " rarity a card.");
                 return true;
             }
         }
@@ -517,7 +505,6 @@ class BenchData {
                     g_forgeShopCost = g_forgeShopCost + FORGE_COST_INCREMENT;
                     m_cardArray[i] = card;
                     trSoundsetPlayPlayer(m_player, "ArmorySelect");
-                    log(3, "Player " + m_player + " socketed a card.");
                     return true;
                 }
             }
@@ -542,7 +529,6 @@ class BenchData {
                 g_armoryShopCost = g_armoryShopCost + ARMORY_COST_INCREMENT;
                 m_cardArray[i] = card;
                 trSoundsetPlayPlayer(m_player, "ArmorySelect");
-                log(3, "Player " + m_player + " rerolled upgrade " + upgradeIdx + " on card " + uuid + ".");
                 return true;
             }
         }
