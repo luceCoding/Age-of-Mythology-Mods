@@ -71,6 +71,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeMinotaur);
     addCardsIntoDeck(1, cUnitTypeCentaur);
     addCardsIntoDeck(1, cUnitTypeAchilles);
+    addCardsIntoDeck(1, cUnitTypeLykaonWolf);
 
     addCardsIntoDeck(1, cUnitTypeWadjet);
     addCardsIntoDeck(1, cUnitTypeAnubite);
@@ -231,9 +232,9 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(4, cUnitTypeKingFolstag, 750);
     addCardsIntoDeck(4, cUnitTypeGauntletLegendHalogi, 750);
 
-    addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 1000, -1, TIER_LEGENDARY, false);
+    addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 500, -1, TIER_LEGENDARY, false);
 }
 
 void addOsirisCardIntoDeck(){
-    addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 1000, -1, TIER_LEGENDARY, false);
+    addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 500, -1, TIER_LEGENDARY, false);
 }

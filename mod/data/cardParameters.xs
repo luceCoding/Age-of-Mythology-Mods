@@ -221,7 +221,7 @@ class CardParameters {
                 return true;
             }
         }
-        return false;
+        return protoID == cUnitTypeLykaonWolf;
     }
 
     void setCardParameters(int age = 0, int protoID = -1, int cost = -1){

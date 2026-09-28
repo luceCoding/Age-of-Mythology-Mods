@@ -225,6 +225,18 @@ void forbidTrainBuilding(int p = -1, int cUnitType = -1){
     trForbidProtounit(p, kbProtoUnitGetName(cUnitType));
 }
 
+void addTrainBuildings(string targetProto = "", int p = -1){
+    addTrainBuilding(targetProto, cUnitTypeSmokeTrap, p, 0, 1);
+    addTrainBuilding(targetProto, cUnitTypeSpikeTrap, p, 0, 2);
+    addTrainBuilding(targetProto, cUnitTypeObelisk, p, 0, 5);
+    addTrainBuilding(targetProto, cUnitTypeSkyPassageSPC, p, 0, 4);
+    addTrainBuilding(targetProto, cUnitTypeFarmShennong, p, 1, 3);
+    addTrainBuilding(targetProto, cUnitTypeSentryTower, p, 2, 2);
+    addTrainBuilding(targetProto, cUnitTypeMirrorTower, p, 2, 4);
+    addTrainBuilding(targetProto, cUnitTypeHillFort, p, 2, 3);
+    addTrainBuilding(targetProto, cUnitTypeMonolithOfTlaloc, p, 2, 5);
+}
+
 void setupForBuilderSynergy(int p = 0){
     modifyBuildingCosts(p);
     CardParameters[] params = g_protoNameToCardParametersMap.getValues();
@@ -232,23 +244,16 @@ void setupForBuilderSynergy(int p = 0){
         CardParameters param = params[i];
         if (param.isASynergy(SYNERGY_INDEX_BUILDER)){
             string targetProto = param.getProtoUnit();
-            addTrainBuilding(targetProto, cUnitTypeSmokeTrap, p, 0, 1);
-            addTrainBuilding(targetProto, cUnitTypeSpikeTrap, p, 0, 2);
-            addTrainBuilding(targetProto, cUnitTypeObelisk, p, 0, 5);
-            addTrainBuilding(targetProto, cUnitTypeSkyPassageSPC, p, 0, 3);
-            addTrainBuilding(targetProto, cUnitTypeFarmShennong, p, 1, 3);
-            addTrainBuilding(targetProto, cUnitTypeSentryTower, p, 2, 2);
-            addTrainBuilding(targetProto, cUnitTypeMirrorTower, p, 2, 4);
-            addTrainBuilding(targetProto, cUnitTypeHillFort, p, 2, 3);
-            addTrainBuilding(targetProto, cUnitTypeMonolithOfTlaloc, p, 2, 5);
+            if (kbProtoUnitGetID(targetProto) == cUnitTypeLykaonWolf) { continue; }
+            addTrainBuildings(targetProto, p);
         }
     }
+    addTrainBuildings(kbProtoUnitGetName(cUnitTypeLykaonVillager), p);
     trTechSetStatus(p, cTechTzompantliWatchTower, cTechStatusActive);
     trTechSetStatus(p, cTechWatchTower, cTechStatusActive);
     trTechSetStatus(p, cTechBoilingOil, cTechStatusActive);
-    trTechSetStatus(p, cTechSignalFires, cTechStatusUnobtainable);
-    trTechSetStatus(p, cTechCrenellations, cTechStatusUnobtainable);
-    trTechSetStatus(p, cTechMediumInfantry, cTechStatusUnobtainable);
+    trTechSetStatus(p, cTechLykaonVillagerToWolf, cTechStatusActive);
+    trTechSetStatus(p, cTechLykaonWolfToVillager, cTechStatusActive);
     unforbidTrainBuilding(p, cUnitTypeSmokeTrap);
     unforbidTrainBuilding(p, cUnitTypeSpikeTrap);
     unforbidTrainBuilding(p, cUnitTypeObelisk);
