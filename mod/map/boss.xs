@@ -179,7 +179,7 @@ void applyBotBossBuffToPlayerTeam(int p = 0){
     trChatSend(getTeamsAIPlayer(team), "Team " + team + " has gained red buff!\n" + displayCompensatedIcon(128, 128, icon));
 }
 
-IntToIntHashMap g_cUnitTypeToKillCount;
+IntToIntcMinIntHashMap g_cUnitTypeToKillCount;
 
 int[] getWhoKilledUnitType(int cUnitType = -1){
     int[] players = new int(0, 0);

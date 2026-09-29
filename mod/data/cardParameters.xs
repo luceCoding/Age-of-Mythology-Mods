@@ -6,18 +6,19 @@ class CardParameters {
     Parameters m_params;
     bool[] m_unitTypes = default;
 
-    string getProtoUnit(){
-        if (m_params.strings.size() < 1){
-            return "";
+    int getProtoID(){
+        if (m_params.ints.size() < 4){
+            return -1;
         }
-        return m_params.strings[1];
+        return m_params.ints[3];
     }
 
     bool isUnitType(string unitType = ""){
         xsSetContextPlayer(0);
-        int unitID = trUnitCreateForced(getProtoUnit(), 0, 0, 0, -1, 0, false);
+        int protoID = getProtoID();
+        int unitID = trUnitCreateForced(kbProtoUnitGetName(protoID), 0, 0, 0, -1, 0, false);
         if (unitID < 0) {
-            errorLog(getProtoUnit() + " failed to spawn");
+            errorLog(kbProtoUnitGetName(protoID) + " failed to spawn");
             return false;
         }
         selectSingle(unitID);
@@ -58,24 +59,15 @@ class CardParameters {
     }
 
     string getStringData(){
-        if (m_params.strings.size() < 0){
-            return "";
-        }
-        return m_params.strings[0];
+        return "";
     }
 
     string getIconPath(){
-        if (m_params.strings.size() < 2){
-            return "";
-        }
-        return m_params.strings[2];
+        return toForwardSlash(kbProtoUnitGetIconPath(0, getProtoID()));
     }
 
     string getTitle(){
-        if (m_params.strings.size() < 3){
-            return "";
-        }
-        return m_params.strings[3];
+        return kbProtoUnitGetDisplayName(0, getProtoID());
     }
 
     float getInitalMaxHP(){
@@ -231,11 +223,6 @@ class CardParameters {
         }
         params.ints.add(cost);
         params.ints.add(protoID);
-        params.strings.add(""); // placeholder for data
-        params.strings.add(kbProtoUnitGetName(protoID));
-        params.strings.add(toForwardSlash(kbProtoUnitGetIconPath(0, protoID)));
-        params.strings.add(kbProtoUnitGetDisplayName(0, protoID));
-
         params.floats.add(kbPlayerGetProtoStatFloat(1, protoID, cProtoStatMaxHP));
 
         m_params = params;

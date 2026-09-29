@@ -6,8 +6,6 @@ const int BUFF_TYPE_PROTO_ACTION_SPAWN = 4; // trProtounitModifySpawnData
 const int BUFF_TYPE_LAMBDA_ONLY = 5;
 const int BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO = 6;
 
-string[] g_allProtounits = default;
-
 StringToFloatHashMap g_buffToCounterMap;
 
 string getBuffToCounterKey(int p = 0, int synergyIndex = -1, int buffType = BUFF_TYPE_PROTO_DATA, string tag = ""){
@@ -189,19 +187,19 @@ class Buff {
         if (m_unitType == ""){
 
             if (m_synergyTypes.size() == 0){ // Apply to all cards
-                string[] protoNames = g_protoNameToCardParametersMap.getKeys();
-                for (int i = 0; i < protoNames.size(); i++) {
-                    _executeCommand(protoNames[i], p, m_delta);
+                int[] protoIDs = g_protoIDToCardParametersMap.getKeys();
+                for (int i = 0; i < protoIDs.size(); i++) {
+                    _executeCommand(kbProtoUnitGetName(protoIDs[i]), p, m_delta);
                 }
             }
             else { // Apply to only certain synergies
-                CardParameters[] params = g_protoNameToCardParametersMap.getValues();
+                CardParameters[] params = g_protoIDToCardParametersMap.getValues();
                 for (int i = 0; i < params.size(); i++){
                     CardParameters param = params[i];
                     for (int j = 0; j < m_synergyTypes.size(); j++) {
                         int synergyType = m_synergyTypes[j];
                         if (param.isASynergy(synergyType)){
-                            _executeCommand(param.getProtoUnit(), p, m_delta);
+                            _executeCommand(kbProtoUnitGetName(param.getProtoID()), p, m_delta);
                             break;
                         }
                     }
@@ -244,17 +242,17 @@ class Buff {
         }
 
         if (m_unitType == ""){
-            CardParameters[] params = g_protoNameToCardParametersMap.getValues();
+            CardParameters[] params = g_protoIDToCardParametersMap.getValues();
             for (int i = 0; i < params.size(); i++) {
                 CardParameters param = params[i];
                 if (m_synergyTypes.size() == 0){ // Apply to all cards
-                    _executeCommand(param.getProtoUnit(), p, invDelta);
+                    _executeCommand(kbProtoUnitGetName(param.getProtoID()), p, invDelta);
                 }
                 else{
                     for (int j = 0; j < m_synergyTypes.size(); j++) {
                         int synergyType = m_synergyTypes[j];
                         if (param.isASynergy(synergyType)){
-                            _executeCommand(param.getProtoUnit(), p, invDelta);
+                            _executeCommand(kbProtoUnitGetName(param.getProtoID()), p, invDelta);
                             break;
                         }
                     }

@@ -5,8 +5,7 @@ include "cardParameters.xs";
 void addCardIntoDeck(int age = 0, int protoID = -1, int cost = -1, int upgrade = -1, int rarity = -1, bool addSockets = true){
     CardParameters params;
     params.setCardParameters(age, protoID, cost);
-    string protoName = kbProtoUnitGetName(protoID);
-    g_protoNameToCardParametersMap.put(protoName, params);
+    g_protoIDToCardParametersMap.put(protoID, params);
     CardData card;
     card.setCard(params, upgrade, addSockets);
     if (rarity != -1){

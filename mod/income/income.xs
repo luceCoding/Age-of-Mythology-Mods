@@ -131,10 +131,10 @@ void startIncome(){
     // Increase gold kill bounties over time
     lowFreqScheduler.add(60013, [](int iterations = 1) -> bool {
 
-        CardParameters[] params = g_protoNameToCardParametersMap.getValues();
+        CardParameters[] params = g_protoIDToCardParametersMap.getValues();
         for (int i = 0; i < params.size(); i++) {
             CardParameters param = params[i];
-            string targetProto = param.getProtoUnit();
+            string targetProto = kbProtoUnitGetName(param.getProtoID());
             for (int p = 1; p <= cNumberPlayers-2; p++){
                 trModifyProtounitResource(targetProto, "Gold", p, cXSPUResourceEffectKillReward, 1, cXSRelativityAbsolute);
             }

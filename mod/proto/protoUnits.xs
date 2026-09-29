@@ -250,10 +250,10 @@ void postModifyPlayerData(){
 
     // For humans
     for(int p = 1; p <= cNumberPlayers-2; p++) {
-        string[] protoNames = g_protoNameToCardParametersMap.getKeys();
-        for (int i=0; i<protoNames.size(); i++){
-            setAsCardUnit(protoNames[i], p);
-            g_AttachmentManager.registerAttachmentOntoProtoUnit(kbProtoUnitGetID(protoNames[i]), p);
+        int[] protoIDs = g_protoIDToCardParametersMap.getKeys();
+        for (int i=0; i<protoIDs.size(); i++){
+            setAsCardUnit(protoIDs[i], p);
+            g_AttachmentManager.registerAttachmentOntoProtoUnit(protoIDs[i], p);
         }
         applyProxyDOT(cUnitTypeMarket, p, 11.0, -19.0);
     }

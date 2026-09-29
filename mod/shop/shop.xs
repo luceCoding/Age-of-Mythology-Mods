@@ -4,7 +4,7 @@ include "data/bench.xs";
 include "data/card.xs";
 include "data/cardParameters.xs";
 
-IntToIntHashMap ShopTypeToUnitIDMap;
+IntToIntcMinIntHashMap ShopTypeToUnitIDMap;
 int[] g_prayerSynergy = default;
 int[] g_synergyPityCosts = default;
 int[] g_selectedSynergy = default;
@@ -319,7 +319,7 @@ class Shop {
         DrawData currDraw = m_currDraws[p];
         CardData card = currDraw.getCardByUUID(uuid);
         if (card.isNull() == true){ return; }
-        if ((bench.isThereADuplicateCard(card.getProtoName()) && card.isIdentified()) || bench.getNumberOfCardsHeld() < MAX_CARDS_IN_BENCH) { 
+        if ((bench.isThereADuplicateCard(card.getProtoID()) && card.isIdentified()) || bench.getNumberOfCardsHeld() < MAX_CARDS_IN_BENCH) {
             int cost = getCost(card, p);
             if (purchase(cost, p) == false){return;}
 

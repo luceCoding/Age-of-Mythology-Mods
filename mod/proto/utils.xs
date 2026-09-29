@@ -17,7 +17,8 @@ void setupForAllUnits(string protoName = "", int p = 0){
     trProtounitModifySpawnData(protoName, p, "GoldPile", 0, 1.0, 1, -1, GOLDPILE_LIFESPAN);
 }
 
-void setAsCardUnit(string protoName = "", int p = 0){
+void setAsCardUnit(int protoID = -1, int p = 0){
+    string protoName = kbProtoUnitGetName(protoID);
     setupForAllUnits(protoName, p);
     //trProtoUnitActionSetEnabled(protoName, p, "Repair", false);
     trProtoUnitSetFlag(p, protoName, "KnockoutDeath", false);
@@ -241,12 +242,13 @@ void addTrainBuildings(string targetProto = "", int p = -1){
 
 void setupForBuilderSynergy(int p = 0){
     modifyBuildingCosts(p);
-    CardParameters[] params = g_protoNameToCardParametersMap.getValues();
+    CardParameters[] params = g_protoIDToCardParametersMap.getValues();
     for (int i = 0; i < params.size(); i++) {
         CardParameters param = params[i];
         if (param.isASynergy(SYNERGY_INDEX_BUILDER)){
-            string targetProto = param.getProtoUnit();
-            if (kbProtoUnitGetID(targetProto) == cUnitTypeLykaonWolf) { continue; }
+            int targetProtoID = param.getProtoID();
+            if (targetProtoID == cUnitTypeLykaonWolf) { continue; }
+            string targetProto = kbProtoUnitGetName(targetProtoID);
             addTrainBuildings(targetProto, p);
         }
     }

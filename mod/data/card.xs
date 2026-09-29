@@ -6,7 +6,7 @@ class CardData {
     bool m_isLocked = false;
     bool m_isDeployed = false;
     bool m_isIdentified = true;
-    string m_protoName = "";
+    int m_protoID = -1;
     int m_count = 1;
     int m_uuid = cMinInt;
     int m_rarity = 0;
@@ -16,14 +16,14 @@ class CardData {
     int[] m_upgrades = default;
 
     void setCard(ref CardParameters params, int upgrade = -1, bool addSockets = true){
-        m_protoName = params.getProtoUnit();
+        m_protoID = params.getProtoID();
         m_uuid = g_uuid.getNextUUID();
         m_deckIndex = params.getAge();
         m_isIdentified = xsRandBool(IDENTIFIED_TO_UNIDENTIFIED_CARDS_RATIO);
     }
 
     CardParameters getCardParameters(){
-        return g_protoNameToCardParametersMap.get(m_protoName);
+        return g_protoIDToCardParametersMap.get(m_protoID);
     }
 
     int rerollRarity(int luckBonus = 0){
@@ -57,26 +57,27 @@ class CardData {
     void applyUpgrade(ref int p, ref int puFIELD, int sign = 1){
         if (isDeployed() == false) { return; }
         float absDelta = 2.0 * (1.0 + m_rarity) * sign;
+        string protoName = kbProtoUnitGetName(m_protoID);
 
         switch(puFIELD){
-            case UPGRADE_HACK_ARMOR: { trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorHack, absDelta / 100.0 * 2, cXSRelativityAbsolute); break; }
-            case UPGRADE_PIERCE_ARMOR: { trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorPierce, absDelta / 100.0 * 2, cXSRelativityAbsolute); break; }
-            case UPGRADE_CRUSH_ARMOR: { trModifyProtounitData(m_protoName, p, cXSProtoEffectArmorCrush, absDelta / 100.0 * 2, cXSRelativityAbsolute); break; }
+            case UPGRADE_HACK_ARMOR: { trModifyProtounitData(protoName, p, cXSProtoEffectArmorHack, absDelta / 100.0 * 2, cXSRelativityAbsolute); break; }
+            case UPGRADE_PIERCE_ARMOR: { trModifyProtounitData(protoName, p, cXSProtoEffectArmorPierce, absDelta / 100.0 * 2, cXSRelativityAbsolute); break; }
+            case UPGRADE_CRUSH_ARMOR: { trModifyProtounitData(protoName, p, cXSProtoEffectArmorCrush, absDelta / 100.0 * 2, cXSRelativityAbsolute); break; }
             case UPGRADE_HITPOINTS: {
                 absDelta = 20 * (1.0 + m_rarity) * sign;
-                trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, absDelta, cXSRelativityAbsolute); break;
+                trModifyProtounitData(protoName, p, cXSProtoEffectHitpoints, absDelta, cXSRelativityAbsolute); break;
             }
             case UPGRADE_SHIELDS: {
                 absDelta = 10 * (1.0 + m_rarity) * sign;
-                trModifyProtounitData(m_protoName, p, cXSProtoEffectMaxShieldPoints, absDelta, cXSRelativityAbsolute); break;
+                trModifyProtounitData(protoName, p, cXSProtoEffectMaxShieldPoints, absDelta, cXSRelativityAbsolute); break;
             }
             case UPGRADE_SPEED: {
-                trModifyProtounitData(m_protoName, p, cXSProtoEffectSpeed, absDelta * 0.1, cXSRelativityAbsolute); break;
+                trModifyProtounitData(protoName, p, cXSProtoEffectSpeed, absDelta * 0.1, cXSRelativityAbsolute); break;
             }
-            case UPGRADE_HP_REGEN: { trModifyProtounitData(m_protoName, p, cXSProtoEffectUnitRegenRate, absDelta * 0.1, cXSRelativityAbsolute); break; }
-            case UPGRADE_HACK_ATTACK: { applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute); break; }
-            case UPGRADE_PIERCE_ATTACK: { applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute); break; }
-            case UPGRADE_CRUSH_ATTACK: { applyProtoActionToTarget(m_protoName, p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute); break; }
+            case UPGRADE_HP_REGEN: { trModifyProtounitData(protoName, p, cXSProtoEffectUnitRegenRate, absDelta * 0.1, cXSRelativityAbsolute); break; }
+            case UPGRADE_HACK_ATTACK: { applyProtoActionToTarget(protoName, p, cXSActionEffectDamageHack, absDelta, cXSRelativityAbsolute); break; }
+            case UPGRADE_PIERCE_ATTACK: { applyProtoActionToTarget(protoName, p, cXSActionEffectDamagePierce, absDelta, cXSRelativityAbsolute); break; }
+            case UPGRADE_CRUSH_ATTACK: { applyProtoActionToTarget(protoName, p, cXSActionEffectDamageCrush, absDelta, cXSRelativityAbsolute); break; }
         }
     }
 
@@ -104,8 +105,8 @@ class CardData {
         applyUpgrade(p, upgrade, -1);
     }
 
-    string getProtoName(){
-        return m_protoName;
+    int getProtoID(){
+        return m_protoID;
     }
 
     void setRarity(int rarity = -1){
@@ -119,7 +120,7 @@ class CardData {
     void increaseRarityBy(int rarityIncrease = 1, int p = 0){
         m_rarity = m_rarity + rarityIncrease;
         CardParameters params = getCardParameters();
-        trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, params.getInitalMaxHP() * rarityIncrease, cXSRelativityAbsolute);
+        trModifyProtounitData(kbProtoUnitGetName(m_protoID), p, cXSProtoEffectHitpoints, params.getInitalMaxHP() * rarityIncrease, cXSRelativityAbsolute);
     }
 
     void mergeDuplicate(ref CardData duplicateCard, int p = 0){
@@ -136,18 +137,18 @@ class CardData {
         m_rarity = m_rarity - 1;
         if (isDeployed()){
             CardParameters params = getCardParameters();
-            trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, -params.getInitalMaxHP(), cXSRelativityAbsolute);
+            trModifyProtounitData(kbProtoUnitGetName(m_protoID), p, cXSProtoEffectHitpoints, -params.getInitalMaxHP(), cXSRelativityAbsolute);
         }
     }
 
     void resetRarityHealth(int p = 0){
         CardParameters params = getCardParameters();
-        trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, -params.getInitalMaxHP() * m_rarity, cXSRelativityAbsolute);
+        trModifyProtounitData(kbProtoUnitGetName(m_protoID), p, cXSProtoEffectHitpoints, -params.getInitalMaxHP() * m_rarity, cXSRelativityAbsolute);
     }
 
     void applyRarityHealth(int p = 0){
         CardParameters params = getCardParameters();
-        trModifyProtounitData(m_protoName, p, cXSProtoEffectHitpoints, params.getInitalMaxHP() * m_rarity, cXSRelativityAbsolute);
+        trModifyProtounitData(kbProtoUnitGetName(m_protoID), p, cXSProtoEffectHitpoints, params.getInitalMaxHP() * m_rarity, cXSRelativityAbsolute);
     }
 
     int getUuid(){
@@ -238,7 +239,7 @@ class CardData {
     }
 
     bool isOsirisPieceBoxCard(){
-        return kbProtoUnitGetID(m_protoName) == cUnitTypeOsirisPieceBox;
+        return m_protoID == cUnitTypeOsirisPieceBox;
     }
 
     void splitUpgradeSubset(int cardIndex = 0){

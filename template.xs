@@ -37,8 +37,8 @@ void generate()
     createTypedScheduler("lowFreqSchedulerWithIntInt", buildStringTypeArray("Int", "Int"), 1000, 256);
 
     defineHashMapDefinition("string", "float", "0.0", "");
-    defineHashMapDefinition("string", "int", "-1", "");
-    defineHashMapDefinition("int", "int", "cMinInt", "");
+    defineHashMapDefinition("int", "int", "-1", "NegOne");
+    defineHashMapDefinition("int", "int", "cMinInt", "cMinInt");
     defineSetDefinition("int", "");
 
     // common/ui/ui1.xs
@@ -62,7 +62,7 @@ void generate()
     // mod/shop/level.xs
     // mod/data/cardParameters.xs
 
-    defineHashMapDefinition("string", "CardParameters", "", "");
+    defineHashMapDefinition("int", "CardParameters", "", "");
 
     // mod/map/teams.xs
 

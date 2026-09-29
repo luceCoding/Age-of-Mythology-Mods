@@ -4,7 +4,7 @@ class RespawnManager {
     int[] m_owners = default;
     bool[] m_isRespawning = default;
 
-    IntToIntHashMap m_unitIDToIndex;
+    IntToIntcMinIntHashMap m_unitIDToIndex;
     int[] m_unitsLostCache = default;
     bool m_initialized = false;
 

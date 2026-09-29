@@ -5,8 +5,8 @@ class OnCreationListener {
     int[] m_keys = default;
     bool[] m_deleteUnits = default; // Track auto-delete setting per slot
     
-    IntToIntHashMap cUnitTypeToIndex;
-    IntToIntHashMap cUnitTypeCountMap; // BaseKey -> Registered Lambda Count
+    IntToIntcMinIntHashMap cUnitTypeToIndex;
+    IntToIntcMinIntHashMap cUnitTypeCountMap; // BaseKey -> Registered Lambda Count
 
     void init() {
         trSetAutoResetRecentUnits(false);

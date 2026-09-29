@@ -1,4 +1,4 @@
-StringToCardParametersHashMap g_protoNameToCardParametersMap;
+IntToCardParametersHashMap g_protoIDToCardParametersMap;
 
 string getDisplayName(int rarity = 0, ref string name){
     string displayName = name;
@@ -13,10 +13,10 @@ string getDisplayName(int rarity = 0, ref string name){
 }
 
 void applyProtoDataToAllCards(int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
-    CardParameters[] params = g_protoNameToCardParametersMap.getValues();
+    CardParameters[] params = g_protoIDToCardParametersMap.getValues();
     for (int i = 0; i < params.size(); i++) {
         CardParameters param = params[i];
-        string targetProto = param.getProtoUnit();
+        string targetProto = kbProtoUnitGetName(param.getProtoID());
         trModifyProtounitData(targetProto, p, puField, deltaVal, relativity);
     }
 }
@@ -102,10 +102,10 @@ void applyProtoActionSpawnToTarget(string targetProto = "", int p = 0, int spawn
 }
 
 void applyProtoActionToAllCards(int p = 0, int puField = 0, float deltaVal = 0.0, int relativity = 0){
-    CardParameters[] params = g_protoNameToCardParametersMap.getValues();
+    CardParameters[] params = g_protoIDToCardParametersMap.getValues();
     for (int i = 0; i < params.size(); i++) {
         CardParameters param = params[i];
-        string targetProto = param.getProtoUnit();
+        string targetProto = kbProtoUnitGetName(param.getProtoID());
         applyProtoActionToTarget(targetProto, p, puField, deltaVal, relativity);
     }
 }
