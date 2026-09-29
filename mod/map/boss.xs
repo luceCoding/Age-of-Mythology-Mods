@@ -86,11 +86,11 @@ void createBossPits() {
     float botCornerZ = mapZ * cornerMargin;
 
     // Spawn Center Boss Structures
-    int topBossPlaceholderID = spawnUnit(TOP_BOSS_PLACEHOLDER_PROTO, topCornerX, h, topCornerZ, xsRandFloat(0, 359), 0, 1.5);
-    int botBossPlaceholderID = spawnUnit(BOT_BOSS_PLACEHOLDER_PROTO, botCornerX, h, botCornerZ, xsRandFloat(0, 359), 0, 1.5);
+    int topBossPlaceholderID = spawnUnit(kbProtoUnitGetName(TOP_BOSS_PLACEHOLDER_PROTO), topCornerX, h, topCornerZ, xsRandFloat(0, 359), 0, 1.5);
+    int botBossPlaceholderID = spawnUnit(kbProtoUnitGetName(BOT_BOSS_PLACEHOLDER_PROTO), botCornerX, h, botCornerZ, xsRandFloat(0, 359), 0, 1.5);
 
-    g_topBossCamp.init(topBossPlaceholderID, BOSS_SPAWN_TIME, TOP_BOSS_PROTO, 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, "Top Boss is under attack!", "WonderSelect");
-    g_botBossCamp.init(botBossPlaceholderID, BOSS_SPAWN_TIME, BOT_BOSS_PROTO, 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, "Bottom Boss is under attack!", "WonderSelect");
+    g_topBossCamp.init(topBossPlaceholderID, BOSS_SPAWN_TIME, kbProtoUnitGetName(TOP_BOSS_PROTO), 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, "Top Boss is under attack!", "WonderSelect");
+    g_botBossCamp.init(botBossPlaceholderID, BOSS_SPAWN_TIME, kbProtoUnitGetName(BOT_BOSS_PROTO), 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, "Bottom Boss is under attack!", "WonderSelect");
 
     buildBossPit(vector(topCornerX, h, topCornerZ), 20.0, 2.0, 2, 4, g_colosseumRoadTypes[3], g_colosseumRoadTypes[2]);
     buildBossPit(vector(botCornerX, h, botCornerZ), 20.0, 2.0, 2, 4, g_colosseumRoadTypes[1], g_colosseumRoadTypes[0]);
@@ -204,10 +204,10 @@ int[] getWhoKilledUnitType(int cUnitType = -1){
 void startBoss(){
 
     lowFreqScheduler.add(60017, [](int iterations = 1) -> bool {
-        trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
-        trModifyProtounitData(BOT_BOSS_PROTO, 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
-        trModifyProtounitData(TOP_BOSS_PROTO, 0, cXSProtoEffectHitpoints, 100, cXSRelativityAbsolute);
-        trModifyProtounitData(BOT_BOSS_PROTO, 0, cXSProtoEffectHitpoints, 100, cXSRelativityAbsolute);
+        trModifyProtounitData(kbProtoUnitGetName(TOP_BOSS_PROTO), 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
+        trModifyProtounitData(kbProtoUnitGetName(BOT_BOSS_PROTO), 0, cXSProtoEffectUnitRegenRate, 1, cXSRelativityAbsolute);
+        trModifyProtounitData(kbProtoUnitGetName(TOP_BOSS_PROTO), 0, cXSProtoEffectHitpoints, 100, cXSRelativityAbsolute);
+        trModifyProtounitData(kbProtoUnitGetName(BOT_BOSS_PROTO), 0, cXSProtoEffectHitpoints, 100, cXSRelativityAbsolute);
         return true;
     });
 
@@ -215,8 +215,8 @@ void startBoss(){
     g_BotBossBuffMsEnd = new int(cNumberPlayers+1, -1);
 
     // Top Boss
-    g_OnCreationListener.register(0, cUnitTypeRockGoldSmall, false, [](int unitId = -1) -> void {
-            int[] players = getWhoKilledUnitType(kbProtoUnitGetID(TOP_BOSS_PROTO));
+    g_OnCreationListener.register(0, TOP_BOSS_DEATH_PROTO, true, [](int unitId = -1) -> void {
+            int[] players = getWhoKilledUnitType(TOP_BOSS_PROTO);
             if (players.size() == 1){
                 applyTopBossBufToPlayerTeam(players[0]);
             }
@@ -226,15 +226,27 @@ void startBoss(){
         }
     );
 
+    g_OnCreationListener.register(0, TOP_BOSS_PROTO, false, [](int unitId = -1) -> void {
+            trChatSend(0, "The top boss has spawned!\n" + displayCompensatedIcon(128, 128, kbProtoUnitGetIconPath(0, TOP_BOSS_PROTO)));
+        }
+    );
+
     // Bottom Boss
-    g_OnCreationListener.register(0, cUnitTypeRockGoldTiny, false, [](int unitId = -1) -> void {
-            int[] players = getWhoKilledUnitType(kbProtoUnitGetID(BOT_BOSS_PROTO));
+    g_OnCreationListener.register(0, BOT_BOSS_DEATH_PROTO, true, [](int unitId = -1) -> void {
+            int[] players = getWhoKilledUnitType(BOT_BOSS_PROTO);
             if (players.size() == 1){
                 applyBotBossBuffToPlayerTeam(players[0]);
             }
             else {
                 errorLog("More than one player killed the boss?");
             }
+        }
+    );
+
+    g_OnCreationListener.register(0, BOT_BOSS_PROTO, false, [](int unitId = -1) -> void {
+            selectSingle(unitId);
+            trUnitSetVeterancyRank(5);
+            trChatSend(0, "The bottom boss has spawned!\n" + displayCompensatedIcon(128, 128, kbProtoUnitGetIconPath(0, BOT_BOSS_PROTO)));
         }
     );
 

@@ -33,11 +33,6 @@ int fromBinaryBits(ref bool[] binary){
     return value;
 }
 
-void selectSingle(int unitId = -1){
-    trUnitSelectClear();
-    trUnitSelectByID(unitId);
-}
-
 string[] string2Array(string string0 = "", string string1 = ""){
     string[] arrayToMake = new string(2, "");
     arrayToMake[0] = string0;

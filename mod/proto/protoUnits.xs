@@ -219,7 +219,7 @@ void preModifyPlayerData(){
         setupForAllUnits(creepCampType, 0);
     }
 
-    trProtoUnitSetFlag(0, TOP_BOSS_PLACEHOLDER_PROTO, "FlareOnFullyBuilt", false);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(TOP_BOSS_PLACEHOLDER_PROTO), "FlareOnFullyBuilt", false);
 }
 
 void postModifyPlayerData(){
@@ -287,11 +287,11 @@ void postModifyPlayerData(){
     }
 
     // Only Gaia
-    setupBoss(TOP_BOSS_PROTO, "RockGoldSmall", 1);
-    setupBoss(BOT_BOSS_PROTO, "RockGoldTiny", 2);
-    trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "RangedAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(TOP_BOSS_PROTO, "BillowingSmog", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(BOT_BOSS_PROTO, "HandAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    setupBoss(TOP_BOSS_PROTO, TOP_BOSS_DEATH_PROTO);
+    setupBoss(BOT_BOSS_PROTO, BOT_BOSS_DEATH_PROTO);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "RangedAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "BillowingSmog", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "BillowingSmog", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(BOT_BOSS_PROTO), "HandAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
 }

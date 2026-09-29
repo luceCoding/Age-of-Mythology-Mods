@@ -117,7 +117,9 @@ void setupCreepWaveUnit(string unitType = "", int p = 0){
     trModifyProtounitData(unitType, p, cXSProtoEffectShieldRegenRate, 0.2, cXSRelativityAbsolute);
 }
 
-void setupBoss(string protoName = "", string spawnProtoName = "", float killReward = 0.0){
+void setupBoss(int protoID = -1, int onDeathProtoID = -1){
+    string protoName = kbProtoUnitGetName(protoID);
+    string onDeathProtoName = kbProtoUnitGetName(onDeathProtoID);
     setupForAllUnits(protoName, 0);
     trModifyProtounitData(protoName, 0, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
     trProtoUnitSetUnitType(0, protoName, "MythUnit", false);
@@ -126,7 +128,7 @@ void setupBoss(string protoName = "", string spawnProtoName = "", float killRewa
     trProtoUnitSetIcon(protoName, 0, "", "ui\minimap\minimap_titan_gate");
     trProtoUnitMovementType(protoName, 0, "land");
     trModifyProtounitData(protoName, 0, cXSProtoEffectLOS, GAIA_CREEP_LOS, cXSRelativityAssign);
-    trProtounitModifySpawnData(protoName, 0, spawnProtoName, 0, 1.0, 1, -1, 1.0);
+    trProtounitModifySpawnData(protoName, 0, onDeathProtoName, 0, 1.0, 1, -1, -1.0);
 }
 
 void modifyBuildingCosts(int p = 0){

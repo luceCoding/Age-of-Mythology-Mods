@@ -95,10 +95,12 @@ const float INITIAL_GOLD_REWARD = 5;
 const float GOLDPILE_LIFESPAN = 20.0;
 
 const float BOSS_SPAWN_TIME = 600.0;
-const string TOP_BOSS_PROTO = "Fafnir";
-const string BOT_BOSS_PROTO = "Scylla";
-const string TOP_BOSS_PLACEHOLDER_PROTO = "TitanGate";
-const string BOT_BOSS_PLACEHOLDER_PROTO = "TitanGateSPC";
+const int TOP_BOSS_PROTO = cUnitTypeFafnirBoss;
+const int BOT_BOSS_PROTO = cUnitTypeScylla;
+const int TOP_BOSS_DEATH_PROTO = cUnitTypeRockGoldSmall;
+const int BOT_BOSS_DEATH_PROTO = cUnitTypeRockGoldTiny;
+const int TOP_BOSS_PLACEHOLDER_PROTO = cUnitTypeTitanGate;
+const int BOT_BOSS_PLACEHOLDER_PROTO = cUnitTypeTitanGateSPC;
 const float BUFF_DURATION_MS = 120000;
 const float GAIA_CREEP_LOS = 8.0;
 int[] g_TopBossBuffMsEnd = default;

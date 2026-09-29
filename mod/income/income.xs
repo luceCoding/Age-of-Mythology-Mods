@@ -151,8 +151,8 @@ void startIncome(){
             trModifyProtounitResource(waveType, "Gold", cNumberPlayers-1, cXSPUResourceEffectKillReward, 1, cXSRelativityAbsolute);
         }
 
-        trModifyProtounitResource(TOP_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 5, cXSRelativityAbsolute);
-        trModifyProtounitResource(BOT_BOSS_PROTO, "Gold", 0, cXSPUResourceEffectKillReward, 5, cXSRelativityAbsolute);
+        trModifyProtounitResource(kbProtoUnitGetName(TOP_BOSS_PROTO), "Gold", 0, cXSPUResourceEffectKillReward, 5, cXSRelativityAbsolute);
+        trModifyProtounitResource(kbProtoUnitGetName(BOT_BOSS_PROTO), "Gold", 0, cXSPUResourceEffectKillReward, 5, cXSRelativityAbsolute);
 
         return true;
     });
