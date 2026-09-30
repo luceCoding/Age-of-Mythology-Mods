@@ -286,21 +286,6 @@ void postModifyPlayerData(){
                 setTeamAsWinner((g_finalTeam[kbUnitGetPlayerID(unitId)] == 1) ? 2 : 1);
             }
         );
-        g_OnCreationListener.register(p, cUnitTypeCinematicBlockArea, true, [](int unitId = -1) -> void {
-                selectSingle(unitId);
-                int owner = kbUnitGetPlayerID(unitId);
-                vector v = trUnitGetPosition(unitId);
-                trChatSend(owner, FALLEN_TOWER_TEXT);
-                for (int p2 = 1; p2 <= cNumberPlayers-2; p2++){
-                    trMinimapFlare(p2, 10.0, v, true);
-                }
-                for (int i = 0; i < g_waveTypes.size(); i++){
-                    string unitType = g_waveTypes[i];
-                    trModifyProtounitData(unitType, owner, cXSProtoEffectMaxShieldPoints, 5, cXSRelativityAbsolute);
-                    trModifyProtounitData(unitType, owner, cXSProtoEffectInitialShieldPoints, 5, cXSRelativityAbsolute);
-                }
-            }
-        );
     }
 
     // Only Gaia
