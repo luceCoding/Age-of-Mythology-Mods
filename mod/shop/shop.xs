@@ -319,7 +319,7 @@ class Shop {
         DrawData currDraw = m_currDraws[p];
         CardData card = currDraw.getCardByUUID(uuid);
         if (card.isNull() == true){ return; }
-        if ((bench.isThereADuplicateCard(card.getProtoID()) && card.isIdentified()) || bench.getNumberOfCardsHeld() < MAX_CARDS_IN_BENCH) {
+        if (bench.getNumberOfCardsHeld() < g_cardCapacityByPlayer[p] || (bench.isThereADuplicateCard(card.getProtoID()) && card.isIdentified())) {
             int cost = getCost(card, p);
             if (purchase(cost, p) == false){return;}
 
@@ -340,7 +340,7 @@ class Shop {
             }
         }
         else {
-            trChatSendToPlayer(p, p, "Max card limit of " + MAX_CARDS_IN_BENCH + " reached.");
+            trChatSendToPlayer(p, p, "Max card limit of " + g_cardCapacityByPlayer[p] + " reached.");
             trSoundsetPlayPlayer(p, "PopCapHit");
         }
     }

@@ -110,28 +110,27 @@ class LaneManager {
         return isUnitDead(m_fortressUnitID);
     }
 
-    // Matches a death-blocker's spawn position against this lane's towers and cascades invulnerability.
-    // Returns true when the T3 tower was the one destroyed, signalling the team fortress should lose its invulnerability.
-    bool handleTowerDestroyed(vector deathPos = cInvalidVector) {
+    // Returns 1 for a matched tower and 2 when the final tower unlocks the fortress.
+    int handleTowerDestroyed(vector deathPos = cInvalidVector) {
         if (m_t2Vulnerable == false && distanceSquared(deathPos, m_towerPositions[2]) <= TOWER_MATCH_RADIUS_SQ) {
             setUnitInvulnerable(m_towerUnitIDs[1], false);
             m_t2Vulnerable = true;
-            return false;
+            return 1;
         }
 
         if (m_t3Vulnerable == false && distanceSquared(deathPos, m_towerPositions[1]) <= TOWER_MATCH_RADIUS_SQ) {
             setUnitInvulnerable(m_towerUnitIDs[0], false);
             m_t3Vulnerable = true;
-            return false;
+            return 1;
         }
 
         if (m_barracksVulnerable == false && distanceSquared(deathPos, m_towerPositions[0]) <= TOWER_MATCH_RADIUS_SQ) {
             setUnitInvulnerable(m_barracksUnitID, false);
             m_barracksVulnerable = true;
-            return true;
+            return 2;
         }
 
-        return false;
+        return 0;
     }
 
     void moveUnits(){
@@ -183,12 +182,13 @@ class LaneManager {
 // ==========================================
 
 // Feeds a single death-blocker event to all 3 lanes of a team.
-// Returns true when a T3 tower died, signalling the team fortress should lose invulnerability.
-bool handleTeamTowerDestroyed(ref LaneManager topLane, ref LaneManager midLane, ref LaneManager botLane, vector deathPos = cInvalidVector) {
-    bool t3Died = topLane.handleTowerDestroyed(deathPos);
-    t3Died = midLane.handleTowerDestroyed(deathPos) || t3Died;
-    t3Died = botLane.handleTowerDestroyed(deathPos) || t3Died;
-    return t3Died;
+int handleTeamTowerDestroyed(ref LaneManager topLane, ref LaneManager midLane, ref LaneManager botLane, vector deathPos = cInvalidVector) {
+    int towerStatus = topLane.handleTowerDestroyed(deathPos);
+    int midTowerStatus = midLane.handleTowerDestroyed(deathPos);
+    int botTowerStatus = botLane.handleTowerDestroyed(deathPos);
+    towerStatus = max(towerStatus, midTowerStatus);
+    towerStatus = max(towerStatus, botTowerStatus);
+    return towerStatus;
 }
 
 // Reacts to a tower/fortress death-blocker: cascades lane invulnerability and runs the fallen-tower feedback effects
@@ -197,11 +197,34 @@ void onLaneStructureDestroyed(int unitId = -1, ref LaneManager topLane, ref Lane
     int owner = kbUnitGetPlayerID(unitId);
     vector v = trUnitGetPosition(unitId);
 
-    if (handleTeamTowerDestroyed(topLane, midLane, botLane, v)) {
+    int towerStatus = handleTeamTowerDestroyed(topLane, midLane, botLane, v);
+    if (towerStatus > 0) {
+        int attackingTeam = 3 - g_finalTeam[owner];
+        bool capacityIncreased = false;
+        int[] attackingPlayers = getPlayersInTeam(attackingTeam);
+        for (int i = 0; i < attackingPlayers.size(); i++) {
+            int p = attackingPlayers[i];
+            if (p > cNumberPlayers - 2) { continue; }
+            if (g_finalTeam[p] == attackingTeam && g_cardCapacityByPlayer[p] < MAX_CARDS_IN_BENCH) {
+                g_cardCapacityByPlayer[p] = g_cardCapacityByPlayer[p] + 1;
+                capacityIncreased = true;
+            }
+        }
+        if (capacityIncreased) {
+            trChatSend(getTeamsAIPlayer(attackingTeam), CARD_SLOT_ADDED_TEXT);
+        }
+    }
+
+    if (towerStatus == 2) {
         setUnitInvulnerable(fortressUnitId, false);
     }
 
-    trChatSend(owner, FALLEN_TOWER_TEXT);
+    int[] defendingPlayers = getPlayersInTeam(g_finalTeam[owner]);
+    for (int i = 0; i < defendingPlayers.size(); i++) {
+        int p = defendingPlayers[i];
+        if (p > cNumberPlayers - 2) { continue; }
+        trChatSendToPlayer(p, p, FALLEN_TOWER_TEXT);
+    }
     for (int p2 = 1; p2 <= cNumberPlayers-2; p2++){
         trMinimapFlare(p2, 10.0, v, true);
     }

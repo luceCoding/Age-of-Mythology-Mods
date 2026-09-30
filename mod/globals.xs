@@ -7,6 +7,7 @@ const float configMapWaterLevel = -2.0;
 const float configMapWaterDepth = 3.0;
 
 int[] g_selectedUUIDs = default;
+int[] g_cardCapacityByPlayer = default;
 float g_timeMSGameStarted = 0.0;
 const int MAX_CARD_COPIES = 5;
 const int SUDDEN_DEATH_MS = 2100000;
@@ -69,6 +70,7 @@ const float SELL_MULTIPLIER = 0.75;
 const float UI_LEFT_BUFFER = 50;
 const int config_MAX_DRAWN_CARDS = 5;
 const int MAX_CARDS_IN_BENCH = 20;
+const int INITIAL_CARDS_IN_BENCH = 11;
 
 const int SHOP_TYPE_CLOSED = -2;
 const int DEFAULT_SHOP_TYPE = -1;
@@ -139,6 +141,7 @@ string[] g_creepCampTypes = default;
 string[] g_waveTypes = default;
 
 void initializeGlobals(){
+    g_cardCapacityByPlayer = new int(cNumberPlayers + 1, INITIAL_CARDS_IN_BENCH);
     g_shopTypes = new string(4, "");
     g_shopTypes[SHOP_TYPE_FORGE] = "DwarvenForge";
     g_shopTypes[SHOP_TYPE_ARMORY] = "DwarvenArmory";
