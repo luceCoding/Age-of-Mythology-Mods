@@ -1,6 +1,7 @@
 class CreepCamp {
     int m_count = 1;
-    int m_respawnTime = 30; // Seconds delay after camp is completely cleared
+    int m_maxCount = -1; // Cap on m_count growth; -1 means uncapped
+    int m_respawnTimeSeconds = 30; // Seconds delay after camp is completely cleared
     float m_initialSpawnTime = -1.0;
     float m_deathTime = -1.0; // -1.0 indicates units are currently alive
     bool m_hasSpawned = false;
@@ -26,15 +27,17 @@ class CreepCamp {
 
     int[] m_unitIds = default;
 
-    void init(int placeHolderUnitId = -1, int respawnTime = 30, string protoUnit = "", int count = 1,
+    void init(int placeHolderUnitId = -1, int respawnTimeSeconds = 30, string protoUnit = "", 
+              int count = 1, int maxCount = -1,
               float initialSpawnDelay = 0.0, float unitScale = 1.0, bool incrementCamp = true,
               float alertHPThresholdRatio = 0.9, string alertMsg = "", string alertSound = ""){
         m_campPosition = kbUnitGetTruePosition(placeHolderUnitId);
 
-        m_respawnTime = respawnTime;
+        m_respawnTimeSeconds = respawnTimeSeconds;
         m_initialSpawnTime = xsGetTime() + initialSpawnDelay;
         m_protoUnit = protoUnit;
         m_count = count;
+        m_maxCount = maxCount;
         
         m_deathTime = -1.0;
         m_hasSpawned = false;
@@ -137,7 +140,7 @@ class CreepCamp {
             
             if (lowestHPRatio < m_alertHPThresholdRatio) {
                 if (m_alertMsg != "") {
-                    trChatSend(cNumberPlayers, m_alertMsg);
+                    trChatSend(0, m_alertMsg);
                 }
                 if (m_alertSound != "") {
                     trSoundsetPlay(m_alertSound);
@@ -172,8 +175,8 @@ class CreepCamp {
         m_hasAlerted = false;
         m_lastCheckTime = -1.0;
 
-        // Grow the camp size for the next respawn cycle
-        if (m_incrementCamp){
+        // Grow the camp size for the next respawn cycle, capped at m_maxCount if set
+        if (m_incrementCamp && (m_maxCount == -1 || m_count < m_maxCount)){
             m_count = m_count + 1;
         }
     }
@@ -205,8 +208,8 @@ class CreepCamp {
             return;
         }
 
-        // 4. Wait until m_respawnTime seconds pass after m_deathTime
-        if (xsGetTime() < (m_deathTime + m_respawnTime)) {
+        // 4. Wait until m_respawnTimeSeconds seconds pass after m_deathTime
+        if (xsGetTime() < (m_deathTime + m_respawnTimeSeconds)) {
             return;
         }
 

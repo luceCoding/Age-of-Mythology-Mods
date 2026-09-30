@@ -5,7 +5,7 @@ int[] generateCamps(string creepName = "", int targetTotalCamps = 20,
     float mapZ = configMapTileZ * 2.0;
 
     int targetPairs = targetTotalCamps / 2;
-    float minInterCampDist = 25.0;
+    float minInterCampDist = 27.0;
     float minBaseDist = 45.0;
     float mapMargin = 8.0;
 
@@ -16,7 +16,7 @@ int[] generateCamps(string creepName = "", int targetTotalCamps = 20,
     int spawnedCount = 0;
 
     int targetPairsPlaced = 0;
-    int maxAttempts = 1000;
+    int maxAttempts = 2000;
     int attempts = 0;
 
     int[] creepIds = new int(0, -1);
@@ -24,9 +24,27 @@ int[] generateCamps(string creepName = "", int targetTotalCamps = 20,
     while (targetPairsPlaced < targetPairs && attempts < maxAttempts) {
         attempts++;
 
-        float p1X = xsRandFloat(mapMargin, mapX - mapMargin);
-        float p1Z = xsRandFloat(mapMargin, mapZ - mapMargin);
+        float p1X = 0.0;
+        float p1Z = 0.0;
+
+        // Force every 3rd attempt to sample directly inside the Top/Bottom central corridor
+        if (attempts % 3 == 0 || (targetPairsPlaced == 0 && attempts < 300)) {
+            // Along the main top-to-bottom diagonal (X = Z)
+            float centerProgress = xsRandFloat(0.70, 0.82); 
+            
+            // Perpendicular width offset across the X=Z diagonal (+/- 8% of map width)
+            float widthOffset = xsRandFloat(-0.08, 0.08); 
+
+            p1X = (centerProgress + widthOffset) * mapX;
+            p1Z = (centerProgress - widthOffset) * mapZ;
+        } else {
+            // Standard uniform sampling across full map
+            p1X = xsRandFloat(mapMargin, mapX - mapMargin);
+            p1Z = xsRandFloat(mapMargin, mapZ - mapMargin);
+        }
+
         vector p1 = vector(p1X, configMapBaseHeight, p1Z);
+        // p2 automatically mirrors into the Bottom Red Corridor (Z between 17% and 28%)
         vector p2 = vector(mapX - p1X, configMapBaseHeight, mapZ - p1Z);
 
         // 1. Base Distance Gate
@@ -87,22 +105,22 @@ CreepCamp creepCampClassInstanceWorkaround(){
 }
 
 void generateAllCamps(){
-    int[] t3CreepCamp = generateCamps(g_creepCampPlaceholderTypes[2], 4, 25.0, 20.0);
+    int[] t3CreepCamp = generateCamps(g_creepCampPlaceholderTypes[2], 4, 25.0, 15.0);
     for(int i = 0; i < t3CreepCamp.size(); i++){
         CreepCamp creepCamp = creepCampClassInstanceWorkaround();
-        creepCamp.init(t3CreepCamp[i], T3_CAMP_SPAWN_TIME, g_creepCampTypes[2], 1, T3_CAMP_SPAWN_TIME + 60, 1.25);
+        creepCamp.init(t3CreepCamp[i], T3_CAMP_SPAWN_TIME, g_creepCampTypes[2], 1, 5, T3_CAMP_SPAWN_TIME + 60, 1.25);
         g_creepCamps.add(creepCamp);
     }
-    int[] t2CreepCamp = generateCamps(g_creepCampPlaceholderTypes[1], 8, 25.0, 15.0);
+    int[] t2CreepCamp = generateCamps(g_creepCampPlaceholderTypes[1], 8, 25.0, 12.5);
     for(int i = 0; i < t2CreepCamp.size(); i++){
         CreepCamp creepCamp = creepCampClassInstanceWorkaround();
-        creepCamp.init(t2CreepCamp[i], T2_CAMP_SPAWN_TIME, g_creepCampTypes[1], 1, T2_CAMP_SPAWN_TIME + 60, 1.25);
+        creepCamp.init(t2CreepCamp[i], T2_CAMP_SPAWN_TIME, g_creepCampTypes[1], 1, 5, T2_CAMP_SPAWN_TIME + 60, 1.25);
         g_creepCamps.add(creepCamp);
     }
-    int[] t1CreepCamp = generateCamps(g_creepCampPlaceholderTypes[0], 10, 25.0, 15.0);
+    int[] t1CreepCamp = generateCamps(g_creepCampPlaceholderTypes[0], 10, 25.0, 10.0);
     for(int i = 0; i < t1CreepCamp.size(); i++){
         CreepCamp creepCamp = creepCampClassInstanceWorkaround();
-        creepCamp.init(t1CreepCamp[i], T1_CAMP_SPAWN_TIME, g_creepCampTypes[0], 1, T1_CAMP_SPAWN_TIME + 60, 1.25);
+        creepCamp.init(t1CreepCamp[i], T1_CAMP_SPAWN_TIME, g_creepCampTypes[0], 1, 5, T1_CAMP_SPAWN_TIME + 60, 1.25);
         g_creepCamps.add(creepCamp);
     }
 

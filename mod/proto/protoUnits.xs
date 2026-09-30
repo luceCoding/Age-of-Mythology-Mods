@@ -36,27 +36,44 @@ void preModifyPlayerData(){
         trPlayerKillAllGodPowers(p);
         
         // For card synergies
-        trProtoUnitSetUnitType(p, "Tanuki", UNIT_TYPE_HEALER, true);
-        trProtoUnitSetUnitType(p, "Perseus", UNIT_TYPE_MYTH, true);
-        trProtoUnitSetUnitType(p, "Shogun", UNIT_TYPE_CAVALRY, true);
-        trProtoUnitSetUnitType(p, "WenZhong", UNIT_TYPE_MYTH, true);
-        trProtoUnitSetUnitType(p, "Arkantos", UNIT_TYPE_SOLDIER, true);
-        trProtoUnitSetUnitType(p, "Arkantos", UNIT_TYPE_INFANTRY, true);
-        trProtoUnitSetUnitType(p, "ArkantosGod", UNIT_TYPE_SOLDIER, true);
-        trProtoUnitSetUnitType(p, "ArkantosGod", UNIT_TYPE_INFANTRY, true);
-        trProtoUnitSetUnitType(p, "Polyphemus", UNIT_TYPE_MYTH_SIEGE, true);
-        trProtoUnitSetUnitType(p, "QiLin", UNIT_TYPE_HEALER, true);
-        trProtoUnitSetUnitType(p, "Bellerophon", UNIT_TYPE_MYTH, true);
+        // UNIT_TYPE_CAVALRY
+        trProtoUnitSetUnitType(p, "Achilles", UNIT_TYPE_CAVALRY, true);
         trProtoUnitSetUnitType(p, "Bellerophon", UNIT_TYPE_CAVALRY, true);
         trProtoUnitSetUnitType(p, "HarumotoBlessed", UNIT_TYPE_CAVALRY, true);
-        trProtoUnitSetUnitType(p, "Guardian", UNIT_TYPE_INFANTRY, true);
-        trProtoUnitSetUnitType(p, "Guardian", UNIT_TYPE_SIEGE, true);
+        trProtoUnitSetUnitType(p, "Shogun", UNIT_TYPE_CAVALRY, true);
+
+        // UNIT_TYPE_HEALER
+        trProtoUnitSetUnitType(p, "QiLin", UNIT_TYPE_HEALER, true);
+        trProtoUnitSetUnitType(p, "Tanuki", UNIT_TYPE_HEALER, true);
+
+        // UNIT_TYPE_INFANTRY
+        trProtoUnitSetUnitType(p, "Arkantos", UNIT_TYPE_INFANTRY, true);
+        trProtoUnitSetUnitType(p, "ArkantosGod", UNIT_TYPE_INFANTRY, true);
         trProtoUnitSetUnitType(p, "Automaton", UNIT_TYPE_INFANTRY, true);
+        trProtoUnitSetUnitType(p, "Guardian", UNIT_TYPE_INFANTRY, true);
+
+        // UNIT_TYPE_MYTH
+        trProtoUnitSetUnitType(p, "Bellerophon", UNIT_TYPE_MYTH, true);
         trProtoUnitSetUnitType(p, "Chiron", UNIT_TYPE_MYTH, true);
+        trProtoUnitSetUnitType(p, "Perseus", UNIT_TYPE_MYTH, true);
+        trProtoUnitSetUnitType(p, "WenZhong", UNIT_TYPE_MYTH, true);
+
+        // UNIT_TYPE_MYTH_RANGED
         trProtoUnitSetUnitType(p, "Chiron", UNIT_TYPE_MYTH_RANGED, true);
-        trProtoUnitSetUnitType(p, "Quinametzin", UNIT_TYPE_SIEGE, true);
+
+        // UNIT_TYPE_MYTH_SIEGE
+        trProtoUnitSetUnitType(p, "Polyphemus", UNIT_TYPE_MYTH_SIEGE, true);
+        trProtoUnitSetUnitType(p, "FireArcher", UNIT_TYPE_MYTH_SIEGE, true);
+        trProtoUnitSetUnitType(p, "Gastraphetoros", UNIT_TYPE_MYTH_SIEGE, true);
+
+        // UNIT_TYPE_SIEGE
+        trProtoUnitSetUnitType(p, "Guardian", UNIT_TYPE_SIEGE, true);
         trProtoUnitSetUnitType(p, "Otontin", UNIT_TYPE_SIEGE, true);
-        trProtoUnitSetUnitType(p, "Achilles", UNIT_TYPE_CAVALRY, true);
+        trProtoUnitSetUnitType(p, "Quinametzin", UNIT_TYPE_SIEGE, true);
+
+        // UNIT_TYPE_SOLDIER
+        trProtoUnitSetUnitType(p, "Arkantos", UNIT_TYPE_SOLDIER, true);
+        trProtoUnitSetUnitType(p, "ArkantosGod", UNIT_TYPE_SOLDIER, true);
     }
 
     // Only Humans

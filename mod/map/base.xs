@@ -37,6 +37,9 @@ void createAIBases(){
     float sideT3Step = 0.275; float sideT2Step = 0.45; float sideT1Step = 0.65;
     float midT3Step  = 0.225; float midT2Step  = 0.325; float midT1Step  = 0.425;
 
+    // Max random offset (meters) applied to T1 towers; set to 0 to disable
+    float t1TowerJitterRadius = 20.0;
+
     float mapX = configMapTileX * 2.0;
     float mapZ = configMapTileZ * 2.0;
     float h    = configMapBaseHeight;
@@ -70,6 +73,11 @@ void createAIBases(){
     float t2BotT3X = mapX * (1.0 - sideT3Step);     float t2BotT3Z = mapZ * sideEdgeMargin;
     float t2BotT2X = mapX * (1.0 - sideT2Step);     float t2BotT2Z = mapZ * sideEdgeMargin;
     float t2BotT1X = mapX * (1.0 - sideT1Step);     float t2BotT1Z = mapZ * sideEdgeMargin;
+
+    // --- Symmetric Random Jitter for Mid T1 Tower ---
+    float midJitter = xsRandFloat(-t1TowerJitterRadius, t1TowerJitterRadius);
+    t1MidT1X = t1MidT1X + midJitter; t1MidT1Z = t1MidT1Z + midJitter;
+    t2MidT1X = t2MidT1X - midJitter; t2MidT1Z = t2MidT1Z - midJitter;
 
     // --- Calculate Accurate Lane-Facing Headings ---
     // Team 1 Headings

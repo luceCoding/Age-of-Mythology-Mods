@@ -89,11 +89,13 @@ void createBossPits() {
     int topBossPlaceholderID = spawnUnit(kbProtoUnitGetName(TOP_BOSS_PLACEHOLDER_PROTO), topCornerX, h, topCornerZ, xsRandFloat(0, 359), 0, 1.5);
     int botBossPlaceholderID = spawnUnit(kbProtoUnitGetName(BOT_BOSS_PLACEHOLDER_PROTO), botCornerX, h, botCornerZ, xsRandFloat(0, 359), 0, 1.5);
 
-    g_topBossCamp.init(topBossPlaceholderID, BOSS_SPAWN_TIME, kbProtoUnitGetName(TOP_BOSS_PROTO), 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, "Top Boss is under attack!", "WonderSelect");
-    g_botBossCamp.init(botBossPlaceholderID, BOSS_SPAWN_TIME, kbProtoUnitGetName(BOT_BOSS_PROTO), 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, "Bottom Boss is under attack!", "WonderSelect");
+    g_topBossCamp.init(topBossPlaceholderID, BOSS_SPAWN_TIME, kbProtoUnitGetName(TOP_BOSS_PROTO), 1, 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, 
+                       "Top boss is under attack!\n" + toForwardSlash(displayCompensatedIcon(128, 128, kbProtoUnitGetIconPath(0, TOP_BOSS_PROTO))), "WonderSelect");
+    g_botBossCamp.init(botBossPlaceholderID, BOSS_SPAWN_TIME, kbProtoUnitGetName(BOT_BOSS_PROTO), 1, 1, BOSS_SPAWN_TIME + 60, 1.0, false, 0.95, 
+                       "Bottom boss is under attack!\n" + toForwardSlash(displayCompensatedIcon(128, 128, kbProtoUnitGetIconPath(0, BOT_BOSS_PROTO))), "WonderSelect");
 
-    buildBossPit(vector(topCornerX, h, topCornerZ), 20.0, 2.0, 2, 4, g_colosseumRoadTypes[3], g_colosseumRoadTypes[2]);
-    buildBossPit(vector(botCornerX, h, botCornerZ), 20.0, 2.0, 2, 4, g_colosseumRoadTypes[1], g_colosseumRoadTypes[0]);
+    buildBossPit(vector(topCornerX, h, topCornerZ), 20.0, 2.0, 3, 4, g_colosseumRoadTypes[3], g_colosseumRoadTypes[2]);
+    buildBossPit(vector(botCornerX, h, botCornerZ), 20.0, 2.0, 3, 4, g_colosseumRoadTypes[1], g_colosseumRoadTypes[0]);
 }
 
 void attachTopBossBuff(int unitID = 0, int durationMs = 0, int p = 0){
@@ -227,7 +229,8 @@ void startBoss(){
     );
 
     g_OnCreationListener.register(0, TOP_BOSS_PROTO, false, [](int unitId = -1) -> void {
-            trChatSend(0, "The top boss has spawned!\n" + displayCompensatedIcon(128, 128, kbProtoUnitGetIconPath(0, TOP_BOSS_PROTO)));
+            trChatSend(0, "The top boss has spawned!\n" + toForwardSlash(displayCompensatedIcon(128, 128, kbProtoUnitGetIconPath(0, TOP_BOSS_PROTO))));
+            playSound("FafnirAttack", SOUND_SET);
         }
     );
 
@@ -246,7 +249,8 @@ void startBoss(){
     g_OnCreationListener.register(0, BOT_BOSS_PROTO, false, [](int unitId = -1) -> void {
             selectSingle(unitId);
             trUnitSetVeterancyRank(5);
-            trChatSend(0, "The bottom boss has spawned!\n" + displayCompensatedIcon(128, 128, kbProtoUnitGetIconPath(0, BOT_BOSS_PROTO)));
+            trChatSend(0, "The bottom boss has spawned!\n" + toForwardSlash(displayCompensatedIcon(128, 128, kbProtoUnitGetIconPath(0, BOT_BOSS_PROTO))));
+            playSound("FafnirAttack", SOUND_SET);
         }
     );
 
