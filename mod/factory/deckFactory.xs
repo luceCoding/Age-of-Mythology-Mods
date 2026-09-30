@@ -213,6 +213,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(3, cUnitTypeHunDun);
     addCardsIntoDeck(3, cUnitTypeOnmyoji);
     addCardsIntoDeck(3, cUnitTypeShinigami);
+    addCardsIntoDeck(3, cUnitTypeUmibozu);
 
     addCardsIntoDeck(3, cUnitTypeSamuraiHatamoto);
     addCardsIntoDeck(3, cUnitTypeArkantos, 600);

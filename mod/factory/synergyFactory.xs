@@ -203,6 +203,12 @@ void initializeSynergies(){
                                     }
                                 }
                             );
+        synergy.m_buffs[4] = createBuffLambdaOnly(SYNERGY_INDEX_POISON, emptySynergyType, "Buildable Infested Nest",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeInfestedDen); }
+                                    else { forbidTrainBuilding(p, cUnitTypeInfestedDen); }
+                                }
+                            );
         synergy.m_buffs[5] = createBuffSpawnActionSingle(SYNERGY_INDEX_POISON, UNIT_TYPE_UNIT, cUnitTypeArgusAcidBlobDamage, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute, -1.0, -1.0, POISON_SYNERGY_TEXT1);
         synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 0.5, POISON_SYNERGY_TEXT2);
         synergy.m_buffs[9] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 0.75, POISON_SYNERGY_TEXT2);
@@ -275,7 +281,7 @@ void initializeSynergies(){
                                 }
                             );
         synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 4.0, 1.5, FIRE_SYNERGY_TEXT4);
-        synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_POISON, "MeteorSPC", cXSActionEffectDamagePierce, 40, cXSRelativityAbsolute, FIRE_SYNERGY_TEXT3);
+        synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_FIRE, "MeteorSPC", cXSActionEffectDamagePierce, 40, cXSRelativityAbsolute, FIRE_SYNERGY_TEXT3);
         g_synergies[SYNERGY_INDEX_FIRE] = synergy;
     }
 
@@ -342,56 +348,37 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_BUILDER];
-        synergy.m_buffs[2] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Shennong's Farm",
+        synergy.m_buffs[2] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Buildable Shennong's Farm",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
-                                    if (delta > 0){ 
-                                        unforbidTrainBuilding(p, cUnitTypeFarmShennong);
-                                        g_OnCreationListener.register(p, cUnitTypeFarmShennong, false, [](int unitId = -1) -> void {
-                                                lowFreqSchedulerWithIntInt.add(1000, unitId, 0, [](int iteration = 0, int unitId = 0, int _ = 0) -> bool {
-                                                    selectSingle(unitId);
-                                                    if (trUnitAlive() && kbUnitGetStatInt(unitId, cUnitStatBuildProgressPercent) < 100){ return true; }
-                                                    if (trUnitAlive()) {
-                                                        int owner = kbUnitGetPlayerID(unitId);
-                                                        trUnitChangeProtoUnit(kbProtoUnitGetName(cUnitTypeFarm), true);
-                                                        trGodPowerGrantAtSlot(owner, kbGodPowerGetName(cProtoPowerProsperousSeeds), 1, 3);
-                                                        trGodPowerInvoke(owner, kbGodPowerGetName(cProtoPowerProsperousSeeds), vector(0,0,0), vector(0,0,0), false);
-                                                    }
-                                                    return false;
-                                                });
-                                            }
-                                        );
-                                    }
-                                    else { 
-                                        forbidTrainBuilding(p, cUnitTypeFarmShennong);
-                                        g_OnCreationListener.deregister(p, cUnitTypeFarmShennong);
-                                    }
+                                    if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeToriiGate); }
+                                    else { forbidTrainBuilding(p, cUnitTypeToriiGate); }
                                 }
                             );
-        synergy.m_buffs[3] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Watch Tower",
+        synergy.m_buffs[3] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Buildable Sentry Tower",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeSentryTower); }
                                     else { forbidTrainBuilding(p, cUnitTypeSentryTower); }
                                 }
                             );
-        synergy.m_buffs[5] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Sky Passage",
+        synergy.m_buffs[5] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Buildable Sky Passage",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeSkyPassageSPC); }
                                     else { forbidTrainBuilding(p, cUnitTypeSkyPassageSPC); }
                                 }
                             );
-        synergy.m_buffs[6] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Mirror Tower",
+        synergy.m_buffs[6] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Buildable Mirror Tower",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeMirrorTower); }
                                     else { forbidTrainBuilding(p, cUnitTypeMirrorTower); }
                                 }
                             );
-        synergy.m_buffs[9] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Hill Fort",
+        synergy.m_buffs[9] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Buildable Hill Fort",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeHillFort); }
                                     else { forbidTrainBuilding(p, cUnitTypeHillFort); }
                                 }
                             );
-        synergy.m_buffs[12] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Pillar of Tlaloc",
+        synergy.m_buffs[12] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Buildable Monolith of Tlaloc",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeMonolithOfTlaloc); }
                                     else { forbidTrainBuilding(p, cUnitTypeMonolithOfTlaloc); }

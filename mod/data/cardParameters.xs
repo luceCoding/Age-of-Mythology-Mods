@@ -134,6 +134,7 @@ class CardParameters {
             case cUnitTypeMummy: { return true; break; }
             case cUnitTypeMictlantecuhtli: { return true; break; }
             case cUnitTypeHadesShade: { return true; break; }
+            case cUnitTypeUmibozu: { return true; break; }
         }
         return false;
     }

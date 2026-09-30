@@ -132,34 +132,6 @@ void setupBoss(int protoID = -1, int onDeathProtoID = -1){
     trProtounitModifySpawnData(protoName, 0, onDeathProtoName, 0, 1.0, 1, -1, -1.0);
 }
 
-void modifyBuildingCosts(int p = 0){
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSmokeTrap), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSmokeTrap), "Gold", p, cXSPUResourceEffectCost, 20.0 * 0.5, cXSRelativityAssign);
-
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSpikeTrap), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSpikeTrap), "Gold", p, cXSPUResourceEffectCost, 50.0 * 0.5, cXSRelativityAssign);
-
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeFarmShennong), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeFarmShennong), "Gold", p, cXSPUResourceEffectCost, 75.0 * 0.5, cXSRelativityAssign);
-
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSkyPassageSPC), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSkyPassageSPC), "Favor", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSkyPassageSPC), "Gold", p, cXSPUResourceEffectCost, 33.0, cXSRelativityAssign);
-
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSentryTower), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSentryTower), "Gold", p, cXSPUResourceEffectCost, 250.0 * 0.5, cXSRelativityAssign);
-
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMirrorTower), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMirrorTower), "Favor", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMirrorTower), "Gold", p, cXSPUResourceEffectCost, 400.0 * 0.5, cXSRelativityAssign);
-
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeHillFort), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeHillFort), "Favor", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeHillFort), "Gold", p, cXSPUResourceEffectCost, 575.0 * 0.5, cXSRelativityAssign);
-
-    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "Gold", p, cXSPUResourceEffectCost, 575.0, cXSRelativityAssign);
-}
-
 int getMinsPastSinceStart(){
     return ((xsGetTimeMS() - g_timeMSGameStarted) / 60000);
 }
@@ -213,6 +185,40 @@ void setupForHealSynergy(int p = 0){
 void setupForLightningSynergy(int p = 0){
 }
 
+void modifyBuildingCosts(int p = 0){
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSmokeTrap), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSmokeTrap), "Gold", p, cXSPUResourceEffectCost, 20.0 * 0.5, cXSRelativityAssign);
+
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSpikeTrap), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSpikeTrap), "Gold", p, cXSPUResourceEffectCost, 50.0 * 0.5, cXSRelativityAssign);
+
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeFarmShennong), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeFarmShennong), "Gold", p, cXSPUResourceEffectCost, 75.0 * 0.5, cXSRelativityAssign);
+
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeToriiGate), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeToriiGate), "Gold", p, cXSPUResourceEffectCost, 75.0 * 0.5, cXSRelativityAssign);
+
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeInfestedDen), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeInfestedDen), "Gold", p, cXSPUResourceEffectCost, 150.0 * 0.5, cXSRelativityAssign);
+
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSkyPassageSPC), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSkyPassageSPC), "Favor", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSkyPassageSPC), "Gold", p, cXSPUResourceEffectCost, 33.0, cXSRelativityAssign);
+
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSentryTower), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSentryTower), "Gold", p, cXSPUResourceEffectCost, 250.0 * 0.5, cXSRelativityAssign);
+
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMirrorTower), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMirrorTower), "Favor", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMirrorTower), "Gold", p, cXSPUResourceEffectCost, 400.0 * 0.5, cXSRelativityAssign);
+
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeHillFort), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeHillFort), "Favor", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeHillFort), "Gold", p, cXSPUResourceEffectCost, 575.0 * 0.5, cXSRelativityAssign);
+
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "Gold", p, cXSPUResourceEffectCost, 575.0, cXSRelativityAssign);
+}
+
 void addTrainBuilding(string targetProto = "", int cUnitType = -1, int p = -1, int row = 0, int col = 0){
     trProtounitAddTrain(targetProto, p, kbProtoUnitGetName(cUnitType), row, col);
     //trUnforbidProtounit(p, kbProtoUnitGetName(cUnitType));
@@ -233,11 +239,13 @@ void addTrainBuildings(string targetProto = "", int p = -1){
     addTrainBuilding(targetProto, cUnitTypeSpikeTrap, p, 0, 2);
     addTrainBuilding(targetProto, cUnitTypeObelisk, p, 0, 5);
     addTrainBuilding(targetProto, cUnitTypeSkyPassageSPC, p, 0, 4);
+    addTrainBuilding(targetProto, cUnitTypeToriiGate, p, 1, 2);
     addTrainBuilding(targetProto, cUnitTypeFarmShennong, p, 1, 3);
     addTrainBuilding(targetProto, cUnitTypeSentryTower, p, 2, 2);
     addTrainBuilding(targetProto, cUnitTypeMirrorTower, p, 2, 4);
     addTrainBuilding(targetProto, cUnitTypeHillFort, p, 2, 3);
     addTrainBuilding(targetProto, cUnitTypeMonolithOfTlaloc, p, 2, 5);
+    addTrainBuilding(targetProto, cUnitTypeInfestedDen, p, 2, 0);
 }
 
 void setupForBuilderSynergy(int p = 0){
@@ -261,6 +269,23 @@ void setupForBuilderSynergy(int p = 0){
     unforbidTrainBuilding(p, cUnitTypeSmokeTrap);
     unforbidTrainBuilding(p, cUnitTypeSpikeTrap);
     unforbidTrainBuilding(p, cUnitTypeObelisk);
+    unforbidTrainBuilding(p, cUnitTypeFarmShennong);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMirrorTower), p, cXSProtoEffectBuildPoints, 90.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildPoints, 180.0, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeInfestedDen), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+
+    g_OnCreationListener.register(p, cUnitTypeFarmShennong, false, [](int unitId = -1) -> void {
+            lowFreqSchedulerWithIntInt.add(1000, unitId, 0, [](int iteration = 0, int unitId = 0, int _ = 0) -> bool {
+                selectSingle(unitId);
+                if (trUnitAlive() && kbUnitGetStatInt(unitId, cUnitStatBuildProgressPercent) < 100){ return true; }
+                if (trUnitAlive()) {
+                    int owner = kbUnitGetPlayerID(unitId);
+                    trUnitChangeProtoUnit(kbProtoUnitGetName(cUnitTypeFarm), true);
+                    trGodPowerGrantAtSlot(owner, kbGodPowerGetName(cProtoPowerProsperousSeeds), 1, 3);
+                    trGodPowerInvoke(owner, kbGodPowerGetName(cProtoPowerProsperousSeeds), vector(0,0,0), vector(0,0,0), false);
+                }
+                return false;
+            });
+        }
+    );
 }
