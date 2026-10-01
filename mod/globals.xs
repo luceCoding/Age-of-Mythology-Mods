@@ -14,7 +14,7 @@ const int SUDDEN_DEATH_MS = 2100000;
 const int ADD_OSIRIS_CARD_INTERVAL_MS = 120000;
 const int OSIRIS_CARDS_NEEDED = 5;
 const int MAX_SOCKETS_PER_CARD = 5;
-const int MAX_SYNERGIES = 14;
+const int MAX_SYNERGIES = 15;
 const int HERO_WAVE = 5;
 
 const string UNIT_TYPE_INFANTRY = "AbstractInfantry";
@@ -46,6 +46,7 @@ const int SYNERGY_INDEX_POISON = 10;
 const int SYNERGY_INDEX_FIRE = 11;
 const int SYNERGY_INDEX_LIGHTNING = 12;
 const int SYNERGY_INDEX_BUILDER = 13;
+const int SYNERGY_INDEX_WILDERNESS = 14;
 
 const float CHAIN_LIGHTNING_COOLDOWN = 20.0;
 const float CHAIN_LIGHTNING_SEARCH_RADIUS = 20.0;

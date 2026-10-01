@@ -217,6 +217,9 @@ void modifyBuildingCosts(int p = 0){
     trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeHillFort), "Gold", p, cXSPUResourceEffectCost, 575.0 * 0.5, cXSRelativityAssign);
 
     trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "Gold", p, cXSPUResourceEffectCost, 575.0, cXSRelativityAssign);
+
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeShrineOfTheHunt), "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+    trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeShrineOfTheHunt), "Gold", p, cXSPUResourceEffectCost, 150.0 * 0.5, cXSRelativityAssign);
 }
 
 void addTrainBuilding(string targetProto = "", int cUnitType = -1, int p = -1, int row = 0, int col = 0){
@@ -246,6 +249,7 @@ void addTrainBuildings(string targetProto = "", int p = -1){
     addTrainBuilding(targetProto, cUnitTypeHillFort, p, 2, 3);
     addTrainBuilding(targetProto, cUnitTypeMonolithOfTlaloc, p, 2, 5);
     addTrainBuilding(targetProto, cUnitTypeInfestedDen, p, 2, 0);
+    addTrainBuilding(targetProto, cUnitTypeShrineOfTheHunt, p, 2, 1);
 }
 
 void setupForBuilderSynergy(int p = 0){
@@ -287,6 +291,15 @@ void setupForBuilderSynergy(int p = 0){
                 }
                 return false;
             });
+        }
+    );
+}
+
+void setupForWildernessSynergy(int p = 0){
+    trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeHamadryadTree), kbUnitTypeGetName(cUnitTypeTree), true);
+    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeShrineOfTheHunt), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+    g_OnCreationListener.register(0, cUnitTypeDeerShrineOfTheHunt, true, [](int unitId = -1) -> void {
+            return;
         }
     );
 }

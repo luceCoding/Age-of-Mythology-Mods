@@ -18,6 +18,7 @@ void initializeSynergies(){
     icons[SYNERGY_INDEX_FIRE] = "resources/achievements/achievement_set_the_world_on_fire.png";
     icons[SYNERGY_INDEX_LIGHTNING] = "resources/greek/static_color/god_powers/lightning_storm_icon.png";
     icons[SYNERGY_INDEX_BUILDER] = "resources/in_game/minimap/Icon_CycleViewEconomic.png";
+    icons[SYNERGY_INDEX_WILDERNESS] = "resources/chinese/static_color/abilities/enchanted_tree_ability_b_icon.png";
 
     string[] rolloverNames = new string(MAX_SYNERGIES, "");
     rolloverNames[SYNERGY_INDEX_INFANTRY] = "Synergy: Infantry";
@@ -34,6 +35,7 @@ void initializeSynergies(){
     rolloverNames[SYNERGY_INDEX_FIRE] = "Synergy: Fire";
     rolloverNames[SYNERGY_INDEX_LIGHTNING] = "Synergy: Lightning";
     rolloverNames[SYNERGY_INDEX_BUILDER] = "Synergy: Builder";
+    rolloverNames[SYNERGY_INDEX_WILDERNESS] = "Synergy: Wilderness";
 
     for (int i = 0; i < MAX_SYNERGIES; i++) {
         SynergyData synergy;
@@ -385,5 +387,73 @@ void initializeSynergies(){
                                 }
                             );
         g_synergies[SYNERGY_INDEX_BUILDER] = synergy;
+    }
+
+    {
+        SynergyData synergy = g_synergies[SYNERGY_INDEX_WILDERNESS];
+        synergy.m_buffs[2] = createBuffAction(SYNERGY_INDEX_WILDERNESS, emptySynergyType, cXSActionEffectDamageCrush, 1, cXSRelativityAbsolute, "+1 Thorns Hack Damage",
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (delta > 0){ 
+                    trProtoUnitSetFlag(p, protoUnit, "HasReflectAttack", true);
+                    trProtounitAssignAction(protoUnit, kbProtoUnitGetName(cUnitTypeReflectAttackContainer), "ThornedWallsAttack", p);
+                    trModifyProtounitAction(protoUnit, "ThornedWallsAttack", p, cXSActionEffectDamageHack, 1.0, cXSRelativityAbsolute);
+                }
+                else {
+                    trProtoUnitSetFlag(p, protoUnit, "HasReflectAttack", false);
+                    trModifyProtounitAction(protoUnit, "ThornedWallsAttack", p, cXSActionEffectDamageHack, -1.0, cXSRelativityAbsolute);
+                }
+            }
+        );
+        synergy.m_buffs[3] = createBuffAction(SYNERGY_INDEX_WILDERNESS, emptySynergyType, cXSActionEffectDamageCrush, 1, cXSRelativityAbsolute, "Foliage Stealth",
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (delta > 0){ 
+                    trProtounitAssignAction(protoUnit, kbProtoUnitGetName(cUnitTypeQuimichinSpy), kbActionGetName(cActionTypeStealth), p);
+                    trProtoUnitActionSetEnabled(protoUnit, p, kbActionGetName(cActionTypeStealth), true);
+                }
+                else { 
+                    trProtoUnitActionSetEnabled(protoUnit, p, kbActionGetName(cActionTypeStealth), false);
+                }
+            }
+        );
+        synergy.m_buffs[5] = createBuffAction(SYNERGY_INDEX_WILDERNESS, emptySynergyType, cXSActionEffectDamageCrush, 1, cXSRelativityAbsolute, "+1 Thorns Hack Damage",
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (delta > 0){ trModifyProtounitAction(protoUnit, "ThornedWallsAttack", p, cXSActionEffectDamageHack, 1.0, cXSRelativityAbsolute); }
+                else { trModifyProtounitAction(protoUnit, "ThornedWallsAttack", p, cXSActionEffectDamageHack, -1.0, cXSRelativityAbsolute); }
+            }
+        );
+        synergy.m_buffs[6] = createBuffAction(SYNERGY_INDEX_WILDERNESS, emptySynergyType, cXSActionEffectDamageCrush, 1, cXSRelativityAbsolute, "Buildable Shrine of the Hunt",
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (protoUnit != "Militia") { return; } // Only apply this once.
+                if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeShrineOfTheHunt); }
+                else { forbidTrainBuilding(p, cUnitTypeShrineOfTheHunt); }
+            }
+        );
+        synergy.m_buffs[8] = createBuffAction(SYNERGY_INDEX_WILDERNESS, emptySynergyType, cXSActionEffectDamageCrush, 1, cXSRelativityAbsolute, "+2 Thorns Hack Damage",
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (delta > 0){ trModifyProtounitAction(protoUnit, "ThornedWallsAttack", p, cXSActionEffectDamageHack, 2.0, cXSRelativityAbsolute); }
+                else { trModifyProtounitAction(protoUnit, "ThornedWallsAttack", p, cXSActionEffectDamageHack, -2.0, cXSRelativityAbsolute); }
+            }
+        );
+        synergy.m_buffs[9] = createBuffAction(SYNERGY_INDEX_WILDERNESS, emptySynergyType, cXSActionEffectDamageCrush, 1, cXSRelativityAbsolute, "1% for Carnivora Arm on hit",
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (protoUnit != "Militia") { return; } // Only apply this once.
+                if (delta > 0){ g_AttachmentManager.addOnHitAttachment(p, cUnitTypeCarnivoraArm, cSpawnEventTypeBirth, 0.01, 60.0); }
+                else { g_AttachmentManager.removeOnHitAttachment(p, cUnitTypeCarnivoraArm, cSpawnEventTypeBirth); }
+            }
+        );
+        synergy.m_buffs[11] = createBuffAction(SYNERGY_INDEX_WILDERNESS, emptySynergyType, cXSActionEffectDamageCrush, 1, cXSRelativityAbsolute, "+2 Thorns Hack Damage",
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (delta > 0){ trModifyProtounitAction(protoUnit, "ThornedWallsAttack", p, cXSActionEffectDamageHack, 2.0, cXSRelativityAbsolute); }
+                else { trModifyProtounitAction(protoUnit, "ThornedWallsAttack", p, cXSActionEffectDamageHack, -2.0, cXSRelativityAbsolute); }
+            }
+        );
+        synergy.m_buffs[12] = createBuffSpawnAction(SYNERGY_INDEX_WILDERNESS, emptySynergyType, cUnitTypeCarnivora, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
+        synergy.m_buffs[14] = createBuffAction(SYNERGY_INDEX_WILDERNESS, emptySynergyType, cXSActionEffectDamageCrush, 1, cXSRelativityAbsolute, "+3 Thorns Hack Damage",
+            [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                if (delta > 0){ trModifyProtounitAction(protoUnit, "ThornedWallsAttack", p, cXSActionEffectDamageHack, 3.0, cXSRelativityAbsolute); }
+                else { trModifyProtounitAction(protoUnit, "ThornedWallsAttack", p, cXSActionEffectDamageHack, -3.0, cXSRelativityAbsolute); }
+            }
+        );
+        g_synergies[SYNERGY_INDEX_WILDERNESS] = synergy;
     }
 }

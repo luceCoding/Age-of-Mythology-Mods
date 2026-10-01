@@ -263,6 +263,7 @@ void postModifyPlayerData(){
         setupForHealSynergy(p);
         setupForLightningSynergy(p);
         setupForBuilderSynergy(p);
+        setupForWildernessSynergy(p);
     }
 
     // For humans

@@ -477,20 +477,21 @@ class Buff {
                     string sName = BUFF_UNKNOWN_TARGET_TEXT;
                     
                     switch (sType) {
-                        case SYNERGY_INDEX_INFANTRY: sName = BUFF_INFANTRY_TEXT; 
-                        case SYNERGY_INDEX_RANGED: sName = BUFF_RANGED_TEXT; 
-                        case SYNERGY_INDEX_CAVALRY: sName = BUFF_CAVALRY_TEXT; 
-                        case SYNERGY_INDEX_MYTH: sName = BUFF_MYTH_UNITS_TEXT; 
-                        case SYNERGY_INDEX_HERO: sName = BUFF_HEROES_TEXT; 
-                        case SYNERGY_INDEX_HEALER: sName = BUFF_HEALERS_TEXT; 
-                        case SYNERGY_INDEX_SIEGE: sName = BUFF_SIEGE_TEXT; 
-                        case SYNERGY_INDEX_SOLDIER: sName = BUFF_SOLDIERS_TEXT; 
-                        case SYNERGY_INDEX_FROST: sName = BUFF_FROST_TEXT; 
-                        case SYNERGY_INDEX_UNDEAD: sName = BUFF_UNDEAD_TEXT; 
-                        case SYNERGY_INDEX_POISON: sName = BUFF_POISONOUS_TEXT; 
-                        case SYNERGY_INDEX_FIRE: sName = BUFF_FIRE_TEXT; 
-                        case SYNERGY_INDEX_LIGHTNING: sName = BUFF_LIGHTNING_TEXT; 
-                        case SYNERGY_INDEX_BUILDER: sName = BUFF_BUILDER_TEXT; 
+                        case SYNERGY_INDEX_INFANTRY: { sName = BUFF_INFANTRY_TEXT; break; }
+                        case SYNERGY_INDEX_RANGED: { sName = BUFF_RANGED_TEXT; break; }
+                        case SYNERGY_INDEX_CAVALRY: { sName = BUFF_CAVALRY_TEXT; break; }
+                        case SYNERGY_INDEX_MYTH: { sName = BUFF_MYTH_UNITS_TEXT; break; }
+                        case SYNERGY_INDEX_HERO: { sName = BUFF_HEROES_TEXT; break; }
+                        case SYNERGY_INDEX_HEALER: { sName = BUFF_HEALERS_TEXT; break; }
+                        case SYNERGY_INDEX_SIEGE: { sName = BUFF_SIEGE_TEXT; break; }
+                        case SYNERGY_INDEX_SOLDIER: { sName = BUFF_SOLDIERS_TEXT; break; }
+                        case SYNERGY_INDEX_FROST: { sName = BUFF_FROST_TEXT; break; }
+                        case SYNERGY_INDEX_UNDEAD: { sName = BUFF_UNDEAD_TEXT; break; }
+                        case SYNERGY_INDEX_POISON: { sName = BUFF_POISONOUS_TEXT; break; }
+                        case SYNERGY_INDEX_FIRE: { sName = BUFF_FIRE_TEXT; break; }
+                        case SYNERGY_INDEX_LIGHTNING: { sName = BUFF_LIGHTNING_TEXT; break; }
+                        case SYNERGY_INDEX_BUILDER: { sName = BUFF_BUILDER_TEXT; break; }
+                        case SYNERGY_INDEX_WILDERNESS: { sName = BUFF_WILDERNESS_TEXT; break; }
                     }
                     
                     if (i > 0) { targetStr = targetStr + ", "; }

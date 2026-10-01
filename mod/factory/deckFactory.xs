@@ -49,9 +49,11 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(0, cUnitTypeOrpheus);
     addCardsIntoDeck(0, cUnitTypeHadesShade);
 
+    // Caravans
     addCardsIntoDeck(1, cUnitTypeCaravanGreek);
     addCardsIntoDeck(2, cUnitTypePiXiu);
 
+    // Aztec
     addCardsIntoDeck(1, cUnitTypeTlamanihSpearman);
     addCardsIntoDeck(1, cUnitTypeTequihuaArcher);
     addCardsIntoDeck(1, cUnitTypeOcelotlWarrior);
@@ -63,6 +65,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeTeixiptlaQuetz, 260);
     addCardsIntoDeck(1, cUnitTypeMaquizcoatl);
 
+    // Greek
     addCardsIntoDeck(1, cUnitTypeHoplite);
     addCardsIntoDeck(1, cUnitTypeToxotes);
     addCardsIntoDeck(1, cUnitTypeHippeus);
@@ -72,9 +75,11 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeAchilles);
     addCardsIntoDeck(1, cUnitTypeLykaonWolf);
 
+    // Egyptian
     addCardsIntoDeck(1, cUnitTypeWadjet);
     addCardsIntoDeck(1, cUnitTypeAnubite);
 
+    // Norse
     addCardsIntoDeck(1, cUnitTypeHirdman);
     addCardsIntoDeck(1, cUnitTypeThrowingAxeman);
     addCardsIntoDeck(1, cUnitTypeRaidingCavalry);
@@ -83,6 +88,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeTroll);
     addCardsIntoDeck(1, cUnitTypeDraugr);
 
+    // Atlanteans
     addCardsIntoDeck(1, cUnitTypeKatapeltes);
     addCardsIntoDeck(1, cUnitTypeTurma);
     addCardsIntoDeck(1, cUnitTypeCheiroballista);
@@ -90,6 +96,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeAutomaton);
     addCardsIntoDeck(1, cUnitTypeServant);
 
+    // Chinese
     addCardsIntoDeck(1, cUnitTypeFireArcher);
     addCardsIntoDeck(1, cUnitTypeDaoSwordsman);
     addCardsIntoDeck(1, cUnitTypeGeHalberdier);
@@ -97,6 +104,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeQiLin);
     addCardsIntoDeck(1, cUnitTypeJorogumo);
 
+    // Japanese
     addCardsIntoDeck(1, cUnitTypeYariSpearman);
     addCardsIntoDeck(1, cUnitTypeYumiArcher);
     addCardsIntoDeck(1, cUnitTypeNaginataRider);
@@ -104,93 +112,112 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(1, cUnitTypeBushi);
     addCardsIntoDeck(1, cUnitTypeOnnaMusha);
     addCardsIntoDeck(1, cUnitTypeWanyudo);
+    addCardsIntoDeck(1, cUnitTypeKamaitachi);
 
+    // Aztec
     addCardsIntoDeck(2, cUnitTypeEagleWarrior);
     addCardsIntoDeck(2, cUnitTypeOtontin);
     addCardsIntoDeck(2, cUnitTypeShornOne);
     addCardsIntoDeck(2, cUnitTypeAyotochtli);
     addCardsIntoDeck(2, cUnitTypeTzitzimitl);
     addCardsIntoDeck(2, cUnitTypePopocatepetl, 250);
+    addCardsIntoDeck(2, cUnitTypeIztaccihuatl, 250);
 
-    addCardsIntoDeck(2, cUnitTypeBrokk, 250);
-    addCardsIntoDeck(2, cUnitTypeEitri, 250);
-    addCardsIntoDeck(2, cUnitTypeSetna, 250);
-
+    // Egyptian
     addCardsIntoDeck(2, cUnitTypeChariotArcher);
     addCardsIntoDeck(2, cUnitTypeCamelRider);
     addCardsIntoDeck(2, cUnitTypeWarElephant);
     addCardsIntoDeck(2, cUnitTypePetsuchos);
     addCardsIntoDeck(2, cUnitTypeScorpionMan);
     addCardsIntoDeck(2, cUnitTypeScarab);
+    addCardsIntoDeck(2, cUnitTypeSiegeTower);
 
-    addCardsIntoDeck(2, cUnitTypeDaimyo);
-    addCardsIntoDeck(2, cUnitTypeShinobi);
-    addCardsIntoDeck(2, cUnitTypeOyumi);
-    addCardsIntoDeck(2, cUnitTypeYukiOnna, 252);
-
+    // Norse
     addCardsIntoDeck(2, cUnitTypeGodi);
     addCardsIntoDeck(2, cUnitTypeJarl);
     addCardsIntoDeck(2, cUnitTypeHuskarl);
-    addCardsIntoDeck(2, cUnitTypePortableRam, 200);
+    addCardsIntoDeck(2, cUnitTypePortableRam);
     addCardsIntoDeck(2, cUnitTypeBattleBoar);
     addCardsIntoDeck(2, cUnitTypeFrostGiant);
     addCardsIntoDeck(2, cUnitTypeRockGiant);
     addCardsIntoDeck(2, cUnitTypeMountainGiant);
 
-    addCardsIntoDeck(2, cUnitTypeDestroyer);
-    addCardsIntoDeck(2, cUnitTypeArcus);
-    addCardsIntoDeck(2, cUnitTypeContarius);
-
-    addCardsIntoDeck(2, cUnitTypeBehemoth);
-    addCardsIntoDeck(2, cUnitTypePetrobolos);
-                
-    addCardsIntoDeck(2, cUnitTypeSiegeCrossbow);
-
+    // Greek
     addCardsIntoDeck(2, cUnitTypeIcarus);
     addCardsIntoDeck(2, cUnitTypeProdromos);
     addCardsIntoDeck(2, cUnitTypePeltast);
     addCardsIntoDeck(2, cUnitTypeHypaspist);
     addCardsIntoDeck(2, cUnitTypeHydra);
     addCardsIntoDeck(2, cUnitTypeHamadryad);
-    addCardsIntoDeck(2, cUnitTypePerseus);
     addCardsIntoDeck(2, cUnitTypeChiron);
+    addCardsIntoDeck(2, cUnitTypePetrobolos);
+    addCardsIntoDeck(2, cUnitTypeNemeanLion);
+    addCardsIntoDeck(2, cUnitTypeKamos, 250);
 
+    // Atlanteans
+    addCardsIntoDeck(2, cUnitTypeDestroyer);
+    addCardsIntoDeck(2, cUnitTypeArcus);
+    addCardsIntoDeck(2, cUnitTypeContarius);
+    addCardsIntoDeck(2, cUnitTypeBehemoth);
+    addCardsIntoDeck(2, cUnitTypeDryad);
+    addCardsIntoDeck(2, cUnitTypeStymphalianBird);
+    addCardsIntoDeck(2, cUnitTypeSatyr);
+
+    // Chinese
+    addCardsIntoDeck(2, cUnitTypeSiegeCrossbow);
     addCardsIntoDeck(2, cUnitTypeSage);
     addCardsIntoDeck(2, cUnitTypeChuKoNu);
     addCardsIntoDeck(2, cUnitTypeWhiteHorseCavalry);
     addCardsIntoDeck(2, cUnitTypeTaoWu);
     addCardsIntoDeck(2, cUnitTypeTaoTie);
 
+    // Japanese
+    addCardsIntoDeck(2, cUnitTypeDaimyo);
+    addCardsIntoDeck(2, cUnitTypeShinobi);
+    addCardsIntoDeck(2, cUnitTypeOyumi);
+    addCardsIntoDeck(2, cUnitTypeYukiOnna, 252);
     addCardsIntoDeck(2, cUnitTypeYumiHorseArcher);
     addCardsIntoDeck(2, cUnitTypeTanuki);
     addCardsIntoDeck(2, cUnitTypeShogun);
     addCardsIntoDeck(2, cUnitTypeRaiju);
+    addCardsIntoDeck(2, cUnitTypeOni);
 
-    addCardsIntoDeck(3, cUnitTypeCangJie, 600);
+    // Misc
+    addCardsIntoDeck(2, cUnitTypeBrokk, 250);
+    addCardsIntoDeck(2, cUnitTypeEitri, 250);
+    addCardsIntoDeck(2, cUnitTypeSetna, 250);
 
+    // Aztec
     addCardsIntoDeck(3, cUnitTypeJaguarRider);
     addCardsIntoDeck(3, cUnitTypeTunkuluchu);
     addCardsIntoDeck(3, cUnitTypeSuperTeixiptlaHuitz, 620);
     addCardsIntoDeck(3, cUnitTypeSuperTeixiptlaTezca, 620);
     addCardsIntoDeck(3, cUnitTypeSuperTeixiptlaQuetz, 620);
 
-    addCardsIntoDeck(3, cUnitTypeReginleif, 600);
-    addCardsIntoDeck(3, cUnitTypeFanatic);
-
+    // Chinese
     addCardsIntoDeck(3, cUnitTypeLiJing);
     addCardsIntoDeck(3, cUnitTypeWenZhong);
     addCardsIntoDeck(3, cUnitTypeYangJian);
     addCardsIntoDeck(3, cUnitTypeTigerCavalry);
     addCardsIntoDeck(3, cUnitTypeAsura);
-    addCardsIntoDeck(3, cUnitTypeChimera);
+    addCardsIntoDeck(3, cUnitTypeCangJie, 600);
+    addCardsIntoDeck(3, cUnitTypeXuanWu);
+    addCardsIntoDeck(3, cUnitTypeHunDun);
+    addCardsIntoDeck(3, cUnitTypeZhuQue);
+    addCardsIntoDeck(3, cUnitTypeAxeCart);
 
+    // Atlantean
+    addCardsIntoDeck(3, cUnitTypeFanatic);
     addCardsIntoDeck(3, cUnitTypeArgus);
     addCardsIntoDeck(3, cUnitTypeFireSiphon);
 
+    // Aztec
     addCardsIntoDeck(3, cUnitTypeQuinametzin);
     addCardsIntoDeck(3, cUnitTypeSoulGuide);
     addCardsIntoDeck(3, cUnitTypeAmazonArcher);
 
+    // Greek
+    addCardsIntoDeck(3, cUnitTypePerseus);
     addCardsIntoDeck(3, cUnitTypeGastraphetoros);
     addCardsIntoDeck(3, cUnitTypeHetairos);
     addCardsIntoDeck(3, cUnitTypeMyrmidon);
@@ -198,26 +225,31 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(3, cUnitTypeBellerophon);
     addCardsIntoDeck(3, cUnitTypeColossus);
     addCardsIntoDeck(3, cUnitTypeMedusa);
-    addCardsIntoDeck(3, cUnitTypeHelepolis, 400);
-    addCardsIntoDeck(3, cUnitTypeXuanWu);
+    addCardsIntoDeck(3, cUnitTypeHelepolis);
     addCardsIntoDeck(3, cUnitTypeMidas);
+    addCardsIntoDeck(3, cUnitTypeChimera);
 
+    // Norse
     addCardsIntoDeck(3, cUnitTypeFenrisWolfBrood);
     addCardsIntoDeck(3, cUnitTypeBallista);
     addCardsIntoDeck(3, cUnitTypeFireGiant);
     addCardsIntoDeck(3, cUnitTypeFafnir);
 
-    addCardsIntoDeck(3, cUnitTypeZhuQue);
-    addCardsIntoDeck(3, cUnitTypeMummy);
+    // Japanese
+    addCardsIntoDeck(3, cUnitTypeSamuraiHatamoto);
     addCardsIntoDeck(3, cUnitTypeOnmoraki);
-    addCardsIntoDeck(3, cUnitTypeHunDun);
     addCardsIntoDeck(3, cUnitTypeOnmyoji);
     addCardsIntoDeck(3, cUnitTypeShinigami);
     addCardsIntoDeck(3, cUnitTypeUmibozu);
 
-    addCardsIntoDeck(3, cUnitTypeSamuraiHatamoto);
+    // Egyptian
+    addCardsIntoDeck(3, cUnitTypeMummy);
+
+    // Misc
+    addCardsIntoDeck(3, cUnitTypeReginleif, 600);
     addCardsIntoDeck(3, cUnitTypeArkantos, 600);
     addCardsIntoDeck(3, cUnitTypeMagumo, 400);
+    addCardsIntoDeck(3, cUnitTypeOrnlu, 600);
 
     addCardsIntoDeck(4, cUnitTypeSonOfOsiris, 750);
     addCardsIntoDeck(4, cUnitTypeNidhogg, 1000);
@@ -231,6 +263,7 @@ void initializeCardParametersMap(){
     addCardsIntoDeck(4, cUnitTypeMictlantecuhtli, 1000);
     addCardsIntoDeck(4, cUnitTypeKingFolstag, 750);
     addCardsIntoDeck(4, cUnitTypeGauntletLegendHalogi, 750);
+    addCardsIntoDeck(4, cUnitTypePolaris, 750);
 
     addCardIntoDeck(4, cUnitTypeOsirisPieceBox, 500, -1, TIER_LEGENDARY, false);
 }
