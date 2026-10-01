@@ -348,7 +348,7 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_BUILDER];
-        synergy.m_buffs[2] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Buildable Shennong's Farm",
+        synergy.m_buffs[2] = createBuffLambdaOnly(SYNERGY_INDEX_BUILDER, emptySynergyType, "Buildable Torii Gate",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){ unforbidTrainBuilding(p, cUnitTypeToriiGate); }
                                     else { forbidTrainBuilding(p, cUnitTypeToriiGate); }

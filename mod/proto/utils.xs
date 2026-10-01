@@ -273,6 +273,7 @@ void setupForBuilderSynergy(int p = 0){
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMirrorTower), p, cXSProtoEffectBuildPoints, 90.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildPoints, 180.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeInfestedDen), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+    trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeToriiGate), "AreaHeal", p, cXSActionEffectModifyRate, 0.2, cXSRelativityAssign);
 
     g_OnCreationListener.register(p, cUnitTypeFarmShennong, false, [](int unitId = -1) -> void {
             lowFreqSchedulerWithIntInt.add(1000, unitId, 0, [](int iteration = 0, int unitId = 0, int _ = 0) -> bool {
