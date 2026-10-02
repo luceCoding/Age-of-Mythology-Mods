@@ -39,7 +39,7 @@ class AttachmentManager {
     }
 
     void registerAttachmentOntoProtoUnit(int cUnitTypeProtoUnit = -1, int p = 0, string targetType = "All"){
-        applyProtoActionSpecialEffectProtoUnitToTarget(kbProtoUnitGetName(cUnitTypeProtoUnit), p, cOnHitEffectAttach, targetType, kbProtoUnitGetName(m_cUnitTypeAttackAttachment), 1.0, 0.0);
+        applyProtoActionSpecialEffectProtoUnitToTarget(kbProtoUnitGetName(cUnitTypeProtoUnit), p, cOnHitEffectAttach, targetType, m_cUnitTypeAttackAttachment, 1.0, 0.0);
     }
 
     void addOnHitAttachment(int p = 0, int cUnitTypeAttachment = -1, int eventType = cSpawnEventTypeDead, float chance = -1, float duration = 0.0){

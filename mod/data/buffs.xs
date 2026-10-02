@@ -20,8 +20,9 @@ class Buff {
     float m_delta = 0.0;
     int m_relativity = cXSRelativityAbsolute;
 
-    string m_unitType = ""; // For targeting a single unit type
-    string m_withProtoUnitType = "";
+    int m_unitType = -1;
+    string m_protoUnitName = "";
+    int m_withProtoUnitType = -1;
 
     // Fields for trProtounitActionSpecialEffect
     int m_effectField = -1;
@@ -34,7 +35,7 @@ class Buff {
     float m_chance = -1.0;
     float m_lifespan = -1.0;
 
-    string[] m_unitTypes = default;
+    int[] m_unitTypes = default;
     int[] m_synergyTypes = default;
 
     // Template string field (e.g., "{val} {stat} {target}" or "{target} gain {val} {stat}")
@@ -76,7 +77,7 @@ class Buff {
         m_synergyIndex = synergyIndex;
     }
 
-    void setBuffActionUnitType(int synergyIndex = -1, int[] synergyTypes = default, string[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
+    void setBuffActionUnitType(int synergyIndex = -1, int[] synergyTypes = default, int[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1) {
         m_buffType = BUFF_TYPE_PROTO_ACTION_UNIT_TYPE;
         m_synergyTypes = synergyTypes;
         m_unitTypes = unitTypes;
@@ -112,13 +113,23 @@ class Buff {
         m_buffType = BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO;
         m_synergyTypes = synergyTypes;
         m_effectField = effectField;
-        m_withProtoUnitType = kbProtoUnitGetName(withProtoUnitType);
+        m_withProtoUnitType = withProtoUnitType;
         m_duration = duration;
         m_synergyIndex = synergyIndex;
     }
 
     bool isEmpty() {
         return m_synergyIndex < 0;
+    }
+
+    bool _matchesTarget(int protoID = -1) {
+        CardParameters param = g_protoIDToCardParametersMap.get(protoID);
+        if (m_unitType >= 0 && param.isUnitType(m_unitType) == false) { return false; }
+        if (m_synergyTypes.size() == 0) { return true; }
+        for (int i = 0; i < m_synergyTypes.size(); i++) {
+            if (param.isASynergy(m_synergyTypes[i])) { return true; }
+        }
+        return false;
     }
 
     void _executeCommand(string targetProto = "", int p = -1, float delta = 0.0) {
@@ -166,11 +177,6 @@ class Buff {
     void applyBuff(int p = 0) {
         if (isEmpty()) { return; }
 
-        if (m_buffType == BUFF_TYPE_LAMBDA_ONLY) {
-            _executeCommand("", p, m_delta);
-            return;
-        }
-
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL){
             float currDmgType = g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"));
             g_buffToCounterMap.put(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"), currDmgType + m_dmgType);
@@ -184,30 +190,15 @@ class Buff {
             g_buffToCounterMap.put(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO, "duration"), currDuration + m_duration);
         }
 
-        if (m_unitType == ""){
-
-            if (m_synergyTypes.size() == 0){ // Apply to all cards
-                int[] protoIDs = g_protoIDToCardParametersMap.getKeys();
-                for (int i = 0; i < protoIDs.size(); i++) {
+        if (m_protoUnitName != "") {
+            _executeCommand(m_protoUnitName, p, m_delta);
+        } else {
+            int[] protoIDs = g_protoIDToCardParametersMap.getKeys();
+            for (int i = 0; i < protoIDs.size(); i++) {
+                if (_matchesTarget(protoIDs[i])) {
                     _executeCommand(kbProtoUnitGetName(protoIDs[i]), p, m_delta);
                 }
             }
-            else { // Apply to only certain synergies
-                CardParameters[] params = g_protoIDToCardParametersMap.getValues();
-                for (int i = 0; i < params.size(); i++){
-                    CardParameters param = params[i];
-                    for (int j = 0; j < m_synergyTypes.size(); j++) {
-                        int synergyType = m_synergyTypes[j];
-                        if (param.isASynergy(synergyType)){
-                            _executeCommand(kbProtoUnitGetName(param.getProtoID()), p, m_delta);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        else { // Apply to anything, includes non-cards
-            _executeCommand(m_unitType, p, m_delta);
         }
     }
 
@@ -223,11 +214,6 @@ class Buff {
             invDelta = 1.0 - (m_delta - 1.0);
         }
 
-        if (m_buffType == BUFF_TYPE_LAMBDA_ONLY) {
-            _executeCommand("", p, invDelta);
-            return;
-        }
-
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL){
             float currDmgType = g_buffToCounterMap.get(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"));
             g_buffToCounterMap.put(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL, "dmgType"), currDmgType + m_dmgType);
@@ -241,26 +227,15 @@ class Buff {
             g_buffToCounterMap.put(getBuffToCounterKey(p, m_synergyIndex, BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO, "duration"), currDuration - m_duration);
         }
 
-        if (m_unitType == ""){
-            CardParameters[] params = g_protoIDToCardParametersMap.getValues();
-            for (int i = 0; i < params.size(); i++) {
-                CardParameters param = params[i];
-                if (m_synergyTypes.size() == 0){ // Apply to all cards
-                    _executeCommand(kbProtoUnitGetName(param.getProtoID()), p, invDelta);
-                }
-                else{
-                    for (int j = 0; j < m_synergyTypes.size(); j++) {
-                        int synergyType = m_synergyTypes[j];
-                        if (param.isASynergy(synergyType)){
-                            _executeCommand(kbProtoUnitGetName(param.getProtoID()), p, invDelta);
-                            break;
-                        }
-                    }
+        if (m_protoUnitName != "") {
+            _executeCommand(m_protoUnitName, p, invDelta);
+        } else {
+            int[] protoIDs = g_protoIDToCardParametersMap.getKeys();
+            for (int i = 0; i < protoIDs.size(); i++) {
+                if (_matchesTarget(protoIDs[i])) {
+                    _executeCommand(kbProtoUnitGetName(protoIDs[i]), p, invDelta);
                 }
             }
-        }
-        else { // Apply to anything, includes non-cards
-            _executeCommand(m_unitType, p, invDelta);
         }
     }
 
@@ -393,7 +368,7 @@ class Buff {
             }
         }
         else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPECIAL_WITH_PROTO) {
-            return BUFF_PLUS_ONE_PREFIX + m_withProtoUnitType;
+            return BUFF_PLUS_ONE_PREFIX + kbProtoUnitGetName(m_withProtoUnitType);
         }
         else if (m_buffType == BUFF_TYPE_PROTO_ACTION_SPAWN) {
             int intDelta = m_delta;
@@ -445,28 +420,41 @@ class Buff {
     }
 
     // Helper 3: Resolve targeting strings
+    string getUnitTypeName(int unitType = -1) {
+        switch (unitType) {
+            case UNIT_TYPE_INFANTRY: return BUFF_INFANTRY_TEXT;
+            case UNIT_TYPE_ARCHER: return BUFF_ARCHERS_TEXT;
+            case UNIT_TYPE_CAVALRY: return BUFF_CAVALRY_TEXT;
+            case UNIT_TYPE_MYTH: return BUFF_MYTH_UNITS_TEXT;
+            case UNIT_TYPE_HERO: return BUFF_HEROES_TEXT;
+            case UNIT_TYPE_HEALER: return BUFF_HEALERS_TEXT;
+            case UNIT_TYPE_SIEGE: return BUFF_SIEGE_TEXT;
+            case UNIT_TYPE_BUILDING: return "Buildings";
+            case UNIT_TYPE_SOLDIER: return BUFF_SOLDIERS_TEXT;
+            case UNIT_TYPE_RANGED: return BUFF_RANGED_TEXT;
+            case UNIT_TYPE_MYTH_SIEGE: return BUFF_MYTH_UNITS_TEXT;
+            case UNIT_TYPE_MYTH_RANGED: return BUFF_MYTH_UNITS_TEXT;
+            case UNIT_TYPE_MYTH_CAVALRY: return BUFF_MYTH_UNITS_TEXT;
+            case UNIT_TYPE_UNIT: return "Units";
+        }
+        return BUFF_UNKNOWN_TARGET_TEXT;
+    }
+
     string getTargetString() {
         if (m_buffType == BUFF_TYPE_PROTO_ACTION_UNIT_TYPE && m_unitTypes.size() > 0) {
             string targetStr = BUFF_VS_PREFIX;
             for (int u = 0; u < m_unitTypes.size(); u++) {
                 if (u > 0) { targetStr = targetStr + ", "; }
                 
-                string rawName = m_unitTypes[u];
-                string friendlyName = rawName;
-                
-                if (xsStringContains(rawName, "Infantry")) { friendlyName = BUFF_INFANTRY_TEXT; }
-                else if (xsStringContains(rawName, "Cavalry")) { friendlyName = BUFF_CAVALRY_TEXT; }
-                else if (xsStringContains(rawName, "Archer")) { friendlyName = BUFF_ARCHERS_TEXT; }
-                else if (xsStringContains(rawName, "MythUnit")) { friendlyName = BUFF_MYTH_UNITS_TEXT; }
-                else if (xsStringContains(rawName, "Hero")) { friendlyName = BUFF_HEROES_TEXT; }
-                else if (xsStringContains(rawName, "Siege")) { friendlyName = BUFF_SIEGE_TEXT; }
-                
-                targetStr = targetStr + friendlyName;
+                targetStr = targetStr + getUnitTypeName(m_unitTypes[u]);
             }
             return targetStr;
         } else {
-            if (m_unitType != ""){
-                return BUFF_ALL_UNITS_PREFIX + m_unitType + "s";
+            if (m_protoUnitName != ""){
+                return BUFF_ALL_UNITS_PREFIX + m_protoUnitName + "s";
+            }
+            else if (m_unitType >= 0) {
+                return BUFF_ALL_UNITS_PREFIX + getUnitTypeName(m_unitType);
             }
             else if (m_synergyTypes.size() == 0) {
                 return BUFF_ALL_CARDS_TEXT;
@@ -557,7 +545,7 @@ Buff createBuffAction(int synergyIndex = -1, int[] synergyTypes = default, int p
     return buff;
 }
 
-Buff createBuffActionUnitType(int synergyIndex = -1, int[] synergyTypes = default, string[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1,
+Buff createBuffActionUnitType(int synergyIndex = -1, int[] synergyTypes = default, int[] unitTypes = default, int puField = -1, float delta = 0.0, int relativity = -1,
                               string templateStr = "",
                               void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     Buff buff;
@@ -587,7 +575,7 @@ Buff createBuffSpawnAction(int synergyIndex = -1, int[] synergyTypes = default, 
     return buff;
 }
 
-Buff createBuffActionSingle(int synergyIndex = -1, string unitType = "", int puField = -1, float delta = 0.0, int relativity = -1,
+Buff createBuffActionSingle(int synergyIndex = -1, int unitType = -1, int puField = -1, float delta = 0.0, int relativity = -1,
                             string templateStr = "",
                             void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     int[] synergyTypes = new int(0, -1);
@@ -599,7 +587,19 @@ Buff createBuffActionSingle(int synergyIndex = -1, string unitType = "", int puF
     return buff;
 }
 
-Buff createBuffDataSingle(int synergyIndex = -1, string unitType = "", int puField = -1, float delta = 0.0, int relativity = -1,
+Buff createBuffActionProtoSingle(int synergyIndex = -1, string protoUnitName = "", int puField = -1, float delta = 0.0, int relativity = -1,
+                                string templateStr = "",
+                                void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
+    int[] synergyTypes = new int(0, -1);
+    Buff buff;
+    buff.setBuffAction(synergyIndex, synergyTypes, puField, delta, relativity);
+    buff.m_protoUnitName = protoUnitName;
+    buff.setTemplate(templateStr);
+    buff.setCallback(callback);
+    return buff;
+}
+
+Buff createBuffDataSingle(int synergyIndex = -1, int unitType = -1, int puField = -1, float delta = 0.0, int relativity = -1,
                           string templateStr = "",
                           void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     int[] synergyTypes = new int(0, -1);
@@ -611,13 +611,25 @@ Buff createBuffDataSingle(int synergyIndex = -1, string unitType = "", int puFie
     return buff;
 }
 
-Buff createBuffSpawnActionSingle(int synergyIndex = -1, string unitType = "", int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0,
+Buff createBuffSpawnActionSingle(int synergyIndex = -1, int unitType = -1, int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0,
                                  string templateStr = "",
                                  void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     int[] synergyTypes = new int(0, -1);
     Buff buff;
     buff.setBuffSpawnAction(synergyIndex, synergyTypes, spawnProtoID, eventType, delta, relativity, chance, lifespan);
     buff.m_unitType = unitType;
+    buff.setTemplate(templateStr);
+    buff.setCallback(callback);
+    return buff;
+}
+
+Buff createBuffSpawnActionProtoSingle(int synergyIndex = -1, string protoUnitName = "", int spawnProtoID = -1, int eventType = -1, float delta = 0.0, int relativity = cXSRelativityAbsolute, float chance = -1.0, float lifespan = -1.0,
+                                      string templateStr = "",
+                                      void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
+    int[] synergyTypes = new int(0, -1);
+    Buff buff;
+    buff.setBuffSpawnAction(synergyIndex, synergyTypes, spawnProtoID, eventType, delta, relativity, chance, lifespan);
+    buff.m_protoUnitName = protoUnitName;
     buff.setTemplate(templateStr);
     buff.setCallback(callback);
     return buff;
@@ -633,7 +645,7 @@ Buff createBuffSpecialActionWithProto(int synergyIndex = -1, int[] synergyTypes 
     return buff;
 }
 
-Buff createBuffSpecialActionWithProtoSingle(int synergyIndex = -1, string unitType = "", int effectField = cOnHitEffectAttach, int withProtoUnit = -1, float duration = 0.0,
+Buff createBuffSpecialActionWithProtoSingle(int synergyIndex = -1, int unitType = -1, int effectField = cOnHitEffectAttach, int withProtoUnit = -1, float duration = 0.0,
                                             string templateStr = "",
                                             void(string, int, float) callback = [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {}) {
     int[] synergyTypes = new int(0, -1);

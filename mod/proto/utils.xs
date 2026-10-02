@@ -123,9 +123,9 @@ void setupBoss(int protoID = -1, int onDeathProtoID = -1){
     string onDeathProtoName = kbProtoUnitGetName(onDeathProtoID);
     setupForAllUnits(protoName, 0);
     trModifyProtounitData(protoName, 0, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
-    trProtoUnitSetUnitType(0, protoName, "MythUnit", false);
-    trModifyProtounitActionUnitType(protoName, "HandAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(protoName, "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trProtoUnitSetUnitType(0, protoName, kbUnitTypeGetName(UNIT_TYPE_MYTH), false);
+    trModifyProtounitActionUnitType(protoName, "HandAttack", kbUnitTypeGetName(UNIT_TYPE_HERO), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(protoName, "RangedAttack", kbUnitTypeGetName(UNIT_TYPE_MYTH), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trProtoUnitSetIcon(protoName, 0, "", "ui\minimap\minimap_titan_gate");
     trProtoUnitMovementType(protoName, 0, "land");
     trModifyProtounitData(protoName, 0, cXSProtoEffectLOS, GAIA_CREEP_LOS, cXSRelativityAssign);
@@ -148,10 +148,10 @@ void applyProxyDOT(int cUnitTypeTarget = -1, int p = 0, float range = 20.0, floa
 void setupForPoisonSynergy(int p = 0){
     trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageDivine, 0.0, cXSRelativityAssign);
     trModifyProtounitAction("ArgusAcidBlobDamage", "SelfDestructAttack", p, cXSActionEffectDamageHack, 25.0, cXSRelativityAssign);
-    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
-    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_MYTH, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
-    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "SelfDestructAttack", UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
-    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "SelfDestructAttack", UNIT_TYPE_MYTH, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", kbUnitTypeGetName(UNIT_TYPE_HERO), p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", kbUnitTypeGetName(UNIT_TYPE_MYTH), p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "SelfDestructAttack", kbUnitTypeGetName(UNIT_TYPE_HERO), p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "SelfDestructAttack", kbUnitTypeGetName(UNIT_TYPE_MYTH), p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
 }
 
 void setupForFireSynergy(int p = 0){
@@ -161,8 +161,8 @@ void setupForFireSynergy(int p = 0){
     trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamagePierce, 40.0, cXSRelativityAssign);
     trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageCrush, 50.0, cXSRelativityAssign);
     trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageDivine, 0.0, cXSRelativityAssign);
-    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
-    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", UNIT_TYPE_MYTH, p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", kbUnitTypeGetName(UNIT_TYPE_HERO), p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType("SkylanternFireAreaGround", "AreaDamage", kbUnitTypeGetName(UNIT_TYPE_MYTH), p, cXSActionProtoEffectDamageBonus, 1.0, cXSRelativityAssign);
 }
 
 void setupForUndeadSynergy(int p = 0){  
@@ -225,7 +225,7 @@ void modifyBuildingCosts(int p = 0){
 void addTrainBuilding(string targetProto = "", int cUnitType = -1, int p = -1, int row = 0, int col = 0){
     trProtounitAddTrain(targetProto, p, kbProtoUnitGetName(cUnitType), row, col);
     //trUnforbidProtounit(p, kbProtoUnitGetName(cUnitType));
-    trModifyProtounitActionUnitType(targetProto, "Build", "Building", p, cXSActionProtoEffectWorkRate, 1.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(targetProto, "Build", kbUnitTypeGetName(UNIT_TYPE_BUILDING), p, cXSActionProtoEffectWorkRate, 1.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitType), p, cXSProtoEffectBuildLimit, BUILDING_BUILD_LIMIT, cXSRelativityAssign);
 }
 

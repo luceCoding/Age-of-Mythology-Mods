@@ -37,43 +37,43 @@ void preModifyPlayerData(){
         
         // For card synergies
         // UNIT_TYPE_CAVALRY
-        trProtoUnitSetUnitType(p, "Achilles", UNIT_TYPE_CAVALRY, true);
-        trProtoUnitSetUnitType(p, "Bellerophon", UNIT_TYPE_CAVALRY, true);
-        trProtoUnitSetUnitType(p, "HarumotoBlessed", UNIT_TYPE_CAVALRY, true);
-        trProtoUnitSetUnitType(p, "Shogun", UNIT_TYPE_CAVALRY, true);
+        trProtoUnitSetUnitType(p, "Achilles", kbUnitTypeGetName(UNIT_TYPE_CAVALRY), true);
+        trProtoUnitSetUnitType(p, "Bellerophon", kbUnitTypeGetName(UNIT_TYPE_CAVALRY), true);
+        trProtoUnitSetUnitType(p, "HarumotoBlessed", kbUnitTypeGetName(UNIT_TYPE_CAVALRY), true);
+        trProtoUnitSetUnitType(p, "Shogun", kbUnitTypeGetName(UNIT_TYPE_CAVALRY), true);
 
         // UNIT_TYPE_HEALER
-        trProtoUnitSetUnitType(p, "QiLin", UNIT_TYPE_HEALER, true);
-        trProtoUnitSetUnitType(p, "Tanuki", UNIT_TYPE_HEALER, true);
+        trProtoUnitSetUnitType(p, "QiLin", kbUnitTypeGetName(UNIT_TYPE_HEALER), true);
+        trProtoUnitSetUnitType(p, "Tanuki", kbUnitTypeGetName(UNIT_TYPE_HEALER), true);
 
         // UNIT_TYPE_INFANTRY
-        trProtoUnitSetUnitType(p, "Arkantos", UNIT_TYPE_INFANTRY, true);
-        trProtoUnitSetUnitType(p, "ArkantosGod", UNIT_TYPE_INFANTRY, true);
-        trProtoUnitSetUnitType(p, "Automaton", UNIT_TYPE_INFANTRY, true);
-        trProtoUnitSetUnitType(p, "Guardian", UNIT_TYPE_INFANTRY, true);
+        trProtoUnitSetUnitType(p, "Arkantos", kbUnitTypeGetName(UNIT_TYPE_INFANTRY), true);
+        trProtoUnitSetUnitType(p, "ArkantosGod", kbUnitTypeGetName(UNIT_TYPE_INFANTRY), true);
+        trProtoUnitSetUnitType(p, "Automaton", kbUnitTypeGetName(UNIT_TYPE_INFANTRY), true);
+        trProtoUnitSetUnitType(p, "Guardian", kbUnitTypeGetName(UNIT_TYPE_INFANTRY), true);
 
         // UNIT_TYPE_MYTH
-        trProtoUnitSetUnitType(p, "Bellerophon", UNIT_TYPE_MYTH, true);
-        trProtoUnitSetUnitType(p, "Chiron", UNIT_TYPE_MYTH, true);
-        trProtoUnitSetUnitType(p, "Perseus", UNIT_TYPE_MYTH, true);
-        trProtoUnitSetUnitType(p, "WenZhong", UNIT_TYPE_MYTH, true);
+        trProtoUnitSetUnitType(p, "Bellerophon", kbUnitTypeGetName(UNIT_TYPE_MYTH), true);
+        trProtoUnitSetUnitType(p, "Chiron", kbUnitTypeGetName(UNIT_TYPE_MYTH), true);
+        trProtoUnitSetUnitType(p, "Perseus", kbUnitTypeGetName(UNIT_TYPE_MYTH), true);
+        trProtoUnitSetUnitType(p, "WenZhong", kbUnitTypeGetName(UNIT_TYPE_MYTH), true);
 
         // UNIT_TYPE_MYTH_RANGED
-        trProtoUnitSetUnitType(p, "Chiron", UNIT_TYPE_MYTH_RANGED, true);
+        trProtoUnitSetUnitType(p, "Chiron", kbUnitTypeGetName(UNIT_TYPE_MYTH_RANGED), true);
 
         // UNIT_TYPE_MYTH_SIEGE
-        trProtoUnitSetUnitType(p, "Polyphemus", UNIT_TYPE_MYTH_SIEGE, true);
-        trProtoUnitSetUnitType(p, "FireArcher", UNIT_TYPE_MYTH_SIEGE, true);
-        trProtoUnitSetUnitType(p, "Gastraphetoros", UNIT_TYPE_MYTH_SIEGE, true);
+        trProtoUnitSetUnitType(p, "Polyphemus", kbUnitTypeGetName(UNIT_TYPE_MYTH_SIEGE), true);
+        trProtoUnitSetUnitType(p, "FireArcher", kbUnitTypeGetName(UNIT_TYPE_MYTH_SIEGE), true);
+        trProtoUnitSetUnitType(p, "Gastraphetoros", kbUnitTypeGetName(UNIT_TYPE_MYTH_SIEGE), true);
 
         // UNIT_TYPE_SIEGE
-        trProtoUnitSetUnitType(p, "Guardian", UNIT_TYPE_SIEGE, true);
-        trProtoUnitSetUnitType(p, "Otontin", UNIT_TYPE_SIEGE, true);
-        trProtoUnitSetUnitType(p, "Quinametzin", UNIT_TYPE_SIEGE, true);
+        trProtoUnitSetUnitType(p, "Guardian", kbUnitTypeGetName(UNIT_TYPE_SIEGE), true);
+        trProtoUnitSetUnitType(p, "Otontin", kbUnitTypeGetName(UNIT_TYPE_SIEGE), true);
+        trProtoUnitSetUnitType(p, "Quinametzin", kbUnitTypeGetName(UNIT_TYPE_SIEGE), true);
 
         // UNIT_TYPE_SOLDIER
-        trProtoUnitSetUnitType(p, "Arkantos", UNIT_TYPE_SOLDIER, true);
-        trProtoUnitSetUnitType(p, "ArkantosGod", UNIT_TYPE_SOLDIER, true);
+        trProtoUnitSetUnitType(p, "Arkantos", kbUnitTypeGetName(UNIT_TYPE_SOLDIER), true);
+        trProtoUnitSetUnitType(p, "ArkantosGod", kbUnitTypeGetName(UNIT_TYPE_SOLDIER), true);
     }
 
     // Only Humans
@@ -185,7 +185,7 @@ void preModifyPlayerData(){
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectROF, 3, cXSRelativityAssign);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectNumBounces, 3, cXSRelativityAssign);
         trModifyProtounitAction("StatueOfLightning", "LightningAttack", p, cXSActionEffectRange, 22, cXSRelativityAssign);
-        trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", "MythUnit", p, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+        trModifyProtounitActionUnitType("StatueOfLightning", "LightningAttack", kbUnitTypeGetName(UNIT_TYPE_MYTH), p, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
         setupAsTower("StatueOfLightning", p);
 
         trProtounitModifySpawnData("SentryTower", p, kbProtoUnitGetName(cUnitTypeCinematicBlockArea), 0, 1.0, cXSRelativityAbsolute, -1, 1.0);
@@ -292,9 +292,9 @@ void postModifyPlayerData(){
     // Only Gaia
     setupBoss(TOP_BOSS_PROTO, TOP_BOSS_DEATH_PROTO);
     setupBoss(BOT_BOSS_PROTO, BOT_BOSS_DEATH_PROTO);
-    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "RangedAttack", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "BillowingSmog", "Hero", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "RangedAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "BillowingSmog", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
-    trModifyProtounitActionUnitType(kbProtoUnitGetName(BOT_BOSS_PROTO), "HandAttack", "MythUnit", 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "RangedAttack", kbUnitTypeGetName(UNIT_TYPE_HERO), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "BillowingSmog", kbUnitTypeGetName(UNIT_TYPE_HERO), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "RangedAttack", kbUnitTypeGetName(UNIT_TYPE_MYTH), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(TOP_BOSS_PROTO), "BillowingSmog", kbUnitTypeGetName(UNIT_TYPE_MYTH), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(BOT_BOSS_PROTO), "HandAttack", kbUnitTypeGetName(UNIT_TYPE_MYTH), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
 }

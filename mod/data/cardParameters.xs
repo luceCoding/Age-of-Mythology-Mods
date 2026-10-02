@@ -13,21 +13,10 @@ class CardParameters {
         return m_params.ints[3];
     }
 
-    bool isUnitType(string unitType = ""){
+    bool isUnitType(int unitType = -1){
         xsSetContextPlayer(0);
         int protoID = getProtoID();
-        int unitID = trUnitCreateForced(kbProtoUnitGetName(protoID), 0, 0, 0, -1, 0, false);
-        if (unitID < 0) {
-            errorLog(kbProtoUnitGetName(protoID) + " failed to spawn");
-            return false;
-        }
-        selectSingle(unitID);
-        if (kbProtoUnitIsType(kbUnitGetProtoUnitID(unitID), kbGetUnitTypeID(unitType)) != false){
-            trUnitDestroy(false);
-            return true;
-        }
-        trUnitDestroy(false);
-        return false;
+        return kbProtoUnitIsType(protoID, unitType);
     }
 
     int getIntData(){

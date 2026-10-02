@@ -158,6 +158,7 @@ void initializeSynergies(){
         synergy.m_buffs[7] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTlacanexquimilli, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
         synergy.m_buffs[8] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+1 Tlacanexquimilli on kill",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (protoUnit != "Militia") { return; }
                                     if (delta > 0){
                                         g_OnCreationListener.register(p, cUnitTypeMinion, false, [](int unitId = -1) -> void {
                                                 selectSingle(unitId);
@@ -175,6 +176,7 @@ void initializeSynergies(){
         synergy.m_buffs[11] = createBuffSpawnAction(SYNERGY_INDEX_UNDEAD, emptySynergyType, cUnitTypeTartarianSpawn, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute);
         synergy.m_buffs[12] = createBuffLambdaOnly(SYNERGY_INDEX_UNDEAD, emptySynergyType, "+1 Tartarian Spawn on kill",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (protoUnit != "Militia") { return; }
                                     if (delta > 0){
                                         g_OnCreationListener.register(p, cUnitTypeMinion, false, [](int unitId = -1) -> void {
                                                 selectSingle(unitId);
@@ -214,7 +216,7 @@ void initializeSynergies(){
         synergy.m_buffs[5] = createBuffSpawnActionSingle(SYNERGY_INDEX_POISON, UNIT_TYPE_UNIT, cUnitTypeArgusAcidBlobDamage, cSpawnEventTypeDead, 1.0, cXSRelativityAbsolute, -1.0, -1.0, POISON_SYNERGY_TEXT1);
         synergy.m_buffs[6] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 0.5, POISON_SYNERGY_TEXT2);
         synergy.m_buffs[9] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 0.75, POISON_SYNERGY_TEXT2);
-        synergy.m_buffs[10] = createBuffActionSingle(SYNERGY_INDEX_POISON, "ArgusAcidBlobDamage", cXSActionEffectDamageHack, 25, cXSRelativityAbsolute, POISON_SYNERGY_TEXT1);
+        synergy.m_buffs[10] = createBuffActionProtoSingle(SYNERGY_INDEX_POISON, "ArgusAcidBlobDamage", cXSActionEffectDamageHack, 25, cXSRelativityAbsolute, POISON_SYNERGY_TEXT1);
         synergy.m_buffs[12] = createBuffSpecialAction(SYNERGY_INDEX_POISON, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypeHack, 10.0, 1, POISON_SYNERGY_TEXT2);
         g_synergies[SYNERGY_INDEX_POISON] = synergy;
     }
@@ -232,7 +234,7 @@ void initializeSynergies(){
                                     }
                                 }
                             );
-        synergy.m_buffs[4] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.03, 10.0, FIRE_SYNERGY_TEXT1,
+        synergy.m_buffs[4] = createBuffSpawnActionProtoSingle(SYNERGY_INDEX_FIRE, "VFXScorchingFeathers", cUnitTypeVFXArrowSignal, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 0.03, 10.0, FIRE_SYNERGY_TEXT1,
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
                                         g_OnCreationListener.register(p, cUnitTypeVFXArrowSignal, false, [](int unitId = -1) -> void {
@@ -265,7 +267,7 @@ void initializeSynergies(){
                                     }
                                 }
                             );
-        synergy.m_buffs[8] = createBuffSpawnActionSingle(SYNERGY_INDEX_FIRE, "SkylanternFireAreaGround", cUnitTypeVFXFireAshesCS, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 1.0, 10.0, FIRE_SYNERGY_TEXT2,
+        synergy.m_buffs[8] = createBuffSpawnActionProtoSingle(SYNERGY_INDEX_FIRE, "SkylanternFireAreaGround", cUnitTypeVFXFireAshesCS, cSpawnEventTypeBirth, 1.0, cXSRelativityAbsolute, 1.0, 10.0, FIRE_SYNERGY_TEXT2,
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (delta > 0){
                                         g_OnCreationListener.register(p, cUnitTypeSkylanternFireAreaGround, false, [](int unitId = -1) -> void {
@@ -283,7 +285,7 @@ void initializeSynergies(){
                                 }
                             );
         synergy.m_buffs[10] = createBuffSpecialAction(SYNERGY_INDEX_FIRE, emptySynergyType, cOnHitEffectDamageOverTime, cXSDamageTypePierce, 4.0, 1.5, FIRE_SYNERGY_TEXT4);
-        synergy.m_buffs[12] = createBuffActionSingle(SYNERGY_INDEX_FIRE, "MeteorSPC", cXSActionEffectDamagePierce, 40, cXSRelativityAbsolute, FIRE_SYNERGY_TEXT3);
+        synergy.m_buffs[12] = createBuffActionProtoSingle(SYNERGY_INDEX_FIRE, "MeteorSPC", cXSActionEffectDamagePierce, 40, cXSRelativityAbsolute, FIRE_SYNERGY_TEXT3);
         g_synergies[SYNERGY_INDEX_FIRE] = synergy;
     }
 
