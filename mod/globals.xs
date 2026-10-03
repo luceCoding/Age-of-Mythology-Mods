@@ -71,7 +71,7 @@ const float SELL_MULTIPLIER = 0.75;
 const float UI_LEFT_BUFFER = 50;
 const int config_MAX_DRAWN_CARDS = 5;
 const int MAX_CARDS_IN_BENCH = 20;
-const int INITIAL_CARDS_IN_BENCH = 11;
+const int INITIAL_CARDS_IN_BENCH = 16;
 
 const int SHOP_TYPE_CLOSED = -2;
 const int DEFAULT_SHOP_TYPE = -1;

@@ -1,6 +1,10 @@
 int g_t1FortressId = -1;
 int g_t2FortressId = -1;
 
+// Team-wide tower destruction counters, used to gate bench capacity rewards
+int g_t1TowersDestroyed = 0;
+int g_t2TowersDestroyed = 0;
+
 // ==========================================
 // INVULNERABILITY & TOWER STATUS HELPERS
 // ==========================================
@@ -110,6 +114,10 @@ class LaneManager {
         return isUnitDead(m_fortressUnitID);
     }
 
+    int getTowerCount() {
+        return m_towerUnitIDs.size();
+    }
+
     // Returns 1 for a matched tower and 2 when the final tower unlocks the fortress.
     int handleTowerDestroyed(vector deathPos = cInvalidVector) {
         if (m_t2Vulnerable == false && distanceSquared(deathPos, m_towerPositions[2]) <= TOWER_MATCH_RADIUS_SQ) {
@@ -192,26 +200,35 @@ int handleTeamTowerDestroyed(ref LaneManager topLane, ref LaneManager midLane, r
 }
 
 // Reacts to a tower/fortress death-blocker: cascades lane invulnerability and runs the fallen-tower feedback effects
-void onLaneStructureDestroyed(int unitId = -1, ref LaneManager topLane, ref LaneManager midLane, ref LaneManager botLane, int fortressUnitId = -1) {
+void onLaneStructureDestroyed(int unitId = -1, ref LaneManager topLane, ref LaneManager midLane, ref LaneManager botLane, int fortressUnitId = -1, ref int towersDestroyedCount) {
     selectSingle(unitId);
     int owner = kbUnitGetPlayerID(unitId);
     vector v = trUnitGetPosition(unitId);
 
     int towerStatus = handleTeamTowerDestroyed(topLane, midLane, botLane, v);
     if (towerStatus > 0) {
+        towersDestroyedCount = towersDestroyedCount + 1;
+        int totalTowersPerTeam = topLane.getTowerCount() + midLane.getTowerCount() + botLane.getTowerCount();
+        // Grant bench capacity on the 1st, 3rd and 6th tower kills, then once more when every tower is down
+        bool grantCapacity = towersDestroyedCount == 1 || towersDestroyedCount == 3 || towersDestroyedCount == 6 || towersDestroyedCount == totalTowersPerTeam;
         int attackingTeam = 3 - g_finalTeam[owner];
         bool capacityIncreased = false;
-        int[] attackingPlayers = getPlayersInTeam(attackingTeam);
-        for (int i = 0; i < attackingPlayers.size(); i++) {
-            int p = attackingPlayers[i];
-            if (p > cNumberPlayers - 2) { continue; }
-            if (g_finalTeam[p] == attackingTeam && g_cardCapacityByPlayer[p] < MAX_CARDS_IN_BENCH) {
-                g_cardCapacityByPlayer[p] = g_cardCapacityByPlayer[p] + 1;
-                capacityIncreased = true;
+        if (grantCapacity) {
+            int[] attackingPlayers = getPlayersInTeam(attackingTeam);
+            for (int i = 0; i < attackingPlayers.size(); i++) {
+                int p = attackingPlayers[i];
+                if (p > cNumberPlayers - 2) { continue; }
+                if (g_finalTeam[p] == attackingTeam && g_cardCapacityByPlayer[p] < MAX_CARDS_IN_BENCH) {
+                    g_cardCapacityByPlayer[p] = g_cardCapacityByPlayer[p] + 1;
+                    capacityIncreased = true;
+                }
             }
         }
         if (capacityIncreased) {
             trChatSend(getTeamsAIPlayer(attackingTeam), CARD_SLOT_ADDED_TEXT);
+        }
+        else {
+            trChatSend(getTeamsAIPlayer(attackingTeam), FALLEN_ENEMY_TOWER_TEXT);
         }
     }
 
@@ -359,11 +376,11 @@ void spawnLane(){
 // ==========================================
 void setupInvulnerabilityTriggers() {
     g_OnCreationListener.register(aiTeamA, cUnitTypeCinematicBlockArea, true, [](int unitId = -1) -> void {
-        onLaneStructureDestroyed(unitId, g_T1TopLane, g_T1MidLane, g_T1BotLane, g_t1FortressId);
+        onLaneStructureDestroyed(unitId, g_T1TopLane, g_T1MidLane, g_T1BotLane, g_t1FortressId, g_t1TowersDestroyed);
     });
 
     g_OnCreationListener.register(aiTeamB, cUnitTypeCinematicBlockArea, true, [](int unitId = -1) -> void {
-        onLaneStructureDestroyed(unitId, g_T2TopLane, g_T2MidLane, g_T2BotLane, g_t2FortressId);
+        onLaneStructureDestroyed(unitId, g_T2TopLane, g_T2MidLane, g_T2BotLane, g_t2FortressId, g_t2TowersDestroyed);
     });
 }
 

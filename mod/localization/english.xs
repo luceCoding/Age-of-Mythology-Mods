@@ -25,8 +25,9 @@ string IDENTIFY_TIP_TEXT1 = "Card is already identified.";
 
 string SOCKET_TIP_TEXT1 = "Card has max sockets already, upgrade its rarity to increase its socket count.";
 
-string FALLEN_TOWER_TEXT = "A tower has fallen!"; 
-string CARD_SLOT_ADDED_TEXT = "Your team has gained an extra card slot!";
+string FALLEN_TOWER_TEXT = "A tower has fallen!";
+string FALLEN_ENEMY_TOWER_TEXT = "An enemy tower has fallen!"; 
+string CARD_SLOT_ADDED_TEXT = "An enemy tower has fallen! Your team has gained an extra card slot!";
 
 string POISON_SYNERGY_TEXT1 = "+25 hack damage explosion on death";
 string POISON_SYNERGY_TEXT2 = "{val} Hack DOT over {s}";

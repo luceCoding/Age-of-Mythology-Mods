@@ -20,7 +20,6 @@ void setupForAllUnits(string protoName = "", int p = 0){
 void setAsCardUnit(int protoID = -1, int p = 0){
     string protoName = kbProtoUnitGetName(protoID);
     setupForAllUnits(protoName, p);
-    //trProtoUnitActionSetEnabled(protoName, p, "Repair", false);
     trProtoUnitSetFlag(p, protoName, "KnockoutDeath", false);
     trProtoUnitSetFlag(p, protoName, "Invulnerable", false);
     trProtoUnitSetFlag(p, protoName, "NotKBTracked", false);
@@ -124,6 +123,7 @@ void setupBoss(int protoID = -1, int onDeathProtoID = -1){
     setupForAllUnits(protoName, 0);
     trModifyProtounitData(protoName, 0, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
     trProtoUnitSetUnitType(0, protoName, kbUnitTypeGetName(UNIT_TYPE_MYTH), false);
+    trProtoUnitSetUnitType(0, protoName, kbUnitTypeGetName(cUnitTypeLogicalTypeMythUnitNotTitan), false);
     trModifyProtounitActionUnitType(protoName, "HandAttack", kbUnitTypeGetName(UNIT_TYPE_HERO), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(protoName, "RangedAttack", kbUnitTypeGetName(UNIT_TYPE_MYTH), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trProtoUnitSetIcon(protoName, 0, "", "ui\minimap\minimap_titan_gate");

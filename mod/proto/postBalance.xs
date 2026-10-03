@@ -9,7 +9,7 @@ void applyHeroNerfAgainstSoldier(ref CardParameters params){
     if (params.isSoldier()){
         string protoName = kbProtoUnitGetName(params.getProtoID());
         for(int p = 0; p <= cNumberPlayers; p++) {
-            applyProtoActionUnitTypeToTarget(protoName, UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.25, cXSRelativityBasePercent);
+            applyProtoActionUnitTypeToTarget(protoName, UNIT_TYPE_HERO, p, cXSActionProtoEffectDamageBonus, 1.5, cXSRelativityBasePercent);
         }
     }
 }
