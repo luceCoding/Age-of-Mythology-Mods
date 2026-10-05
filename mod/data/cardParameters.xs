@@ -66,22 +66,35 @@ class CardParameters {
         return m_params.floats[0];
     }
 
-    bool isInfantry(){ return m_unitTypes[0];}
-    bool isArcher(){ return (m_unitTypes[1] || m_unitTypes[9] || m_unitTypes[11]);}
-    bool isCavalry(){ return m_unitTypes[2] || m_unitTypes[12];}
-    bool isMythUnit(){ return m_unitTypes[3] || m_unitTypes[10] || m_unitTypes[11] || m_unitTypes[12];}
-    bool isHero(){ return m_unitTypes[4];}
-    bool isHealer(){ return m_unitTypes[5];}
-    bool isSiege(){ return (m_unitTypes[6] || m_unitTypes[10]);}
-    bool isBuilding(){ return m_unitTypes[7];}
-    bool isSoldier(){ return m_unitTypes[8];}
-    bool isFrost(){ return m_unitTypes[13];}
-    bool isUndead(){ return m_unitTypes[14];}
-    bool isPoison(){ return m_unitTypes[15];}
-    bool isFire(){ return m_unitTypes[16];}
-    bool isLightning(){ return m_unitTypes[17];}
-    bool isBuilder(){ return m_unitTypes[18];}
-    bool isWilderness(){ return m_unitTypes[19];}
+    bool getUnitTypeFlag(int index = -1){
+        if (index < 0 || index >= MAX_CARD_UNIT_TYPES){
+            return false;
+        }
+        if (m_unitTypes.size() != MAX_CARD_UNIT_TYPES){
+            if (m_params.ints.size() < 4 || m_params.ints[3] < 0){
+                return false;
+            }
+            setCardParameters(getAge(), m_params.ints[3], getCost());
+        }
+        return m_unitTypes[index];
+    }
+
+    bool isInfantry(){ return getUnitTypeFlag(0);}
+    bool isArcher(){ return (getUnitTypeFlag(1) || getUnitTypeFlag(9) || getUnitTypeFlag(11));}
+    bool isCavalry(){ return getUnitTypeFlag(2) || getUnitTypeFlag(12);}
+    bool isMythUnit(){ return getUnitTypeFlag(3) || getUnitTypeFlag(10) || getUnitTypeFlag(11) || getUnitTypeFlag(12);}
+    bool isHero(){ return getUnitTypeFlag(4);}
+    bool isHealer(){ return getUnitTypeFlag(5);}
+    bool isSiege(){ return (getUnitTypeFlag(6) || getUnitTypeFlag(10));}
+    bool isBuilding(){ return getUnitTypeFlag(7);}
+    bool isSoldier(){ return getUnitTypeFlag(8);}
+    bool isFrost(){ return getUnitTypeFlag(13);}
+    bool isUndead(){ return getUnitTypeFlag(14);}
+    bool isPoison(){ return getUnitTypeFlag(15);}
+    bool isFire(){ return getUnitTypeFlag(16);}
+    bool isLightning(){ return getUnitTypeFlag(17);}
+    bool isBuilder(){ return getUnitTypeFlag(18);}
+    bool isWilderness(){ return getUnitTypeFlag(19);}
 
     bool isGreek() { return xsStringFindFirst(getIconPath(), "greek", 0, false) != -1; }
     bool isNorse() { return xsStringFindFirst(getIconPath(), "norse", 0, false) != -1; }
@@ -254,7 +267,7 @@ class CardParameters {
         m_params = params;
         m_uuid = g_uuid.getNextUUID();
 
-        m_unitTypes = new bool(20, false);
+        m_unitTypes = new bool(MAX_CARD_UNIT_TYPES, false);
         m_unitTypes[0] = isUnitType(UNIT_TYPE_INFANTRY);
         m_unitTypes[1] = isUnitType(UNIT_TYPE_ARCHER);
         m_unitTypes[2] = isUnitType(UNIT_TYPE_CAVALRY);

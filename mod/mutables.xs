@@ -7,3 +7,4 @@ mutable void attachBotBossBuff(int unitID = 0, int durationMs = 0, int p = 0){ r
 mutable void setTeamAsWinner(int team = 0){ return; }
 mutable void renderTemple(int p = 1){ return; }
 mutable void addRecallCommand(int p = 0, string protoUnit = "") { return; }
+mutable void setCardParameters(int age = 0, int protoID = -1, int cost = -1){ return; }

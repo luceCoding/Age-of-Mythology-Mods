@@ -15,6 +15,7 @@ const int ADD_OSIRIS_CARD_INTERVAL_MS = 120000;
 const int OSIRIS_CARDS_NEEDED = 5;
 const int MAX_SOCKETS_PER_CARD = 5;
 const int MAX_SYNERGIES = 15;
+const int MAX_CARD_UNIT_TYPES = 20;
 const int HERO_WAVE = 5;
 
 const int UNIT_TYPE_INFANTRY = cUnitTypeAbstractInfantry;
