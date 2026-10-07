@@ -468,7 +468,7 @@ void initializeSynergies(){
 
     {
         SynergyData synergy = g_synergies[SYNERGY_INDEX_SAND];
-        synergy.m_buffs[3] = createBuffLambdaOnly(SYNERGY_INDEX_SAND, emptySynergyType, "2% for Tornado on hit",
+        synergy.m_buffs[3] = createBuffLambdaOnly(SYNERGY_INDEX_SAND, emptySynergyType, "2% to summon a Dust Devil on hit",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (protoUnit != "Militia") { return; } // Only apply this once.
                                     if (delta > 0){ 
@@ -497,7 +497,7 @@ void initializeSynergies(){
                                     }
                                 }
                             );
-        synergy.m_buffs[6] = createBuffLambdaOnly(SYNERGY_INDEX_SAND, emptySynergyType, "Tornado debuffs attack damage by 25%.",
+        synergy.m_buffs[6] = createBuffLambdaOnly(SYNERGY_INDEX_SAND, emptySynergyType, "Dust Devil debuffs attack damage by 25%.",
                                 [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
                                     if (protoUnit != "Militia") { return; } // Only apply this once.
                                     if (delta > 0){ 
