@@ -108,3 +108,4 @@ string BUFF_FIRE_TEXT = "Fire";
 string BUFF_LIGHTNING_TEXT = "Lightning";
 string BUFF_BUILDER_TEXT = "Builder";
 string BUFF_WILDERNESS_TEXT = "Wilderness";
+string BUFF_SAND_TEXT = "Sand";

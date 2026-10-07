@@ -78,6 +78,7 @@ void initializeCardParametersMap(){
     // Egyptian
     addCardsIntoDeck(1, cUnitTypeWadjet);
     addCardsIntoDeck(1, cUnitTypeAnubite);
+    addCardsIntoDeck(1, cUnitTypeSphinx);
 
     // Norse
     addCardsIntoDeck(1, cUnitTypeHirdman);
@@ -244,6 +245,7 @@ void initializeCardParametersMap(){
 
     // Egyptian
     addCardsIntoDeck(3, cUnitTypeMummy);
+    addCardsIntoDeck(3, cUnitTypeAvenger);
 
     // Misc
     addCardsIntoDeck(3, cUnitTypeReginleif, 600);

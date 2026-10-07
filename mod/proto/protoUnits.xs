@@ -264,6 +264,7 @@ void postModifyPlayerData(){
         setupForLightningSynergy(p);
         setupForBuilderSynergy(p);
         setupForWildernessSynergy(p);
+        setupForSandSynergy(p);
     }
 
     // For humans

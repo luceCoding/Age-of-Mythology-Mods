@@ -43,8 +43,7 @@ void startGame(){
     trChatSend(cNumberPlayers, WELCOME_TEXT4);
 
     for (int p=1; p <= cNumberPlayers-2; p++){
-        BenchData bench = g_shop.getBench(trCurrentPlayer());
-        int shopId = bench.m_playerShopId;
+        int shopId = g_shopIDs[p];
         vector v = kbUnitGetTruePosition(shopId);
         if (trCurrentPlayer() == p){
             cameraLookAt(v, 60.0, 45.0, 45.0);

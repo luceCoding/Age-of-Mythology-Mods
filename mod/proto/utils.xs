@@ -303,3 +303,9 @@ void setupForWildernessSynergy(int p = 0){
         }
     );
 }
+
+void setupForSandSynergy(int p = 0){
+    trProtounitActionSpecialEffect(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", p, cOnHitEffectThrow, "All", -1, 1.0, 0.0);
+    trProtounitActionSpecialEffectActive(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", p, cOnHitEffectThrow, "All", -1, false);
+    trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypePlantEgyptianShrub), "OnlyInEditor", true);
+}

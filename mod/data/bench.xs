@@ -22,6 +22,7 @@ class BenchData {
     void init(int p = -1, int shopId = -1){
         m_player = p;
         m_playerShopId = shopId;
+        g_shopIDs[p] = shopId;
         m_synergyCounter = new int(MAX_SYNERGIES, 0);
         m_cachedSynergyText = new string(MAX_SYNERGIES, "");
         m_synergyDirty = new bool(MAX_SYNERGIES, true);

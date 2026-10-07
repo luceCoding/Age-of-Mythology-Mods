@@ -480,6 +480,7 @@ class Buff {
                         case SYNERGY_INDEX_LIGHTNING: { sName = BUFF_LIGHTNING_TEXT; break; }
                         case SYNERGY_INDEX_BUILDER: { sName = BUFF_BUILDER_TEXT; break; }
                         case SYNERGY_INDEX_WILDERNESS: { sName = BUFF_WILDERNESS_TEXT; break; }
+                        case SYNERGY_INDEX_SAND: { sName = BUFF_SAND_TEXT; break; }
                     }
                     
                     if (i > 0) { targetStr = targetStr + ", "; }

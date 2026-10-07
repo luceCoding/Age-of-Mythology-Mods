@@ -14,8 +14,8 @@ const int SUDDEN_DEATH_MS = 2100000;
 const int ADD_OSIRIS_CARD_INTERVAL_MS = 120000;
 const int OSIRIS_CARDS_NEEDED = 5;
 const int MAX_SOCKETS_PER_CARD = 5;
-const int MAX_SYNERGIES = 15;
-const int MAX_CARD_UNIT_TYPES = 20;
+const int MAX_SYNERGIES = 16;
+const int MAX_CARD_UNIT_TYPES = 21;
 const int HERO_WAVE = 5;
 
 const int UNIT_TYPE_INFANTRY = cUnitTypeAbstractInfantry;
@@ -48,6 +48,7 @@ const int SYNERGY_INDEX_FIRE = 11;
 const int SYNERGY_INDEX_LIGHTNING = 12;
 const int SYNERGY_INDEX_BUILDER = 13;
 const int SYNERGY_INDEX_WILDERNESS = 14;
+const int SYNERGY_INDEX_SAND = 15;
 
 const float CHAIN_LIGHTNING_COOLDOWN = 20.0;
 const float CHAIN_LIGHTNING_SEARCH_RADIUS = 20.0;
@@ -80,6 +81,7 @@ const int SHOP_TYPE_FORGE = 0;
 const int SHOP_TYPE_SHRINE = 1;
 const int SHOP_TYPE_ARMORY = 2;
 const int SHOP_TYPE_TEMPLE = 3;
+int[] g_shopIDs = default;
 
 const float IDENTIFIED_TO_UNIDENTIFIED_CARDS_RATIO = 0.9;
 const int UNIDENTIFIED_CARD_BASE_COST = 75;
@@ -149,6 +151,7 @@ void initializeGlobals(){
     g_shopTypes[SHOP_TYPE_ARMORY] = "DwarvenArmory";
     g_shopTypes[SHOP_TYPE_TEMPLE] = "TempleOfTheGods";
     g_shopTypes[SHOP_TYPE_SHRINE] = "ShrineJapanese";
+    g_shopIDs = new int(cNumberPlayers + 1, -1);
 
     g_roadTypes.add("Greek Road 1"); // first element is always primary road
     g_roadTypes.add("Greek Road 2");

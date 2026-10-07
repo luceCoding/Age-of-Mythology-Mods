@@ -19,6 +19,7 @@ void initializeSynergies(){
     icons[SYNERGY_INDEX_LIGHTNING] = "resources/greek/static_color/god_powers/lightning_storm_icon.png";
     icons[SYNERGY_INDEX_BUILDER] = "resources/in_game/minimap/Icon_CycleViewEconomic.png";
     icons[SYNERGY_INDEX_WILDERNESS] = "resources/chinese/static_color/abilities/enchanted_tree_ability_b_icon.png";
+    icons[SYNERGY_INDEX_SAND] = "resources/egyptian/static_color/technologies/desert_wind_icon.png";
 
     string[] rolloverNames = new string(MAX_SYNERGIES, "");
     rolloverNames[SYNERGY_INDEX_INFANTRY] = "Synergy: Infantry";
@@ -36,6 +37,7 @@ void initializeSynergies(){
     rolloverNames[SYNERGY_INDEX_LIGHTNING] = "Synergy: Lightning";
     rolloverNames[SYNERGY_INDEX_BUILDER] = "Synergy: Builder";
     rolloverNames[SYNERGY_INDEX_WILDERNESS] = "Synergy: Wilderness";
+    rolloverNames[SYNERGY_INDEX_SAND] = "Synergy: Sand";
 
     for (int i = 0; i < MAX_SYNERGIES; i++) {
         SynergyData synergy;
@@ -462,5 +464,65 @@ void initializeSynergies(){
                                 }
                             );
         g_synergies[SYNERGY_INDEX_WILDERNESS] = synergy;
+    }
+
+    {
+        SynergyData synergy = g_synergies[SYNERGY_INDEX_SAND];
+        synergy.m_buffs[3] = createBuffLambdaOnly(SYNERGY_INDEX_SAND, emptySynergyType, "2% for Tornado on hit",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (protoUnit != "Militia") { return; } // Only apply this once.
+                                    if (delta > 0){ 
+                                        g_AttachmentManager.addOnHitAttachment(p, cUnitTypePlantEgyptianShrub, cSpawnEventTypeBirth, 0.02, 1.0);
+                                        g_OnCreationListener.register(p, cUnitTypePlantEgyptianShrub, true, [](int unitId = -1) -> void {
+                                                vector v = kbUnitGetTruePosition(unitId);
+                                                int owner = kbUnitGetPlayerID(unitId);
+                                                trProtounitActionSpecialEffectActive(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", owner, cOnHitEffectThrow, "All", -1, true);
+                                                int tempSphinx = trUnitCreateForced(kbProtoUnitGetName(cUnitTypeSphinx), v.x, v.y, v.z, -1, owner, true);
+                                                selectSingle(tempSphinx);
+                                                trUnitChangeName("Dust Devil");
+                                                trUnitPerformAction("AoEAttack", tempSphinx, cInvalidVector, true);
+                                                trUnitMakeInvulnerable(true);
+                                                scheduleDelete(tempSphinx, 2900);
+                                                lowFreqSchedulerWithIntInt.add(1, owner, 0, [](int iteration = 0, int p = 0, int _ = 0) -> bool {
+                                                    trProtounitActionSpecialEffectActive(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", p, cOnHitEffectThrow, "All", -1, false);
+                                                    return false;
+                                                });
+                                                return;
+                                            }
+                                        );                                    
+                                    }
+                                    else { 
+                                        g_AttachmentManager.removeOnHitAttachment(p, cUnitTypePlantEgyptianShrub, cSpawnEventTypeBirth);
+                                        g_OnCreationListener.deregister(p, cUnitTypePlantEgyptianShrub, 0);
+                                    }
+                                }
+                            );
+        synergy.m_buffs[6] = createBuffLambdaOnly(SYNERGY_INDEX_SAND, emptySynergyType, "Tornado debuffs attack damage by 25%.",
+                                [](string protoUnit = "", int p = 0, float delta = 0.0) -> void {
+                                    if (protoUnit != "Militia") { return; } // Only apply this once.
+                                    if (delta > 0){ 
+                                        g_OnCreationListener.register(p, cUnitTypePlantEgyptianShrub, true, [](int unitId = -1) -> void {
+                                                int owner = kbUnitGetPlayerID(unitId);
+                                                trProtounitActionSpecialEffectModifier(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", owner, cOnHitEffectStatModify, "All", 0.75, cModifyTypeDamage, cXSDamageTypeHack);
+                                                trProtounitActionSpecialEffectModifier(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", owner, cOnHitEffectStatModify, "All", 0.75, cModifyTypeDamage, cXSDamageTypePierce);
+                                                trProtounitActionSpecialEffectModifier(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", owner, cOnHitEffectStatModify, "All", 0.75, cModifyTypeDamage, cXSDamageTypeCrush);
+                                                trProtounitActionSpecialEffectModifier(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", owner, cOnHitEffectStatModify, "All", 0.75, cModifyTypeDamage, cXSDamageTypeDivine);
+                                                lowFreqSchedulerWithIntInt.add(1, owner, 0, [](int iteration = 0, int p = 0, int _ = 0) -> bool {
+                                                    trProtounitActionSpecialEffectModifier(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", p, cOnHitEffectStatModify, "All", 1.0, cModifyTypeDamage, cXSDamageTypeHack);
+                                                    trProtounitActionSpecialEffectModifier(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", p, cOnHitEffectStatModify, "All", 1.0, cModifyTypeDamage, cXSDamageTypePierce);
+                                                    trProtounitActionSpecialEffectModifier(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", p, cOnHitEffectStatModify, "All", 1.0, cModifyTypeDamage, cXSDamageTypeCrush);
+                                                    trProtounitActionSpecialEffectModifier(kbProtoUnitGetName(cUnitTypeSphinx), "AoEAttack", p, cOnHitEffectStatModify, "All", 1.0, cModifyTypeDamage, cXSDamageTypeDivine);
+                                                        return false;
+                                                });
+                                                return;
+                                            }
+                                        );                                    
+                                    }
+                                    else { 
+                                        g_OnCreationListener.deregister(p, cUnitTypePlantEgyptianShrub, 1);
+                                    }
+                                }
+                            );
+        g_synergies[SYNERGY_INDEX_SAND] = synergy;
     }
 }

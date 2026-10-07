@@ -95,6 +95,7 @@ class CardParameters {
     bool isLightning(){ return getUnitTypeFlag(17);}
     bool isBuilder(){ return getUnitTypeFlag(18);}
     bool isWilderness(){ return getUnitTypeFlag(19);}
+    bool isSand(){ return getUnitTypeFlag(20);}
 
     bool isGreek() { return xsStringFindFirst(getIconPath(), "greek", 0, false) != -1; }
     bool isNorse() { return xsStringFindFirst(getIconPath(), "norse", 0, false) != -1; }
@@ -121,6 +122,7 @@ class CardParameters {
             case SYNERGY_INDEX_LIGHTNING: { return isLightning(); }
             case SYNERGY_INDEX_BUILDER: { return isBuilder(); }
             case SYNERGY_INDEX_WILDERNESS: { return isWilderness(); }
+            case SYNERGY_INDEX_SAND: { return isSand(); }
         }
         return false;
     }
@@ -169,6 +171,7 @@ class CardParameters {
             case cUnitTypeFireGiant: { return false; }
             case cUnitTypeFafnir: { return false; }
             case cUnitTypeGauntletLegendHalogi: { return false; }
+            case cUnitTypePolaris: { return true; }
         }
         return isNorse();
     }
@@ -253,6 +256,17 @@ class CardParameters {
         return false;
     }
 
+    bool isUnitSandType(int protoID = -1){
+        switch(protoID){
+            case cUnitTypeSphinx: { return true; }
+            case cUnitTypeAvenger: { return true; }
+            case cUnitTypePetsuchos: { return true; }
+            case cUnitTypeMummy: { return true; }
+            case cUnitTypeGuardian: { return true; }
+        }
+        return isEgyptian() && (isSoldier() || isHero() || isSiege());
+    }
+
     void setCardParameters(int age = 0, int protoID = -1, int cost = -1){
         Parameters params = createParameters();
         params.ints.add(-1); // placeholder for data
@@ -288,6 +302,7 @@ class CardParameters {
         m_unitTypes[17] = isUnitLightningType(protoID);
         m_unitTypes[18] = isUnitBuilderType(protoID);
         m_unitTypes[19] = isUnitWildernessType(protoID);
+        m_unitTypes[20] = isUnitSandType(protoID);
     }
 };
 
