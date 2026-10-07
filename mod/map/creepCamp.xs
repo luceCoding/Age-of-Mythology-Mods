@@ -11,7 +11,12 @@ class CreepCamp {
     int m_unitSize = 0; // Tracks active living/spawned units for this camp
     bool m_incrementCamp = true;
     float m_unitScale = 1.0;
-    int m_idleAnimID = 0;
+
+    int m_idleAnimation = -1;
+    int m_landIdleAnimation = -1;
+    int m_boredAnimation = -1;
+    int m_carryIdleAnimation = -1;
+    int m_carryBoredAnimation = -1;
 
     float m_alertHPThresholdRatio = 0.9;
     string m_alertMsg = "";
@@ -51,11 +56,23 @@ class CreepCamp {
         // Reset cache on init
         m_lastCheckTime = -1.0;
         m_cachedAreAllDead = false;
-        m_idleAnimID = kbGetAnimationID("Idle");
+
+        m_idleAnimation = kbGetAnimationID("Idle");
+        m_landIdleAnimation = kbGetAnimationID("LandIdle");
+        m_boredAnimation = kbGetAnimationID("Bored");
+        m_carryIdleAnimation = kbGetAnimationID("CarryIdle");
+        m_carryBoredAnimation = kbGetAnimationID("CarryBored");
 
         m_alertHPThresholdRatio = alertHPThresholdRatio;
         m_alertMsg = alertMsg;
         m_alertSound = alertSound;
+    }
+
+    bool isIdleAnimation(int unitId = -1){
+        int currentAnimID = kbUnitGetCurAnimationID(unitId);
+        return (currentAnimID == m_idleAnimation || currentAnimID == m_landIdleAnimation || 
+                currentAnimID == m_boredAnimation || currentAnimID == m_carryIdleAnimation || 
+                currentAnimID == m_carryBoredAnimation);
     }
 
     bool areAllDead(){
@@ -87,12 +104,12 @@ class CreepCamp {
                 if (hpRatio < 1.0) {
                     allFullHealthAndIdle = false;
                     // Only flag damage if the unit is also back to an idle state
-                    if (kbUnitGetCurAnimationID(m_unitIds[i]) == m_idleAnimID) {
+                    if (isIdleAnimation(m_unitIds[i])) {
                         anyDamagedAndIdle = true;
                     }
                 } else {
                     // Unit is at full HP, check if it's back to idle
-                    if (kbUnitGetCurAnimationID(m_unitIds[i]) != m_idleAnimID) {
+                    if (isIdleAnimation(m_unitIds[i]) == false) {
                         allFullHealthAndIdle = false;
                     }
                 }

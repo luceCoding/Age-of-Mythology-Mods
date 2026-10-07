@@ -108,7 +108,7 @@ const int BOT_BOSS_DEATH_PROTO = cUnitTypeRockGoldTiny;
 const int TOP_BOSS_PLACEHOLDER_PROTO = cUnitTypeTitanGate;
 const int BOT_BOSS_PLACEHOLDER_PROTO = cUnitTypeTitanGateSPC;
 const float BUFF_DURATION_MS = 120000;
-const float GAIA_CREEP_LOS = 8.0;
+const float GAIA_CREEP_LOS = 18.0;
 int[] g_TopBossBuffMsEnd = default;
 int[] g_BotBossBuffMsEnd = default;
 
