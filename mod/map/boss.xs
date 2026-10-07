@@ -99,11 +99,11 @@ void createBossPits() {
 }
 
 void attachTopBossBuff(int unitID = 0, int durationMs = 0, int p = 0){
-    attachTempUnit(unitID, cUnitTypeVFXArtifactGlowGreen, durationMs, cMaxInt, p, false);
+    attachTempUnit(unitID, cUnitTypeVFXArtifactGlowGreen, durationMs, p);
 }
 
 void attachBotBossBuff(int unitID = 0, int durationMs = 0, int p = 0){
-    attachTempUnit(unitID, cUnitTypeVFXArtifactGlowRed, durationMs, cMaxInt, p, false);
+    attachTempUnit(unitID, cUnitTypeVFXArtifactGlowRed, durationMs, p);
 }
 
 void attachTopBuffToAllDeployedCards(int p = 0, int durationMs = 0){

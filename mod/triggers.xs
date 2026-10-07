@@ -81,10 +81,6 @@ active
     performProportionCalculation();
     g_OnCreationListener.init();
     g_AttachmentManager.init();
-    highFreqScheduler.add(100, [](int iterations = 1) -> bool {
-        g_AttachmentManager.process();
-        return true;
-    });
     highFreqScheduler.add(50, [](int iterations = 1) -> bool {
         g_OnCreationListener.process();
         return true;
