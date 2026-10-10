@@ -47,8 +47,7 @@ void setAsCardUnit(int protoID = -1, int p = 0){
 }
 
 void setAsPlaceholder(string unitType = "", int p = 0){
-    trModifyProtounitData(unitType, p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityAssign);
-    trModifyProtounitData(unitType, p, cXSProtoEffectObstructionRadiusZ, 0.0, cXSRelativityAssign);
+    trProtoUnitSetFlag(p, unitType, "Collideable", false);
     trProtoUnitSetFlag(p, unitType, "Invulnerable", true);
     trProtoUnitSetFlag(p, unitType, "ForceToNature", false);
     trProtoUnitSetFlag(p, unitType, "CollidesWithProjectiles", false);

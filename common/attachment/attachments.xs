@@ -29,8 +29,7 @@ class AttachmentManager {
         for (int p = 0; p <= cNumberPlayers; p++){
             setForAllAttachements(p, attachmentName);
             trProtoUnitSetFlag(p, attachmentName, "OnlyInEditor", true);
-            trModifyProtounitData(attachmentName, p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityAssign);
-            trModifyProtounitData(attachmentName, p, cXSProtoEffectObstructionRadiusZ, 0.0, cXSRelativityAssign);
+            trProtoUnitSetFlag(p, attachmentName, "Collideable", false);
         }
     }
 

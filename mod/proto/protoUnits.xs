@@ -78,8 +78,6 @@ void preModifyPlayerData(){
 
     // Only Humans
     for(int p = 1; p <= cNumberPlayers-2; p++) {
-        trModifyProtounitData("Market", p, cXSProtoEffectObstructionRadiusX, 0.0, cXSRelativityAssign);
-        trModifyProtounitData("Market", p, cXSProtoEffectObstructionRadiusZ, 0.0, cXSRelativityAssign);
         trProtoUnitSetUnitType(p, "Market", "LogicalTypeBuildingThatCanBeEmpowered", false);
         trProtounitRemoveCommand("Market", p, "Delete");
         trProtounitRemoveCommand("Market", p, "MarketBuy1");
@@ -91,7 +89,7 @@ void preModifyPlayerData(){
         trProtounitRemoveTech("Market", p, cTechTaxCollectors);
         trProtoUnitSetFlag(p, "Market", "Invulnerable", true);
         trProtoUnitSetFlag(p, "Market", "CollidesWithProjectiles", false);
-        trProtoUnitSetFlag(p, "Market", "NonCollideable", true);
+        trProtoUnitSetFlag(p, "Market", "Collideable", false);
         trPlayerModifyData(p, 0, -1, 999, 0); // Add population
         trTechSetStatus(p, cTechRelicRingOfNibelung, cTechStatusActive);
         trTechSetStatus(p, cTechOracle, cTechStatusActive);
