@@ -8,9 +8,9 @@ const int configMapTileZ = 160;
 void generate()
 {
     // common/utils.xs
-    // mod/globals.xs
-    // mod/localization/english.xs
-    // mod/mutables.xs
+    // dota/globals.xs
+    // dota/localization/english.xs
+    // dota/mutables.xs
     // common/logs.xs
     // common/uuid.xs
     // common/math.xs
@@ -57,67 +57,67 @@ void generate()
     // common/sound.xs
     // common/unitCache.xs
     
-    // mod/common/rng.xs
+    // dota/common/rng.xs
     
-    // mod/shop/level.xs
-    // mod/data/cardParameters.xs
+    // dota/shop/level.xs
+    // dota/data/cardParameters.xs
 
     defineHashMapDefinition("int", "CardParameters", "", "");
 
-    // mod/map/teams.xs
+    // dota/map/teams.xs
 
-    // mod/data/utils.xs
-    // mod/data/card.xs
-    // mod/data/buffs.xs
-    // mod/data/synergies.xs
-    // mod/data/player.xs
-    // mod/data/bench.xs
-    // mod/data/deck.xs
-    // mod/data/draw.xs
+    // dota/data/utils.xs
+    // dota/data/card.xs
+    // dota/data/buffs.xs
+    // dota/data/synergies.xs
+    // dota/data/player.xs
+    // dota/data/bench.xs
+    // dota/data/deck.xs
+    // dota/data/draw.xs
 
-    // mod/proto/utils.xs
-    // mod/income/income.xs
+    // dota/proto/utils.xs
+    // dota/income/income.xs
 
-    // mod/shop/utils.xs
-    // mod/shop/shop.xs
-    // mod/shop/armory.xs
-    // mod/shop/forge.xs
-    // mod/shop/shrine.xs
-    // mod/shop/temple.xs
-    // mod/shop/refresh.xs
-    // mod/shop/commands.xs
-    // mod/shop/respawn.xs
+    // dota/shop/utils.xs
+    // dota/shop/shop.xs
+    // dota/shop/armory.xs
+    // dota/shop/forge.xs
+    // dota/shop/shrine.xs
+    // dota/shop/temple.xs
+    // dota/shop/refresh.xs
+    // dota/shop/commands.xs
+    // dota/shop/respawn.xs
 
-    // mod/map/utils.xs
+    // dota/map/utils.xs
     // common/attachment/attachments.xs
-    // mod/map/lane.xs
-    // mod/map/base.xs
-    // mod/map/objectives.xs
+    // dota/map/lane.xs
+    // dota/map/base.xs
+    // dota/map/objectives.xs
 
-    // mod/proto/protoUnits.xs
+    // dota/proto/protoUnits.xs
 
-    // mod/map/roads.xs
-    // mod/map/trees.xs
-    // mod/map/creepCamp.xs
-    // mod/map/camps.xs
-    // mod/map/capture.xs
-    // mod/map/boss.xs
-    // mod/map/colosseum.xs
-    // mod/map/cave.xs
+    // dota/map/roads.xs
+    // dota/map/trees.xs
+    // dota/map/creepCamp.xs
+    // dota/map/camps.xs
+    // dota/map/capture.xs
+    // dota/map/boss.xs
+    // dota/map/colosseum.xs
+    // dota/map/cave.xs
 
-    // mod/factory/utils.xs
-    // mod/factory/deckFactory.xs
-    // mod/factory/synergyFactory.xs
+    // dota/factory/utils.xs
+    // dota/factory/deckFactory.xs
+    // dota/factory/synergyFactory.xs
 
-    // mod/proto/postBalance.xs
+    // dota/proto/postBalance.xs
 
-    // mod/victory/victory.xs
+    // dota/victory/victory.xs
 
-    // mod/archetype/archetype.xs
-    // mod/archetype/utils.xs
-    // mod/archetype/archetypeUI.xs
+    // dota/archetype/archetype.xs
+    // dota/archetype/utils.xs
+    // dota/archetype/archetypeUI.xs
 
-    // mod/triggers.xs
+    // dota/triggers.xs
 
     rmSetProgress(1.0);
 }

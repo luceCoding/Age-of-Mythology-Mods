@@ -1,9 +1,9 @@
 # Age-of-Mythology-Mods
 Mod for Age of Mythology
 
-Example xs_tool.py command:
+Example xs_tool.py commands:
 ```
-python .\xs_tool.py "C:\Users\joelu\Documents\github\Age-of-Mythology-Mods" -o "C:\Users\joelu\games\age of mythology retold\76561198051702281\random_maps\output.xs"
+python .\tools\xs_tool.py "C:\Users\joelu\Documents\github\Age-of-Mythology-Mods" --template "dota\template.xs" -o "C:\Users\joelu\games\age of mythology retold\76561198051702281\random_maps\output.xs"
 ```
 
 Optional Requirements:

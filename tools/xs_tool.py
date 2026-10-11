@@ -4,6 +4,20 @@ import re
 import textwrap
 
 
+def find_file_in_directory_or_parents(folder_path, filename):
+    directory = os.path.abspath(folder_path)
+
+    while True:
+        candidate_path = os.path.join(directory, filename)
+        if os.path.isfile(candidate_path):
+            return candidate_path
+
+        parent_directory = os.path.dirname(directory)
+        if parent_directory == directory:
+            return None
+        directory = parent_directory
+
+
 def process_xs_template(
     folder_path,
     template_filename="template.xs",
@@ -12,8 +26,8 @@ def process_xs_template(
 ):
     template_path = os.path.join(folder_path, template_filename)
 
-    if not os.path.exists(template_path):
-        print(f"Error: Could not find {template_path}")
+    if not os.path.isfile(template_path):
+        print(f"Error: Could not find template file {template_path}")
         return
 
     # Pattern for raw copy: matches 4 or more slashes like "//// common/nottud.xs"
@@ -43,9 +57,11 @@ def process_xs_template(
         # 1. RAW COPY BEHAVIOR (////)
         if raw_match:
             include_filename = os.path.normpath(raw_match.group(2))
-            include_path = os.path.join(folder_path, include_filename)
+            include_path = find_file_in_directory_or_parents(
+                folder_path, include_filename
+            )
 
-            if os.path.exists(include_path):
+            if include_path:
                 print(
                     f"Directly copying raw content from {include_filename}..."
                 )
@@ -61,9 +77,11 @@ def process_xs_template(
         # 2. FORMATTED INJECTION BEHAVIOR (//)
         elif match:
             include_filename = os.path.normpath(match.group(2))
-            include_path = os.path.join(folder_path, include_filename)
+            include_path = find_file_in_directory_or_parents(
+                folder_path, include_filename
+            )
 
-            if os.path.exists(include_path):
+            if include_path:
                 print(f"Injecting formatted {include_filename}...")
                 with open(include_path, "r", encoding="utf-8") as inc_file:
                     for inner_line in inc_file:
@@ -133,6 +151,16 @@ if __name__ == "__main__":
     parser.add_argument(
         "-o", "--output", help="Optional output path or directory"
     )
+    parser.add_argument(
+        "-t",
+        "--template",
+        required=True,
+        help="Template path, relative to the project directory or absolute",
+    )
 
     args = parser.parse_args()
-    process_xs_template(args.folder_path, output_path=args.output)
+    process_xs_template(
+        args.folder_path,
+        template_filename=args.template,
+        output_path=args.output,
+    )
