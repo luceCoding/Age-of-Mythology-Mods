@@ -17,6 +17,7 @@ void generate()
     // common/math.xs
     // common/strings.xs
 
+    createTypedScheduler("highFreqScheduler", buildStringTypeArray(), 25, 32);
     defineHashMapDefinition("int", "int", "cMinInt", "cMinInt");
     // common/listeners/onCreationListener.xs
 

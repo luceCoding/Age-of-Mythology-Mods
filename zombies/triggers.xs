@@ -17,14 +17,22 @@ active
     trDisablePopCapNotifications(true);
     trDisableConquestCheck(true);
     trSetCommunityObjectivesVisibility(false);
+    initializeGlobals();
     //initialiseUiSystems(false);
     //performProportionCalculation();
-    //g_OnCreationListener.init();
+    g_OnCreationListener.init();
     //g_AttachmentManager.init();
-    //highFreqScheduler.add(50, [](int iterations = 1) -> bool {
-    //    g_OnCreationListener.process();
-    //    return true;
-    //});
+    highFreqScheduler.add(50, [](int iterations = 1) -> bool {
+        g_OnCreationListener.process();
+        return true;
+    });
+    xsDisableSelf();
+}
+
+rule FIRE_SECOND_TRIGGER
+highFrequency
+active
+{
     startGame();
     xsDisableSelf();
 }

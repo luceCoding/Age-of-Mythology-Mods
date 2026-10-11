@@ -8,6 +8,15 @@ class Tile {
     int bottomLeftUnit = -1;
     int bottomCenterUnit = -1;
     int bottomRightUnit = -1;
+    int topLeftPlayer = 0;
+    int topCenterPlayer = 0;
+    int topRightPlayer = 0;
+    int middleLeftPlayer = 0;
+    int centerPlayer = 0;
+    int middleRightPlayer = 0;
+    int bottomLeftPlayer = 0;
+    int bottomCenterPlayer = 0;
+    int bottomRightPlayer = 0;
     bool topLeftPassable = false;
     bool topCenterPassable = false;
     bool topRightPassable = false;
@@ -36,6 +45,18 @@ class Tile {
         bottomLeftUnit = bottomLeft;
         bottomCenterUnit = bottomCenter;
         bottomRightUnit = bottomRight;
+    }
+
+    void setPlayerUnit(int position = 0, int player = 0) {
+        if (position == 0) topLeftPlayer = player;
+        if (position == 1) topCenterPlayer = player;
+        if (position == 2) topRightPlayer = player;
+        if (position == 3) middleLeftPlayer = player;
+        if (position == 4) centerPlayer = player;
+        if (position == 5) middleRightPlayer = player;
+        if (position == 6) bottomLeftPlayer = player;
+        if (position == 7) bottomCenterPlayer = player;
+        if (position == 8) bottomRightPlayer = player;
     }
 
     void setPassability(bool topLeft = false, bool topCenter = false, bool topRight = false,
@@ -75,6 +96,19 @@ class Tile {
         return -1;
     }
 
+    int getPlayerUnitAt(int position = 0) {
+        if (position == 0) return topLeftPlayer;
+        if (position == 1) return topCenterPlayer;
+        if (position == 2) return topRightPlayer;
+        if (position == 3) return middleLeftPlayer;
+        if (position == 4) return centerPlayer;
+        if (position == 5) return middleRightPlayer;
+        if (position == 6) return bottomLeftPlayer;
+        if (position == 7) return bottomCenterPlayer;
+        if (position == 8) return bottomRightPlayer;
+        return 0;
+    }
+
     bool isPassableAt(int position = 0) {
         if (position == 0) return topLeftPassable;
         if (position == 1) return topCenterPassable;
@@ -103,13 +137,24 @@ Tile rotateMapTileClockwise(ref Tile source) {
         source.getUnitAt(6), source.getUnitAt(3), source.getUnitAt(0),
         source.getUnitAt(7), source.getUnitAt(4), source.getUnitAt(1),
         source.getUnitAt(8), source.getUnitAt(5), source.getUnitAt(2));
+    tile.setPlayerUnit(0, source.getPlayerUnitAt(6));
+    tile.setPlayerUnit(1, source.getPlayerUnitAt(3));
+    tile.setPlayerUnit(2, source.getPlayerUnitAt(0));
+    tile.setPlayerUnit(3, source.getPlayerUnitAt(7));
+    tile.setPlayerUnit(4, source.getPlayerUnitAt(4));
+    tile.setPlayerUnit(5, source.getPlayerUnitAt(1));
+    tile.setPlayerUnit(6, source.getPlayerUnitAt(8));
+    tile.setPlayerUnit(7, source.getPlayerUnitAt(5));
+    tile.setPlayerUnit(8, source.getPlayerUnitAt(2));
     tile.setPassability(
         source.isPassableAt(6), source.isPassableAt(3), source.isPassableAt(0),
         source.isPassableAt(7), source.isPassableAt(4), source.isPassableAt(1),
         source.isPassableAt(8), source.isPassableAt(5), source.isPassableAt(2));
     tile.setSocketsAndWeight(
-        source.getSocket(cSocketWest), source.getSocket(cSocketNorth),
-        source.getSocket(cSocketEast), source.getSocket(cSocketSouth), source.weight);
+        rotateSocketClockwise(source.getSocket(cSocketWest)),
+        rotateSocketClockwise(source.getSocket(cSocketNorth)),
+        rotateSocketClockwise(source.getSocket(cSocketEast)),
+        rotateSocketClockwise(source.getSocket(cSocketSouth)), source.weight);
     tile.rotation = (source.rotation + 1) % 4;
     return tile;
 }

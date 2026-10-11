@@ -1,77 +1,149 @@
 const float cDungeonTileSize = 9.0;
-const int cDungeonWallPlayer = 0;
 const int cDungeonConnectivityAttempts = 1000;
 const int cDungeonMinimumReachablePercent = 80;
 
-const int cOpenTileWeight = 14;
-const int cSingleNorthWallWeight = 10;
-const int cHallwayWeight = 8;
-const int cTboneWallWeight = 2;
+const int cOpenTileWeight = 240;
+const int csingleWallTileWeight = 160;
+const int ctBoneWallTileWeight = 32;
+const int cCornerWeight = 64;
+const int cLargeOpenTileWeight = 8;
+const int cCrossTileWeight = 32;
 
 Tile[] createDungeonTileTypes() {
     Tile[] tileTypes = new Tile(0);
-    Tile openTile;
-    openTile.setUnits(-1, -1, -1, -1, -1, -1, -1, -1, -1);
-    openTile.setPassability(true, true, true, true, true, true, true, true, true);
-    openTile.setSocketsAndWeight(
-        cSocketTypeOpenOrWall, cSocketTypeOpenOrWall,
-        cSocketTypeOpenOrWall, cSocketTypeOpenOrWall, cOpenTileWeight);
-    tileTypes.add(openTile);
-
     {
-        Tile singleNorthWall;
-        singleNorthWall.setUnits(
-            cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector,
-            -1, -1, -1,
+        Tile openTile;
+        openTile.setUnits(
+            -1, -1, -1, 
+            -1, -1, -1, 
             -1, -1, -1);
-        singleNorthWall.setPassability(
-            false, false, false,
-            true, true, true,
+        openTile.setPassability(
+            true, true, true, 
+            true, true, true, 
             true, true, true);
-        singleNorthWall.setSocketsAndWeight(
-            cSocketTypeOpenOrWall, cSocketTypeOpen, cSocketTypeOpen, cSocketTypeOpen, cSingleNorthWallWeight);
-        tileTypes.add(singleNorthWall);
-        for (int rotation = 0; rotation < 3; rotation++) {
-            Tile rotatedWall = rotateMapTileClockwise(singleNorthWall);
-            tileTypes.add(rotatedWall);
-            singleNorthWall = rotatedWall;
-        }
+        openTile.setSocketsAndWeight(
+            getSocketWithInteractableAccess(cSocketTypeAny),
+            getSocketWithInteractableAccess(cSocketTypeAny),
+            getSocketWithInteractableAccess(cSocketTypeAny),
+            getSocketWithInteractableAccess(cSocketTypeAny), cOpenTileWeight);
+        tileTypes.add(openTile);
     }
 
     {
-        Tile hallway;
-        hallway.setUnits(
+        Tile singleWallTile;
+        singleWallTile.setUnits(
             -1, -1, -1,
-            -1, -1, -1,
+            cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector,
             -1, -1, -1);
-        hallway.setPassability(
-            false, false, false,
+        singleWallTile.setPassability(
             true, true, true,
-            false, false, false);
-        hallway.setSocketsAndWeight(
-            cSocketTypeWall, cSocketTypeOpen, cSocketTypeWall, cSocketTypeOpen, cHallwayWeight);
-        tileTypes.add(hallway);
-        Tile rotatedWall = rotateMapTileClockwise(hallway);
+            false, false, false,
+            true, true, true);
+        singleWallTile.setSocketsAndWeight(
+            getSocketWithInteractableAccess(cSocketOpen), cSocketWall,
+            getSocketWithInteractableAccess(cSocketOpen), cSocketWall, csingleWallTileWeight);
+        tileTypes.add(singleWallTile);
+        Tile rotatedWall = rotateMapTileClockwise(singleWallTile);
         tileTypes.add(rotatedWall);
     }
 
     {
-        Tile tboneWall;
-        tboneWall.setUnits(
+        Tile tBoneWallTile;
+        tBoneWallTile.setUnits(
+            -1, -1, -1,
             cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector,
-            -1, cUnitTypeWallOfAtlantisConnector, -1,
             -1, cUnitTypeWallOfAtlantisConnector, -1);
-        tboneWall.setPassability(
+        tBoneWallTile.setPassability(
+            true, true, true,
             false, false, false,
-            true, false, true,
             true, false, true);
-        tboneWall.setSocketsAndWeight(
-            cSocketTypeOpenOrWall, cSocketTypeOpen, cSocketTypeHallwayOrOpenOrWall, cSocketTypeOpen, cTboneWallWeight);
-        tileTypes.add(tboneWall);
+        tBoneWallTile.setSocketsAndWeight(
+            getSocketWithInteractableAccess(cSocketOpen), cSocketWall,
+            cSocketWall, cSocketWall, ctBoneWallTileWeight);
+        tileTypes.add(tBoneWallTile);
         for (int rotation = 0; rotation < 3; rotation++) {
-            Tile rotatedWall = rotateMapTileClockwise(tboneWall);
+            Tile rotatedWall = rotateMapTileClockwise(tBoneWallTile);
             tileTypes.add(rotatedWall);
-            tboneWall = rotatedWall;
+            tBoneWallTile = rotatedWall;
+        }
+    }
+
+    {
+        Tile cornerTile;
+        cornerTile.setUnits(
+            -1, -1, -1,
+            -1, cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector,
+            -1, cUnitTypeWallOfAtlantisConnector, -1);
+        cornerTile.setPassability(
+            true, true, true,
+            true, false, false,
+            true, false, true);
+        cornerTile.setSocketsAndWeight(
+            getSocketWithInteractableAccess(cSocketOpen), cSocketWall,
+            cSocketWall, getSocketWithInteractableAccess(cSocketOpen), cCornerWeight);
+        tileTypes.add(cornerTile);
+        for (int rotation = 0; rotation < 3; rotation++) {
+            Tile rotatedWall = rotateMapTileClockwise(cornerTile);
+            tileTypes.add(rotatedWall);
+            cornerTile = rotatedWall;
+        }
+    }
+
+    {
+        Tile largeOpenTile;
+        largeOpenTile.setUnits(
+            -1, -1, -1, 
+            -1, -1, -1, 
+            -1, -1, -1);
+        largeOpenTile.setPassability(
+            true, true, true, 
+            true, true, true, 
+            true, true, true);
+        largeOpenTile.setSocketsAndWeight(
+            getSocketWithInteractableAccess(cSocketOpen),
+            getSocketWithInteractableAccess(cSocketOpen),
+            getSocketWithInteractableAccess(cSocketOpen),
+            getSocketWithInteractableAccess(cSocketOpen), cLargeOpenTileWeight);
+        tileTypes.add(largeOpenTile);
+    }
+
+    {
+        Tile crossTile;
+        crossTile.setUnits(
+            -1, cUnitTypeWallOfAtlantisConnector, -1, 
+            cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector, 
+            -1, cUnitTypeWallOfAtlantisConnector, -1);
+        crossTile.setPassability(
+            true, false, true, 
+            false, false, false, 
+            true, false, true);
+        crossTile.setSocketsAndWeight(
+            cSocketWall, cSocketWall, cSocketWall, cSocketWall, cCrossTileWeight);
+        tileTypes.add(crossTile);
+    }
+
+    {
+        for (int i = 0; i < g_humanInteractableTypes.size(); i++){
+            int interactableType = g_humanInteractableTypes[i];
+            Tile armoryTile;
+            armoryTile.setUnits(
+                -1, -1, -1,
+                -1, interactableType, -1,
+                -1, -1, -1);
+            armoryTile.setPassability(
+                true, true, true,
+                true, false, true,
+                true, true, true);
+            armoryTile.setSocketsAndWeight(
+                cSocketInteractableNorth, cSocketInteractableEast,
+                cSocketInteractableSouth, cSocketInteractableWest, i+1);
+            armoryTile.setPlayerUnit(4, cHumanAIPlayer);
+            tileTypes.add(armoryTile);
+            for (int rotation = 0; rotation < 3; rotation++) {
+                Tile rotatedWall = rotateMapTileClockwise(armoryTile);
+                tileTypes.add(rotatedWall);
+                armoryTile = rotatedWall;
+            }
         }
     }
 
@@ -84,16 +156,13 @@ void placeDungeonTile(ref Tile tile, float tileX = 0.0, float tileZ = 0.0,
     for (int position = 0; position < 9; position++) {
         int unitType = tile.getUnitAt(position);
         if (unitType < 0) continue;
+        int owner = tile.getPlayerUnitAt(position);
 
         int column = position % 3;
         int row = position / 3;
         float x = tileX + 1.5 + (column * 3.0);
         float z = tileZ + 1.5 + (row * 3.0);
-        int unitId = trUnitCreateForced(kbProtoUnitGetName(unitType), x, height, z, heading, cDungeonWallPlayer);
-        if (unitType == cUnitTypeWallOfAtlantisConnector) {
-            selectSingle(unitId);
-            trUnitSetScale(1.35, 0.75, 1.35);
-        }
+        int unitId = trUnitCreateForced(kbProtoUnitGetName(unitType), x, height, z, heading, owner);
     }
 }
 
@@ -235,7 +304,7 @@ bool generateDungeonMap() {
         cUnitTypeWallOfAtlantisConnector);
     solidWallTile.setPassability(false, false, false, false, false, false, false, false, false);
     solidWallTile.setSocketsAndWeight(
-        cSocketTypeWall, cSocketTypeWall, cSocketTypeWall, cSocketTypeWall, 1);
+        cSocketWall, cSocketWall, cSocketWall, cSocketWall, 1);
     tileTypes.add(solidWallTile);
 
     bool connectedLayoutFound = false;
