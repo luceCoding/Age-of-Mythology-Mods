@@ -128,6 +128,8 @@ void setupBoss(int protoID = -1, int onDeathProtoID = -1){
     trProtoUnitSetUnitType(0, protoName, kbUnitTypeGetName(cUnitTypeLogicalTypeMythUnitNotTitan), false);
     trModifyProtounitActionUnitType(protoName, "HandAttack", kbUnitTypeGetName(UNIT_TYPE_HERO), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
     trModifyProtounitActionUnitType(protoName, "RangedAttack", kbUnitTypeGetName(UNIT_TYPE_MYTH), 0, cXSActionProtoEffectDamageBonus, 1, cXSRelativityAssign);
+    trProtoUnitActionSetEnabled(protoName, 0, "ChargedSpawn", false);
+    trProtoUnitSetFlag(0, protoName, "LogicalTypeDivineImmunity", true);
     trProtoUnitSetIcon(protoName, 0, "", "ui\minimap\minimap_titan_gate");
     trProtoUnitMovementType(protoName, 0, "land");
     trModifyProtounitData(protoName, 0, cXSProtoEffectLOS, GAIA_CREEP_LOS, cXSRelativityAssign);

@@ -153,7 +153,7 @@ const int HEAL_SEC_TIME = 30;
 const int RAGE_SEC_TIME = 20;
 const int EVASION_SEC_TIME = 20;
 
-const int EVASION_DODGE_CHANCE = 50;
+const int EVASION_DODGE_CHANCE = 75;
 
 string[] g_shopTypes = default;
 string[] g_roadTypes = default;
