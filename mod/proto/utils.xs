@@ -39,6 +39,9 @@ void setAsCardUnit(int protoID = -1, int p = 0){
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidShiftingSandsTarget", true);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidBloodPactTarget", true);
     trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidShockwaveTarget", true);
+    trProtoUnitSetUnitType(p, protoName, "LogicalTypeValidSpyTarget", true);
+    trProtoUnitSetUnitType(p, protoName, "Unit", true);
+    trProtoUnitSetUnitType(p, protoName, "MilitaryUnit", true);
     trProtoUnitSetUnitType(p, protoName, "TradeUnit", true); // For abilities
     trModifyProtounitData(protoName, p, cXSProtoEffectUnitRegenRate, 0.2, cXSRelativityAssign);
     trModifyProtounitData(protoName, p, cXSProtoEffectShieldRegenRate, 0.4, cXSRelativityAssign);

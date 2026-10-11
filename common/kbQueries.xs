@@ -10,8 +10,32 @@ int countUnitsInArea(vector centerPos = cInvalidVector, float radius = 0.0, int 
     return unitCount;
 }
 
+int[] getUnitsInArea(vector centerPos = cInvalidVector, float radius = 0.0, int playerID = 1, int cUnitType = cUnitTypeUnit, int unitState = cUnitStateAlive) {
+    if (playerID != -1){
+        xsSetContextPlayer(playerID);
+    }
+    else {
+        xsSetContextPlayer(-1);
+    }
+    int qID = kbUnitQueryCreate("area_search_query");
+    if (playerID != -1){
+        kbUnitQuerySetPlayerID(qID, playerID);
+    }
+    kbUnitQuerySetState(qID, unitState);
+    kbUnitQuerySetPosition(qID, centerPos);
+    kbUnitQuerySetMaximumDistance(qID, radius);
+    kbUnitQuerySetUnitType(qID, cUnitType);
+    int unitCount = kbUnitQueryExecute(qID);
+    int[] unitIds = new int(0, -1);
+    for (int i = 0; i < unitCount; i++) {
+        int unitID = kbUnitQueryGetResult(qID, i);
+        unitIds.add(unitID);
+    }
+    return unitIds;
+}
+
 void applyToUnitsInArea(vector centerPos = cInvalidVector, float radius = 0.0, int playerID = 1, int cUnitType = cUnitTypeUnit, int unitState = cUnitStateAlive,
-                       void(int) apply = [](int unitID = -1) -> void {}) {
+                        void(int) apply = [](int unitID = -1) -> void {}) {
     if (playerID != -1){
         xsSetContextPlayer(playerID);
     }

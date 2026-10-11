@@ -20,6 +20,7 @@ void startGame(){
     initializeCardParametersMap();
     initializeShopLevels();
     initializeSynergies();
+    initializeArchetypes();
 
     createShops();
     createHealingSprings();
@@ -60,6 +61,10 @@ void startGame(){
     startTeamResignedCheck();
     startRespawn();
     startLanes();
+
+    for (int p=1; p <= cNumberPlayers-2; p++){
+        openArchetypeUI(p);
+    }
 }
 
 rule FIRE_FIRST_IMMEDIATELY_TRIGGER

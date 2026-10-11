@@ -113,6 +113,10 @@ void generate()
 
     // mod/victory/victory.xs
 
+    // mod/archetype/archetype.xs
+    // mod/archetype/utils.xs
+    // mod/archetype/archetypeUI.xs
+
     // mod/triggers.xs
 
     rmSetProgress(1.0);

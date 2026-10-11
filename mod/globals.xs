@@ -136,6 +136,25 @@ const float RECALL_CAST_TIME = 10.0;
 
 const int CREEP_WAVE_SPAWN_INTERVAL_MS = 45000;
 
+const int ARCHETYPE_MISCHIEF = 0;
+const int ARCHETYPE_DEFENSE = 1;
+const int ARCHETYPE_HEALTH = 2;
+const int ARCHETYPE_WAR = 3;
+const int ARCHETYPE_EVASION = 4;
+
+const int MIMIC_COOLDOWN = 120;
+const int BRONZE_COOLDOWN = 30;
+const int HEALTH_COOLDOWN = 90;
+const int ENRAGE_COOLDOWN = 90;
+const int EVASION_COOLDOWN = 60;
+
+const float BRONZE_MS_TIME = 45000;
+const int HEAL_SEC_TIME = 30;
+const int RAGE_SEC_TIME = 20;
+const int EVASION_SEC_TIME = 20;
+
+const int EVASION_DODGE_CHANCE = 50;
+
 string[] g_shopTypes = default;
 string[] g_roadTypes = default;
 string[] g_colosseumRoadTypes = default;

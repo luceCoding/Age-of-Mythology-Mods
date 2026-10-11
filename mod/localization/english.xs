@@ -109,3 +109,14 @@ string BUFF_LIGHTNING_TEXT = "Lightning";
 string BUFF_BUILDER_TEXT = "Builder";
 string BUFF_WILDERNESS_TEXT = "Wilderness";
 string BUFF_SAND_TEXT = "Sand";
+
+string GP_MIMIC_DISPLAY = "Mimic";
+string GP_MIMIC_ROLLOVER = "Copies an enemy unit and decays by 1% every second.";
+string GP_BRONZE_DISPLAY = "Bronze";
+string GP_BRONZE_ROLLOVER = "Increases an ally unit's armor against all damage types by 35%.";
+string GP_RESTORATION_DISPLAY = "Restoration";
+string GP_RESTORATION_ROLLOVER = "Restores 1% health to an ally unit every second.";
+string GP_ENRAGE_DISPLAY = "Enrage";
+string GP_ENRAGE_ROLLOVER = "Increases the damage, rate of fire and speed of an ally unit by 20%";
+string GP_EVASION_DISPLAY = "Evasion";
+string GP_EVASION_ROLLOVER = "Increases the dodge chance of an ally unit by 50%";
