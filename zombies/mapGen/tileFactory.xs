@@ -47,42 +47,6 @@ Tile[] createDungeonTileTypes() {
     }
 
     {
-        Tile blockedEntranceWallTile;
-        blockedEntranceWallTile.setUnits(
-            -1, -1, -1,
-            -1, cUnitTypeBoulderWall, -1,
-            -1, -1, -1);
-        blockedEntranceWallTile.setPassability(
-            true, true, true,
-            false, true, false,
-            true, true, true);
-        blockedEntranceWallTile.setSocketsAndWeight(
-            cSocketOpen, cSocketEntrance,
-            cSocketOpen, cSocketEntrance, xsFloatToInt(cSingleWallTileWeight * 0.1));
-        tileTypes.add(blockedEntranceWallTile);
-        Tile rotatedWall = rotateMapTileClockwise(blockedEntranceWallTile);
-        tileTypes.add(rotatedWall);
-    }
-
-    {
-        Tile entranceWallTile;
-        entranceWallTile.setUnits(
-            -1, -1, -1,
-            -1, cUnitTypeWallGate, -1,
-            -1, -1, -1);
-        entranceWallTile.setPassability(
-            true, true, true,
-            false, true, false,
-            true, true, true);
-        entranceWallTile.setSocketsAndWeight(
-            cSocketOpen, cSocketEntrance,
-            cSocketOpen, cSocketEntrance, xsFloatToInt(cSingleWallTileWeight * 0.1));
-        tileTypes.add(entranceWallTile);
-        Tile rotatedWall = rotateMapTileClockwise(entranceWallTile);
-        tileTypes.add(rotatedWall);
-    }
-
-    {
         Tile tBoneWallTile;
         tBoneWallTile.setUnits(
             -1, -1, -1,
@@ -96,7 +60,7 @@ Tile[] createDungeonTileTypes() {
             cSocketOpen, cSocketTypeWallOrEntrance,
             cSocketTypeWallOrEntrance, cSocketTypeWallOrEntrance, ctBoneWallTileWeight);
         tileTypes.add(tBoneWallTile);
-        for (int rotation = 0; rotation < 3; rotation++) {
+        for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
             Tile rotatedWall = rotateMapTileClockwise(tBoneWallTile);
             tileTypes.add(rotatedWall);
             tBoneWallTile = rotatedWall;
@@ -117,7 +81,7 @@ Tile[] createDungeonTileTypes() {
             cSocketOpen, cSocketTypeWallOrEntrance,
             cSocketTypeWallOrEntrance, cSocketOpen, cCornerWeight);
         tileTypes.add(cornerTile);
-        for (int rotation = 0; rotation < 3; rotation++) {
+        for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
             Tile rotatedWall = rotateMapTileClockwise(cornerTile);
             tileTypes.add(rotatedWall);
             cornerTile = rotatedWall;
@@ -155,26 +119,26 @@ Tile[] createDungeonTileTypes() {
     }
 
     {
-        for (int i = 0; i < g_humanInteractableTypes.size(); i++){
+        for (int i = 0; i < g_humanInteractableTypes.size(); i = i + 1){
             int interactableType = g_humanInteractableTypes[i];
-            Tile armoryTile;
-            armoryTile.setUnits(
+            Tile interactableTile;
+            interactableTile.setUnits(
                 -1, -1, -1,
                 -1, interactableType, -1,
                 -1, -1, -1);
-            armoryTile.setPassability(
+            interactableTile.setPassability(
                 true, true, true,
                 true, false, true,
                 true, true, true);
-            armoryTile.setSocketsAndWeight(
+            interactableTile.setSocketsAndWeight(
                 cSocketInteractable, cSocketInteractable,
                 cSocketInteractable, cSocketInteractable, i+1);
-            armoryTile.setPlayerUnit(4, cHumanAIPlayer);
-            tileTypes.add(armoryTile);
-            for (int rotation = 0; rotation < 3; rotation++) {
-                Tile rotatedWall = rotateMapTileClockwise(armoryTile);
+            interactableTile.setPlayerUnit(4, cHumanAIPlayer);
+            tileTypes.add(interactableTile);
+            for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
+                Tile rotatedWall = rotateMapTileClockwise(interactableTile);
                 tileTypes.add(rotatedWall);
-                armoryTile = rotatedWall;
+                interactableTile = rotatedWall;
             }
         }
     }
@@ -185,7 +149,7 @@ Tile[] createDungeonTileTypes() {
 void placeDungeonTile(ref Tile tile, float tileX = 0.0, float tileZ = 0.0,
                       float height = 0.0) {
     float heading = tile.rotation * 90.0;
-    for (int position = 0; position < 9; position++) {
+    for (int position = 0; position < 9; position = position + 1) {
         int unitType = tile.getUnitAt(position);
         if (unitType < 0) continue;
         int owner = tile.getPlayerUnitAt(position);
@@ -227,12 +191,12 @@ bool filterDungeonLayoutConnectivity(ref int[] tileMap, ref Tile[] tileTypes,
         int startCell = -1;
         int passableCellCount = 0;
 
-        for (int microY = 0; microY < microHeight; microY++) {
-            for (int microX = 0; microX < microWidth; microX++) {
+        for (int microY = 0; microY < microHeight; microY = microY + 1) {
+            for (int microX = 0; microX < microWidth; microX = microX + 1) {
                 if (isDungeonPositionPassable(tileMap, tileTypes, tilesWide, microX, microY)) {
                     int cell = (microY * microWidth) + microX;
                     if (startCell == -1) startCell = cell;
-                    passableCellCount++;
+                    passableCellCount = passableCellCount + 1;
                 }
             }
         }
@@ -249,17 +213,18 @@ bool filterDungeonLayoutConnectivity(ref int[] tileMap, ref Tile[] tileTypes,
 
         while (queuePosition < queue.size()) {
             int cell = queue[queuePosition];
-            queuePosition++;
+            queuePosition = queuePosition + 1;
             int x = cell % microWidth;
             int y = cell / microWidth;
 
-            for (int direction = cSocketNorth; direction <= cSocketWest; direction++) {
+            for (int direction = cSocketNorth; direction <= cSocketWest;
+                 direction = direction + 1) {
                 int neighborX = x;
                 int neighborY = y;
-                if (direction == cSocketNorth) neighborY--;
-                if (direction == cSocketEast) neighborX++;
-                if (direction == cSocketSouth) neighborY++;
-                if (direction == cSocketWest) neighborX--;
+                if (direction == cSocketNorth) neighborY = neighborY - 1;
+                if (direction == cSocketEast) neighborX = neighborX + 1;
+                if (direction == cSocketSouth) neighborY = neighborY + 1;
+                if (direction == cSocketWest) neighborX = neighborX - 1;
                 if (neighborX < 0 || neighborX >= microWidth
                     || neighborY < 0 || neighborY >= microHeight) continue;
 
@@ -270,7 +235,7 @@ bool filterDungeonLayoutConnectivity(ref int[] tileMap, ref Tile[] tileTypes,
 
                 visited[neighbor] = true;
                 queue.add(neighbor);
-                reachableCellCount++;
+                reachableCellCount = reachableCellCount + 1;
             }
         }
 
@@ -279,14 +244,14 @@ bool filterDungeonLayoutConnectivity(ref int[] tileMap, ref Tile[] tileTypes,
 
         bool[] isolatedTiles = new bool(tilesWide * tilesHigh, false);
         bool foundIsolatedTile = false;
-        for (int tileY = 0; tileY < tilesHigh; tileY++) {
-            for (int tileX = 0; tileX < tilesWide; tileX++) {
+        for (int tileY = 0; tileY < tilesHigh; tileY = tileY + 1) {
+            for (int tileX = 0; tileX < tilesWide; tileX = tileX + 1) {
                 int mapIndex = (tileY * tilesWide) + tileX;
                 bool hasPassablePosition = false;
                 bool hasUnreachablePosition = false;
 
-                for (int localY = 0; localY < 3; localY++) {
-                    for (int localX = 0; localX < 3; localX++) {
+                for (int localY = 0; localY < 3; localY = localY + 1) {
+                    for (int localX = 0; localX < 3; localX = localX + 1) {
                         int microX = (tileX * 3) + localX;
                         int microY = (tileY * 3) + localY;
                         if (isDungeonPositionPassable(
@@ -307,11 +272,148 @@ bool filterDungeonLayoutConnectivity(ref int[] tileMap, ref Tile[] tileTypes,
 
         if (foundIsolatedTile == false) return true;
 
-        for (int mapIndex = 0; mapIndex < isolatedTiles.size(); mapIndex++) {
+        for (int mapIndex = 0; mapIndex < isolatedTiles.size();
+             mapIndex = mapIndex + 1) {
             if (isolatedTiles[mapIndex]) tileMap[mapIndex] = solidWallTileIndex;
         }
     }
     return false;
+}
+
+Tile createDungeonSolidWallTile() {
+    Tile solidWallTile;
+    solidWallTile.setUnits(
+        cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector,
+        cUnitTypeWallOfAtlantisConnector,
+        cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector,
+        cUnitTypeWallOfAtlantisConnector,
+        cUnitTypeWallOfAtlantisConnector, cUnitTypeWallOfAtlantisConnector,
+        cUnitTypeWallOfAtlantisConnector);
+    solidWallTile.setPassability(
+        false, false, false, false, false, false, false, false, false);
+    solidWallTile.setSocketsAndWeight(
+        cSocketWall, cSocketWall, cSocketWall, cSocketWall, 1);
+    return solidWallTile;
+}
+
+void placeBSPRoomTile(ref Tile tile, ref bool[] hallwayCells,
+                      int startGridX = 0, int startGridZ = 0,
+                      float height = 0.0, int gridWidth = 0) {
+    float heading = tile.rotation * 90.0;
+    for (int position = 0; position < 9; position = position + 1) {
+        int unitType = tile.getUnitAt(position);
+        if (unitType < 0) continue;
+
+        int column = position % 3;
+        int row = position / 3;
+        int gridX = startGridX + column;
+        int gridZ = startGridZ + row;
+        int gridIndex = (gridZ * gridWidth) + gridX;
+        if (hallwayCells[gridIndex]) continue;
+
+        int owner = tile.getPlayerUnitAt(position);
+        float worldX = xsIntToFloat(gridX) * cBSPCellSpacing;
+        float worldZ = xsIntToFloat(gridZ) * cBSPCellSpacing;
+        trUnitCreateForced(
+            kbProtoUnitGetName(unitType), worldX + 1.5, height,
+            worldZ + 1.5, heading, owner);
+    }
+}
+
+bool generateBSPRoomLayout(ref Cell cell, ref bool[] hallwayCells,
+                           ref Tile[] tileTypes, ref Tile[] validationTileTypes,
+                           int solidWallTileIndex = -1,
+                           int gridWidth = 0) {
+    int roomWidth = cell.roomRight - cell.roomLeft;
+    int roomHeight = cell.roomBottom - cell.roomTop;
+    int tilesWide = roomWidth / 3;
+    int tilesHigh = roomHeight / 3;
+    if (tilesWide <= 0 || tilesHigh <= 0) return false;
+
+    int coveredWidth = tilesWide * 3;
+    int coveredHeight = tilesHigh * 3;
+    int startGridX = cell.roomLeft + ((roomWidth - coveredWidth) / 2);
+    int startGridZ = cell.roomTop + ((roomHeight - coveredHeight) / 2);
+
+    WaveFunctionCollapse solver;
+    if (solver.configure(tilesWide, tilesHigh, tileTypes) == false) return false;
+    int[] tileMap = new int(tilesWide * tilesHigh, -1);
+    bool layoutFound = false;
+
+    for (int attempt = 0; attempt < cBSPRoomWFCAttempts;
+         attempt = attempt + 1) {
+        if (solver.solve(100) == false) continue;
+
+        for (int y = 0; y < tilesHigh; y = y + 1) {
+            for (int x = 0; x < tilesWide; x = x + 1) {
+                int mapIndex = (y * tilesWide) + x;
+                tileMap[mapIndex] = solver.getTileIndexAt(x, y);
+            }
+        }
+
+        int centerX = (cell.roomX - startGridX) / 3;
+        int centerY = (cell.roomZ - startGridZ) / 3;
+        if (centerX < 0) centerX = 0;
+        if (centerX >= tilesWide) centerX = tilesWide - 1;
+        if (centerY < 0) centerY = 0;
+        if (centerY >= tilesHigh) centerY = tilesHigh - 1;
+        int centerMapIndex = (centerY * tilesWide) + centerX;
+        tileMap[centerMapIndex] = 0;
+
+        if (filterDungeonLayoutConnectivity(
+                tileMap, validationTileTypes,
+                tilesWide, tilesHigh, solidWallTileIndex)) {
+            layoutFound = true;
+            break;
+        }
+    }
+    if (layoutFound == false) {
+        errorLog("Wave-function-collapse exhausted retries for BSP room; using an open layout.");
+        for (int mapIndex = 0; mapIndex < tileMap.size();
+             mapIndex = mapIndex + 1) {
+            tileMap[mapIndex] = 0;
+        }
+    }
+
+    for (int y = 0; y < tilesHigh; y = y + 1) {
+        for (int x = 0; x < tilesWide; x = x + 1) {
+            int mapIndex = (y * tilesWide) + x;
+            int tileIndex = tileMap[mapIndex];
+            if (tileIndex < 0 || tileIndex >= validationTileTypes.size()) {
+                return false;
+            }
+
+            Tile tile = validationTileTypes[tileIndex];
+            int tileGridX = startGridX + (x * 3);
+            int tileGridZ = startGridZ + (y * 3);
+            placeBSPRoomTile(
+                tile, hallwayCells, tileGridX, tileGridZ,
+                configMapBaseHeight, gridWidth);
+        }
+    }
+    return true;
+}
+
+bool applyWaveFunctionCollapseToBSPRooms(ref Cell[] cells,
+                                         ref bool[] hallwayCells,
+                                         int gridWidth = 0) {
+    Tile[] tileTypes = createDungeonTileTypes();
+    Tile[] validationTileTypes = createDungeonTileTypes();
+    int solidWallTileIndex = validationTileTypes.size();
+    Tile solidWallTile = createDungeonSolidWallTile();
+    validationTileTypes.add(solidWallTile);
+
+    for (int roomIndex = 0; roomIndex < cells.size();
+         roomIndex = roomIndex + 1) {
+        Cell cell = cells[roomIndex];
+        if (generateBSPRoomLayout(
+                cell, hallwayCells, tileTypes, validationTileTypes,
+                solidWallTileIndex, gridWidth) == false) {
+            errorLog("Wave-function-collapse failed for BSP room " + roomIndex + ".");
+            return false;
+        }
+    }
+    return true;
 }
 
 bool generateDungeonMap() {
@@ -342,10 +444,11 @@ bool generateDungeonMap() {
 
     bool connectedLayoutFound = false;
     int[] tileMap = new int(tilesWide * tilesHigh, -1);
-    for (int attempt = 0; attempt < cDungeonConnectivityAttempts; attempt++) {
+    for (int attempt = 0; attempt < cDungeonConnectivityAttempts;
+         attempt = attempt + 1) {
         if (solver.solve() == false) continue;
-        for (int y = 0; y < tilesHigh; y++) {
-            for (int x = 0; x < tilesWide; x++) {
+        for (int y = 0; y < tilesHigh; y = y + 1) {
+            for (int x = 0; x < tilesWide; x = x + 1) {
                 int mapIndex = (y * tilesWide) + x;
                 tileMap[mapIndex] = solver.getTileIndexAt(x, y);
             }
@@ -364,8 +467,8 @@ bool generateDungeonMap() {
 
     float offsetX = (mapWidth - (tilesWide * cDungeonTileSize)) * 0.5;
     float offsetZ = (mapHeight - (tilesHigh * cDungeonTileSize)) * 0.5;
-    for (int y = 0; y < tilesHigh; y++) {
-        for (int x = 0; x < tilesWide; x++) {
+    for (int y = 0; y < tilesHigh; y = y + 1) {
+        for (int x = 0; x < tilesWide; x = x + 1) {
             int mapIndex = (y * tilesWide) + x;
             int tileIndex = tileMap[mapIndex];
             if (tileIndex < 0) continue;

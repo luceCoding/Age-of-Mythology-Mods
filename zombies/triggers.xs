@@ -2,7 +2,13 @@ void startGame(){
     preModifyPlayerData();
     if (generateBSPMap(cBSPDefaultMaxRegions) == false) {
         errorLog("BSP map generation failed.");
+        return;
     }
+    if (applyWaveFunctionCollapseToBSPRooms(
+            g_bspCells, g_bspHallwayCells, g_bspGridWidth) == false) {
+        return;
+    }
+    finishBSPMap();
 }
 
 rule FIRE_FIRST_IMMEDIATELY_TRIGGER

@@ -1,9 +1,11 @@
-const int configMapTileX = 256;
-const int configMapTileZ = 256;
+const int configMapTileX = 192;
+const int configMapTileZ = 192;
 const int configMapBaseHeight = 4;
 
 const int cZombieAIPlayer = cNumberPlayers;
 const int cHumanAIPlayer = cNumberPlayers - 1;
+
+const int defaultcUnitTypeWall = cUnitTypeWallOfAtlantisConnector;
 
 int[] g_humanInteractableTypes = default;
 

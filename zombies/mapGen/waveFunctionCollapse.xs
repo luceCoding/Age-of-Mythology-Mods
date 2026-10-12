@@ -49,7 +49,8 @@ class WaveFunctionCollapse {
     bool isBoundaryCompatible(int cell = 0, int tileIndex = 0) {
         if (m_boundarySocket < 0) return true;
 
-        for (int direction = cSocketNorth; direction <= cSocketWest; direction++) {
+        for (int direction = cSocketNorth; direction <= cSocketWest;
+             direction = direction + 1) {
             if (getNeighbor(cell, direction) == -1
                 && getTileSocket(tileIndex, direction) != m_boundarySocket) {
                 return false;
@@ -63,7 +64,8 @@ class WaveFunctionCollapse {
         m_configured = false;
         if (width <= 0 || height <= 0 || tileTypes.size() == 0) return false;
 
-        for (int tileIndex = 0; tileIndex < tileTypes.size(); tileIndex++) {
+        for (int tileIndex = 0; tileIndex < tileTypes.size();
+             tileIndex = tileIndex + 1) {
             Tile tile = tileTypes[tileIndex];
             if (tile.weight <= 0) return false;
         }
@@ -81,9 +83,10 @@ class WaveFunctionCollapse {
     }
 
     bool resetPossibilities() {
-        for (int cell = 0; cell < m_width * m_height; cell++) {
+        for (int cell = 0; cell < m_width * m_height; cell = cell + 1) {
             m_optionCounts[cell] = 0;
-            for (int tileIndex = 0; tileIndex < m_tileCount; tileIndex++) {
+            for (int tileIndex = 0; tileIndex < m_tileCount;
+                 tileIndex = tileIndex + 1) {
                 bool allowed = isBoundaryCompatible(cell, tileIndex);
                 int optionIndex = getOptionIndex(cell, tileIndex);
                 m_possible[optionIndex] = allowed;
@@ -98,19 +101,22 @@ class WaveFunctionCollapse {
         int queuePosition = 0;
         while (queuePosition < m_queue.size()) {
             int cell = m_queue[queuePosition];
-            queuePosition++;
+            queuePosition = queuePosition + 1;
 
-            for (int direction = cSocketNorth; direction <= cSocketWest; direction++) {
+            for (int direction = cSocketNorth; direction <= cSocketWest;
+                 direction = direction + 1) {
                 int neighbor = getNeighbor(cell, direction);
                 if (neighbor == -1) continue;
 
                 bool changed = false;
-                for (int neighborTile = 0; neighborTile < m_tileCount; neighborTile++) {
+                for (int neighborTile = 0; neighborTile < m_tileCount;
+                     neighborTile = neighborTile + 1) {
                     int neighborOption = getOptionIndex(neighbor, neighborTile);
                     if (m_possible[neighborOption] == false) continue;
 
                     bool hasSupport = false;
-                    for (int cellTile = 0; cellTile < m_tileCount; cellTile++) {
+                    for (int cellTile = 0; cellTile < m_tileCount;
+                         cellTile = cellTile + 1) {
                         int cellOption = getOptionIndex(cell, cellTile);
                         if (m_possible[cellOption] == false) continue;
 
@@ -145,7 +151,7 @@ class WaveFunctionCollapse {
 
     bool propagateAll() {
         m_queue = new int(0, -1);
-        for (int cell = 0; cell < m_width * m_height; cell++) {
+        for (int cell = 0; cell < m_width * m_height; cell = cell + 1) {
             m_queue.add(cell);
         }
         return runPropagation();
@@ -156,7 +162,7 @@ class WaveFunctionCollapse {
         int lowestOptionCount = m_tileCount + 1;
         int tiedCells = 0;
 
-        for (int cell = 0; cell < m_width * m_height; cell++) {
+        for (int cell = 0; cell < m_width * m_height; cell = cell + 1) {
             int optionCount = m_optionCounts[cell];
             if (optionCount <= 1) continue;
 
@@ -166,7 +172,7 @@ class WaveFunctionCollapse {
                 tiedCells = 1;
             } else if (optionCount == lowestOptionCount) {
                 if (xsRandInt(0, tiedCells) == 0) selectedCell = cell;
-                tiedCells++;
+                tiedCells = tiedCells + 1;
             }
         }
         return selectedCell;
@@ -175,7 +181,8 @@ class WaveFunctionCollapse {
     int chooseWeightedTile(int cell = 0) {
         float totalWeight = 0.0;
         int lastAvailableTile = -1;
-        for (int tileIndex = 0; tileIndex < m_tileCount; tileIndex++) {
+        for (int tileIndex = 0; tileIndex < m_tileCount;
+             tileIndex = tileIndex + 1) {
             int optionIndex = getOptionIndex(cell, tileIndex);
             if (m_possible[optionIndex]) {
                 Tile tile = m_tiles[tileIndex];
@@ -188,7 +195,8 @@ class WaveFunctionCollapse {
         float roll = xsRandFloat(0.0, totalWeight);
         float cumulativeWeight = 0.0;
 
-        for (int tileIndex = 0; tileIndex < m_tileCount; tileIndex++) {
+        for (int tileIndex = 0; tileIndex < m_tileCount;
+             tileIndex = tileIndex + 1) {
             int optionIndex = getOptionIndex(cell, tileIndex);
             if (m_possible[optionIndex] == false) continue;
             Tile tile = m_tiles[tileIndex];
@@ -201,11 +209,11 @@ class WaveFunctionCollapse {
     bool solve(int maxAttempts = 10) {
         if (m_configured == false || maxAttempts <= 0) return false;
 
-        for (int cell = 0; cell < m_map.size(); cell++) {
+        for (int cell = 0; cell < m_map.size(); cell = cell + 1) {
             m_map[cell] = -1;
         }
 
-        for (int attempt = 0; attempt < maxAttempts; attempt++) {
+        for (int attempt = 0; attempt < maxAttempts; attempt = attempt + 1) {
             if (resetPossibilities() == false || propagateAll() == false) return false;
 
             bool contradiction = false;
@@ -219,7 +227,8 @@ class WaveFunctionCollapse {
                     break;
                 }
 
-                for (int tileIndex = 0; tileIndex < m_tileCount; tileIndex++) {
+                for (int tileIndex = 0; tileIndex < m_tileCount;
+                     tileIndex = tileIndex + 1) {
                     int optionIndex = getOptionIndex(cell, tileIndex);
                     bool keep = tileIndex == selectedTile;
                     if (m_possible[optionIndex] && keep == false) {
@@ -236,9 +245,10 @@ class WaveFunctionCollapse {
 
             if (contradiction) continue;
 
-            for (int cell = 0; cell < m_width * m_height; cell++) {
+            for (int cell = 0; cell < m_width * m_height; cell = cell + 1) {
                 m_map[cell] = -1;
-                for (int tileIndex = 0; tileIndex < m_tileCount; tileIndex++) {
+                for (int tileIndex = 0; tileIndex < m_tileCount;
+                     tileIndex = tileIndex + 1) {
                     int optionIndex = getOptionIndex(cell, tileIndex);
                     if (m_possible[optionIndex]) {
                         m_map[cell] = tileIndex;
