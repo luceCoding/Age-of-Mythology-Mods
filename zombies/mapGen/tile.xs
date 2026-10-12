@@ -151,10 +151,8 @@ Tile rotateMapTileClockwise(ref Tile source) {
         source.isPassableAt(7), source.isPassableAt(4), source.isPassableAt(1),
         source.isPassableAt(8), source.isPassableAt(5), source.isPassableAt(2));
     tile.setSocketsAndWeight(
-        rotateSocketClockwise(source.getSocket(cSocketWest)),
-        rotateSocketClockwise(source.getSocket(cSocketNorth)),
-        rotateSocketClockwise(source.getSocket(cSocketEast)),
-        rotateSocketClockwise(source.getSocket(cSocketSouth)), source.weight);
+        source.getSocket(cSocketWest), source.getSocket(cSocketNorth),
+        source.getSocket(cSocketEast), source.getSocket(cSocketSouth), source.weight);
     tile.rotation = (source.rotation + 1) % 4;
     return tile;
 }

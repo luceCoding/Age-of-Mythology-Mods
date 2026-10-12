@@ -18,6 +18,7 @@ active
     trDisableConquestCheck(true);
     trSetCommunityObjectivesVisibility(false);
     initializeGlobals();
+    initializeSocketAdjacencyTable();
     //initialiseUiSystems(false);
     //performProportionCalculation();
     g_OnCreationListener.init();
