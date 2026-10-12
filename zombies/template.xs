@@ -1,5 +1,5 @@
-const int configMapTileX = 128;
-const int configMapTileZ = 128;
+const int configMapTileX = 256;
+const int configMapTileZ = 256;
 const int configMapBaseHeight = 4;
 
 //// common/nottud.xs
@@ -25,6 +25,7 @@ void generate()
     // zombies/mapGen/tile.xs
     // zombies/mapGen/waveFunctionCollapse.xs
     // zombies/mapGen/tileFactory.xs
+    // zombies/mapGen/bsp.xs
 
     rmSetProgress(0.0);
 

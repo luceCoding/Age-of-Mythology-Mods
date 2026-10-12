@@ -1,6 +1,8 @@
 void startGame(){ 
     preModifyPlayerData();
-    generateDungeonMap();
+    if (generateBSPMap(cBSPDefaultMaxRegions) == false) {
+        errorLog("BSP map generation failed.");
+    }
 }
 
 rule FIRE_FIRST_IMMEDIATELY_TRIGGER
