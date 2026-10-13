@@ -237,16 +237,18 @@ void carveBSPRoom(ref Cell cell, ref bool[] floors,
     }
 }
 
-void placeBSPWalls(ref bool[] floors, int gridWidth = 0, int gridHeight = 0) {
-    for (int z = 0; z < gridHeight; z = z + 1) {
-        for (int x = 0; x < gridWidth; x = x + 1) {
-            int cellIndex = (z * gridWidth) + x;
-            if (floors[cellIndex]) continue;
+void placeBSPRoomWalls(ref Cell cell) {
+    int right = cell.x + cell.width;
+    int bottom = cell.z + cell.height;
+    for (int z = cell.z; z < bottom; z = z + 1) {
+        for (int x = cell.x; x < right; x = x + 1) {
+            int cellIndex = (z * g_bspGridWidth) + x;
+            if (g_bspFloorCells[cellIndex]) continue;
 
             float worldX = (xsIntToFloat(x) * cBSPCellSpacing) + 1.5;
             float worldZ = (xsIntToFloat(z) * cBSPCellSpacing) + 1.5;
             trUnitCreateForced(
-                kbProtoUnitGetName(cUnitTypeWallOfAtlantisConnector),
+                kbProtoUnitGetName(defaultcUnitTypeWall),
                 worldX, configMapBaseHeight, worldZ, 0.0, 0);
         }
     }
@@ -287,14 +289,70 @@ void clearBSPHallwayCellsInsideRooms(ref bool[] hallwayCells,
     }
 }
 
-bool generateBSPMap(int maxRegions = cBSPDefaultMaxRegions,
-                    int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
+int g_bspMaxHallwaysPerRoom = cBSPMaxHallwaysPerRoom;
+int g_bspRoomCarveIndex = 0;
+bool g_bspGenerationComplete = false;
+
+bool splitNextBSPRegion() {
+    int[] splittableLeaves = new int(0, -1);
+    for (int index = 0; index < g_bspCells.size();
+         index = index + 1) {
+        Cell cell = g_bspCells[index];
+        if (canSplitBSPCell(cell)) splittableLeaves.add(index);
+    }
+    if (splittableLeaves.size() == 0) return false;
+
+    int selectedLeafChoice = xsRandInt(0, splittableLeaves.size() - 1);
+    int selected = splittableLeaves[selectedLeafChoice];
+    Cell cell = g_bspCells[selected];
+    bool splitWidth = cell.width >= cBSPMinimumLeafSize * 2;
+    if (cell.height >= cBSPMinimumLeafSize * 2
+        && cell.width >= cBSPMinimumLeafSize * 2) {
+        splitWidth = cell.width > cell.height;
+        if (cell.width == cell.height) splitWidth = xsRandInt(0, 1) == 0;
+    } else if (cell.height >= cBSPMinimumLeafSize * 2) {
+        splitWidth = false;
+    }
+
+    Cell[] nextLeaves = new Cell(0);
+    for (int index = 0; index < g_bspCells.size(); index = index + 1) {
+        if (index != selected) {
+            Cell retainedCell = g_bspCells[index];
+            nextLeaves.add(retainedCell);
+            continue;
+        }
+
+        if (splitWidth) {
+            int splitAt = xsRandInt(
+                cBSPMinimumLeafSize, cell.width - cBSPMinimumLeafSize);
+            nextLeaves.add(createBSPCell(
+                cell.x, cell.z, splitAt, cell.height));
+            nextLeaves.add(createBSPCell(
+                cell.x + splitAt, cell.z,
+                cell.width - splitAt, cell.height));
+        } else {
+            int splitAt = xsRandInt(
+                cBSPMinimumLeafSize, cell.height - cBSPMinimumLeafSize);
+            nextLeaves.add(createBSPCell(
+                cell.x, cell.z, cell.width, splitAt));
+            nextLeaves.add(createBSPCell(
+                cell.x, cell.z + splitAt,
+                cell.width, cell.height - splitAt));
+        }
+    }
+    g_bspCells = nextLeaves;
+    return true;
+}
+
+bool beginBSPMapGeneration(int maxRegions = cBSPDefaultMaxRegions,
+                           int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
     g_bspCells = new Cell(0);
     g_bspFloorCells = new bool(0, false);
     g_bspHallwayCells = new bool(0, false);
     g_bspHallwayDebugCells = new bool(0, false);
     g_bspGridWidth = 0;
     g_bspGridHeight = 0;
+    g_bspGenerationComplete = false;
     if (maxRegions <= 0 || maxHallwaysPerRoom <= 0) return false;
     if (cBSPMinimumCorridorWidth <= 0
         || cBSPMaximumCorridorWidth < cBSPMinimumCorridorWidth) return false;
@@ -316,66 +374,23 @@ bool generateBSPMap(int maxRegions = cBSPDefaultMaxRegions,
     g_bspCells.add(createBSPCell(
         cBSPMapEdgePadding, cBSPMapEdgePadding, rootWidth, rootHeight));
 
-    while (g_bspCells.size() < maxRegions) {
-        int[] splittableLeaves = new int(0, -1);
-        for (int index = 0; index < g_bspCells.size(); index = index + 1) {
-            Cell cell = g_bspCells[index];
-            if (canSplitBSPCell(cell)) splittableLeaves.add(index);
-        }
-        if (splittableLeaves.size() == 0) break;
-
-        int selectedLeafChoice = xsRandInt(0, splittableLeaves.size() - 1);
-        int selected = splittableLeaves[selectedLeafChoice];
-        Cell cell = g_bspCells[selected];
-        bool splitWidth = cell.width >= cBSPMinimumLeafSize * 2;
-        if (cell.height >= cBSPMinimumLeafSize * 2
-            && cell.width >= cBSPMinimumLeafSize * 2) {
-            splitWidth = cell.width > cell.height;
-            if (cell.width == cell.height) splitWidth = xsRandInt(0, 1) == 0;
-        } else if (cell.height >= cBSPMinimumLeafSize * 2) {
-            splitWidth = false;
-        }
-
-        Cell[] nextLeaves = new Cell(0);
-        for (int index = 0; index < g_bspCells.size(); index = index + 1) {
-            if (index != selected) {
-                Cell retainedCell = g_bspCells[index];
-                nextLeaves.add(retainedCell);
-                continue;
-            }
-
-            if (splitWidth) {
-                int splitAt = xsRandInt(
-                    cBSPMinimumLeafSize,
-                    cell.width - cBSPMinimumLeafSize);
-                nextLeaves.add(createBSPCell(
-                    cell.x, cell.z, splitAt, cell.height));
-                nextLeaves.add(createBSPCell(
-                    cell.x + splitAt, cell.z,
-                    cell.width - splitAt, cell.height));
-            } else {
-                int splitAt = xsRandInt(
-                    cBSPMinimumLeafSize,
-                    cell.height - cBSPMinimumLeafSize);
-                nextLeaves.add(createBSPCell(
-                    cell.x, cell.z, cell.width, splitAt));
-                nextLeaves.add(createBSPCell(
-                    cell.x, cell.z + splitAt,
-                    cell.width, cell.height - splitAt));
-            }
-        }
-        g_bspCells = nextLeaves;
-    }
-
+    g_bspMaxHallwaysPerRoom = maxHallwaysPerRoom;
     g_bspGridWidth = gridWidth;
     g_bspGridHeight = gridHeight;
-    g_bspFloorCells = new bool(gridWidth * gridHeight, false);
-    g_bspHallwayCells = new bool(gridWidth * gridHeight, false);
-    for (int index = 0; index < g_bspCells.size(); index = index + 1) {
-        Cell cell = g_bspCells[index];
-        carveBSPRoom(cell, g_bspFloorCells, gridWidth, gridHeight);
-        g_bspCells[index] = cell;
+    while (g_bspCells.size() < maxRegions) {
+        if (splitNextBSPRegion() == false) break;
     }
+    g_bspFloorCells = new bool(
+        g_bspGridWidth * g_bspGridHeight, false);
+    g_bspHallwayCells = new bool(
+        g_bspGridWidth * g_bspGridHeight, false);
+    g_bspRoomCarveIndex = 0;
+    return true;
+}
+
+bool connectBSPRooms(int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
+    int gridWidth = g_bspGridWidth;
+    int gridHeight = g_bspGridHeight;
 
     bool[] connectedRooms = new bool(g_bspCells.size(), false);
     int[] hallwayCounts = new int(g_bspCells.size(), 0);
@@ -470,8 +485,36 @@ bool generateBSPMap(int maxRegions = cBSPDefaultMaxRegions,
     return true;
 }
 
-void finishBSPMap() {
-    if (g_bspGridWidth <= 0 || g_bspGridHeight <= 0) return;
-    placeBSPWalls(g_bspFloorCells, g_bspGridWidth, g_bspGridHeight);
-    //placeBSPHallwayDebugMarkers(g_bspHallwayDebugCells, g_bspGridWidth, g_bspGridHeight);
+bool stepBSPMapGeneration() {
+    if (g_bspGenerationComplete) return true;
+
+    if (g_bspRoomCarveIndex < g_bspCells.size()) {
+        Cell cell = g_bspCells[g_bspRoomCarveIndex];
+        carveBSPRoom(
+            cell, g_bspFloorCells, g_bspGridWidth, g_bspGridHeight);
+        g_bspCells[g_bspRoomCarveIndex] = cell;
+        g_bspRoomCarveIndex = g_bspRoomCarveIndex + 1;
+        if (g_bspRoomCarveIndex >= g_bspCells.size()) {
+            if (connectBSPRooms(g_bspMaxHallwaysPerRoom) == false) {
+                return false;
+            }
+            g_bspGenerationComplete = true;
+        }
+        return true;
+    }
+
+    if (connectBSPRooms(g_bspMaxHallwaysPerRoom) == false) return false;
+    g_bspGenerationComplete = true;
+    return true;
+}
+
+bool generateBSPMap(int maxRegions = cBSPDefaultMaxRegions,
+                    int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
+    if (beginBSPMapGeneration(maxRegions, maxHallwaysPerRoom) == false) {
+        return false;
+    }
+    while (g_bspGenerationComplete == false) {
+        if (stepBSPMapGeneration() == false) return false;
+    }
+    return true;
 }

@@ -1,5 +1,5 @@
-const int configMapTileX = 192;
-const int configMapTileZ = 192;
+const int configMapTileX = 159;
+const int configMapTileZ = 159;
 const int configMapBaseHeight = 4;
 
 //// common/nottud.xs
@@ -21,16 +21,25 @@ void generate()
     defineHashMapDefinition("int", "int", "cMinInt", "cMinInt");
     // common/listeners/onCreationListener.xs
 
+    createTypedScheduler("lowFreqScheduler", buildStringTypeArray(), 1000, 256);
+    createTypedScheduler("lowFreqSchedulerWithIntInt", buildStringTypeArray("Int", "Int"), 1000, 256);
+
     // zombies/mapGen/sockets.xs
     // zombies/mapGen/tile.xs
     // zombies/mapGen/waveFunctionCollapse.xs
     // zombies/mapGen/bsp.xs
+    // zombies/mapGen/tiles/dungeonDefaultTile.xs
+    // zombies/mapGen/tiles/graveyardTiles.xs
     // zombies/mapGen/tileFactory.xs
+
+    // zombies/players/humans.xs
+    // zombies/players/zombies.xs
+    // zombies/players/teams.xs
 
     rmSetProgress(0.0);
 
     rmSetMapSize(configMapTileX, configMapTileZ);
-    rmInitializeLand(cTerrainDefault, configMapBaseHeight);
+    rmInitializeLand(cTerrainHadesRoad2, configMapBaseHeight);
 
     // zombies/proto/protoUnits.xs
     // zombies/triggers.xs

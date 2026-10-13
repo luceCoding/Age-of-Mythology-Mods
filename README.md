@@ -24,6 +24,26 @@ XS quirks:
 - Do as little polling as you can. If you want to know if a unit has died. The best technique is to set spawn replacement data for that unit to spawn another unit upon death. Then use the OnCreationListener to check if said unit has spawned to perform action. On top of that, query the kbStats of a player to check if the death count has increased since the last cache as another way to avoid unnecessary polling. Third option is to use the Hashed Timed Wheel scheduler and set the ms timer to something other than 1ms. This will avoid always polling every frame and instead poll every couple of frames if you must have that much fidelity.
 - There seems to be max number of parameters a method/function can have.
 
+### Dungeon room tile sets
+
+BSP rooms choose a tile set independently. The positive weights returned by
+`getDungeonRoomTileSetWeight` in `zombies/mapGen/tileFactory.xs` set relative
+room frequency (for example, weights of 100 and 25 produce a 4:1 ratio).
+`cDungeonDefaultRoomTileSetWeight` in
+`zombies/mapGen/tiles/dungeonDefaultTile.xs` controls the default set. Tile
+weights still control the frequency of individual tiles within a room.
+
+To add another set, include its tile file in `zombies/template.xs`, add its
+weight to `getDungeonRoomTileSetCount` and `getDungeonRoomTileSetWeight`, and
+dispatch its tile array from `createDungeonRoomTileSet`. Each room set must
+start with a fully passable tile at index 0, which is used for the room center
+and spawn area.
+
+After the BSP regions are partitioned, `highFreqScheduler` carves one room
+every 500 ms. Once hallways are connected, it generates and places one room's
+tile layout and walls per tick. Player initialization waits until all rooms
+have been placed.
+
 Nottud's UI Notes:
 - Need looping trigger calling system.process().
 - initialiseUiSystem() as the very first trigger.

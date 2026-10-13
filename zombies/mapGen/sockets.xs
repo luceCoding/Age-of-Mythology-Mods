@@ -11,7 +11,8 @@ const int cSocketTypeOpenOrWall = 4;
 const int cSocketTypeWallOrEntrance = 5;
 const int cSocketTypeAny = 6;
 const int cSocketInteractable = 7;
-const int cSocketTypeCount = 8;
+const int cSocketDecoration = 8;
+const int cSocketTypeCount = 9;
 
 int[] g_socketAdjacencyTable = default;
 
@@ -48,6 +49,9 @@ void initializeSocketAdjacencyTable() {
 
     allowSocketAdjacency(cSocketTypeAny, cSocketTypeAny);
     allowSocketAdjacency(cSocketTypeAny, cSocketInteractable);
+
+    allowSocketAdjacency(cSocketDecoration, cSocketDecoration);
+    allowSocketAdjacency(cSocketDecoration, cSocketOpen);
 }
 
 int getOppositeSocketDirection(int direction = cSocketNorth) {
