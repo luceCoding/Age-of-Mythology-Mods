@@ -76,6 +76,7 @@ active
 {
     if (g_roleVoteComplete) {
         startMapGeneration();
+        startInteractables();
         xsDisableSelf();
     }
 }

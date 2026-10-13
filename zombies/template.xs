@@ -56,6 +56,7 @@ void generate()
     rmInitializeLand(cTerrainHadesRoad2, configMapBaseHeight);
 
     // zombies/proto/protoUnits.xs
+    // zombies/proto/interactables.xs
     // zombies/triggers.xs
 
     rmSetProgress(1.0);

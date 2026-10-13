@@ -3,8 +3,14 @@ void initializeBuildingForGarrison(int p = 0, int cUnitTypeBuildingType = -1){
     trProtoUnitSetFlag(p, building, "InitialGarrisonOnly", false);
     trProtoUnitSetFlag(p, building, "AllowAutoGarrison", true);
     trProtoUnitSetFlag(p, building, "HideGarrisonFlag", true);
+    trModifyProtounitData(building, cHumanAIPlayer, cXSProtoEffectObstructionRadiusX, 1.5, cXSRelativityAssign);
+    trModifyProtounitData(building, cHumanAIPlayer, cXSProtoEffectObstructionRadiusZ, 1.5, cXSRelativityAssign);
+    trProtoUnitSetFlag(cHumanAIPlayer, building, "HasLOS", false);
+    trProtoUnitSetFlag(cHumanAIPlayer, building, "KnockoutDeath", true);
+    trProtoUnitSetFlag(cHumanAIPlayer, building, "InitialGarrisonOnly", false);
+    trProtoUnitSetFlag(cHumanAIPlayer, building, "AllowAutoGarrison", true);
     trModifyProtounitUnitType(building, "Unit", p, cXSPUUnitTypeEffectAddContainType, 1.0, 1);
-    trModifyProtounitData(building, p, cXSProtoEffectMaxContained, 1000.0, cXSRelativityAssign);
+    trModifyProtounitData(building, p, cXSProtoEffectMaxContained, 1.0, cXSRelativityAssign);
 }
 
 void preModifyPlayerData(){
@@ -50,12 +56,10 @@ void preModifyPlayerData(){
     for (int i = 0; i < g_humanInteractableTypes.size(); i++){
         int interactableType = g_humanInteractableTypes[i];
         if (interactableType == cUnitTypeToriiGate) continue;
-        trModifyProtounitData(kbProtoUnitGetName(interactableType), cHumanAIPlayer, cXSProtoEffectObstructionRadiusX, 1.5, cXSRelativityAssign);
-        trModifyProtounitData(kbProtoUnitGetName(interactableType), cHumanAIPlayer, cXSProtoEffectObstructionRadiusZ, 1.5, cXSRelativityAssign);
-        trProtoUnitSetFlag(cHumanAIPlayer, kbProtoUnitGetName(interactableType), "HasLOS", false);
         g_OnCreationListener.register(cHumanAIPlayer, interactableType, false, [](int unitId = -1) -> void {
                 selectSingle(unitId);
                 trUnitSetScale(0.5, 0.5, 0.5);
+                g_humanInteractableObjects.add(unitId);
             }
         );
         initializeBuildingForGarrison(cHumanAIPlayer, interactableType);

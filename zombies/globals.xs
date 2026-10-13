@@ -13,6 +13,7 @@ int[] g_humanUnitIDs = default;
 int g_humanUnitCount = 0;
 
 int[] g_humanInteractableTypes = default;
+int[] g_humanInteractableObjects = default;
 int[] g_humanUnitTypes = default;
 int[] g_zombieUnitTypes = default;
 
