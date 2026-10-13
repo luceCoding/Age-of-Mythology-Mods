@@ -52,7 +52,8 @@ int chooseDungeonRoomTileSet() {
 
 void placeDungeonTile(ref Tile tile, float tileX = 0.0, float tileZ = 0.0,
                       float height = 0.0) {
-    float heading = tile.rotation * 90.0;
+    int headingRotation = (4 - tile.rotation) % 4;
+    float heading = headingRotation * 90.0;
     for (int position = 0; position < 9; position = position + 1) {
         int unitType = tile.getUnitAt(position);
         if (unitType < 0) continue;
@@ -250,7 +251,8 @@ void reserveBSPSpawnPair(ref int[] tileMap, int tilesWide = 0,
 void placeBSPRoomTile(ref Tile tile, ref bool[] hallwayCells,
                       int startGridX = 0, int startGridZ = 0,
                       float height = 0.0, int gridWidth = 0) {
-    float heading = tile.rotation * 90.0;
+    int headingRotation = (4 - tile.rotation) % 4;
+    float heading = headingRotation * 90.0;
     for (int position = 0; position < 9; position = position + 1) {
         int unitType = tile.getUnitAt(position);
         if (unitType < 0) continue;

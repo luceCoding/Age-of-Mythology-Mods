@@ -77,6 +77,31 @@ void preModifyPlayerData(){
         }
     );
 
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeQiLin), "OnlyInEditor", true);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeQiLin), "Immoveable", true);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeQiLin), "Collideable", false);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeQiLin), "CollidesWithProjectiles", false);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeQiLin), "ShowOnMiniMap", false);
+    trProtoUnitActionSetEnabled(kbProtoUnitGetName(cUnitTypeQiLin), 0, "HandAttack", false);
+    trProtoUnitActionSetEnabled(kbProtoUnitGetName(cUnitTypeQiLin), 0, "AreaHeal", false);
+    trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeQiLin), "ChargedRangedAttack", 0, cXSActionEffectRange, 2.0, cXSRelativityAssign);
+    trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeQiLin), "ChargedRangedAttack", kbUnitTypeGetName(cUnitTypeHero), 0, cXSActionProtoEffectDamageBonus, 2.0, cXSRelativityAssign);
+    g_OnCreationListener.register(0, cUnitTypeStatueChimera, false, [](int unitId = -1) -> void {
+            selectSingle(unitId);
+            int heading = trUnitGetHeading();
+            float headingRadians = heading * cPi / 180.0;
+            vector v = kbUnitGetTruePosition(unitId);
+            float forwardX = sin(headingRadians) * -1.0;
+            float forwardZ = cos(headingRadians) * -1.0;
+            int createdUnitID = trUnitCreateForced(
+                kbProtoUnitGetName(cUnitTypeQiLin),
+                v.x + forwardX, v.y, v.z + forwardZ, heading, 0, true);
+            selectSingle(createdUnitID);
+            trUnitSetHeading(heading);
+            trUnitMakeInvulnerable(true);
+        }
+    );
+
     trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
     // trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall2), 0, cXSProtoEffectArmorHack, 0.5, cXSRelativityAssign);

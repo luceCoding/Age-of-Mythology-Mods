@@ -25,6 +25,24 @@ Tile[] createDungeonDefaultTileTypes() {
     }
 
     {
+        Tile trapTile;
+        trapTile.setUnits(
+            -1, -1, -1,
+            -1, -1, -1,
+            -1, cUnitTypeStatueChimera, -1);
+        trapTile.setPassability(
+            true, true, true,
+            true, true, true,
+            true, true, true);
+        trapTile.setSocketsAndWeight(
+            cSocketTypeAny, cSocketTypeAny, cSocketWall, cSocketTypeAny, 
+            cOpenTileWeight * 0.05);
+        tileTypes.add(trapTile);
+        // Tile rotatedTile = rotateMapTileClockwise(trapTile); // TODO: Fix heading for cUnitTypeQiLin
+        // tileTypes.add(rotatedTile);
+    }
+
+    {
         Tile singleWallTile;
         singleWallTile.setUnits(
             -1, -1, -1,
@@ -38,8 +56,8 @@ Tile[] createDungeonDefaultTileTypes() {
             cSocketOpen, cSocketTypeWallOrEntrance,
             cSocketOpen, cSocketTypeWallOrEntrance, cSingleWallTileWeight);
         tileTypes.add(singleWallTile);
-        Tile rotatedWall = rotateMapTileClockwise(singleWallTile);
-        tileTypes.add(rotatedWall);
+        Tile rotatedTile = rotateMapTileClockwise(singleWallTile);
+        tileTypes.add(rotatedTile);
     }
 
     {
@@ -57,9 +75,9 @@ Tile[] createDungeonDefaultTileTypes() {
             cSocketTypeWallOrEntrance, cSocketTypeWallOrEntrance, ctBoneWallTileWeight);
         tileTypes.add(tBoneWallTile);
         for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
-            Tile rotatedWall = rotateMapTileClockwise(tBoneWallTile);
-            tileTypes.add(rotatedWall);
-            tBoneWallTile = rotatedWall;
+            Tile rotatedTile = rotateMapTileClockwise(tBoneWallTile);
+            tileTypes.add(rotatedTile);
+            tBoneWallTile = rotatedTile;
         }
     }
 
@@ -78,9 +96,9 @@ Tile[] createDungeonDefaultTileTypes() {
             cSocketTypeWallOrEntrance, cSocketOpen, cCornerWeight);
         tileTypes.add(cornerTile);
         for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
-            Tile rotatedWall = rotateMapTileClockwise(cornerTile);
-            tileTypes.add(rotatedWall);
-            cornerTile = rotatedWall;
+            Tile rotatedTile = rotateMapTileClockwise(cornerTile);
+            tileTypes.add(rotatedTile);
+            cornerTile = rotatedTile;
         }
     }
 
@@ -134,9 +152,9 @@ Tile[] createDungeonDefaultTileTypes() {
             interactableTile.setPlayerUnit(4, cHumanAIPlayer);
             tileTypes.add(interactableTile);
             for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
-                Tile rotatedWall = rotateMapTileClockwise(interactableTile);
-                tileTypes.add(rotatedWall);
-                interactableTile = rotatedWall;
+                Tile rotatedTile = rotateMapTileClockwise(interactableTile);
+                tileTypes.add(rotatedTile);
+                interactableTile = rotatedTile;
             }
         }
     }

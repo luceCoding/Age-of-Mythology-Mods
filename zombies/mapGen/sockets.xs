@@ -7,12 +7,11 @@ const int cSocketNone = 0;
 const int cSocketOpen = 1;
 const int cSocketWall = 2;
 const int cSocketEntrance = 3;
-const int cSocketTypeOpenOrWall = 4;
-const int cSocketTypeWallOrEntrance = 5;
-const int cSocketTypeAny = 6;
-const int cSocketInteractable = 7;
-const int cSocketDecoration = 8;
-const int cSocketTypeCount = 9;
+const int cSocketTypeWallOrEntrance = 4;
+const int cSocketTypeAny = 5;
+const int cSocketInteractable = 6;
+const int cSocketDecoration = 7;
+const int cSocketTypeCount = 8;
 
 int[] g_socketAdjacencyTable = default;
 
@@ -27,22 +26,15 @@ void initializeSocketAdjacencyTable() {
     g_socketAdjacencyTable = new int(cSocketTypeCount * cSocketTypeCount, 0);
 
     allowSocketAdjacency(cSocketOpen, cSocketOpen);
-    allowSocketAdjacency(cSocketOpen, cSocketTypeOpenOrWall);
     allowSocketAdjacency(cSocketOpen, cSocketTypeAny);
     allowSocketAdjacency(cSocketOpen, cSocketInteractable);
 
     allowSocketAdjacency(cSocketWall, cSocketWall);
-    allowSocketAdjacency(cSocketWall, cSocketTypeOpenOrWall);
     allowSocketAdjacency(cSocketWall, cSocketTypeWallOrEntrance);
-    allowSocketAdjacency(cSocketWall, cSocketTypeAny);
+    //allowSocketAdjacency(cSocketWall, cSocketTypeAny);
 
     allowSocketAdjacency(cSocketEntrance, cSocketTypeWallOrEntrance);
     allowSocketAdjacency(cSocketEntrance, cSocketWall);
-
-    allowSocketAdjacency(cSocketTypeOpenOrWall, cSocketTypeOpenOrWall);
-    allowSocketAdjacency(cSocketTypeOpenOrWall, cSocketTypeWallOrEntrance);
-    allowSocketAdjacency(cSocketTypeOpenOrWall, cSocketTypeAny);
-    allowSocketAdjacency(cSocketTypeOpenOrWall, cSocketInteractable);
 
     allowSocketAdjacency(cSocketTypeWallOrEntrance, cSocketTypeWallOrEntrance);
     allowSocketAdjacency(cSocketTypeWallOrEntrance, cSocketTypeAny);
