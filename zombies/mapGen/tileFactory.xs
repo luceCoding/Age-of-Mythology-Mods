@@ -69,6 +69,15 @@ void writeTileToMap(ref Map map, ref Tile tile,
     }
 }
 
+bool tileContainsEntranceSocket(ref Map map, int startX = 0, int startZ = 0) {
+    for (int z = startZ; z < startZ + 3; z = z + 1) {
+        for (int x = startX; x < startX + 3; x = x + 1) {
+            if (map.getDataAt(x, z) == cMapDataEntranceSocket) return true;
+        }
+    }
+    return false;
+}
+
 bool isDungeonPositionPassable(ref int[] tileMap, ref Tile[] tileTypes,
                                int tilesWide = 0, int microX = 0, int microY = 0) {
     int tileX = microX / 3;
@@ -190,12 +199,12 @@ bool filterDungeonLayoutConnectivity(ref int[] tileMap, ref Tile[] tileTypes,
 Tile createDungeonSolidWallTile() {
     Tile solidWallTile;
     solidWallTile.setUnits(
-        defaultcUnitTypeWall, defaultcUnitTypeWall,
-        defaultcUnitTypeWall,
-        defaultcUnitTypeWall, defaultcUnitTypeWall,
-        defaultcUnitTypeWall,
-        defaultcUnitTypeWall, defaultcUnitTypeWall,
-        defaultcUnitTypeWall);
+        cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
+        cDefaultcUnitTypeWall,
+        cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
+        cDefaultcUnitTypeWall,
+        cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
+        cDefaultcUnitTypeWall);
     solidWallTile.setPassability(
         false, false, false, false, false, false, false, false, false);
     solidWallTile.setSocketsAndWeight(
@@ -284,7 +293,13 @@ bool generateRoomLayout(ref Map map,
         for (int y = 0; y < tilesHigh; y = y + 1) {
             for (int x = 0; x < tilesWide; x = x + 1) {
                 int mapIndex = (y * tilesWide) + x;
-                tileMap[mapIndex] = solver.getTileIndexAt(x, y);
+                int tileGridX = startGridX + (x * 3);
+                int tileGridZ = startGridZ + (y * 3);
+                if (tileContainsEntranceSocket(map, tileGridX, tileGridZ)) {
+                    tileMap[mapIndex] = 0;
+                } else {
+                    tileMap[mapIndex] = solver.getTileIndexAt(x, y);
+                }
             }
         }
 
@@ -390,6 +405,11 @@ bool generateNextBSPRoomLayout(ref Cell[] cells, ref Map map) {
 
     g_bspTileRoomIndex = g_bspTileRoomIndex + 1;
     g_bspTileGenerationComplete = g_bspTileRoomIndex >= cells.size();
+    if (g_bspTileGenerationComplete
+        && placeBSPHallwayGates(map) == false) {
+        errorLog("Failed to place BSP hallway gates.");
+        return false;
+    }
     return true;
 }
 
@@ -407,12 +427,12 @@ bool generateDungeonMap() {
     int solidWallTileIndex = tileTypes.size();
     Tile solidWallTile;
     solidWallTile.setUnits(
-        defaultcUnitTypeWall, defaultcUnitTypeWall,
-        defaultcUnitTypeWall,
-        defaultcUnitTypeWall, defaultcUnitTypeWall,
-        defaultcUnitTypeWall,
-        defaultcUnitTypeWall, defaultcUnitTypeWall,
-        defaultcUnitTypeWall);
+        cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
+        cDefaultcUnitTypeWall,
+        cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
+        cDefaultcUnitTypeWall,
+        cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
+        cDefaultcUnitTypeWall);
     solidWallTile.setPassability(false, false, false, false, false, false, false, false, false);
     solidWallTile.setSocketsAndWeight(
         cSocketWall, cSocketWall,

@@ -1,4 +1,4 @@
-const int cOpenTileWeight = 256;
+const int cOpenTileWeight = 192;
 const int cSingleWallTileWeight = 256;
 const int ctBoneWallTileWeight = 32;
 const int cCornerWeight = 64;
@@ -43,10 +43,31 @@ Tile[] createDungeonDefaultTileTypes() {
     }
 
     {
+        Tile placeholderTile;
+        placeholderTile.setUnits(
+            -1, -1, -1,
+            -1, -1, -1,
+            -1, cUnitTypeCinematicBlockArea, -1);
+        placeholderTile.setPassability(
+            true, true, true,
+            true, true, true,
+            true, true, true);
+        placeholderTile.setSocketsAndWeight(
+            cSocketTypeAny, cSocketTypeAny, cSocketWall, cSocketTypeAny, 
+            cSingleWallTileWeight * 0.15);
+        tileTypes.add(placeholderTile);
+        for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
+            Tile rotatedTile = rotateMapTileClockwise(placeholderTile);
+            tileTypes.add(rotatedTile);
+            placeholderTile = rotatedTile;
+        }
+    }
+
+    {
         Tile singleWallTile;
         singleWallTile.setUnits(
             -1, -1, -1,
-            defaultcUnitTypeWall, defaultcUnitTypeWall2, defaultcUnitTypeWall,
+            cDefaultcUnitTypeWall, cDefaultcUnitTypeWall2, cDefaultcUnitTypeWall,
             -1, -1, -1);
         singleWallTile.setPassability(
             true, true, true,
@@ -64,8 +85,8 @@ Tile[] createDungeonDefaultTileTypes() {
         Tile tBoneWallTile;
         tBoneWallTile.setUnits(
             -1, -1, -1,
-            defaultcUnitTypeWall, defaultcUnitTypeWall, defaultcUnitTypeWall,
-            -1, defaultcUnitTypeWall, -1);
+            cDefaultcUnitTypeWall, cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
+            -1, cDefaultcUnitTypeWall, -1);
         tBoneWallTile.setPassability(
             true, true, true,
             false, false, false,
@@ -85,8 +106,8 @@ Tile[] createDungeonDefaultTileTypes() {
         Tile cornerTile;
         cornerTile.setUnits(
             -1, -1, -1,
-            -1, defaultcUnitTypeWall, defaultcUnitTypeWall,
-            -1, defaultcUnitTypeWall, -1);
+            -1, cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
+            -1, cDefaultcUnitTypeWall, -1);
         cornerTile.setPassability(
             true, true, true,
             true, false, false,
@@ -121,9 +142,9 @@ Tile[] createDungeonDefaultTileTypes() {
     {
         Tile crossTile;
         crossTile.setUnits(
-            -1, defaultcUnitTypeWall, -1,
-            defaultcUnitTypeWall, defaultcUnitTypeWall, defaultcUnitTypeWall,
-            -1, defaultcUnitTypeWall, -1);
+            -1, cDefaultcUnitTypeWall, -1,
+            cDefaultcUnitTypeWall, cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
+            -1, cDefaultcUnitTypeWall, -1);
         crossTile.setPassability(
             true, false, true,
             false, false, false,

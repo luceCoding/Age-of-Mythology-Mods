@@ -44,12 +44,39 @@ every 500 ms. Once hallways are connected, it generates and places one room's
 tile layout and walls per tick. Player initialization waits until all rooms
 have been placed.
 
+Room connections follow the BSP split tree: each internal partition connects
+the closest eligible rooms in its two child subtrees, yielding one spanning
+tree link per split. Candidate routes are checked at the maximum corridor
+width; routes that cross a third room are rejected, and the alternate L-turn
+is tried before selecting another pair. This avoids the extra global shortcut
+hallways used by the previous connector.
+`cBSPMaxHallwaysPerRoom` in `zombies/mapGen/bsp.xs` caps each room at four
+hallway connections by default. The limit can also be passed as the third
+argument to `beginBSPMapGeneration` or `generateBSPMap`; if the limit prevents
+a required split connection, generation fails rather than leaving rooms
+disconnected.
+
+Hallway cells that cross into a BSP room are labeled as entrance sockets in
+the shared map and reserved from tile placement. The WFC adapter forces the
+fully passable open tile over any tile region containing an entrance socket,
+so room tiles cannot close the hallway mouth.
+
+Each BSP hallway receives one gate at a random traversable point along its
+route. Corridors up to 3 cells wide use `cDefaultcUnitTypeGate`; wider
+corridors use `cDefaultcUnitTypeGate2`. Gate rotation follows the corridor
+segment so it spans the passage. Gate placement waits until all room walls
+have been materialized, and only uses positions with an existing
+`cDefaultcUnitTypeWall` at both ends of the gate. If no such position exists,
+that hallway is left without a gate. Even-width gates are offset half a cell
+to center them across the passage.
+
 The BSP and WFC output is stored in the shared `Map` class in
 `zombies/mapGen/map.xs`. Its cells hold unit types, heading rotations, owners,
-passability, heights, reservation flags, and integer metadata; generation
-algorithms write to this representation and `Map.placeRegion` / `Map.placeAll`
-materialize units. BSP and WFC use their own internal representations while
-remaining independent of engine unit creation.
+passability, heights, reservation flags, integer metadata, and optional
+per-unit position offsets; generation algorithms write to this representation
+and `Map.placeRegion` / `Map.placeAll` materialize units. BSP and WFC use their
+own internal representations while remaining independent of engine unit
+creation.
 
 Nottud's UI Notes:
 - Need looping trigger calling system.process().

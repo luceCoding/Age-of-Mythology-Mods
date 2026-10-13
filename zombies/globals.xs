@@ -4,8 +4,10 @@ const int configMapBaseHeight = 4;
 
 const int cHumanAIPlayer = cNumberPlayers;
 
-const int defaultcUnitTypeWall = cUnitTypeWallConnector;
-const int defaultcUnitTypeWall2 = cUnitTypeWallShort;
+const int cDefaultcUnitTypeWall = cUnitTypeWallConnector;
+const int cDefaultcUnitTypeWall2 = cUnitTypeWallShort;
+const int cDefaultcUnitTypeGate = cUnitTypeWallGate;
+const int cDefaultcUnitTypeGate2 = cUnitTypeWallGate;
 
 vector g_bspZombieSpawnLocation = cInvalidVector;
 vector g_bspHumanSpawnLocation = cInvalidVector;
@@ -16,6 +18,7 @@ int[] g_humanInteractableTypes = default;
 int[] g_humanInteractableObjects = default;
 int[] g_humanUnitTypes = default;
 int[] g_zombieUnitTypes = default;
+int[] g_placeHolderUnitTypes = default;
 
 void initializeGlobals(){
     // Lowest weight for first interactable, higher for later ones to make them rarer
@@ -29,4 +32,12 @@ void initializeGlobals(){
     g_humanUnitTypes.add(cUnitTypeVillagerAtlanteanHero);
 
     g_zombieUnitTypes.add(cUnitTypeMictlantecuhtli);
+
+    g_placeHolderUnitTypes.add(cUnitTypeSkeleton);
+    g_placeHolderUnitTypes.add(cUnitTypeSpiderEgg);
+    g_placeHolderUnitTypes.add(cUnitTypeCracks);
+    g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
+    g_placeHolderUnitTypes.add(cUnitTypeDigPile);
+    g_placeHolderUnitTypes.add(cUnitTypeTaprootSmall);
+    g_placeHolderUnitTypes.add(cUnitTypeCocoon);
 }

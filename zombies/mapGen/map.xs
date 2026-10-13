@@ -1,4 +1,5 @@
 const int cMapDataEmpty = 0;
+const int cMapDataEntranceSocket = 1;
 
 class Map {
     int width = 0;
@@ -14,6 +15,8 @@ class Map {
     bool[] passable = default;
     bool[] reserved = default;
     float[] heights = default;
+    float[] unitOffsetX = default;
+    float[] unitOffsetZ = default;
 
     bool initialize(int mapWidth = 0, int mapHeight = 0,
                     float mapCellSpacing = 0.0, float mapOriginX = 0.0,
@@ -36,6 +39,8 @@ class Map {
         passable = new bool(cellCount, false);
         reserved = new bool(cellCount, false);
         heights = new float(cellCount, baseHeight);
+        unitOffsetX = new float(cellCount, 0.0);
+        unitOffsetZ = new float(cellCount, 0.0);
         return true;
     }
 
@@ -45,12 +50,15 @@ class Map {
     }
 
     bool setUnitAt(int x = 0, int z = 0, int unitType = -1,
-                   int rotation = 0, int owner = 0) {
+                   int rotation = 0, int owner = 0,
+                   float offsetX = 0.0, float offsetZ = 0.0) {
         int index = getCellIndex(x, z);
         if (index < 0) return false;
         unitTypes[index] = unitType;
         rotations[index] = rotation;
         owners[index] = owner;
+        unitOffsetX[index] = offsetX;
+        unitOffsetZ[index] = offsetZ;
         return true;
     }
 
@@ -138,9 +146,9 @@ class Map {
                 if (unitType < 0) continue;
 
                 float worldX = originX + (xsIntToFloat(x) * cellSpacing)
-                    + (cellSpacing * 0.5);
+                    + (cellSpacing * 0.5) + unitOffsetX[index];
                 float worldZ = originZ + (xsIntToFloat(z) * cellSpacing)
-                    + (cellSpacing * 0.5);
+                    + (cellSpacing * 0.5) + unitOffsetZ[index];
                 trUnitCreateForced(
                     kbProtoUnitGetName(unitType), worldX, heights[index],
                     worldZ, xsIntToFloat(rotations[index]), owners[index]);

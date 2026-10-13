@@ -70,14 +70,37 @@ void preModifyPlayerData(){
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectLifespan, 90, cXSRelativityAssign);
 
     // Gaia Only
-    trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
-    // trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall), 0, cXSProtoEffectArmorHack, 0.5, cXSRelativityAssign);
-    // trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall), 0, cXSProtoEffectArmorCrush, 0.05, cXSRelativityAssign);
-    g_OnCreationListener.register(0, defaultcUnitTypeWall, false, [](int unitId = -1) -> void {
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
+    // trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectArmorHack, 0.5, cXSRelativityAssign);
+    // trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectArmorCrush, 0.05, cXSRelativityAssign);
+    g_OnCreationListener.register(0, cDefaultcUnitTypeWall, false, [](int unitId = -1) -> void {
             selectSingle(unitId);
             trUnitSetScale(1.35, 0.75, 1.35);
-            trUnitSetShading(cShaderBurning, xsRandFloat(50.0, 100.0));
+            trUnitSetShading(cShaderBurning, xsRandFloat(75.0, 100.0));
+        }
+    );
+
+    g_OnCreationListener.register(0, cUnitTypeCocoon, false, [](int unitId = -1) -> void {
+            vector v = kbUnitGetTruePosition(unitId);
+            float jitterMax = 3.0;
+            int maxNumberOfSpiders = xsRandInt(1, 3);
+            for (int i = 0; i < maxNumberOfSpiders; i++){
+                float jitterX = xsRandFloat(0, jitterMax);
+                float jitterZ = xsRandFloat(0, jitterMax);
+                trUnitCreate(kbProtoUnitGetName(cUnitTypeSpiderEgg), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
+            }
+        }
+    );
+
+    // Placeholder decorations
+    g_OnCreationListener.register(0, cUnitTypeCinematicBlockArea, true, [](int unitId = -1) -> void {
+            vector v = kbUnitGetTruePosition(unitId);
+            float jitterMax = 3.0;
+            float jitterX = xsRandFloat(0, jitterMax);
+            float jitterZ = xsRandFloat(0, jitterMax);
+            int unitType = g_placeHolderUnitTypes[xsRandInt(0, g_placeHolderUnitTypes.size()-1)];
+            trUnitCreate(kbProtoUnitGetName(unitType), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
         }
     );
 
@@ -106,11 +129,11 @@ void preModifyPlayerData(){
         }
     );
 
-    trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
-    // trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall2), 0, cXSProtoEffectArmorHack, 0.5, cXSRelativityAssign);
-    // trModifyProtounitData(kbProtoUnitGetName(defaultcUnitTypeWall2), 0, cXSProtoEffectArmorCrush, 0.05, cXSRelativityAssign);
-    g_OnCreationListener.register(0, defaultcUnitTypeWall2, false, [](int unitId = -1) -> void {
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
+    // trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectArmorHack, 0.5, cXSRelativityAssign);
+    // trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectArmorCrush, 0.05, cXSRelativityAssign);
+    g_OnCreationListener.register(0, cDefaultcUnitTypeWall2, false, [](int unitId = -1) -> void {
             selectSingle(unitId);
             trUnitSetScale(1.0, 0.8, 1.0);
             trUnitSetShading(cShaderBurning, xsRandFloat(50.0, 100.0));

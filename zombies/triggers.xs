@@ -35,6 +35,7 @@ void startMapGeneration(){
             if (g_bspTileGenerationComplete == false) return true;
         }
 
+        //placeBSPHallwayDebugMarkers(g_generatedMap);
         finishGameMapGeneration();
         return false;
     });
