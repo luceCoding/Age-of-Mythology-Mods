@@ -5,6 +5,7 @@ const int cDungeonGraveyardTileSetWeight = 5;
 const float cDungeonTileSize = 9.0;
 const int cDungeonConnectivityAttempts = 1000;
 const int cDungeonMinimumReachablePercent = 80;
+const int cBSPRoomWFCAttempts = 20;
 
 Tile[] createDungeonTileTypes() {
     return createDungeonDefaultTileTypes();
@@ -50,20 +51,21 @@ int chooseDungeonRoomTileSet() {
     return -1;
 }
 
-void placeDungeonTile(ref Tile tile, float tileX = 0.0, float tileZ = 0.0,
-                      float height = 0.0) {
+void writeTileToMap(ref Map map, ref Tile tile,
+                    int startX = 0, int startZ = 0) {
     int headingRotation = (4 - tile.rotation) % 4;
-    float heading = headingRotation * 90.0;
+    int heading = headingRotation * 90;
     for (int position = 0; position < 9; position = position + 1) {
         int unitType = tile.getUnitAt(position);
-        if (unitType < 0) continue;
-        int owner = tile.getPlayerUnitAt(position);
-
         int column = position % 3;
         int row = position / 3;
-        float x = tileX + 1.5 + (column * 3.0);
-        float z = tileZ + 1.5 + (row * 3.0);
-        int unitId = trUnitCreateForced(kbProtoUnitGetName(unitType), x, height, z, heading, owner);
+        int x = startX + column;
+        int z = startZ + row;
+        if (map.isReservedAt(x, z)) continue;
+
+        map.setPassableAt(x, z, tile.isPassableAt(position));
+        if (unitType < 0) continue;
+        map.setUnitAt(x, z, unitType, heading, tile.getPlayerUnitAt(position));
     }
 }
 
@@ -201,9 +203,9 @@ Tile createDungeonSolidWallTile() {
     return solidWallTile;
 }
 
-void reserveBSPSpawnPair(ref int[] tileMap, int tilesWide = 0,
-                         int tilesHigh = 0, int startGridX = 0,
-                         int startGridZ = 0) {
+void reserveMapSpawnPair(ref int[] tileMap, ref Map map,
+                         int tilesWide = 0, int tilesHigh = 0,
+                         int startGridX = 0, int startGridZ = 0) {
     bool horizontalPair = tilesWide >= 2;
     if (tilesWide < 2) horizontalPair = false;
     else if (tilesHigh >= 2) horizontalPair = xsRandInt(0, 1) == 0;
@@ -221,23 +223,27 @@ void reserveBSPSpawnPair(ref int[] tileMap, int tilesWide = 0,
         spawnTileY = xsRandInt(0, tilesHigh - 1);
         firstSpawnTileIndex = (spawnTileY * tilesWide) + spawnTileX;
         secondSpawnTileIndex = firstSpawnTileIndex + 1;
-        zombieWorldX = xsIntToFloat(startGridX + (spawnTileX * 3))
-            * cBSPCellSpacing + 4.5;
-        humanWorldX = zombieWorldX + 9.0;
-        zombieWorldZ = xsIntToFloat(startGridZ + (spawnTileY * 3))
-            * cBSPCellSpacing + 4.5;
+        zombieWorldX = map.originX
+            + (xsIntToFloat(startGridX + (spawnTileX * 3)) * map.cellSpacing)
+            + (map.cellSpacing * 1.5);
+        humanWorldX = zombieWorldX + (map.cellSpacing * 3.0);
+        zombieWorldZ = map.originZ
+            + (xsIntToFloat(startGridZ + (spawnTileY * 3)) * map.cellSpacing)
+            + (map.cellSpacing * 1.5);
         humanWorldZ = zombieWorldZ;
     } else {
         spawnTileX = xsRandInt(0, tilesWide - 1);
         spawnTileY = xsRandInt(0, tilesHigh - 2);
         firstSpawnTileIndex = (spawnTileY * tilesWide) + spawnTileX;
         secondSpawnTileIndex = firstSpawnTileIndex + tilesWide;
-        zombieWorldX = xsIntToFloat(startGridX + (spawnTileX * 3))
-            * cBSPCellSpacing + 4.5;
+        zombieWorldX = map.originX
+            + (xsIntToFloat(startGridX + (spawnTileX * 3)) * map.cellSpacing)
+            + (map.cellSpacing * 1.5);
         humanWorldX = zombieWorldX;
-        zombieWorldZ = xsIntToFloat(startGridZ + (spawnTileY * 3))
-            * cBSPCellSpacing + 4.5;
-        humanWorldZ = zombieWorldZ + 9.0;
+        zombieWorldZ = map.originZ
+            + (xsIntToFloat(startGridZ + (spawnTileY * 3)) * map.cellSpacing)
+            + (map.cellSpacing * 1.5);
+        humanWorldZ = zombieWorldZ + (map.cellSpacing * 3.0);
     }
 
     tileMap[firstSpawnTileIndex] = 0;
@@ -248,46 +254,23 @@ void reserveBSPSpawnPair(ref int[] tileMap, int tilesWide = 0,
         humanWorldX, configMapBaseHeight, humanWorldZ);
 }
 
-void placeBSPRoomTile(ref Tile tile, ref bool[] hallwayCells,
-                      int startGridX = 0, int startGridZ = 0,
-                      float height = 0.0, int gridWidth = 0) {
-    int headingRotation = (4 - tile.rotation) % 4;
-    float heading = headingRotation * 90.0;
-    for (int position = 0; position < 9; position = position + 1) {
-        int unitType = tile.getUnitAt(position);
-        if (unitType < 0) continue;
-
-        int column = position % 3;
-        int row = position / 3;
-        int gridX = startGridX + column;
-        int gridZ = startGridZ + row;
-        int gridIndex = (gridZ * gridWidth) + gridX;
-        if (hallwayCells[gridIndex]) continue;
-
-        int owner = tile.getPlayerUnitAt(position);
-        float worldX = xsIntToFloat(gridX) * cBSPCellSpacing;
-        float worldZ = xsIntToFloat(gridZ) * cBSPCellSpacing;
-        trUnitCreateForced(
-            kbProtoUnitGetName(unitType), worldX + 1.5, height,
-            worldZ + 1.5, heading, owner);
-    }
-}
-
-bool generateBSPRoomLayout(ref Cell cell, ref bool[] hallwayCells,
-                           ref Tile[] tileTypes, ref Tile[] validationTileTypes,
-                           int solidWallTileIndex = -1,
-                           int gridWidth = 0,
-                           bool reserveSpawnArea = false) {
-    int roomWidth = cell.roomRight - cell.roomLeft;
-    int roomHeight = cell.roomBottom - cell.roomTop;
+bool generateRoomLayout(ref Map map,
+                        ref Tile[] tileTypes, ref Tile[] validationTileTypes,
+                        int roomLeft = 0, int roomTop = 0,
+                        int roomRight = 0, int roomBottom = 0,
+                        int roomCenterX = 0, int roomCenterZ = 0,
+                        int solidWallTileIndex = -1,
+                        bool reserveSpawnArea = false) {
+    int roomWidth = roomRight - roomLeft;
+    int roomHeight = roomBottom - roomTop;
     int tilesWide = roomWidth / 3;
     int tilesHigh = roomHeight / 3;
     if (tilesWide <= 0 || tilesHigh <= 0) return false;
 
     int coveredWidth = tilesWide * 3;
     int coveredHeight = tilesHigh * 3;
-    int startGridX = cell.roomLeft + ((roomWidth - coveredWidth) / 2);
-    int startGridZ = cell.roomTop + ((roomHeight - coveredHeight) / 2);
+    int startGridX = roomLeft + ((roomWidth - coveredWidth) / 2);
+    int startGridZ = roomTop + ((roomHeight - coveredHeight) / 2);
 
     WaveFunctionCollapse solver;
     if (solver.configure(tilesWide, tilesHigh, tileTypes) == false) return false;
@@ -305,8 +288,8 @@ bool generateBSPRoomLayout(ref Cell cell, ref bool[] hallwayCells,
             }
         }
 
-        int centerX = (cell.roomX - startGridX) / 3;
-        int centerY = (cell.roomZ - startGridZ) / 3;
+        int centerX = (roomCenterX - startGridX) / 3;
+        int centerY = (roomCenterZ - startGridZ) / 3;
         if (centerX < 0) centerX = 0;
         if (centerX >= tilesWide) centerX = tilesWide - 1;
         if (centerY < 0) centerY = 0;
@@ -330,8 +313,8 @@ bool generateBSPRoomLayout(ref Cell cell, ref bool[] hallwayCells,
     }
 
     if (reserveSpawnArea) {
-        reserveBSPSpawnPair(
-            tileMap, tilesWide, tilesHigh, startGridX, startGridZ);
+        reserveMapSpawnPair(
+            tileMap, map, tilesWide, tilesHigh, startGridX, startGridZ);
     }
 
     for (int y = 0; y < tilesHigh; y = y + 1) {
@@ -345,9 +328,7 @@ bool generateBSPRoomLayout(ref Cell cell, ref bool[] hallwayCells,
             Tile tile = validationTileTypes[tileIndex];
             int tileGridX = startGridX + (x * 3);
             int tileGridZ = startGridZ + (y * 3);
-            placeBSPRoomTile(
-                tile, hallwayCells, tileGridX, tileGridZ,
-                configMapBaseHeight, gridWidth);
+            writeTileToMap(map, tile, tileGridX, tileGridZ);
         }
     }
     return true;
@@ -379,9 +360,7 @@ bool beginWaveFunctionCollapseToBSPRooms(ref Cell[] cells) {
     return true;
 }
 
-bool generateNextBSPRoomLayout(ref Cell[] cells,
-                               ref bool[] hallwayCells,
-                               int gridWidth = 0) {
+bool generateNextBSPRoomLayout(ref Cell[] cells, ref Map map) {
     if (g_bspTileGenerationComplete) return true;
 
     int roomIndex = g_bspTileRoomIndex;
@@ -397,14 +376,17 @@ bool generateNextBSPRoomLayout(ref Cell[] cells,
     int solidWallTileIndex = validationTileTypes.size();
     Tile solidWallTile = createDungeonSolidWallTile();
     validationTileTypes.add(solidWallTile);
-    if (generateBSPRoomLayout(
-            cell, hallwayCells, tileTypes, validationTileTypes,
-            solidWallTileIndex, gridWidth,
+    if (generateRoomLayout(
+            map, tileTypes, validationTileTypes,
+            cell.roomLeft, cell.roomTop, cell.roomRight, cell.roomBottom,
+            cell.roomX, cell.roomZ, solidWallTileIndex,
             roomIndex == g_bspTileSpawnRoomIndex) == false) {
         errorLog("Wave-function-collapse failed for BSP room " + roomIndex + ".");
         return false;
     }
-    placeBSPRoomWalls(cell);
+    placeBSPRoomWalls(cell, map);
+    map.placeRegion(
+        cell.x, cell.z, cell.x + cell.width, cell.z + cell.height);
 
     g_bspTileRoomIndex = g_bspTileRoomIndex + 1;
     g_bspTileGenerationComplete = g_bspTileRoomIndex >= cells.size();
@@ -462,17 +444,22 @@ bool generateDungeonMap() {
 
     float offsetX = (mapWidth - (tilesWide * cDungeonTileSize)) * 0.5;
     float offsetZ = (mapHeight - (tilesHigh * cDungeonTileSize)) * 0.5;
+    Map generatedMap;
+    if (generatedMap.initialize(
+            tilesWide * 3, tilesHigh * 3, 3.0, offsetX, offsetZ,
+            configMapBaseHeight) == false) {
+        return false;
+    }
     for (int y = 0; y < tilesHigh; y = y + 1) {
         for (int x = 0; x < tilesWide; x = x + 1) {
             int mapIndex = (y * tilesWide) + x;
             int tileIndex = tileMap[mapIndex];
             if (tileIndex < 0) continue;
 
-            float tileX = offsetX + (x * cDungeonTileSize);
-            float tileZ = offsetZ + (y * cDungeonTileSize);
             Tile tile = tileTypes[tileIndex];
-            placeDungeonTile(tile, tileX, tileZ, configMapBaseHeight);
+            writeTileToMap(generatedMap, tile, x * 3, y * 3);
         }
     }
+    generatedMap.placeAll();
     return true;
 }

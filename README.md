@@ -44,6 +44,13 @@ every 500 ms. Once hallways are connected, it generates and places one room's
 tile layout and walls per tick. Player initialization waits until all rooms
 have been placed.
 
+The BSP and WFC output is stored in the shared `Map` class in
+`zombies/mapGen/map.xs`. Its cells hold unit types, heading rotations, owners,
+passability, heights, reservation flags, and integer metadata; generation
+algorithms write to this representation and `Map.placeRegion` / `Map.placeAll`
+materialize units. BSP and WFC use their own internal representations while
+remaining independent of engine unit creation.
+
 Nottud's UI Notes:
 - Need looping trigger calling system.process().
 - initialiseUiSystem() as the very first trigger.

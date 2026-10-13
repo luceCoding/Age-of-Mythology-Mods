@@ -40,6 +40,7 @@ void generate()
 
     // zombies/mapGen/sockets.xs
     // zombies/mapGen/tile.xs
+    // zombies/mapGen/map.xs
     // zombies/mapGen/waveFunctionCollapse.xs
     // zombies/mapGen/bsp.xs
     // zombies/mapGen/tiles/dungeonDefaultTile.xs

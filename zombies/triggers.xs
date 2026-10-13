@@ -7,14 +7,15 @@ int g_mapGenerationPhase = 0;
 
 void startMapGeneration(){
     preModifyPlayerData();
-    if (beginBSPMapGeneration(cBSPDefaultMaxRegions) == false) {
+    if (beginBSPMapGeneration(
+            g_generatedMap, cBSPDefaultMaxRegions) == false) {
         errorLog("BSP map generation failed.");
         return;
     }
     g_mapGenerationPhase = 0;
     highFreqScheduler.add(500, [](int iterations = 1) -> bool {
         if (g_mapGenerationPhase == 0) {
-            if (stepBSPMapGeneration() == false) {
+            if (stepBSPMapGeneration(g_generatedMap) == false) {
                 errorLog("BSP room generation failed.");
                 return false;
             }
@@ -28,7 +29,7 @@ void startMapGeneration(){
 
         if (g_bspTileGenerationComplete == false) {
             if (generateNextBSPRoomLayout(
-                    g_bspCells, g_bspHallwayCells, g_bspGridWidth) == false) {
+                    g_bspCells, g_generatedMap) == false) {
                 return false;
             }
             if (g_bspTileGenerationComplete == false) return true;

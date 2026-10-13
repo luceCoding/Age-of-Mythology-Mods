@@ -8,27 +8,24 @@ const int cBSPDefaultMaxRegions = configMapTileX / 4;
 const int cBSPMaxHallwaysPerRoom = 4;
 const int cBSPMaxRoomCenterOffset = cBSPMinimumLeafSize / 2;
 const int cBSPMapEdgePadding = 0;
-const int cBSPRoomWFCAttempts = 20;
+const int cBSPMapDataFloor = 1;
+const int cBSPMapDataHallway = 2;
 
-void carveBSPFloorCell(ref bool[] floors, int gridWidth = 0,
-                       int gridHeight = 0, int x = 0, int z = 0) {
-    if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight) return;
-    int floorIndex = (z * gridWidth) + x;
-    floors[floorIndex] = true;
+void carveBSPFloorCell(ref Map map, int x = 0, int z = 0) {
+    map.setPassableAt(x, z, true);
+    map.setDataAt(x, z, cBSPMapDataFloor);
 }
 
-void carveBSPHallwayFloorCell(ref bool[] floors, ref bool[] hallwayCells,
-                              int gridWidth = 0, int gridHeight = 0,
-                              int x = 0, int z = 0) {
-    if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight) return;
-    int cellIndex = (z * gridWidth) + x;
-    floors[cellIndex] = true;
-    hallwayCells[cellIndex] = true;
+void carveBSPHallwayFloorCell(ref Map map, int x = 0, int z = 0) {
+    int cellIndex = map.getCellIndex(x, z);
+    if (cellIndex < 0) return;
+    map.setPassableAt(x, z, true);
+    map.setDataAt(x, z, cBSPMapDataHallway);
+    map.setReservedAt(x, z, true);
 }
 
-void carveBSPHallwaySegment(ref bool[] floors, ref bool[] hallwayCells,
-                            int gridWidth = 0,
-                            int gridHeight = 0, int startX = 0, int startZ = 0,
+void carveBSPHallwaySegment(ref Map map,
+                            int startX = 0, int startZ = 0,
                             int endX = 0, int endZ = 0, bool horizontal = true,
                             int corridorWidth = cBSPMinimumCorridorWidth) {
     int minimumOffset = -(corridorWidth / 2);
@@ -44,8 +41,7 @@ void carveBSPHallwaySegment(ref bool[] floors, ref bool[] hallwayCells,
         for (int x = lowX; x <= highX; x = x + 1) {
             for (int offset = minimumOffset;
                  offset <= maximumOffset; offset = offset + 1) {
-                carveBSPHallwayFloorCell(
-                    floors, hallwayCells, gridWidth, gridHeight, x, startZ + offset);
+                carveBSPHallwayFloorCell(map, x, startZ + offset);
             }
         }
     } else {
@@ -59,8 +55,7 @@ void carveBSPHallwaySegment(ref bool[] floors, ref bool[] hallwayCells,
         for (int z = lowZ; z <= highZ; z = z + 1) {
             for (int offset = minimumOffset;
                  offset <= maximumOffset; offset = offset + 1) {
-                carveBSPHallwayFloorCell(
-                    floors, hallwayCells, gridWidth, gridHeight, startX + offset, z);
+                carveBSPHallwayFloorCell(map, startX + offset, z);
             }
         }
     }
@@ -88,9 +83,6 @@ class Cell {
 };
 
 Cell[] g_bspCells = default;
-bool[] g_bspFloorCells = default;
-bool[] g_bspHallwayCells = default;
-bool[] g_bspHallwayDebugCells = default;
 int g_bspGridWidth = 0;
 int g_bspGridHeight = 0;
 
@@ -102,21 +94,20 @@ class Hallway {
     int width = cBSPMinimumCorridorWidth;
     bool horizontalFirst = true;
 
-    void carve(ref bool[] floors, ref bool[] hallwayCells,
-               int gridWidth = 0, int gridHeight = 0) {
+    void carve(ref Map map) {
         if (horizontalFirst) {
             carveBSPHallwaySegment(
-                floors, hallwayCells, gridWidth, gridHeight,
+                map,
                 startX, startZ, endX, startZ, true, width);
             carveBSPHallwaySegment(
-                floors, hallwayCells, gridWidth, gridHeight,
+                map,
                 endX, startZ, endX, endZ, false, width);
         } else {
             carveBSPHallwaySegment(
-                floors, hallwayCells, gridWidth, gridHeight,
+                map,
                 startX, startZ, startX, endZ, false, width);
             carveBSPHallwaySegment(
-                floors, hallwayCells, gridWidth, gridHeight,
+                map,
                 startX, endZ, endX, endZ, true, width);
         }
     }
@@ -128,9 +119,8 @@ Cell createBSPCell(int x = 0, int z = 0, int width = 0, int height = 0) {
     return cell;
 }
 
-void carveBSPHallwayBetween(ref bool[] floors, ref bool[] hallwayCells,
-                            ref Cell fromCell, ref Cell toCell,
-                            int gridWidth = 0, int gridHeight = 0) {
+void carveBSPHallwayBetween(ref Map map,
+                            ref Cell fromCell, ref Cell toCell) {
     int deltaX = toCell.roomX - fromCell.roomX;
     int deltaZ = toCell.roomZ - fromCell.roomZ;
     Hallway hallway;
@@ -175,7 +165,7 @@ void carveBSPHallwayBetween(ref bool[] floors, ref bool[] hallwayCells,
     }
     hallway.width = xsRandInt(
         cBSPMinimumCorridorWidth, cBSPMaximumCorridorWidth);
-    hallway.carve(floors, hallwayCells, gridWidth, gridHeight);
+    hallway.carve(map);
 }
 
 bool canSplitBSPCell(ref Cell cell) {
@@ -183,8 +173,7 @@ bool canSplitBSPCell(ref Cell cell) {
         || cell.height >= cBSPMinimumLeafSize * 2;
 }
 
-void carveBSPRoom(ref Cell cell, ref bool[] floors,
-                  int gridWidth = 0, int gridHeight = 0) {
+void carveBSPRoom(ref Cell cell, ref Map map) {
     int smallestSide = cell.width;
     if (cell.height < smallestSide) smallestSide = cell.height;
     int maximumInset = xsFloatToInt((smallestSide - 6) / 2.0);
@@ -232,60 +221,45 @@ void carveBSPRoom(ref Cell cell, ref bool[] floors,
     cell.roomZ = (roomTop + roomBottom - 1) / 2;
     for (int z = roomTop; z < roomBottom; z = z + 1) {
         for (int x = roomLeft; x < roomRight; x = x + 1) {
-            carveBSPFloorCell(floors, gridWidth, gridHeight, x, z);
+            carveBSPFloorCell(map, x, z);
         }
     }
 }
 
-void placeBSPRoomWalls(ref Cell cell) {
+void placeBSPRoomWalls(ref Cell cell, ref Map map) {
     int right = cell.x + cell.width;
     int bottom = cell.z + cell.height;
     for (int z = cell.z; z < bottom; z = z + 1) {
         for (int x = cell.x; x < right; x = x + 1) {
-            int cellIndex = (z * g_bspGridWidth) + x;
-            if (g_bspFloorCells[cellIndex]) continue;
-
-            float worldX = (xsIntToFloat(x) * cBSPCellSpacing) + 1.5;
-            float worldZ = (xsIntToFloat(z) * cBSPCellSpacing) + 1.5;
-            trUnitCreateForced(
-                kbProtoUnitGetName(defaultcUnitTypeWall),
-                worldX, configMapBaseHeight, worldZ, 0.0, 0);
+            int cellData = map.getDataAt(x, z);
+            if (cellData != cMapDataEmpty) continue;
+            map.setUnitAt(x, z, defaultcUnitTypeWall, 0, 0);
+            map.setHeightAt(x, z, configMapBaseHeight);
         }
     }
 }
 
-void placeBSPHallwayDebugMarkers(ref bool[] hallwayCells,
-                                 int gridWidth = 0, int gridHeight = 0) {
-    for (int z = 0; z < gridHeight; z = z + 1) {
-        for (int x = 0; x < gridWidth; x = x + 1) {
-            int cellIndex = (z * gridWidth) + x;
-            if (hallwayCells[cellIndex] == false) continue;
-
-            float worldX = (xsIntToFloat(x) * cBSPCellSpacing) + 1.5;
-            float worldZ = (xsIntToFloat(z) * cBSPCellSpacing) + 1.5;
-            trUnitCreateForced(
-                kbProtoUnitGetName(cUnitTypeObelisk),
-                worldX, configMapBaseHeight, worldZ, 0.0, 0);
+void placeBSPHallwayDebugMarkers(ref Map map) {
+    for (int z = 0; z < map.height; z = z + 1) {
+        for (int x = 0; x < map.width; x = x + 1) {
+            if (map.getDataAt(x, z) != cBSPMapDataHallway) continue;
+            map.setUnitAt(x, z, cUnitTypeObelisk, 0, 0);
         }
     }
 }
 
-void clearBSPHallwayCellsInsideRooms(ref bool[] hallwayCells,
-                                     ref Cell[] cells, int gridWidth = 0) {
+void clearBSPHallwayCellsInsideRooms(ref Map map, ref Cell[] cells) {
     for (int roomIndex = 0; roomIndex < cells.size();
          roomIndex = roomIndex + 1) {
         Cell cell = cells[roomIndex];
         for (int z = cell.roomTop; z < cell.roomBottom; z = z + 1) {
             for (int x = cell.roomLeft; x < cell.roomRight; x = x + 1) {
-                int cellIndex = (z * gridWidth) + x;
-                hallwayCells[cellIndex] = false;
+                if (map.getDataAt(x, z) == cBSPMapDataHallway) {
+                    map.setDataAt(x, z, cBSPMapDataFloor);
+                    map.setReservedAt(x, z, false);
+                }
             }
         }
-    }
-
-    g_bspHallwayDebugCells = new bool(hallwayCells.size(), false);
-    for (int index = 0; index < hallwayCells.size(); index = index + 1) {
-        g_bspHallwayDebugCells[index] = hallwayCells[index];
     }
 }
 
@@ -344,12 +318,10 @@ bool splitNextBSPRegion() {
     return true;
 }
 
-bool beginBSPMapGeneration(int maxRegions = cBSPDefaultMaxRegions,
+bool beginBSPMapGeneration(ref Map map,
+                           int maxRegions = cBSPDefaultMaxRegions,
                            int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
     g_bspCells = new Cell(0);
-    g_bspFloorCells = new bool(0, false);
-    g_bspHallwayCells = new bool(0, false);
-    g_bspHallwayDebugCells = new bool(0, false);
     g_bspGridWidth = 0;
     g_bspGridHeight = 0;
     g_bspGenerationComplete = false;
@@ -380,18 +352,17 @@ bool beginBSPMapGeneration(int maxRegions = cBSPDefaultMaxRegions,
     while (g_bspCells.size() < maxRegions) {
         if (splitNextBSPRegion() == false) break;
     }
-    g_bspFloorCells = new bool(
-        g_bspGridWidth * g_bspGridHeight, false);
-    g_bspHallwayCells = new bool(
-        g_bspGridWidth * g_bspGridHeight, false);
+    if (map.initialize(
+            g_bspGridWidth, g_bspGridHeight, cBSPCellSpacing,
+            0.0, 0.0, configMapBaseHeight) == false) {
+        return false;
+    }
     g_bspRoomCarveIndex = 0;
     return true;
 }
 
-bool connectBSPRooms(int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
-    int gridWidth = g_bspGridWidth;
-    int gridHeight = g_bspGridHeight;
-
+bool connectBSPRooms(ref Map map,
+                     int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
     bool[] connectedRooms = new bool(g_bspCells.size(), false);
     int[] hallwayCounts = new int(g_bspCells.size(), 0);
     bool[] connectedPairs = new bool(g_bspCells.size() * g_bspCells.size(), false);
@@ -424,9 +395,7 @@ bool connectBSPRooms(int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
         if (closestFrom < 0 || closestTo < 0) return false;
         Cell fromCell = g_bspCells[closestFrom];
         Cell toCell = g_bspCells[closestTo];
-        carveBSPHallwayBetween(
-            g_bspFloorCells, g_bspHallwayCells, fromCell, toCell,
-            gridWidth, gridHeight);
+        carveBSPHallwayBetween(map, fromCell, toCell);
         int treeFromHallwayCount = hallwayCounts[closestFrom];
         int treeToHallwayCount = hallwayCounts[closestTo];
         hallwayCounts[closestFrom] = treeFromHallwayCount + 1;
@@ -467,9 +436,7 @@ bool connectBSPRooms(int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
         if (closestFrom < 0 || closestTo < 0) break;
         Cell fromCell = g_bspCells[closestFrom];
         Cell toCell = g_bspCells[closestTo];
-        carveBSPHallwayBetween(
-            g_bspFloorCells, g_bspHallwayCells, fromCell, toCell,
-            gridWidth, gridHeight);
+        carveBSPHallwayBetween(map, fromCell, toCell);
         int extraFromHallwayCount = hallwayCounts[closestFrom];
         int extraToHallwayCount = hallwayCounts[closestTo];
         hallwayCounts[closestFrom] = extraFromHallwayCount + 1;
@@ -480,22 +447,20 @@ bool connectBSPRooms(int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
         connectedPairs[pairIndexReverse] = true;
     }
 
-    clearBSPHallwayCellsInsideRooms(
-        g_bspHallwayCells, g_bspCells, gridWidth);
+    clearBSPHallwayCellsInsideRooms(map, g_bspCells);
     return true;
 }
 
-bool stepBSPMapGeneration() {
+bool stepBSPMapGeneration(ref Map map) {
     if (g_bspGenerationComplete) return true;
 
     if (g_bspRoomCarveIndex < g_bspCells.size()) {
         Cell cell = g_bspCells[g_bspRoomCarveIndex];
-        carveBSPRoom(
-            cell, g_bspFloorCells, g_bspGridWidth, g_bspGridHeight);
+        carveBSPRoom(cell, map);
         g_bspCells[g_bspRoomCarveIndex] = cell;
         g_bspRoomCarveIndex = g_bspRoomCarveIndex + 1;
         if (g_bspRoomCarveIndex >= g_bspCells.size()) {
-            if (connectBSPRooms(g_bspMaxHallwaysPerRoom) == false) {
+            if (connectBSPRooms(map, g_bspMaxHallwaysPerRoom) == false) {
                 return false;
             }
             g_bspGenerationComplete = true;
@@ -503,18 +468,18 @@ bool stepBSPMapGeneration() {
         return true;
     }
 
-    if (connectBSPRooms(g_bspMaxHallwaysPerRoom) == false) return false;
+    if (connectBSPRooms(map, g_bspMaxHallwaysPerRoom) == false) return false;
     g_bspGenerationComplete = true;
     return true;
 }
 
-bool generateBSPMap(int maxRegions = cBSPDefaultMaxRegions,
+bool generateBSPMap(ref Map map, int maxRegions = cBSPDefaultMaxRegions,
                     int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
-    if (beginBSPMapGeneration(maxRegions, maxHallwaysPerRoom) == false) {
+    if (beginBSPMapGeneration(map, maxRegions, maxHallwaysPerRoom) == false) {
         return false;
     }
     while (g_bspGenerationComplete == false) {
-        if (stepBSPMapGeneration() == false) return false;
+        if (stepBSPMapGeneration(map) == false) return false;
     }
     return true;
 }
