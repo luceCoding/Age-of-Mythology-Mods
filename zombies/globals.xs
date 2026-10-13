@@ -2,8 +2,7 @@ const int configMapTileX = 159;
 const int configMapTileZ = 159;
 const int configMapBaseHeight = 4;
 
-const int cZombieAIPlayer = cNumberPlayers;
-const int cHumanAIPlayer = cNumberPlayers - 1;
+const int cHumanAIPlayer = cNumberPlayers;
 
 const int defaultcUnitTypeWall = cUnitTypeWallConnector;
 const int defaultcUnitTypeWall2 = cUnitTypeWallShort;
@@ -15,6 +14,7 @@ int g_humanUnitCount = 0;
 
 int[] g_humanInteractableTypes = default;
 int[] g_humanUnitTypes = default;
+int[] g_zombieUnitTypes = default;
 
 void initializeGlobals(){
     // Lowest weight for first interactable, higher for later ones to make them rarer
@@ -25,7 +25,7 @@ void initializeGlobals(){
     g_humanInteractableTypes.add(cUnitTypeDwarvenArmory);
     g_humanInteractableTypes.add(cUnitTypeArmory);
 
-    g_humanUnitTypes.add(cUnitTypeBrokk);
-    g_humanUnitTypes.add(cUnitTypeEitri);
     g_humanUnitTypes.add(cUnitTypeVillagerAtlanteanHero);
+
+    g_zombieUnitTypes.add(cUnitTypeMictlantecuhtli);
 }

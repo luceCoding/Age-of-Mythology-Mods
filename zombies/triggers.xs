@@ -5,7 +5,7 @@ void finishGameMapGeneration() {
 
 int g_mapGenerationPhase = 0;
 
-void startGame(){
+void startMapGeneration(){
     preModifyPlayerData();
     if (beginBSPMapGeneration(cBSPDefaultMaxRegions) == false) {
         errorLog("BSP map generation failed.");
@@ -39,6 +39,10 @@ void startGame(){
     });
 }
 
+void startGame() {
+    startRoleVote();
+}
+
 rule FIRE_FIRST_IMMEDIATELY_TRIGGER
 runImmediately
 highFrequency
@@ -53,10 +57,10 @@ active
     trDisablePopCapNotifications(true);
     trDisableConquestCheck(true);
     trSetCommunityObjectivesVisibility(false);
+    initialiseUiSystems(false);
+    performProportionCalculation();
     initializeGlobals();
     initializeSocketAdjacencyTable();
-    //initialiseUiSystems(false);
-    //performProportionCalculation();
     g_OnCreationListener.init();
     //g_AttachmentManager.init();
     highFreqScheduler.add(50, [](int iterations = 1) -> bool {
@@ -66,10 +70,12 @@ active
     xsDisableSelf();
 }
 
-rule FIRE_SECOND_TRIGGER
+rule START_MAP_AFTER_ROLE_VOTE
 highFrequency
 active
 {
-    startGame();
-    xsDisableSelf();
+    if (g_roleVoteComplete) {
+        startMapGeneration();
+        xsDisableSelf();
+    }
 }

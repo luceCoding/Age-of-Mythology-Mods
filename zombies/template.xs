@@ -10,6 +10,8 @@ const int configMapBaseHeight = 4;
 void generate()
 {
     // zombies/globals.xs
+    // zombies/mutables.xs
+    // zombies/players/teams.xs
 
     // common/utils.xs
     // common/logs.xs
@@ -24,6 +26,18 @@ void generate()
     createTypedScheduler("lowFreqScheduler", buildStringTypeArray(), 1000, 256);
     createTypedScheduler("lowFreqSchedulerWithIntInt", buildStringTypeArray("Int", "Int"), 1000, 256);
 
+    rmTriggerAddScriptLine("class IntUnitDeletionTracker {");
+        rmTriggerAddScriptLine("int[] controlUnits = default;");
+        rmTriggerAddScriptLine("int[] units = default;");
+    rmTriggerAddScriptLine("};");
+    createTypedScheduler("highFreqSchedulerWithIntUnitDeletionTracker", buildStringTypeArray("IntUnitDeletionTracker"), 25, 2);
+
+    // common/ui/ui1.xs
+    createTypedScheduler("highFreqSchedulerWithParameters", buildStringTypeArray("Parameters"), 25, 2);
+    //// common/ui/ui2.xs
+    // common/ui/ui3.xs
+    // common/ui/ui4.xs
+
     // zombies/mapGen/sockets.xs
     // zombies/mapGen/tile.xs
     // zombies/mapGen/waveFunctionCollapse.xs
@@ -34,7 +48,7 @@ void generate()
 
     // zombies/players/humans.xs
     // zombies/players/zombies.xs
-    // zombies/players/teams.xs
+    // zombies/vote/vote.xs
 
     rmSetProgress(0.0);
 
