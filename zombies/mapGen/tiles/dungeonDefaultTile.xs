@@ -1,9 +1,10 @@
-const int cOpenTileWeight = 192;
+const int cOpenTileWeight = 256;
 const int cSingleWallTileWeight = 256;
 const int ctBoneWallTileWeight = 32;
 const int cCornerWeight = 64;
 const int cLargeOpenTileWeight = 16;
 const int cCrossTileWeight = 32;
+const int cInteractableWeightMultiplier = 2;
 
 Tile[] createDungeonDefaultTileTypes() {
     Tile[] tileTypes = new Tile(0);
@@ -74,8 +75,8 @@ Tile[] createDungeonDefaultTileTypes() {
             false, false, false,
             true, true, true);
         singleWallTile.setSocketsAndWeight(
-            cSocketOpen, cSocketTypeWallOrEntrance,
-            cSocketOpen, cSocketTypeWallOrEntrance, cSingleWallTileWeight);
+            cSocketOpen, cSocketWall,
+            cSocketOpen, cSocketWall, cSingleWallTileWeight);
         tileTypes.add(singleWallTile);
         Tile rotatedTile = rotateMapTileClockwise(singleWallTile);
         tileTypes.add(rotatedTile);
@@ -92,8 +93,8 @@ Tile[] createDungeonDefaultTileTypes() {
             false, false, false,
             true, false, true);
         tBoneWallTile.setSocketsAndWeight(
-            cSocketOpen, cSocketTypeWallOrEntrance,
-            cSocketTypeWallOrEntrance, cSocketTypeWallOrEntrance, ctBoneWallTileWeight);
+            cSocketOpen, cSocketWall,
+            cSocketWall, cSocketWall, ctBoneWallTileWeight);
         tileTypes.add(tBoneWallTile);
         for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
             Tile rotatedTile = rotateMapTileClockwise(tBoneWallTile);
@@ -113,8 +114,8 @@ Tile[] createDungeonDefaultTileTypes() {
             true, false, false,
             true, false, true);
         cornerTile.setSocketsAndWeight(
-            cSocketOpen, cSocketTypeWallOrEntrance,
-            cSocketTypeWallOrEntrance, cSocketOpen, cCornerWeight);
+            cSocketOpen, cSocketWall,
+            cSocketWall, cSocketOpen, cCornerWeight);
         tileTypes.add(cornerTile);
         for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
             Tile rotatedTile = rotateMapTileClockwise(cornerTile);
@@ -150,8 +151,8 @@ Tile[] createDungeonDefaultTileTypes() {
             false, false, false,
             true, false, true);
         crossTile.setSocketsAndWeight(
-            cSocketTypeWallOrEntrance, cSocketTypeWallOrEntrance,
-            cSocketTypeWallOrEntrance, cSocketTypeWallOrEntrance, cCrossTileWeight);
+            cSocketWall, cSocketWall,
+            cSocketWall, cSocketWall, cCrossTileWeight);
         tileTypes.add(crossTile);
     }
 
@@ -169,7 +170,7 @@ Tile[] createDungeonDefaultTileTypes() {
                 true, true, true);
             interactableTile.setSocketsAndWeight(
                 cSocketInteractable, cSocketInteractable,
-                cSocketInteractable, cSocketInteractable, i + 1);
+                cSocketInteractable, cSocketInteractable, (i + 1) * cInteractableWeightMultiplier);
             interactableTile.setPlayerUnit(4, cHumanAIPlayer);
             tileTypes.add(interactableTile);
             for (int rotation = 0; rotation < 3; rotation = rotation + 1) {

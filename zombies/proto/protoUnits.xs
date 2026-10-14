@@ -16,13 +16,7 @@ void initializeBuildingForGarrison(int p = 0, int cUnitTypeBuildingType = -1){
 void preModifyPlayerData(){
 
     // All players
-    for (int p = 0; p <= cNumberPlayers; p++){
-        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeTartarianGate), "Collideable", false);
-        g_OnCreationListener.register(p, cUnitTypeTartarianGate, false, [](int unitId = -1) -> void {
-                selectSingle(unitId);
-                trUnitSetScale(0.5, 1.0, 0.5);
-            }
-        );
+    for (int p = 1; p <= cNumberPlayers; p++){
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMinion), p, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
         trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeWallConnector), kbUnitTypeGetName(cUnitTypeLogicalTypeHandUnitsAutoAttack), true);
         trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeWallConnector), kbUnitTypeGetName(cUnitTypeLogicalTypeRangedUnitsAutoAttack), true);
@@ -67,7 +61,7 @@ void preModifyPlayerData(){
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeWallJail), kbUnitTypeGetName(cUnitTypeLogicalTypeHandUnitsAutoAttack), true);
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeWallJail), kbUnitTypeGetName(cUnitTypeLogicalTypeRangedUnitsAutoAttack), true);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectLifespan, 90, cXSRelativityAssign);
+    //trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectLifespan, 90, cXSRelativityAssign);
 
     // Gaia Only
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
@@ -78,6 +72,41 @@ void preModifyPlayerData(){
             selectSingle(unitId);
             trUnitSetScale(1.35, 0.75, 1.35);
             trUnitSetShading(cShaderBurning, xsRandFloat(75.0, 100.0));
+        }
+    );
+
+    g_OnCreationListener.register(0, cUnitTypeYanFeifengTomb, false, [](int unitId = -1) -> void {
+            vector v = kbUnitGetTruePosition(unitId);
+            g_bspZombieSpawnLocation = v;
+            g_bspHumanSpawnLocation = v;
+        }
+    );
+
+    g_OnCreationListener.register(0, cUnitTypeObeliskProp, false, [](int unitId = -1) -> void {
+            selectSingle(unitId);
+            trUnitSetVariation(0);
+            vector v = kbUnitGetTruePosition(unitId);
+            int nJars = xsRandInt(1, 3);
+            for (int i = 0; i < nJars; i++){
+                float jitterX = xsRandFloat(1, 3.0);
+                float jitterZ = xsRandFloat(1, 3.0);
+                trUnitCreate(kbProtoUnitGetName(cUnitTypeCanopicJars), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
+            }
+        }
+    );
+
+    g_OnCreationListener.register(0, cUnitTypeOsirisPieceBox, false, [](int unitId = -1) -> void {
+            selectSingle(unitId);
+            vector v = kbUnitGetTruePosition(unitId);
+            int nJars = xsRandInt(0, 3);
+            for (int i = 0; i < nJars; i++){
+                float jitterX = xsRandFloat(1, 3.0);
+                float jitterZ = xsRandFloat(1, 3.0);
+                trUnitCreate(kbProtoUnitGetName(cUnitTypeCanopicJars), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
+            }
+            if (xsRandInt(0, 5) == 0) { trUnitSetAnimationPath("Opening","spc\buildings\props\osiris_piece_box\anim\osiris_piece_box_opening",false,-1,false); }
+            if (xsRandInt(0, 3) == 0) { trUnitSetHeading(xsRandInt(0, 30)); }
+            if (xsRandInt(0, 5) == 0) { trUnitDestroy(); }
         }
     );
 

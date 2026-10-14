@@ -1,6 +1,11 @@
-const int numberOfTileSets = 1;
+const int numberOfTileSets = 2;
 const int cDungeonDefaultRoomTileSetWeight = 100;
 const int cDungeonGraveyardTileSetWeight = 5;
+
+const int cDungeonDefaultRoomTileSetMinimumRooms = 0;
+const int cDungeonTombTileSetMinimumRooms = 1;
+const int cDungeonDefaultRoomTileSetMaximumRooms = cMaxInt;
+const int cDungeonTombTileSetMaximumRooms = 1;
 
 const float cDungeonTileSize = 9.0;
 const int cDungeonConnectivityAttempts = 1000;
@@ -21,21 +26,36 @@ int getDungeonRoomTileSetWeight(int tileSetIndex = 0) {
     return 0;
 }
 
+int getDungeonRoomTileSetMinimumRooms(int tileSetIndex = 0) {
+    if (tileSetIndex == 0) return cDungeonDefaultRoomTileSetMinimumRooms;
+    if (tileSetIndex == 1) return cDungeonTombTileSetMinimumRooms;
+    return 0;
+}
+
+int getDungeonRoomTileSetMaximumRooms(int tileSetIndex = 0) {
+    if (tileSetIndex == 0) return cDungeonDefaultRoomTileSetMaximumRooms;
+    if (tileSetIndex == 1) return cDungeonTombTileSetMaximumRooms;
+    return 0;
+}
+
 Tile[] createDungeonRoomTileSet(int tileSetIndex = 0) {
     if (tileSetIndex == 0) return createDungeonDefaultTileTypes();
-    if (tileSetIndex == 1) return createGraveyardTileTypes();
+    if (tileSetIndex == 1) return createTombTileTypes();
     return new Tile(0);
 }
 
-int chooseDungeonRoomTileSet() {
+int chooseDungeonRoomTileSet(ref int[] roomCounts) {
     int totalWeight = 0;
     for (int tileSetIndex = 0; tileSetIndex < getDungeonRoomTileSetCount();
          tileSetIndex = tileSetIndex + 1) {
         int weight = getDungeonRoomTileSetWeight(tileSetIndex);
-        if (weight > 0) totalWeight = totalWeight + weight;
+        int maximumRooms = getDungeonRoomTileSetMaximumRooms(tileSetIndex);
+        if (weight > 0 && roomCounts[tileSetIndex] < maximumRooms) {
+            totalWeight = totalWeight + weight;
+        }
     }
     if (totalWeight <= 0) {
-        errorLog("No dungeon room tile sets have a positive weight.");
+        errorLog("No dungeon tile sets have remaining room capacity and positive weight.");
         return -1;
     }
 
@@ -44,7 +64,8 @@ int chooseDungeonRoomTileSet() {
     for (int tileSetIndex = 0; tileSetIndex < getDungeonRoomTileSetCount();
          tileSetIndex = tileSetIndex + 1) {
         int weight = getDungeonRoomTileSetWeight(tileSetIndex);
-        if (weight <= 0) continue;
+        int maximumRooms = getDungeonRoomTileSetMaximumRooms(tileSetIndex);
+        if (weight <= 0 || roomCounts[tileSetIndex] >= maximumRooms) continue;
         cumulativeWeight = cumulativeWeight + weight;
         if (roll <= cumulativeWeight) return tileSetIndex;
     }
@@ -52,7 +73,8 @@ int chooseDungeonRoomTileSet() {
 }
 
 void writeTileToMap(ref Map map, ref Tile tile,
-                    int startX = 0, int startZ = 0) {
+                    int startX = 0, int startZ = 0,
+                    bool placeUnitsOnReservedCells = false) {
     int headingRotation = (4 - tile.rotation) % 4;
     int heading = headingRotation * 90;
     for (int position = 0; position < 9; position = position + 1) {
@@ -61,9 +83,15 @@ void writeTileToMap(ref Map map, ref Tile tile,
         int row = position / 3;
         int x = startX + column;
         int z = startZ + row;
-        if (map.isReservedAt(x, z)) continue;
+        bool isReserved = map.isReservedAt(x, z);
+        if (isReserved
+            && (placeUnitsOnReservedCells == false || unitType < 0)) {
+            continue;
+        }
 
-        map.setPassableAt(x, z, tile.isPassableAt(position));
+        if (isReserved == false) {
+            map.setPassableAt(x, z, tile.isPassableAt(position));
+        }
         if (unitType < 0) continue;
         map.setUnitAt(x, z, unitType, heading, tile.getPlayerUnitAt(position));
     }
@@ -212,55 +240,46 @@ Tile createDungeonSolidWallTile() {
     return solidWallTile;
 }
 
-void reserveMapSpawnPair(ref int[] tileMap, ref Map map,
-                         int tilesWide = 0, int tilesHigh = 0,
-                         int startGridX = 0, int startGridZ = 0) {
-    bool horizontalPair = tilesWide >= 2;
-    if (tilesWide < 2) horizontalPair = false;
-    else if (tilesHigh >= 2) horizontalPair = xsRandInt(0, 1) == 0;
-
-    int spawnTileX = 0;
-    int spawnTileY = 0;
-    int firstSpawnTileIndex = -1;
-    int secondSpawnTileIndex = -1;
-    float zombieWorldX = 0.0;
-    float zombieWorldZ = 0.0;
-    float humanWorldX = 0.0;
-    float humanWorldZ = 0.0;
-    if (horizontalPair) {
-        spawnTileX = xsRandInt(0, tilesWide - 2);
-        spawnTileY = xsRandInt(0, tilesHigh - 1);
-        firstSpawnTileIndex = (spawnTileY * tilesWide) + spawnTileX;
-        secondSpawnTileIndex = firstSpawnTileIndex + 1;
-        zombieWorldX = map.originX
-            + (xsIntToFloat(startGridX + (spawnTileX * 3)) * map.cellSpacing)
-            + (map.cellSpacing * 1.5);
-        humanWorldX = zombieWorldX + (map.cellSpacing * 3.0);
-        zombieWorldZ = map.originZ
-            + (xsIntToFloat(startGridZ + (spawnTileY * 3)) * map.cellSpacing)
-            + (map.cellSpacing * 1.5);
-        humanWorldZ = zombieWorldZ;
-    } else {
-        spawnTileX = xsRandInt(0, tilesWide - 1);
-        spawnTileY = xsRandInt(0, tilesHigh - 2);
-        firstSpawnTileIndex = (spawnTileY * tilesWide) + spawnTileX;
-        secondSpawnTileIndex = firstSpawnTileIndex + tilesWide;
-        zombieWorldX = map.originX
-            + (xsIntToFloat(startGridX + (spawnTileX * 3)) * map.cellSpacing)
-            + (map.cellSpacing * 1.5);
-        humanWorldX = zombieWorldX;
-        zombieWorldZ = map.originZ
-            + (xsIntToFloat(startGridZ + (spawnTileY * 3)) * map.cellSpacing)
-            + (map.cellSpacing * 1.5);
-        humanWorldZ = zombieWorldZ + (map.cellSpacing * 3.0);
+int getRoomCenterTileIndex(ref Tile[] tileTypes) {
+    int centerTileIndex = 0;
+    bool foundCenterTile = false;
+    for (int tileIndex = 0; tileIndex < tileTypes.size();
+         tileIndex = tileIndex + 1) {
+        Tile tile = tileTypes[tileIndex];
+        if (tile.forceAtRoomCenter == false) continue;
+        if (foundCenterTile) {
+            errorLog("A room tile set cannot have multiple center-forced tiles.");
+            return -1;
+        }
+        centerTileIndex = tileIndex;
+        foundCenterTile = true;
     }
+    return centerTileIndex;
+}
 
-    tileMap[firstSpawnTileIndex] = 0;
-    tileMap[secondSpawnTileIndex] = 0;
-    g_bspZombieSpawnLocation = vector(
-        zombieWorldX, configMapBaseHeight, zombieWorldZ);
-    g_bspHumanSpawnLocation = vector(
-        humanWorldX, configMapBaseHeight, humanWorldZ);
+void removeDuplicateRoomTiles(ref int[] tileMap, ref Tile[] tileTypes,
+                              int centerMapIndex = -1) {
+    for (int tileIndex = 0; tileIndex < tileTypes.size();
+         tileIndex = tileIndex + 1) {
+        Tile tile = tileTypes[tileIndex];
+        if (tile.onlyOncePerRoom == false) continue;
+
+        int keptMapIndex = -1;
+        if (centerMapIndex >= 0 && tileMap[centerMapIndex] == tileIndex) {
+            keptMapIndex = centerMapIndex;
+        }
+        for (int mapIndex = 0; mapIndex < tileMap.size();
+             mapIndex = mapIndex + 1) {
+            if (mapIndex == keptMapIndex || tileMap[mapIndex] != tileIndex) {
+                continue;
+            }
+            if (keptMapIndex < 0) {
+                keptMapIndex = mapIndex;
+            } else {
+                tileMap[mapIndex] = 0;
+            }
+        }
+    }
 }
 
 bool generateRoomLayout(ref Map map,
@@ -268,21 +287,33 @@ bool generateRoomLayout(ref Map map,
                         int roomLeft = 0, int roomTop = 0,
                         int roomRight = 0, int roomBottom = 0,
                         int roomCenterX = 0, int roomCenterZ = 0,
-                        int solidWallTileIndex = -1,
-                        bool reserveSpawnArea = false) {
+                        int solidWallTileIndex = -1) {
     int roomWidth = roomRight - roomLeft;
     int roomHeight = roomBottom - roomTop;
     int tilesWide = roomWidth / 3;
     int tilesHigh = roomHeight / 3;
     if (tilesWide <= 0 || tilesHigh <= 0) return false;
+    int requestedCenterTileIndex = getRoomCenterTileIndex(tileTypes);
+    if (requestedCenterTileIndex < 0) return false;
 
     int coveredWidth = tilesWide * 3;
     int coveredHeight = tilesHigh * 3;
     int startGridX = roomLeft + ((roomWidth - coveredWidth) / 2);
     int startGridZ = roomTop + ((roomHeight - coveredHeight) / 2);
+    int centerX = (roomCenterX - startGridX) / 3;
+    int centerY = (roomCenterZ - startGridZ) / 3;
+    if (centerX < 0) centerX = 0;
+    if (centerX >= tilesWide) centerX = tilesWide - 1;
+    if (centerY < 0) centerY = 0;
+    if (centerY >= tilesHigh) centerY = tilesHigh - 1;
+    int centerMapIndex = (centerY * tilesWide) + centerX;
 
     WaveFunctionCollapse solver;
-    if (solver.configure(tilesWide, tilesHigh, tileTypes) == false) return false;
+    if (solver.configure(
+            tilesWide, tilesHigh, tileTypes, cSocketRoomEdge,
+            centerMapIndex, requestedCenterTileIndex) == false) {
+        return false;
+    }
     int[] tileMap = new int(tilesWide * tilesHigh, -1);
     bool layoutFound = false;
 
@@ -303,18 +334,13 @@ bool generateRoomLayout(ref Map map,
             }
         }
 
-        int centerX = (roomCenterX - startGridX) / 3;
-        int centerY = (roomCenterZ - startGridZ) / 3;
-        if (centerX < 0) centerX = 0;
-        if (centerX >= tilesWide) centerX = tilesWide - 1;
-        if (centerY < 0) centerY = 0;
-        if (centerY >= tilesHigh) centerY = tilesHigh - 1;
-        int centerMapIndex = (centerY * tilesWide) + centerX;
-        tileMap[centerMapIndex] = 0;
+        tileMap[centerMapIndex] = requestedCenterTileIndex;
+        removeDuplicateRoomTiles(tileMap, tileTypes, centerMapIndex);
 
         if (filterDungeonLayoutConnectivity(
                 tileMap, validationTileTypes,
                 tilesWide, tilesHigh, solidWallTileIndex)) {
+            if (tileMap[centerMapIndex] != requestedCenterTileIndex) continue;
             layoutFound = true;
             break;
         }
@@ -325,11 +351,15 @@ bool generateRoomLayout(ref Map map,
              mapIndex = mapIndex + 1) {
             tileMap[mapIndex] = 0;
         }
-    }
-
-    if (reserveSpawnArea) {
-        reserveMapSpawnPair(
-            tileMap, map, tilesWide, tilesHigh, startGridX, startGridZ);
+        tileMap[centerMapIndex] = requestedCenterTileIndex;
+        removeDuplicateRoomTiles(tileMap, tileTypes, centerMapIndex);
+        if (filterDungeonLayoutConnectivity(
+                tileMap, validationTileTypes,
+                tilesWide, tilesHigh, solidWallTileIndex) == false
+            || tileMap[centerMapIndex] != requestedCenterTileIndex) {
+            errorLog("Requested BSP room center tile does not preserve room connectivity.");
+            return false;
+        }
     }
 
     for (int y = 0; y < tilesHigh; y = y + 1) {
@@ -343,33 +373,81 @@ bool generateRoomLayout(ref Map map,
             Tile tile = validationTileTypes[tileIndex];
             int tileGridX = startGridX + (x * 3);
             int tileGridZ = startGridZ + (y * 3);
-            writeTileToMap(map, tile, tileGridX, tileGridZ);
+            bool isForcedCenterTile = mapIndex == centerMapIndex
+                && tile.forceAtRoomCenter;
+            writeTileToMap(
+                map, tile, tileGridX, tileGridZ, isForcedCenterTile);
         }
     }
     return true;
 }
 
 int g_bspTileRoomIndex = 0;
-int g_bspTileSpawnRoomIndex = -1;
+int[] g_bspTileSetByRoom = default;
 bool g_bspTileGenerationComplete = false;
 
 bool beginWaveFunctionCollapseToBSPRooms(ref Cell[] cells) {
-    int[] spawnRoomIndices = new int(0, -1);
-    for (int roomIndex = 0; roomIndex < cells.size();
-         roomIndex = roomIndex + 1) {
-        Cell cell = cells[roomIndex];
-        int roomWidth = (cell.roomRight - cell.roomLeft) / 3;
-        int roomHeight = (cell.roomBottom - cell.roomTop) / 3;
-        if (roomWidth >= 2 || roomHeight >= 2) {
-            spawnRoomIndices.add(roomIndex);
+    int minimumGuaranteedRooms = 0;
+    int[] roomCounts = new int(getDungeonRoomTileSetCount(), 0);
+    for (int tileSetIndex = 0;
+         tileSetIndex < getDungeonRoomTileSetCount();
+         tileSetIndex = tileSetIndex + 1) {
+        int minimumRooms = getDungeonRoomTileSetMinimumRooms(tileSetIndex);
+        int maximumRooms = getDungeonRoomTileSetMaximumRooms(tileSetIndex);
+        if (minimumRooms < 0 || maximumRooms < 0
+            || minimumRooms > maximumRooms) {
+            errorLog("Dungeon tile-set room limits must be nonnegative and minimum cannot exceed maximum.");
+            return false;
         }
+        minimumGuaranteedRooms = minimumGuaranteedRooms + minimumRooms;
     }
-    if (spawnRoomIndices.size() < 2) {
-        errorLog("Cannot choose separate human and zombie spawn rooms.");
+    if (minimumGuaranteedRooms > cells.size()) {
+        errorLog("Guaranteed dungeon tile-set room counts exceed the available BSP rooms.");
         return false;
     }
-    int spawnRoomChoice = xsRandInt(0, spawnRoomIndices.size() - 1);
-    g_bspTileSpawnRoomIndex = spawnRoomIndices[spawnRoomChoice];
+
+    g_bspTileSetByRoom = new int(cells.size(), -1);
+    int guaranteedRoomsAssigned = 0;
+    for (int tileSetIndex = 0;
+         tileSetIndex < getDungeonRoomTileSetCount();
+         tileSetIndex = tileSetIndex + 1) {
+        int minimumRooms = getDungeonRoomTileSetMinimumRooms(tileSetIndex);
+        for (int guaranteedIndex = 0; guaranteedIndex < minimumRooms;
+             guaranteedIndex = guaranteedIndex + 1) {
+            int availableRooms = cells.size() - guaranteedRoomsAssigned;
+            int roomChoice = xsRandInt(0, availableRooms - 1);
+            int assignedRoomIndex = -1;
+            for (int roomIndex = 0; roomIndex < cells.size();
+                 roomIndex = roomIndex + 1) {
+                if (g_bspTileSetByRoom[roomIndex] >= 0) continue;
+                if (roomChoice == 0) {
+                    assignedRoomIndex = roomIndex;
+                    break;
+                }
+                roomChoice = roomChoice - 1;
+            }
+            if (assignedRoomIndex < 0) {
+                errorLog("Failed to assign a guaranteed dungeon tile set.");
+                return false;
+            }
+            g_bspTileSetByRoom[assignedRoomIndex] = tileSetIndex;
+            guaranteedRoomsAssigned = guaranteedRoomsAssigned + 1;
+            roomCounts[tileSetIndex] = roomCounts[tileSetIndex] + 1;
+        }
+    }
+
+    for (int roomIndex = 0; roomIndex < cells.size();
+         roomIndex = roomIndex + 1) {
+        if (g_bspTileSetByRoom[roomIndex] >= 0) continue;
+        int tileSetIndex = chooseDungeonRoomTileSet(roomCounts);
+        if (tileSetIndex < 0) {
+            errorLog("Dungeon tile-set maximum room counts leave rooms without an available tile set.");
+            return false;
+        }
+        g_bspTileSetByRoom[roomIndex] = tileSetIndex;
+        roomCounts[tileSetIndex] = roomCounts[tileSetIndex] + 1;
+    }
+
     g_bspTileRoomIndex = 0;
     g_bspTileGenerationComplete = cells.size() == 0;
     return true;
@@ -380,7 +458,7 @@ bool generateNextBSPRoomLayout(ref Cell[] cells, ref Map map) {
 
     int roomIndex = g_bspTileRoomIndex;
     Cell cell = cells[roomIndex];
-    int tileSetIndex = chooseDungeonRoomTileSet();
+    int tileSetIndex = g_bspTileSetByRoom[roomIndex];
     if (tileSetIndex < 0) return false;
     Tile[] tileTypes = createDungeonRoomTileSet(tileSetIndex);
     Tile[] validationTileTypes = createDungeonRoomTileSet(tileSetIndex);
@@ -394,8 +472,7 @@ bool generateNextBSPRoomLayout(ref Cell[] cells, ref Map map) {
     if (generateRoomLayout(
             map, tileTypes, validationTileTypes,
             cell.roomLeft, cell.roomTop, cell.roomRight, cell.roomBottom,
-            cell.roomX, cell.roomZ, solidWallTileIndex,
-            roomIndex == g_bspTileSpawnRoomIndex) == false) {
+            cell.roomX, cell.roomZ, solidWallTileIndex) == false) {
         errorLog("Wave-function-collapse failed for BSP room " + roomIndex + ".");
         return false;
     }

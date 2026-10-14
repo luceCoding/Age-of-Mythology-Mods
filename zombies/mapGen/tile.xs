@@ -32,6 +32,8 @@ class Tile {
     int westSocket = 0;
     int weight = 1;
     int rotation = 0;
+    bool forceAtRoomCenter = false;
+    bool onlyOncePerRoom = false;
 
     void setUnits(int topLeft = -1, int topCenter = -1, int topRight = -1,
                   int middleLeft = -1, int center = -1, int middleRight = -1,
@@ -81,6 +83,14 @@ class Tile {
         southSocket = southSocketValue;
         westSocket = westSocketValue;
         weight = tileWeight;
+    }
+
+    void setForceAtRoomCenter(bool force = true) {
+        forceAtRoomCenter = force;
+    }
+
+    void setOnlyOncePerRoom(bool onlyOnce = true) {
+        onlyOncePerRoom = onlyOnce;
     }
 
     int getUnitAt(int position = 0) {
@@ -154,5 +164,6 @@ Tile rotateMapTileClockwise(ref Tile source) {
         source.getSocket(cSocketWest), source.getSocket(cSocketNorth),
         source.getSocket(cSocketEast), source.getSocket(cSocketSouth), source.weight);
     tile.rotation = (source.rotation + 1) % 4;
+    tile.onlyOncePerRoom = source.onlyOncePerRoom;
     return tile;
 }

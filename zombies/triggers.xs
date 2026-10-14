@@ -1,4 +1,4 @@
-void finishGameMapGeneration() {
+void postMapGeneration() {
     initializeZombies();
     initializeHumans();
 }
@@ -36,12 +36,12 @@ void startMapGeneration(){
         }
 
         //placeBSPHallwayDebugMarkers(g_generatedMap);
-        finishGameMapGeneration();
         return false;
     });
 }
 
 void startGame() {
+    startMapGeneration();
     startRoleVote();
 }
 
@@ -77,8 +77,8 @@ highFrequency
 active
 {
     if (g_roleVoteComplete) {
-        startMapGeneration();
         startInteractables();
+        postMapGeneration();
         xsDisableSelf();
     }
 }

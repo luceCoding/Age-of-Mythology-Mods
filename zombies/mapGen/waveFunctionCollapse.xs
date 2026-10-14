@@ -3,6 +3,8 @@ class WaveFunctionCollapse {
     int m_height = 0;
     int m_tileCount = 0;
     int m_boundarySocket = -1;
+    int m_forcedCellIndex = -1;
+    int m_forcedTileIndex = -1;
     bool m_configured = false;
     Tile[] m_tiles = default;
     bool[] m_possible = default;
@@ -52,7 +54,7 @@ class WaveFunctionCollapse {
         for (int direction = cSocketNorth; direction <= cSocketWest;
              direction = direction + 1) {
             if (getNeighbor(cell, direction) == -1
-                && getTileSocket(tileIndex, direction) != m_boundarySocket) {
+                && socketsMatch(getTileSocket(tileIndex, direction), m_boundarySocket) == false) {
                 return false;
             }
         }
@@ -60,9 +62,14 @@ class WaveFunctionCollapse {
     }
 
     bool configure(int width = 0, int height = 0, ref Tile[] tileTypes,
-                   int boundarySocket = -1) {
+                   int boundarySocket = -1, int forcedCellIndex = -1,
+                   int forcedTileIndex = -1) {
         m_configured = false;
         if (width <= 0 || height <= 0 || tileTypes.size() == 0) return false;
+        if (forcedCellIndex < -1 || forcedTileIndex < -1) return false;
+        if ((forcedCellIndex == -1) != (forcedTileIndex == -1)) return false;
+        if (forcedCellIndex >= width * height
+            || forcedTileIndex >= tileTypes.size()) return false;
 
         for (int tileIndex = 0; tileIndex < tileTypes.size();
              tileIndex = tileIndex + 1) {
@@ -74,6 +81,8 @@ class WaveFunctionCollapse {
         m_height = height;
         m_tileCount = tileTypes.size();
         m_boundarySocket = boundarySocket;
+        m_forcedCellIndex = forcedCellIndex;
+        m_forcedTileIndex = forcedTileIndex;
         m_tiles = tileTypes;
         m_possible = new bool(m_width * m_height * m_tileCount, false);
         m_optionCounts = new int(m_width * m_height, 0);
@@ -88,6 +97,14 @@ class WaveFunctionCollapse {
             for (int tileIndex = 0; tileIndex < m_tileCount;
                  tileIndex = tileIndex + 1) {
                 bool allowed = isBoundaryCompatible(cell, tileIndex);
+                if (cell == m_forcedCellIndex
+                    && tileIndex != m_forcedTileIndex) {
+                    allowed = false;
+                }
+                if (m_forcedTileIndex >= 0 && tileIndex == m_forcedTileIndex
+                    && cell != m_forcedCellIndex) {
+                    allowed = false;
+                }
                 int optionIndex = getOptionIndex(cell, tileIndex);
                 m_possible[optionIndex] = allowed;
                 if (allowed) { m_optionCounts[cell] = m_optionCounts[cell] + 1; }

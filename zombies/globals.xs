@@ -38,6 +38,6 @@ void initializeGlobals(){
     g_placeHolderUnitTypes.add(cUnitTypeCracks);
     g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
     g_placeHolderUnitTypes.add(cUnitTypeDigPile);
-    g_placeHolderUnitTypes.add(cUnitTypeTaprootSmall);
     g_placeHolderUnitTypes.add(cUnitTypeCocoon);
+    g_placeHolderUnitTypes.add(cUnitTypeTaproot);
 }

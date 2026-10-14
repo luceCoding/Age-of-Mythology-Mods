@@ -44,7 +44,7 @@ void generate()
     // zombies/mapGen/waveFunctionCollapse.xs
     // zombies/mapGen/bsp.xs
     // zombies/mapGen/tiles/dungeonDefaultTile.xs
-    // zombies/mapGen/tiles/graveyardTiles.xs
+    // zombies/mapGen/tiles/tombTiles.xs
     // zombies/mapGen/tileFactory.xs
 
     // zombies/players/humans.xs
