@@ -64,9 +64,12 @@ active
     initializeGlobals();
     initializeSocketAdjacencyTable();
     g_OnCreationListener.init();
-    //g_AttachmentManager.init();
     highFreqScheduler.add(50, [](int iterations = 1) -> bool {
         g_OnCreationListener.process();
+        return true;
+    });
+    midFreqScheduler.add(500, [](int iterations = 1) -> bool {
+        g_PickupManager.process();
         return true;
     });
     xsDisableSelf();
@@ -79,6 +82,7 @@ active
     if (g_roleVoteComplete) {
         startInteractables();
         postMapGeneration();
+        postModifyPlayerData();
         xsDisableSelf();
     }
 }

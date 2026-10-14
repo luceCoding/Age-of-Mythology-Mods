@@ -64,10 +64,13 @@ void preModifyPlayerData(){
     //trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectLifespan, 90, cXSRelativityAssign);
 
     // Gaia Only
+
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeGoldPile), "Collideable", false);
+    trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeSpiderEgg), 0, kbProtoUnitGetName(cUnitTypeGoldPile), 0, 1.0, cXSRelativityAssign, -1, -1);
+
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
-    // trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectArmorHack, 0.5, cXSRelativityAssign);
-    // trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectArmorCrush, 0.05, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
     g_OnCreationListener.register(0, cDefaultcUnitTypeWall, false, [](int unitId = -1) -> void {
             selectSingle(unitId);
             trUnitSetScale(1.35, 0.75, 1.35);
@@ -160,8 +163,7 @@ void preModifyPlayerData(){
 
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
-    // trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectArmorHack, 0.5, cXSRelativityAssign);
-    // trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectArmorCrush, 0.05, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
     g_OnCreationListener.register(0, cDefaultcUnitTypeWall2, false, [](int unitId = -1) -> void {
             selectSingle(unitId);
             trUnitSetScale(1.0, 0.8, 1.0);
@@ -172,4 +174,21 @@ void preModifyPlayerData(){
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeBoulderWall), 0, cXSProtoEffectObstructionRadiusX, 4, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeBoulderWall), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
     trTechSetStatus(0, cTechStoneWall, cTechStatusActive);
+}
+
+void postModifyPlayerData(){
+    for (int i = 1; i <= cNumberPlayers; i++){
+        g_PickupManager.register(0, cUnitTypeGoldPile, i, g_humanUnitTypes[0], 1.0, true, [](int unitId = -1, int picker = 0) -> void {
+            int owner = kbUnitGetPlayerID(unitId);
+            trPlayerGrantResources(picker, "Gold", 1);
+            trSoundsetPlayPlayer(picker, "TributeReceived");
+            return;
+        });
+        g_PickupManager.register(0, cUnitTypeGoldPile, i, g_zombieUnitTypes[0], 1.0, true, [](int unitId = -1, int picker = 0) -> void {
+            int owner = kbUnitGetPlayerID(unitId);
+            trPlayerGrantResources(picker, "Gold", 1);
+            trSoundsetPlayPlayer(picker, "TributeReceived");
+            return;
+        });
+    }
 }

@@ -26,6 +26,8 @@ void generate()
     createTypedScheduler("lowFreqScheduler", buildStringTypeArray(), 1000, 256);
     createTypedScheduler("lowFreqSchedulerWithIntInt", buildStringTypeArray("Int", "Int"), 1000, 256);
 
+    createTypedScheduler("midFreqScheduler", buildStringTypeArray(), 500, 2);
+
     rmTriggerAddScriptLine("class IntUnitDeletionTracker {");
         rmTriggerAddScriptLine("int[] controlUnits = default;");
         rmTriggerAddScriptLine("int[] units = default;");
@@ -37,6 +39,8 @@ void generate()
     //// common/ui/ui2.xs
     // common/ui/ui3.xs
     // common/ui/ui4.xs
+
+    // common/pickups/pickupManager.xs
 
     // zombies/mapGen/sockets.xs
     // zombies/mapGen/tile.xs
