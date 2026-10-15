@@ -1,8 +1,3 @@
-void postMapGeneration() {
-    initializeZombies();
-    initializeHumans();
-}
-
 int g_mapGenerationPhase = 0;
 
 void startMapGeneration(){
@@ -81,8 +76,33 @@ active
 {
     if (g_roleVoteComplete) {
         startInteractables();
-        postMapGeneration();
+        initializeZombies();
+        initializeHumans();
         postModifyPlayerData();
+        xsDisableSelf();
+    }
+}
+
+rule DEV_MODE
+highFrequency
+active
+{
+    if(kbPlayerGetName(1) == "ItzJover" && trChatHistoryContains("devmode", 1)){
+        for (int p = 1; p <= cNumberPlayers; p++){
+            trCreateRevealer(p, "default", vector(0, configMapBaseHeight, 0), 9999, false);
+            trPlayerGrantResources(p, "Gold", 99999);
+            trPlayerGrantResources(p, "Wood", 99999);
+            trGodPowerGrant(p, "MeteorSPC", 99, 0, false, false);
+            trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageDivine, 99999, cXSRelativityAssign);
+            trGodPowerGrant(p, "ShiftingSands", 99, 0, false, false);
+        }
+        xsDisableSelf();
+    }
+    if (kbPlayerGetName(1) != "ItzJover"){
+        xsDisableSelf();
+    }
+    if ((((xsGetTime() - (cActivationTime / 1000)) >= 120) != false))
+    {
         xsDisableSelf();
     }
 }

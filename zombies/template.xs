@@ -18,6 +18,7 @@ void generate()
     // common/uuid.xs
     // common/math.xs
     // common/strings.xs
+    // common/sound.xs
 
     createTypedScheduler("highFreqScheduler", buildStringTypeArray(), 25, 32);
     defineHashMapDefinition("int", "int", "cMinInt", "cMinInt");
@@ -60,6 +61,7 @@ void generate()
     rmSetMapSize(configMapTileX, configMapTileZ);
     rmInitializeLand(cTerrainHadesRoad2, configMapBaseHeight);
 
+    // zombies/proto/pickups.xs
     // zombies/proto/protoUnits.xs
     // zombies/proto/interactables.xs
     // zombies/triggers.xs

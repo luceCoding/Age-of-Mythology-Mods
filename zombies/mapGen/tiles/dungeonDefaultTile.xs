@@ -55,7 +55,7 @@ Tile[] createDungeonDefaultTileTypes() {
             true, true, true);
         placeholderTile.setSocketsAndWeight(
             cSocketTypeAny, cSocketTypeAny, cSocketWall, cSocketTypeAny, 
-            cSingleWallTileWeight * 0.15);
+            cSingleWallTileWeight * 0.2);
         tileTypes.add(placeholderTile);
         for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
             Tile rotatedTile = rotateMapTileClockwise(placeholderTile);
