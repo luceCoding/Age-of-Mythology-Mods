@@ -18,6 +18,7 @@ const float cBaseHumanLOS = 10.0;
 vector g_bspZombieSpawnLocation = cInvalidVector;
 int[] g_humanSpawnPoints = default;
 int[] g_humanUnitIDs = default;
+int[] g_zombieUnitIDs = default;
 int g_humanUnitCount = 0;
 int g_zombieUnitCount = 0;
 
@@ -42,7 +43,7 @@ void initializeGlobals(){
 
     g_humanUnitTypes.add(cUnitTypeVillagerAtlanteanHero);
 
-    g_zombieUnitTypes.add(cUnitTypeMictlantecuhtli);
+    g_zombieUnitTypes.add(cUnitTypeSetna);
 
     g_placeHolderUnitTypes.add(cUnitTypeBonePileSmallWhite);
     g_placeHolderUnitTypes.add(cUnitTypeBonePileMediumWhite);

@@ -36,6 +36,7 @@ void startMapGeneration(){
 }
 
 void startGame() {
+    trPlayerSetDiplomacy(0, cHumanAIPlayer, "Ally", true);
     startMapGeneration();
     startRoleVote();
 }

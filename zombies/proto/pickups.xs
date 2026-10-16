@@ -30,6 +30,7 @@ void setPickups(){
     );
 
     trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeSpiderEgg), 0, kbProtoUnitGetName(cUnitTypeCinematicBlockWaypoint), 0, 1.0, cXSRelativityAssign, -1, -1);
+    trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeMinion), 0, kbProtoUnitGetName(cUnitTypeGoldPile), 0, 1.0, cXSRelativityAssign, -1, -1);
 
     g_OnCreationListener.register(0, cUnitTypeCinematicBlockWaypoint, true, [](int unitId = -1) -> void {
             vector v = kbUnitGetTruePosition(unitId);

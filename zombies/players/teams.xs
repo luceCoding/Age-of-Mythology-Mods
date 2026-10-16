@@ -1,5 +1,17 @@
 int[] g_finalTeams = default;
 
+void switchPlayerToZombieTeam(int player = -1) {
+    g_finalTeams[player] = 2;
+    for (int other = 1; other <= cNumberPlayers; other++) {
+        if (other == player || g_finalTeams[other] == 0) {
+            continue;
+        }
+        string diplomacy = (g_finalTeams[other] == 2) ? "Ally" : "Enemy";
+        trPlayerSetDiplomacy(player, other, diplomacy, true);
+        trPlayerSetDiplomacy(other, player, diplomacy, true);
+    }
+}
+
 void setTeams(ref int[] voteSelections){
     g_finalTeams = new int(cNumberPlayers + 1, 0);
     g_finalTeams[cHumanAIPlayer] = 1;

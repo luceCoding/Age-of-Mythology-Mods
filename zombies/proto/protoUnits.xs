@@ -159,6 +159,8 @@ void preModifyPlayerData(){
             trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeRockGiant), 1, 0);
             trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeStatueOfLightning), 2, 3);
             trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), 2, 4);
+            trProtounitModifySpawnData(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeBonePileLargeBloodied), 0, 1.0, cXSRelativityAssign, -1, -1);
+            trProtoUnitSetIcon(kbProtoUnitGetName(unitType), p, "", "ui\minimap\minimap_hero_spc");
         }
 
         for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++){
@@ -254,6 +256,7 @@ void preModifyPlayerData(){
     );
 
     // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeTaproot), 0, cXSProtoEffectHitpoints, 10, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMinion), 0, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
 
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
@@ -362,10 +365,12 @@ void postModifyPlayerData(){
         trPlayerGrantResources(p, "Gold", cStartingGold);
     }
 
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * g_humanUnitCount, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * g_humanUnitCount, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * g_humanUnitCount, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * g_humanUnitCount, cXSRelativityAssign);
+    // A unit with 0 hitpoints is destroyed on creation, so keep at least 1x scaling.
+    int healthScale = (g_humanUnitCount > 0) ? g_humanUnitCount : 1;
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * healthScale, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * healthScale, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * healthScale, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * healthScale, cXSRelativityAssign);
 
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectHitpoints, 1 + (2500 * g_zombieUnitCount), cXSRelativityAssign);
 }

@@ -21,8 +21,8 @@ Tile[] createTombTileTypes() {
         Tile obeliskTile;
         obeliskTile.setUnits(
             -1, -1, -1,
-            -1, cUnitTypeRugs, -1,
-            -1, cUnitTypeObeliskProp, -1);
+            cUnitTypeRugs, cUnitTypeRugs, cUnitTypeRugs,
+            cUnitTypeRugs, cUnitTypeObeliskProp, cUnitTypeRugs);
         obeliskTile.setPassability(
             true, true, true,
             true, false, true,

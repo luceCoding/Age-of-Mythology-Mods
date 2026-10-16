@@ -1,4 +1,4 @@
-const int cOpenTileWeight = 256;
+const int cOpenTileWeight = 128;
 const int cSingleWallTileWeight = 256;
 const int ctBoneWallTileWeight = 32;
 const int cCornerWeight = 64;
@@ -23,6 +23,22 @@ Tile[] createDungeonDefaultTileTypes() {
             cSocketTypeAny, cSocketTypeAny, cSocketTypeAny, cSocketTypeAny,
             cOpenTileWeight);
         tileTypes.add(openTile);
+    }
+
+    {
+        Tile openTile2;
+        openTile2.setUnits(
+            -1, -1, -1,
+            -1, cUnitTypeMinion, -1,
+            -1, -1, -1);
+        openTile2.setPassability(
+            true, true, true,
+            true, true, true,
+            true, true, true);
+        openTile2.setSocketsAndWeight(
+            cSocketTypeAny, cSocketTypeAny, cSocketTypeAny, cSocketTypeAny,
+            cOpenTileWeight);
+        tileTypes.add(openTile2);
     }
 
     {

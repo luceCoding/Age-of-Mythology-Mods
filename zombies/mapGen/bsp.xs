@@ -1,5 +1,5 @@
 const float cBSPCellSpacing = 3.0;
-const int cBSPMinimumLeafSize = 16;
+const int cBSPMinimumLeafSize = 18;
 const int cBSPMinimumCorridorWidth = 3;
 const int cBSPMaximumCorridorWidth = 3;
 const int cBSPMinimumRoomInset = 1;

@@ -1,3 +1,16 @@
+int createZombieLord(int p = -1, vector v = cInvalidVector){
+    int unitType = g_zombieUnitTypes[0];
+    int zombieId = trUnitCreateForced(
+        kbProtoUnitGetName(unitType),
+        v.x, v.y, v.z,
+        0, p);
+    g_zombieUnitIDs.add(zombieId);
+    if (trCurrentPlayer() == p){
+        cameraLookAt(v, 60.0, 45.0, 45.0);
+    }
+    return zombieId;
+}
+
 void initializeZombies(){
 
     for (int sidePosition = 0; sidePosition < 2;
@@ -43,13 +56,10 @@ void initializeZombies(){
 
         float offsetX = (xsIntToFloat(spawnIndex % 4) - 1.5) * 2.0;
         float offsetZ = xsIntToFloat(spawnIndex / 4) * 2.0;
-        int unitType = g_zombieUnitTypes[spawnIndex % g_zombieUnitTypes.size()];
-        trUnitCreateForced(
-            kbProtoUnitGetName(unitType),
+        createZombieLord(p, vector(
             g_bspZombieSpawnLocation.x + offsetX,
             g_bspZombieSpawnLocation.y,
-            g_bspZombieSpawnLocation.z + offsetZ,
-            0, p);
+            g_bspZombieSpawnLocation.z + offsetZ));
         spawnIndex = spawnIndex + 1;
     }
 
