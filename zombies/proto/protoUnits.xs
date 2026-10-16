@@ -159,8 +159,9 @@ void preModifyPlayerData(){
             trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeRockGiant), 1, 0);
             trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeStatueOfLightning), 2, 3);
             trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), 2, 4);
-            trProtounitModifySpawnData(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeBonePileLargeBloodied), 0, 1.0, cXSRelativityAssign, -1, -1);
+            trProtounitModifySpawnData(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeSkeleton), 0, 1.0, cXSRelativityAssign, -1, -1);
             trProtoUnitSetIcon(kbProtoUnitGetName(unitType), p, "", "ui\minimap\minimap_hero_spc");
+            trProtoUnitSetFlag(p, kbProtoUnitGetName(unitType), "Deleteable", false);
         }
 
         for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++){
@@ -221,6 +222,7 @@ void preModifyPlayerData(){
     }
 
     setPickups();
+    setupZombies();
 
     // Human AI Only
     for (int i = 0; i < g_humanInteractableTypes.size(); i++){
@@ -245,6 +247,7 @@ void preModifyPlayerData(){
 
     // Gaia Only
     trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeYanFeifengTomb), "Collideable", false);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeYanFeifengTomb), "Invulnerable", true);
     g_OnCreationListener.register(0, cUnitTypeYanFeifengTomb, false, [](int unitId = -1) -> void {
             vector v = kbUnitGetTruePosition(unitId);
             g_bspZombieSpawnLocation = v;
@@ -346,13 +349,8 @@ void preModifyPlayerData(){
 
 void postModifyPlayerData(){
 
-    int nZombies = 0;
     for (int p = 1; p <= cNumberPlayers; p++){
-        if (g_finalTeams[p] == 1) {
-            trTechSetStatus(p, cTechRelicFeatherOfJingwei, cTechStatusActive);
-        } else if (g_finalTeams[p] == 2) {
-            nZombies += 1;
-        }
+        trTechSetStatus(p, cTechRelicFeatherOfJingwei, cTechStatusActive);
         int food = kbGetResourceAmount(p, kbGetResourceID("Food"));
         int wood = kbGetResourceAmount(p, kbGetResourceID("Wood"));
         int gold = kbGetResourceAmount(p, kbGetResourceID("Gold"));

@@ -408,9 +408,18 @@ void addTempleCommands() {
     }
 }
 
+void addWellOfUrdCommands() {
+    for (int p = 1; p <= cNumberPlayers-1; p++) {
+        trProtounitAddTrain(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, kbProtoUnitGetName(cUnitTypeAnubite), 0, 0);
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeAnubite), "Wood", p, cXSPUResourceEffectCost, 1, cXSRelativityAssign);
+        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeAnubite));
+    }
+}
+
 void addAllCommands() {
     addArmoryCommands();
     addSiegeCommands();
     addEconomicGuildCommands();
     addTempleCommands();
+    addWellOfUrdCommands();
 }

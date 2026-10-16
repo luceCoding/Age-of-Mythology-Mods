@@ -56,6 +56,7 @@ void generate()
     // zombies/players/humans.xs
     // zombies/players/zombies.xs
     // zombies/vote/vote.xs
+    // zombies/dayCycle/dayAndNightCycles.xs
 
     rmSetProgress(0.0);
 

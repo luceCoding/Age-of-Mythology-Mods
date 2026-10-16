@@ -15,6 +15,15 @@ const int cGaiaBaseGateHealth = 100;
 const int cGaiaBaseWallHealth = 1000;
 const float cBaseHumanLOS = 10.0;
 
+int g_dayDurationMS = 120000;
+int g_nightDurationMS = 240000;
+bool g_isNight = false;
+bool g_dayCycleActive = false;
+int g_phaseEndTimeMS = 0;
+int g_dayNumber = 1;
+
+const int maxZombiePopulation = cNumberPlayers * 10;
+
 vector g_bspZombieSpawnLocation = cInvalidVector;
 int[] g_humanSpawnPoints = default;
 int[] g_humanUnitIDs = default;
@@ -31,6 +40,7 @@ int[] g_placeHolderUnitTypes = default;
 int[] g_lootDrops = default;
 int[] g_upgradeableHumanBuildings = default;
 int[] g_trashZombieTypes = default;
+int[] g_purchaseableZombieTypes = default;
 
 void initializeGlobals(){
     // Lowest weight for first interactable, higher for later ones to make them rarer
@@ -72,4 +82,13 @@ void initializeGlobals(){
     g_upgradeableHumanBuildings.add(cUnitTypeSpikeTrap);
     g_upgradeableHumanBuildings.add(cUnitTypeMonolithOfTlaloc);
     g_upgradeableHumanBuildings.add(cUnitTypeStatueOfLightning);
+
+    g_trashZombieTypes.add(cUnitTypeMinionReincarnated);
+    g_trashZombieTypes.add(cUnitTypeTlacanexquimilliSPC);
+    g_trashZombieTypes.add(cUnitTypeTartarianSpawn);
+    g_trashZombieTypes.add(cUnitTypeTzitzimitl);
+    g_trashZombieTypes.add(cUnitTypeMummy);
+
+    g_purchaseableZombieTypes.add(cUnitTypeAnubite);
+    g_purchaseableZombieTypes.add(cUnitTypeScarab);
 }

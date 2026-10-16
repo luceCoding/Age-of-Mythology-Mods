@@ -81,6 +81,7 @@ active
         initializeHumans();
         postModifyPlayerData();
         addAllCommands();
+        startDayAndNightCycle(true);
         xsDisableSelf();
     }
 }
