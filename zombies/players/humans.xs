@@ -36,7 +36,13 @@ void initializeHumans(){
             g_bspHumanSpawnLocation.y,
             g_bspHumanSpawnLocation.z + offsetZ,
             0, p);
-            
+
+        vector v = kbUnitGetTruePosition(unitID);
+        applyToUnitsInArea(v, 1.0, 0, cUnitTypeBuilding, cUnitStateAlive, [](int unitId = -1) -> void {
+            selectSingle(unitId);
+            trUnitDestroy();
+        });
+
         g_humanUnitIDs.add(unitID);
         g_humanUnitCount = g_humanUnitCount + 1;
         spawnIndex = spawnIndex + 1;

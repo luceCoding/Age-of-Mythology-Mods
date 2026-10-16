@@ -19,6 +19,7 @@ void generate()
     // common/math.xs
     // common/strings.xs
     // common/sound.xs
+    // common/kbQueries.xs
 
     createTypedScheduler("highFreqScheduler", buildStringTypeArray(), 25, 32);
     defineHashMapDefinition("int", "int", "cMinInt", "cMinInt");
@@ -64,6 +65,7 @@ void generate()
     // zombies/proto/pickups.xs
     // zombies/proto/protoUnits.xs
     // zombies/proto/interactables.xs
+    // zombies/upgrades/upgrades.xs
     // zombies/triggers.xs
 
     rmSetProgress(1.0);

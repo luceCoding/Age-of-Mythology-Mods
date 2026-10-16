@@ -79,6 +79,7 @@ active
         initializeZombies();
         initializeHumans();
         postModifyPlayerData();
+        addAllCommands();
         xsDisableSelf();
     }
 }

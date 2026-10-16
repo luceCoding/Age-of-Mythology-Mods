@@ -11,8 +11,9 @@ const int cDefaultcUnitTypeGate2 = cUnitTypeWallGate;
 
 const int cStartingWood = 100;
 const int cStartingGold = 10;
-const int cGaiaBaseWallHealth = 100;
-const float cBaseHumanLOS = 5.0;
+const int cGaiaBaseGateHealth = 100;
+const int cGaiaBaseWallHealth = 1000;
+const float cBaseHumanLOS = 10.0;
 
 vector g_bspZombieSpawnLocation = cInvalidVector;
 vector g_bspHumanSpawnLocation = cInvalidVector;
@@ -26,6 +27,7 @@ int[] g_humanUnitTypes = default;
 int[] g_zombieUnitTypes = default;
 int[] g_placeHolderUnitTypes = default;
 int[] g_lootDrops = default;
+int[] g_upgradeableHumanBuildings = default;
 
 void initializeGlobals(){
     // Lowest weight for first interactable, higher for later ones to make them rarer
@@ -33,8 +35,8 @@ void initializeGlobals(){
     g_humanInteractableTypes.add(cUnitTypeToriiGate);
     g_humanInteractableTypes.add(cUnitTypeTemple);
     g_humanInteractableTypes.add(cUnitTypeSiegeWorks);
-    g_humanInteractableTypes.add(cUnitTypeDwarvenForge);
     g_humanInteractableTypes.add(cUnitTypeArmory);
+    g_humanInteractableTypes.add(cUnitTypeEconomicGuild);
 
     g_humanUnitTypes.add(cUnitTypeVillagerAtlanteanHero);
 
@@ -53,4 +55,18 @@ void initializeGlobals(){
 
     g_lootDrops.add(cUnitTypeWoodPileLarge);
     g_lootDrops.add(cUnitTypeGoldPile);
+
+    g_upgradeableHumanBuildings.add(cUnitTypeWallShort);
+    g_upgradeableHumanBuildings.add(cUnitTypeWallMedium);
+    g_upgradeableHumanBuildings.add(cUnitTypeWallLong);
+    g_upgradeableHumanBuildings.add(cUnitTypeWallConnector);
+    g_upgradeableHumanBuildings.add(cUnitTypeWallGate);
+    g_upgradeableHumanBuildings.add(cUnitTypeObelisk);
+    g_upgradeableHumanBuildings.add(cUnitTypeSmokeTrap);
+    g_upgradeableHumanBuildings.add(cUnitTypeSkyPassage);
+    g_upgradeableHumanBuildings.add(cUnitTypeSentryTower);
+    g_upgradeableHumanBuildings.add(cUnitTypeRockGiant);
+    g_upgradeableHumanBuildings.add(cUnitTypeSpikeTrap);
+    g_upgradeableHumanBuildings.add(cUnitTypeMonolithOfTlaloc);
+    g_upgradeableHumanBuildings.add(cUnitTypeStatueOfLightning);
 }

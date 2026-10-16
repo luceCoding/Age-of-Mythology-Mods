@@ -1,18 +1,26 @@
 void initializeBuildingForGarrison(int p = 0, int cUnitTypeBuildingType = -1){
     string building = kbProtoUnitGetName(cUnitTypeBuildingType);
-    trProtoUnitSetFlag(p, building, "InitialGarrisonOnly", false);
-    trProtoUnitSetFlag(p, building, "AllowAutoGarrison", true);
-    trProtoUnitSetFlag(p, building, "HideGarrisonFlag", true);
+
+    if (p == cHumanAIPlayer){
+        trProtoUnitSetFlag(p, building, "InitialGarrisonOnly", false);
+        trProtoUnitSetFlag(p, building, "AllowAutoGarrison", true);
+        trProtoUnitSetFlag(p, building, "HideGarrisonFlag", true);
+        trProtoUnitSetFlag(p, building, "HasLOS", false);
+        trProtoUnitSetFlag(p, building, "KnockoutDeath", true);
+        trProtoUnitSetFlag(p, building, "InitialGarrisonOnly", false);
+        trProtoUnitSetFlag(p, building, "AllowAutoGarrison", true);
+        trProtoUnitSetFlag(p, building, "PrayableTo", false);
+        trModifyProtounitUnitType(building, "LogicalTypePickable", p, cXSPUUnitTypeEffectAddContainType, 0.0, cXSRelativityAssign);
+        trModifyProtounitUnitType(building, "Unit", p, cXSPUUnitTypeEffectAddContainType, 1.0, cXSRelativityAssign);
+        trModifyProtounitData(building, p, cXSProtoEffectMaxContained, 1.0, cXSRelativityAssign);
+    }
     trModifyProtounitData(building, p, cXSProtoEffectObstructionRadiusX, 1.5, cXSRelativityAssign);
     trModifyProtounitData(building, p, cXSProtoEffectObstructionRadiusZ, 1.5, cXSRelativityAssign);
-    trProtoUnitSetFlag(p, building, "HasLOS", false);
-    trProtoUnitSetFlag(p, building, "KnockoutDeath", true);
-    trProtoUnitSetFlag(p, building, "InitialGarrisonOnly", false);
-    trProtoUnitSetFlag(p, building, "AllowAutoGarrison", true);
-    trProtoUnitSetFlag(p, building, "PrayableTo", false);
-    trModifyProtounitUnitType(building, "LogicalTypePickable", p, cXSPUUnitTypeEffectAddContainType, 0.0, cXSRelativityAssign);
-    trModifyProtounitUnitType(building, "Unit", p, cXSPUUnitTypeEffectAddContainType, 1.0, cXSRelativityAssign);
-    trModifyProtounitData(building, p, cXSProtoEffectMaxContained, 1.0, cXSRelativityAssign);
+    trProtounitRemoveCommand(building, p, "Delete");
+    trProtounitRemoveCommand(building, p, "Eject");
+    trProtounitRemoveCommand(building, p, "SetGatherPoint");
+    trProtounitRemoveCommand(building, p, "FlareAtUnit");
+    trProtounitRemoveCommand(building, p, "SetVillagerToGather");
 }
 
 void preModifyPlayerData(){
@@ -22,15 +30,24 @@ void preModifyPlayerData(){
         for (int cUnitType = 0; cUnitType < cNumberProtoUnits; cUnitType++) {
             string protoName = kbProtoUnitGetName(cUnitType);
             trForbidProtounit(p, protoName);
-            trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
-            trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
-            trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
-            trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectKillReward, -1, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectKillReward, -1, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectKillReward, -1, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectKillReward, -1, cXSRelativityAssign);
             trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
             trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
             trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
             trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
             trModifyProtounitData(protoName, p, cXSProtoEffectBuildLimit, -1, cXSRelativityAssign);
+
+            trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectResourceReturn, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectResourceReturnRate, 0, cXSRelativityAssign);
         }
 
         for (int cTech = 0; cTech < cNumberTechs; cTech++) {
@@ -42,6 +59,12 @@ void preModifyPlayerData(){
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechCopperShields);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechBallistics);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechBurningPitch);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechFlintWeapons);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechFeatheredArmor);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechFeatheredShields);
+
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeEconomicGuild), cTechPlow);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeEconomicGuild), cTechHuntingEquipment);
 
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeTemple), cTechOmniscience);
 
@@ -49,15 +72,25 @@ void preModifyPlayerData(){
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeSiegeWorks), cTechEngineers);
 
         g_OnCreationListener.register(p, cUnitTypeTonalli, true, [](int unitId = -1) -> void {});
+
+        for (int i = 0; i < g_humanInteractableTypes.size(); i++){
+            int interactableType = g_humanInteractableTypes[i];
+            if (interactableType == cUnitTypeToriiGate) continue;
+            initializeBuildingForGarrison(p, interactableType);
+        }
+
     }
 
     // All real players
     for (int p = 1; p <= cNumberPlayers; p++){
 
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeObelisk), cTechSignalFires);
+
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeSentryTower), cTechSignalFires);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeSentryTower), cTechCrenellations);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeSentryTower), cTechBoilingOil);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeSentryTower), cTechGuardTower);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeSentryTower), cTechTemiminaloyanTrials);
 
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeWallShort), cTechStoneWall);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeWallMedium), cTechStoneWall);
@@ -82,6 +115,7 @@ void preModifyPlayerData(){
         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeWallGate));
 
         trTechSetStatus(p, cTechWatchTower, cTechStatusActive);
+        trTechSetStatus(p, cTechTzompantliWatchTower, cTechStatusActive);
 
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMinion), p, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
         trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeWallConnector), kbUnitTypeGetName(cUnitTypeLogicalTypeHandUnitsAutoAttack), true);
@@ -111,26 +145,72 @@ void preModifyPlayerData(){
             }
         );
 
-        // LOS
         for (int i = 0; i < g_humanUnitTypes.size(); i++){
             int unitType = g_humanUnitTypes[i];
-            trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectLOS, cBaseHumanLOS, cXSRelativityAssign);
             trProtoUnitActionSetEnabled(kbProtoUnitGetName(unitType), p, "Pickup", true);
+            trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectLOS, cBaseHumanLOS, cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectHitpoints, 2.0, cXSRelativityPercent);
+
+            trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeSmokeTrap), 0, 0);
+            trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeSpikeTrap), 0, 1);
+            trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeSkyPassage), 0, 2);
+            trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeObelisk), 0, 5);
+
+            trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeRockGiant), 1, 0);
+            trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeStatueOfLightning), 2, 3);
+            trProtounitAddTrain(kbProtoUnitGetName(unitType), p, kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), 2, 4);
+        }
+
+        for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++){
+            int unitType = g_upgradeableHumanBuildings[i];
+            trModifyProtounitResource(kbProtoUnitGetName(unitType), "Wood", p, cXSPUResourceEffectKillReward, 1, cXSRelativityAssign);
+            trModifyProtounitResource(kbProtoUnitGetName(unitType), "Wood", p, cXSPUResourceEffectCost, 1, cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectPopulationCount, 0, cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectPopCapAddition, 0, cXSRelativityAssign);
+            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeValidSentinelTarget), true);
+            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeAbstractWarship), true);
+
+            // trModifyProtounitActionUnitType(kbProtoUnitGetName(unitType), "HandAttack", kbProtoUnitGetName(cDefaultcUnitTypeWall), p, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAssign);
+            // trModifyProtounitActionUnitType(kbProtoUnitGetName(unitType), "RangedAttack", kbProtoUnitGetName(cDefaultcUnitTypeWall), p, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAssign);
+            // trModifyProtounitActionUnitType(kbProtoUnitGetName(unitType), "LightningAttack", kbProtoUnitGetName(cDefaultcUnitTypeWall), p, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAssign);
         }
 
         // Buildings
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSentryTower), p, cXSProtoEffectLOS, cBaseHumanLOS, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSentryTower), p, cXSProtoEffectBuildPoints, 20.0, cXSRelativityAssign);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeSentryTower), "RangedAttack", p, cXSActionEffectMinRange, 0.0, cXSRelativityAssign);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeSentryTower), "RangedAttack", p, cXSActionEffectRange, cBaseHumanLOS, cXSRelativityAssign);
-        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSentryTower), "Gold", p, cXSPUResourceEffectKillReward, 1, cXSRelativityAssign);
-        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSentryTower), "Wood", p, cXSPUResourceEffectCost, 1, cXSRelativityAssign);
 
-        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWallShort), "Wood", p, cXSPUResourceEffectCost, 1, cXSRelativityAssign);
-        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWallMedium), "Wood", p, cXSPUResourceEffectCost, 1, cXSRelativityAssign);
-        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWallLong), "Wood", p, cXSPUResourceEffectCost, 1, cXSRelativityAssign);
-        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWallConnector), "Wood", p, cXSPUResourceEffectCost, 1, cXSRelativityAssign);
-        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWallGate), "Wood", p, cXSPUResourceEffectCost, 1, cXSRelativityAssign);
+        trProtounitActionSetFlag(p, kbProtoUnitGetName(cUnitTypeSmokeTrap), "HandAttack", "SelfDestruct", false);
+        trProtounitActionSetFlag(p, kbProtoUnitGetName(cUnitTypeSpikeTrap), "HandAttack", "SelfDestruct", false);
+
+        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeRockGiant), "RotateInPlace", true);
+        trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeRockGiant), kbUnitTypeGetName(cUnitTypeBuilding), true);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeRockGiant), p, cXSProtoEffectBuildPoints, 30.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeRockGiant), p, cXSProtoEffectSpeed, 0.0, cXSRelativityAssign);
+
+        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeSmokeTrap));
+        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeObelisk));
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeObelisk), p, cXSProtoEffectLOS, 32.0, cXSRelativityAssign);
+
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildPoints, 45.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectDamageDivine, 50.0, cXSRelativityAssign);
+
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSmokeTrap), "Wood", p, cXSPUResourceEffectCost, 1, cXSRelativityAssign);
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSentryTower), "Wood", p, cXSPUResourceEffectCost, 2, cXSRelativityAssign);
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSkyPassage), "Wood", p, cXSPUResourceEffectCost, 4, cXSRelativityAssign);
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSpikeTrap), "Wood", p, cXSPUResourceEffectCost, 4, cXSRelativityAssign);
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeRockGiant), "Wood", p, cXSPUResourceEffectCost, 4, cXSRelativityAssign);
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "Wood", p, cXSPUResourceEffectCost, 8, cXSRelativityAssign);
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "Wood", p, cXSPUResourceEffectCost, 16, cXSRelativityAssign);
+
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSentryTower), p, cXSProtoEffectBuildLimit, 30, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectBuildLimit, 3, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSkyPassage), p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeRockGiant), p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSpikeTrap), p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
     }
 
     setPickups();
@@ -145,7 +225,6 @@ void preModifyPlayerData(){
                 g_humanInteractableObjects.add(unitId);
             }
         );
-        initializeBuildingForGarrison(cHumanAIPlayer, interactableType);
     }
 
     trProtoUnitSetFlag(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeOsirisPieceBox), "HasLOS", false);
@@ -290,6 +369,6 @@ void postModifyPlayerData(){
     }
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * nHumans, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * nHumans, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * nHumans, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * nHumans, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * nHumans, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * nHumans, cXSRelativityAssign);
 }

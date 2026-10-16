@@ -36,22 +36,22 @@ void setPickups(){
 
     for (int p = 1; p <= cNumberPlayers; p++){
         g_PickupManager.register(0, cUnitTypeGoldPile, p, g_humanUnitTypes[0], 1.0, true, [](int unitId = -1, int picker = 0) -> void {
-            trPlayerGrantResources(picker, "Gold", 1);
+            trPlayerGrantResources(picker, "Gold", xsRandInt(1, cNumberPlayers));
             trSoundsetPlayPlayer(picker, "TributeReceived");
             return;
         });
         g_PickupManager.register(0, cUnitTypeWoodPileLarge, p, g_humanUnitTypes[0], 1.0, true, [](int unitId = -1, int picker = 0) -> void {
-            trPlayerGrantResources(picker, "Wood", 10);
+            trPlayerGrantResources(picker, "Wood", xsRandInt(10, 10+cNumberPlayers));
             trSoundsetPlayPlayer(picker, "TributeReceived");
             return;
         });
         g_PickupManager.register(0, cUnitTypeGoldPile, p, g_zombieUnitTypes[0], 1.0, true, [](int unitId = -1, int picker = 0) -> void {
-            trPlayerGrantResources(picker, "Gold", 1);
+            trPlayerGrantResources(picker, "Gold", xsRandInt(1, cNumberPlayers));
             trSoundsetPlayPlayer(picker, "TributeReceived");
             return;
         });
         g_PickupManager.register(0, cUnitTypeWoodPileLarge, p, g_zombieUnitTypes[0], 1.0, true, [](int unitId = -1, int picker = 0) -> void {
-            trPlayerGrantResources(picker, "Wood", 1);
+            trPlayerGrantResources(picker, "Wood", xsRandInt(10, 10+cNumberPlayers));
             trSoundsetPlayPlayer(picker, "TributeReceived");
             return;
         });
