@@ -15,36 +15,23 @@ void initializeHumans(){
         return;
     }
 
-    float spawnRadius = 10.0;
-    int spawnIndex = 0;
-
-    // 2. Spawn units in a circle
     for (int p = 1; p < cHumanAIPlayer; p++) {
         if (g_finalTeams[p] != 1 || kbPlayerIsHuman(p) == false) {
             continue;
         }
 
-        // Calculate evenly spaced angle for this unit
-        float angle = (cTwoPi * xsIntToFloat(spawnIndex)) / xsIntToFloat(totalHumans);
-        float offsetX = spawnRadius * cosDeg(angle);
-        float offsetZ = spawnRadius * sinDeg(angle);
+        int rdmSpawnPointID = xsRandInt(0, g_humanSpawnPoints.size() - 1);
+        vector v = kbUnitGetTruePosition(g_humanSpawnPoints[rdmSpawnPointID]);
 
-        int unitType = g_humanUnitTypes[spawnIndex % g_humanUnitTypes.size()];
+        int unitType = g_humanUnitTypes[0];
         int unitID = trUnitCreateForced(
             kbProtoUnitGetName(unitType),
-            g_bspHumanSpawnLocation.x + offsetX,
-            g_bspHumanSpawnLocation.y,
-            g_bspHumanSpawnLocation.z + offsetZ,
+            v.x,
+            v.y,
+            v.z,
             0, p);
-
-        vector v = kbUnitGetTruePosition(unitID);
-        applyToUnitsInArea(v, 1.0, 0, cUnitTypeBuilding, cUnitStateAlive, [](int unitId = -1) -> void {
-            selectSingle(unitId);
-            trUnitDestroy();
-        });
 
         g_humanUnitIDs.add(unitID);
         g_humanUnitCount = g_humanUnitCount + 1;
-        spawnIndex = spawnIndex + 1;
     }
 }

@@ -6,7 +6,7 @@ void initializeBuildingForGarrison(int p = 0, int cUnitTypeBuildingType = -1){
         trProtoUnitSetFlag(p, building, "AllowAutoGarrison", true);
         trProtoUnitSetFlag(p, building, "HideGarrisonFlag", true);
         trProtoUnitSetFlag(p, building, "HasLOS", false);
-        trProtoUnitSetFlag(p, building, "KnockoutDeath", true);
+        //trProtoUnitSetFlag(p, building, "KnockoutDeath", true);
         trProtoUnitSetFlag(p, building, "InitialGarrisonOnly", false);
         trProtoUnitSetFlag(p, building, "AllowAutoGarrison", true);
         trProtoUnitSetFlag(p, building, "PrayableTo", false);
@@ -21,6 +21,7 @@ void initializeBuildingForGarrison(int p = 0, int cUnitTypeBuildingType = -1){
     trProtounitRemoveCommand(building, p, "SetGatherPoint");
     trProtounitRemoveCommand(building, p, "FlareAtUnit");
     trProtounitRemoveCommand(building, p, "SetVillagerToGather");
+    trModifyProtounitResource(building, "Gold", p, cXSPUResourceEffectKillReward, 10, cXSRelativityAssign);
 }
 
 void preModifyPlayerData(){
@@ -74,15 +75,14 @@ void preModifyPlayerData(){
         g_OnCreationListener.register(p, cUnitTypeTonalli, true, [](int unitId = -1) -> void {});
 
         for (int i = 0; i < g_humanInteractableTypes.size(); i++){
-            int interactableType = g_humanInteractableTypes[i];
-            if (interactableType == cUnitTypeToriiGate) continue;
-            initializeBuildingForGarrison(p, interactableType);
+            //if (interactableType == cUnitTypeToriiGate) continue;
+            initializeBuildingForGarrison(p, g_humanInteractableTypes[i]);
         }
 
     }
 
     // All real players
-    for (int p = 1; p <= cNumberPlayers; p++){
+    for (int p = 1; p <= cNumberPlayers-1; p++){
 
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeObelisk), cTechSignalFires);
 
@@ -190,9 +190,14 @@ void preModifyPlayerData(){
 
         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeSmokeTrap));
         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeObelisk));
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeObelisk), p, cXSProtoEffectLOS, 32.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeObelisk), p, cXSProtoEffectLOS, 25.0, cXSRelativityAssign);
 
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "MonolithStrike", p, cXSActionEffectRange, cBaseHumanLOS * 1.5, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.5, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildPoints, 45.0, cXSRelativityAssign);
+
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectRange, cBaseHumanLOS * 1.75, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.75, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectDamageDivine, 50.0, cXSRelativityAssign);
 
@@ -218,10 +223,11 @@ void preModifyPlayerData(){
     // Human AI Only
     for (int i = 0; i < g_humanInteractableTypes.size(); i++){
         int interactableType = g_humanInteractableTypes[i];
-        if (interactableType == cUnitTypeToriiGate) continue;
         g_OnCreationListener.register(cHumanAIPlayer, interactableType, false, [](int unitId = -1) -> void {
                 selectSingle(unitId);
-                trUnitSetScale(0.5, 0.5, 0.5);
+                if (kbUnitGetProtoUnitID(unitId) != cUnitTypeToriiGate){
+                    trUnitSetScale(0.5, 0.5, 0.5);
+                }
                 g_humanInteractableObjects.add(unitId);
             }
         );
@@ -234,10 +240,20 @@ void preModifyPlayerData(){
 
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeWallJail), kbUnitTypeGetName(cUnitTypeLogicalTypeHandUnitsAutoAttack), true);
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeWallJail), kbUnitTypeGetName(cUnitTypeLogicalTypeRangedUnitsAutoAttack), true);
-    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectHitpoints, 5000, cXSRelativityAssign);
 
     // Gaia Only
-    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeTaproot), 0, cXSProtoEffectHitpoints, 10, cXSRelativityAssign);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeYanFeifengTomb), "Collideable", false);
+    g_OnCreationListener.register(0, cUnitTypeYanFeifengTomb, false, [](int unitId = -1) -> void {
+            vector v = kbUnitGetTruePosition(unitId);
+            g_bspZombieSpawnLocation = v;
+        }
+    );
+    g_OnCreationListener.register(0, cUnitTypeRugs, false, [](int unitId = -1) -> void {
+            g_humanSpawnPoints.add(unitId);
+        }
+    );
+
+    // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeTaproot), 0, cXSProtoEffectHitpoints, 10, cXSRelativityAssign);
 
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
@@ -246,13 +262,6 @@ void preModifyPlayerData(){
             selectSingle(unitId);
             trUnitSetScale(1.35, 0.75, 1.35);
             trUnitSetShading(cShaderBurning, xsRandFloat(75.0, 100.0));
-        }
-    );
-
-    g_OnCreationListener.register(0, cUnitTypeYanFeifengTomb, false, [](int unitId = -1) -> void {
-            vector v = kbUnitGetTruePosition(unitId);
-            g_bspZombieSpawnLocation = v;
-            g_bspHumanSpawnLocation = v;
         }
     );
 
@@ -266,22 +275,6 @@ void preModifyPlayerData(){
                 float jitterZ = xsRandFloat(1, 3.0);
                 trUnitCreate(kbProtoUnitGetName(cUnitTypeCanopicJars), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
             }
-        }
-    );
-
-    g_OnCreationListener.register(0, cUnitTypeOsirisPieceBox, false, [](int unitId = -1) -> void {
-            selectSingle(unitId);
-            trUnitConvert(cHumanAIPlayer);
-            trUnitChangeName("Treasure Chest");
-            vector v = kbUnitGetTruePosition(unitId);
-            int nJars = xsRandInt(0, 3);
-            for (int i = 0; i < nJars; i++){
-                float jitterX = xsRandFloat(1, 3.0);
-                float jitterZ = xsRandFloat(1, 3.0);
-                trUnitCreate(kbProtoUnitGetName(cUnitTypeCanopicJars), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
-            }
-            if (xsRandInt(0, 3) == 0) { trUnitSetHeading(xsRandInt(0, 30)); }
-            if (xsRandInt(0, 5) == 0) { trUnitDestroy(); }
         }
     );
 
@@ -350,11 +343,12 @@ void preModifyPlayerData(){
 
 void postModifyPlayerData(){
 
-    int nHumans = 0;
+    int nZombies = 0;
     for (int p = 1; p <= cNumberPlayers; p++){
         if (g_finalTeams[p] == 1) {
-            nHumans += 1;
             trTechSetStatus(p, cTechRelicFeatherOfJingwei, cTechStatusActive);
+        } else if (g_finalTeams[p] == 2) {
+            nZombies += 1;
         }
         int food = kbGetResourceAmount(p, kbGetResourceID("Food"));
         int wood = kbGetResourceAmount(p, kbGetResourceID("Wood"));
@@ -367,8 +361,11 @@ void postModifyPlayerData(){
         trPlayerGrantResources(p, "Wood", cStartingWood);
         trPlayerGrantResources(p, "Gold", cStartingGold);
     }
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * nHumans, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * nHumans, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * nHumans, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * nHumans, cXSRelativityAssign);
+
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * g_humanUnitCount, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * g_humanUnitCount, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * g_humanUnitCount, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * g_humanUnitCount, cXSRelativityAssign);
+
+    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectHitpoints, 1 + (2500 * g_zombieUnitCount), cXSRelativityAssign);
 }

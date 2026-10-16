@@ -10,12 +10,26 @@ void setPickups(){
     //trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWoodPileLarge), 0, cXSProtoEffectObstructionRadiusX, 1, cXSRelativityAssign);
     //trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWoodPileLarge), 0, cXSProtoEffectObstructionRadiusZ, 1, cXSRelativityAssign);
 
-    trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeSpiderEgg), 0, kbProtoUnitGetName(cUnitTypeCinematicBlockWaypoint), 0, 1.0, cXSRelativityAssign, -1, -1);
-
     g_OnCreationListener.register(0, cUnitTypeOsirisPieceBox, false, [](int unitId = -1) -> void {
-            g_treasureChestObjects.add(unitId);
+            selectSingle(unitId);
+            trUnitConvert(cHumanAIPlayer);
+            trUnitChangeName("Treasure Chest");
+            vector v = kbUnitGetTruePosition(unitId);
+            int nJars = xsRandInt(0, 3);
+            for (int i = 0; i < nJars; i++){
+                float jitterX = xsRandFloat(1, 3.0);
+                float jitterZ = xsRandFloat(1, 3.0);
+                trUnitCreate(kbProtoUnitGetName(cUnitTypeCanopicJars), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
+            }
+            if (xsRandInt(0, 3) == 0) { trUnitSetHeading(xsRandInt(0, 30)); }
+            if (xsRandInt(0, 5) == 0) { trUnitDestroy(); }
+            if (trUnitAlive()){
+                g_treasureChestObjects.add(unitId);
+            }
         }
     );
+
+    trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeSpiderEgg), 0, kbProtoUnitGetName(cUnitTypeCinematicBlockWaypoint), 0, 1.0, cXSRelativityAssign, -1, -1);
 
     g_OnCreationListener.register(0, cUnitTypeCinematicBlockWaypoint, true, [](int unitId = -1) -> void {
             vector v = kbUnitGetTruePosition(unitId);

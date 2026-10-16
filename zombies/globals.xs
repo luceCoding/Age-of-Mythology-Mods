@@ -9,16 +9,17 @@ const int cDefaultcUnitTypeWall2 = cUnitTypeWallShort;
 const int cDefaultcUnitTypeGate = cUnitTypeWallGate;
 const int cDefaultcUnitTypeGate2 = cUnitTypeWallGate;
 
-const int cStartingWood = 100;
+const int cStartingWood = 50;
 const int cStartingGold = 10;
 const int cGaiaBaseGateHealth = 100;
 const int cGaiaBaseWallHealth = 1000;
 const float cBaseHumanLOS = 10.0;
 
 vector g_bspZombieSpawnLocation = cInvalidVector;
-vector g_bspHumanSpawnLocation = cInvalidVector;
+int[] g_humanSpawnPoints = default;
 int[] g_humanUnitIDs = default;
 int g_humanUnitCount = 0;
+int g_zombieUnitCount = 0;
 
 int[] g_humanInteractableTypes = default;
 int[] g_humanInteractableObjects = default;
@@ -28,6 +29,7 @@ int[] g_zombieUnitTypes = default;
 int[] g_placeHolderUnitTypes = default;
 int[] g_lootDrops = default;
 int[] g_upgradeableHumanBuildings = default;
+int[] g_trashZombieTypes = default;
 
 void initializeGlobals(){
     // Lowest weight for first interactable, higher for later ones to make them rarer
@@ -49,7 +51,7 @@ void initializeGlobals(){
     g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
     g_placeHolderUnitTypes.add(cUnitTypeRelic);
     g_placeHolderUnitTypes.add(cUnitTypeCocoon);
-    g_placeHolderUnitTypes.add(cUnitTypeTaproot);
+    g_placeHolderUnitTypes.add(cUnitTypeTreeHades);
     g_placeHolderUnitTypes.add(cUnitTypeWoodPileLarge);
     g_placeHolderUnitTypes.add(cUnitTypeOsirisPieceBox);
 

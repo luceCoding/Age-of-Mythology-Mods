@@ -1,5 +1,4 @@
 void initializeZombies(){
-    //trUnitCreateForced(kbProtoUnitGetName(cUnitTypeTartarianGate), g_bspZombieSpawnLocation.x, g_bspZombieSpawnLocation.y, g_bspZombieSpawnLocation.z, 0, cZombieAIPlayer);
 
     for (int sidePosition = 0; sidePosition < 2;
          sidePosition = sidePosition + 1) {
@@ -40,6 +39,7 @@ void initializeZombies(){
         if (g_finalTeams[p] != 2 || kbPlayerIsHuman(p) == false) {
             continue;
         }
+        g_zombieUnitCount = g_zombieUnitCount + 1;
 
         float offsetX = (xsIntToFloat(spawnIndex % 4) - 1.5) * 2.0;
         float offsetZ = xsIntToFloat(spawnIndex / 4) * 2.0;

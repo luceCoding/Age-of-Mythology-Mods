@@ -21,7 +21,9 @@ void applyActionUpgradeToAllHumanBuildings(int unitId = -1, int actionEffect = c
     int p = kbUnitGetPlayerID(unitId);
     for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++) {
         int buildingType = g_upgradeableHumanBuildings[i];
-        trModifyProtounitAction(kbProtoUnitGetName(buildingType), "HandAttack", p, actionEffect, delta, relativity);
+        if (actionEffect != cXSActionEffectRange){
+            trModifyProtounitAction(kbProtoUnitGetName(buildingType), "HandAttack", p, actionEffect, delta, relativity);
+        }
         trModifyProtounitAction(kbProtoUnitGetName(buildingType), "RangedAttack", p, actionEffect, delta, relativity);
         trModifyProtounitAction(kbProtoUnitGetName(buildingType), "LightningAttack", p, actionEffect, delta, relativity);
     }
