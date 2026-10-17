@@ -418,6 +418,15 @@ void carveBSPRoom(ref Cell cell, ref Map map) {
     if (maxOffsetZ > cBSPMaxRoomCenterOffset) {
         maxOffsetZ = cBSPMaxRoomCenterOffset;
     }
+    // An inset below the 2-cell margin makes the range empty, so keep the room centered.
+    if (minOffsetX > maxOffsetX) {
+        minOffsetX = 0;
+        maxOffsetX = 0;
+    }
+    if (minOffsetZ > maxOffsetZ) {
+        minOffsetZ = 0;
+        maxOffsetZ = 0;
+    }
     int offsetX = xsRandInt(minOffsetX, maxOffsetX);
     int offsetZ = xsRandInt(minOffsetZ, maxOffsetZ);
     roomLeft = roomLeft + offsetX;
