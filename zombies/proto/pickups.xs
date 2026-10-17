@@ -31,6 +31,13 @@ void setPickups(){
 
     trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeSpiderEgg), 0, kbProtoUnitGetName(cUnitTypeCinematicBlockWaypoint), 0, 1.0, cXSRelativityAssign, -1, -1);
     trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeMinion), 0, kbProtoUnitGetName(cUnitTypeGoldPile), 0, 1.0, cXSRelativityAssign, -1, -1);
+    trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeObsidianShard), 0, kbProtoUnitGetName(cUnitTypeGoldPile), 0, 1.0, cXSRelativityAssign, -1, -1);
+
+    for (int i = 0; i < g_bossTileUnitTypes.size(); i++){
+        int unitId = g_bossTileUnitTypes[i];
+        trProtounitModifySpawnData(kbProtoUnitGetName(unitId), 0, kbProtoUnitGetName(cProtoUnitFlagRelic), 0, 1.0, cXSRelativityAssign, -1, -1);
+        trModifyProtounitData(kbProtoUnitGetName(unitId), 0, cXSProtoEffectHitpoints, cNumberPlayers, cXSRelativityPercent);
+    }
 
     g_OnCreationListener.register(0, cUnitTypeCinematicBlockWaypoint, true, [](int unitId = -1) -> void {
             vector v = kbUnitGetTruePosition(unitId);

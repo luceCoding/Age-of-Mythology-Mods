@@ -5,12 +5,11 @@ void addTrainBuilding(string targetProto = "", int cUnitType = -1, int p = -1, i
     trUnforbidProtounit(p, kbProtoUnitGetName(cUnitType));
 }
 
-void setupZombies(){
+void setupZombiesPost(){
     for (int p = 1; p <= cNumberPlayers-1; p++){
         for (int i = 0; i < g_zombieUnitTypes.size(); i++) {
             int zombieType = g_zombieUnitTypes[i];
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeWellOfUrd, p, 0, 2, 1);
-            // trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeWellOfUrd));
             trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Wood", p, cXSPUResourceEffectCost, 50, cXSRelativityAssign);
             trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeWellOfUrd), "AbstractTemple", true);
             trModifyProtounitUnitType(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Unit", p, cXSPUUnitTypeEffectAddNotContainType, 0.0, cXSRelativityAssign);
@@ -20,8 +19,8 @@ void setupZombies(){
             trProtounitModifySpawnData(kbProtoUnitGetName(zombieType), p, kbProtoUnitGetName(cUnitTypeSkeleton), 0, 1.0, cXSRelativityAssign, -1, -1);
             trProtoUnitSetFlag(p, kbProtoUnitGetName(zombieType), "KnockoutDeath", false);
             trModifyProtounitResource(kbProtoUnitGetName(zombieType), "Gold", p, cXSPUResourceEffectKillReward, 10, cXSRelativityAssign);
-            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, cNumberPlayers, cXSRelativityPercent);
-            trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageCrush, 5.0 * cNumberPlayers, cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, g_humanUnitCount+1, cXSRelativityPercent);
+            trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageCrush, 5.0 * (g_humanUnitCount+1), cXSRelativityAssign);
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectRange, 10.0, cXSRelativityAssign);
             trProtoUnitActionSetEnabled(kbProtoUnitGetName(zombieType), p, "RangedAttackMyth", false);
         }

@@ -222,7 +222,6 @@ void preModifyPlayerData(){
     }
 
     setPickups();
-    setupZombies();
 
     // Human AI Only
     for (int i = 0; i < g_humanInteractableTypes.size(); i++){
@@ -237,10 +236,13 @@ void preModifyPlayerData(){
         );
     }
 
+    trPlayerSetCiv(cHumanAIPlayer, "Zeus");
     trProtoUnitSetFlag(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeOsirisPieceBox), "HasLOS", false);
     trModifyProtounitUnitType(kbProtoUnitGetName(cUnitTypeOsirisPieceBox), "LogicalTypePickable", cHumanAIPlayer, cXSPUUnitTypeEffectAddContainType, 1.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeOsirisPieceBox), cHumanAIPlayer, cXSProtoEffectMaxContained, 1.0, cXSRelativityAssign);
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeOsirisPieceBox), "AbstractTemple", true);
+    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeOsirisPieceBox), cHumanAIPlayer, cXSProtoEffectObstructionRadiusX, 1.0, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeOsirisPieceBox), cHumanAIPlayer, cXSProtoEffectObstructionRadiusZ, 1.0, cXSRelativityAssign);
 
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeWallJail), kbUnitTypeGetName(cUnitTypeLogicalTypeHandUnitsAutoAttack), true);
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeWallJail), kbUnitTypeGetName(cUnitTypeLogicalTypeRangedUnitsAutoAttack), true);
@@ -257,7 +259,13 @@ void preModifyPlayerData(){
             g_humanSpawnPoints.add(unitId);
         }
     );
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeSentinelBase), "Collideable", false);
+    g_OnCreationListener.register(0, cUnitTypeSentinelBase, false, [](int unitId = -1) -> void {
+            g_bossTileIds.add(unitId);
+        }
+    );
 
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeObsidianObelisk), "Collideable", false);
     // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeTaproot), 0, cXSProtoEffectHitpoints, 10, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMinion), 0, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
 
@@ -371,4 +379,6 @@ void postModifyPlayerData(){
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * healthScale, cXSRelativityAssign);
 
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectHitpoints, 1 + (2500 * g_zombieUnitCount), cXSRelativityAssign);
+
+    setupZombiesPost();
 }

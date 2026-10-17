@@ -42,6 +42,9 @@ int[] g_upgradeableHumanBuildings = default;
 int[] g_trashZombieTypes = default;
 int[] g_purchaseableZombieTypes = default;
 
+int[] g_bossTileIds = default;
+int[] g_bossTileUnitTypes = default;
+
 void initializeGlobals(){
     // Lowest weight for first interactable, higher for later ones to make them rarer
     g_humanInteractableTypes.add(cUnitTypeLighthouse);
@@ -65,6 +68,9 @@ void initializeGlobals(){
     g_placeHolderUnitTypes.add(cUnitTypeTreeHades);
     g_placeHolderUnitTypes.add(cUnitTypeWoodPileLarge);
     g_placeHolderUnitTypes.add(cUnitTypeOsirisPieceBox);
+    g_placeHolderUnitTypes.add(cUnitTypeObsidianShard);
+    g_placeHolderUnitTypes.add(cUnitTypeMinion);
+    g_placeHolderUnitTypes.add(cUnitTypeCanopicJars);
 
     g_lootDrops.add(cUnitTypeWoodPileLarge);
     g_lootDrops.add(cUnitTypeGoldPile);
@@ -91,4 +97,11 @@ void initializeGlobals(){
 
     g_purchaseableZombieTypes.add(cUnitTypeAnubite);
     g_purchaseableZombieTypes.add(cUnitTypeScarab);
+
+    g_bossTileUnitTypes.add(cUnitTypeSphinx);
+    g_bossTileUnitTypes.add(cUnitTypeTroll);
+    g_bossTileUnitTypes.add(cUnitTypeCentimanus);
+    g_bossTileUnitTypes.add(cUnitTypeNemeanLion);
+    g_bossTileUnitTypes.add(cUnitTypeHydra);
+    g_bossTileUnitTypes.add(cUnitTypeChimera);
 }

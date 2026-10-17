@@ -29,7 +29,7 @@ Tile[] createDungeonDefaultTileTypes() {
         Tile openTile2;
         openTile2.setUnits(
             -1, -1, -1,
-            -1, cUnitTypeMinion, -1,
+            -1, cUnitTypeCinematicBlockArea, -1,
             -1, -1, -1);
         openTile2.setPassability(
             true, true, true,
@@ -45,7 +45,7 @@ Tile[] createDungeonDefaultTileTypes() {
         Tile trapTile;
         trapTile.setUnits(
             -1, -1, -1,
-            -1, -1, -1,
+            -1, cUnitTypeCinematicBlockArea, -1,
             -1, cUnitTypeStatueChimera, -1);
         trapTile.setPassability(
             true, true, true,
@@ -103,7 +103,7 @@ Tile[] createDungeonDefaultTileTypes() {
         tBoneWallTile.setUnits(
             -1, -1, -1,
             cDefaultcUnitTypeWall, cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
-            -1, cDefaultcUnitTypeWall, -1);
+            cUnitTypeCinematicBlockArea, cDefaultcUnitTypeWall, cUnitTypeCinematicBlockArea);
         tBoneWallTile.setPassability(
             true, true, true,
             false, false, false,
@@ -124,7 +124,7 @@ Tile[] createDungeonDefaultTileTypes() {
         cornerTile.setUnits(
             -1, -1, -1,
             -1, cDefaultcUnitTypeWall, cDefaultcUnitTypeWall,
-            -1, cDefaultcUnitTypeWall, -1);
+            -1, cDefaultcUnitTypeWall, cUnitTypeCinematicBlockArea);
         cornerTile.setPassability(
             true, true, true,
             true, false, false,

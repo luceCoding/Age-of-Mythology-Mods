@@ -51,6 +51,7 @@ void generate()
     // zombies/mapGen/bsp.xs
     // zombies/mapGen/tiles/dungeonDefaultTile.xs
     // zombies/mapGen/tiles/tombTiles.xs
+    // zombies/mapGen/tiles/bossTile.xs
     // zombies/mapGen/tileFactory.xs
 
     // zombies/players/humans.xs

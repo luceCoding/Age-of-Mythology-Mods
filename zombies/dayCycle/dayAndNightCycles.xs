@@ -1,3 +1,12 @@
+void spawnBossTileUnits() {
+    for (int i = 0; i < g_bossTileIds.size(); i++) {
+        int unitId = g_bossTileIds[i];
+        vector position = kbUnitGetTruePosition(unitId);
+        int unitType = g_bossTileUnitTypes[xsRandInt(0, min(g_bossTileUnitTypes.size() - 1, g_dayNumber))];
+        trUnitCreate(kbProtoUnitGetName(unitType), position.x, position.y, position.z, xsRandFloat(0, 359), 0, true);
+    }
+}
+
 void applyDayNightLighting(int transitionSeconds = 0) {
     if (g_isNight) {
         trSetLighting("night", transitionSeconds);
@@ -7,6 +16,7 @@ void applyDayNightLighting(int transitionSeconds = 0) {
         trSetLighting("default", transitionSeconds);
         trChatSend(0, "Day is upon us!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/chinese/static_color/technologies/chasing_the_sun_icon.png")));
         debuffZombies();
+        spawnBossTileUnits();
     }
 }
 

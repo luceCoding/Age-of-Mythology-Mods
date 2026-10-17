@@ -1,11 +1,16 @@
-const int numberOfTileSets = 2;
+const int numberOfTileSets = 3;
 const int cDungeonDefaultRoomTileSetWeight = 100;
 const int cDungeonGraveyardTileSetWeight = 5;
+const int cDungeonBossTileSetWeight = 20;
 
 const int cDungeonDefaultRoomTileSetMinimumRooms = 0;
-const int cDungeonTombTileSetMinimumRooms = 1;
 const int cDungeonDefaultRoomTileSetMaximumRooms = cMaxInt;
+
+const int cDungeonTombTileSetMinimumRooms = 1;
 const int cDungeonTombTileSetMaximumRooms = 1;
+
+const int cDungeonBossTileSetMinimumRooms = 2;
+const int cDungeonBossTileSetMaximumRooms = cNumberPlayers / 2;
 
 const float cDungeonTileSize = 9.0;
 const int cDungeonConnectivityAttempts = 1000;
@@ -23,24 +28,28 @@ int getDungeonRoomTileSetCount() {
 int getDungeonRoomTileSetWeight(int tileSetIndex = 0) {
     if (tileSetIndex == 0) return cDungeonDefaultRoomTileSetWeight;
     if (tileSetIndex == 1) return cDungeonGraveyardTileSetWeight;
+    if (tileSetIndex == 2) return cDungeonBossTileSetWeight;
     return 0;
 }
 
 int getDungeonRoomTileSetMinimumRooms(int tileSetIndex = 0) {
     if (tileSetIndex == 0) return cDungeonDefaultRoomTileSetMinimumRooms;
     if (tileSetIndex == 1) return cDungeonTombTileSetMinimumRooms;
+    if (tileSetIndex == 2) return cDungeonBossTileSetMinimumRooms;
     return 0;
 }
 
 int getDungeonRoomTileSetMaximumRooms(int tileSetIndex = 0) {
     if (tileSetIndex == 0) return cDungeonDefaultRoomTileSetMaximumRooms;
     if (tileSetIndex == 1) return cDungeonTombTileSetMaximumRooms;
+    if (tileSetIndex == 2) return cDungeonBossTileSetMaximumRooms;
     return 0;
 }
 
 Tile[] createDungeonRoomTileSet(int tileSetIndex = 0) {
     if (tileSetIndex == 0) return createDungeonDefaultTileTypes();
     if (tileSetIndex == 1) return createTombTileTypes();
+    if (tileSetIndex == 2) return createBossTileTypes();
     return new Tile(0);
 }
 
