@@ -1,4 +1,6 @@
+IntToIntcMinIntHashMap cPlantToCooldownHashMap;
 IntToIntcMinIntHashMap cUnitTypeToCostHashMap;
+IntToIntcMinIntHashMap cPlantToUnitTypeHashMap;
 
 int COMMAND_TYPE = cUnitTypeLegendHero;
 string COMMAND_TYPE_NAME = "LegendHero";
@@ -408,12 +410,125 @@ void addTempleCommands() {
     }
 }
 
+void addWellOfUrdTierCommands(int p = -1, ref int[] zombieTypes, int row = 0, float woodCost = 1.0) {
+    for (int i = 0; i < zombieTypes.size(); i++) {
+        string zombieName = kbProtoUnitGetName(zombieTypes[i]);
+        trProtounitAddTrain(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, zombieName, row, i);
+        trModifyProtounitResource(zombieName, "Wood", p, cXSPUResourceEffectCost, woodCost, cXSRelativityAssign);
+        trUnforbidProtounit(p, zombieName);
+    }
+}
+
 void addWellOfUrdCommands() {
     for (int p = 1; p <= cNumberPlayers-1; p++) {
-        trProtounitAddTrain(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, kbProtoUnitGetName(cUnitTypeAnubite), 0, 0);
-        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeAnubite), "Wood", p, cXSPUResourceEffectCost, 1, cXSRelativityAssign);
-        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeAnubite));
+        addWellOfUrdTierCommands(p, g_purchaseableT1ZombieTypes, 0, 2.0);
+        addWellOfUrdTierCommands(p, g_purchaseableT2ZombieTypes, 1, 4.0);
+        addWellOfUrdTierCommands(p, g_purchaseableT3ZombieTypes, 2, 8.0);
     }
+}
+
+// Each command raises the build limit of its zombie type by one.
+void addZombieArmoryTierCommands(int p = -1, ref int[] zombieTypes, ref int[] plantTypes, int row = 0, int initialCost = 1) {
+    for (int i = 0; i < zombieTypes.size(); i++) {
+        int zombieType = zombieTypes[i];
+        string zombieName = kbProtoUnitGetName(zombieType);
+        trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
+        cPlantToUnitTypeHashMap.put(plantTypes[i], zombieType);
+        addCommand(p, plantTypes[i], cUnitTypeDwarvenArmory, row, i, initialCost, "Gold",
+                    "+1 " + zombieName,
+                    "+1 " + zombieName,
+                    kbProtoUnitGetIconPath(0, zombieType),
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        string zombieName = kbProtoUnitGetName(cPlantToUnitTypeHashMap.get(kbUnitGetProtoUnitID(unitId)));
+                        trUnforbidProtounit(p, zombieName);
+                        trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
+    }
+}
+
+// Removes every human command listener for this player so zombie commands can reuse the plant types.
+void deregisterHumanCommands(int p = -1) {
+    for (int plantType = cUnitTypePlantGreekBush; plantType <= cUnitTypePlantAtlanteanFern; plantType++) {
+        g_OnCreationListener.deregisterAll(p, plantType);
+    }
+}
+
+void addZombieArmoryCommands(int p = -1) {
+    int[] t1Plants = new int(0, -1);
+    t1Plants.add(cUnitTypePlantAtlanteanBush);
+    t1Plants.add(cUnitTypePlantAtlanteanShrub);
+    t1Plants.add(cUnitTypePlantAtlanteanGrass);
+    t1Plants.add(cUnitTypePlantAtlanteanWeeds);
+
+    int[] t2Plants = new int(0, -1);
+    t2Plants.add(cUnitTypePlantAtlanteanFern);
+    t2Plants.add(cUnitTypePlantChineseBush);
+    t2Plants.add(cUnitTypePlantChineseShrub);
+    t2Plants.add(cUnitTypePlantChineseGrass);
+    t2Plants.add(cUnitTypePlantChineseWeeds);
+    t2Plants.add(cUnitTypePlantChineseFern);
+
+    int[] t3Plants = new int(0, -1);
+    t3Plants.add(cUnitTypePlantJapaneseBush);
+    t3Plants.add(cUnitTypePlantJapaneseShrub);
+    t3Plants.add(cUnitTypePlantJapaneseGrass);
+    t3Plants.add(cUnitTypePlantJapaneseWeeds);
+
+    addZombieArmoryTierCommands(p, g_purchaseableT1ZombieTypes, t1Plants, 0, 1);
+    addZombieArmoryTierCommands(p, g_purchaseableT2ZombieTypes, t2Plants, 1, 10);
+    addZombieArmoryTierCommands(p, g_purchaseableT3ZombieTypes, t3Plants, 2, 20);
+}
+
+// Each command grants one charge of its god power; the cost rises with every purchase.
+void addZombieGodPowerTierCommands(int p = -1, ref int[] powers, ref string[] icons, ref int[] plantTypes, int row = 0, int initialCost = 10, int cooldown = 60) {
+    for (int i = 0; i < powers.size(); i++) {
+        int power = powers[i];
+        string powerName = kbGodPowerGetName(power);
+        cPlantToUnitTypeHashMap.put(plantTypes[i], power);
+        cPlantToCooldownHashMap.put(plantTypes[i], cooldown);
+        addCommand(p, plantTypes[i], cUnitTypeMonumentToGods, row, i, initialCost, "Gold",
+                    "+1 " + powerName + " God Power",
+                    "+1 " + powerName + " God Power",
+                    icons[i],
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        int power = cPlantToUnitTypeHashMap.get(kbUnitGetProtoUnitID(unitId));
+                        trGodPowerGrant(p, kbGodPowerGetName(power), 1, cPlantToCooldownHashMap.get(kbUnitGetProtoUnitID(unitId)));
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
+    }
+}
+
+void addZombieGodPowerCommands(int p = -1) {
+    int[] t1Plants = new int(0, -1);
+    t1Plants.add(cUnitTypePlantMarshBush);
+    t1Plants.add(cUnitTypePlantMarshShrub);
+    t1Plants.add(cUnitTypePlantMarshGrass);
+    t1Plants.add(cUnitTypePlantMarshWeeds);
+    t1Plants.add(cUnitTypePlantMarshFern);
+    t1Plants.add(cUnitTypePlantJapaneseFern);
+
+    int[] t2Plants = new int(0, -1);
+    t2Plants.add(cUnitTypePlantSnowShrub);
+    t2Plants.add(cUnitTypePlantHadesGrass);
+
+    int[] t3Plants = new int(0, -1);
+    t3Plants.add(cUnitTypePlantTundraWeeds);
+    t3Plants.add(cUnitTypePlantTundraFern);
+
+    addZombieGodPowerTierCommands(p, g_purchaseableT1GodPowers, g_purchaseableT1GodPowerIcons,     t1Plants, 0, 10, 60);
+        addZombieGodPowerTierCommands(p, g_purchaseableT2GodPowers, g_purchaseableT2GodPowerIcons, t2Plants, 1, 20, 120);
+        addZombieGodPowerTierCommands(p, g_purchaseableT3GodPowers, g_purchaseableT3GodPowerIcons, t3Plants, 2, 30, 180);
+}
+
+void convertCommandsToZombie(int p = -1) {
+    deregisterHumanCommands(p);
+    addZombieArmoryCommands(p);
+    addZombieGodPowerCommands(p);
 }
 
 void addAllCommands() {

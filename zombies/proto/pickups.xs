@@ -35,7 +35,7 @@ void setPickups(){
 
     for (int i = 0; i < g_bossTileUnitTypes.size(); i++){
         int unitId = g_bossTileUnitTypes[i];
-        trProtounitModifySpawnData(kbProtoUnitGetName(unitId), 0, kbProtoUnitGetName(cProtoUnitFlagRelic), 0, 1.0, cXSRelativityAssign, -1, -1);
+        trProtounitModifySpawnData(kbProtoUnitGetName(unitId), 0, kbProtoUnitGetName(cUnitTypeRelic), 0, 1.0, cXSRelativityAssign, -1, -1);
         trModifyProtounitData(kbProtoUnitGetName(unitId), 0, cXSProtoEffectHitpoints, cNumberPlayers, cXSRelativityPercent);
     }
 

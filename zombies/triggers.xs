@@ -64,7 +64,7 @@ active
         g_OnCreationListener.process();
         return true;
     });
-    midFreqScheduler.add(500, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(1000, [](int iterations = 1) -> bool {
         g_PickupManager.process();
         return true;
     });

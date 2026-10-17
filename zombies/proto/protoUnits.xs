@@ -21,7 +21,7 @@ void initializeBuildingForGarrison(int p = 0, int cUnitTypeBuildingType = -1){
     trProtounitRemoveCommand(building, p, "SetGatherPoint");
     trProtounitRemoveCommand(building, p, "FlareAtUnit");
     trProtounitRemoveCommand(building, p, "SetVillagerToGather");
-    trModifyProtounitResource(building, "Gold", p, cXSPUResourceEffectKillReward, 10, cXSRelativityAssign);
+    trModifyProtounitResource(building, "Gold", p, cXSPUResourceEffectKillReward, 5, cXSRelativityAssign);
 }
 
 void preModifyPlayerData(){
@@ -63,6 +63,15 @@ void preModifyPlayerData(){
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechFlintWeapons);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechFeatheredArmor);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechFeatheredShields);
+
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeDwarvenArmory), cTechCopperWeapons);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeDwarvenArmory), cTechCopperArmor);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeDwarvenArmory), cTechCopperShields);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeDwarvenArmory), cTechBallistics);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeDwarvenArmory), cTechBurningPitch);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeDwarvenArmory), cTechFlintWeapons);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeDwarvenArmory), cTechFeatheredArmor);
+        trTechRemove(p, kbProtoUnitGetName(cUnitTypeDwarvenArmory), cTechFeatheredShields);
 
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeEconomicGuild), cTechPlow);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeEconomicGuild), cTechHuntingEquipment);
@@ -113,9 +122,6 @@ void preModifyPlayerData(){
         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeWallLong));
         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeWallConnector));
         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeWallGate));
-
-        trTechSetStatus(p, cTechWatchTower, cTechStatusActive);
-        trTechSetStatus(p, cTechTzompantliWatchTower, cTechStatusActive);
 
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMinion), p, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
         trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeWallConnector), kbUnitTypeGetName(cUnitTypeLogicalTypeHandUnitsAutoAttack), true);
@@ -369,6 +375,15 @@ void postModifyPlayerData(){
         trPlayerGrantResources(p, "Favor", -favor);
         trPlayerGrantResources(p, "Wood", cStartingWood);
         trPlayerGrantResources(p, "Gold", cStartingGold);
+
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallGate), p, cXSProtoEffectHitpoints, cInitialWallHealthMultiplier * g_zombieUnitCount, cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallConnector), p, cXSProtoEffectHitpoints, cInitialWallHealthMultiplier * g_zombieUnitCount, cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallShort), p, cXSProtoEffectHitpoints, cInitialWallHealthMultiplier * g_zombieUnitCount, cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallMedium), p, cXSProtoEffectHitpoints, cInitialWallHealthMultiplier * g_zombieUnitCount, cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallLong), p, cXSProtoEffectHitpoints, cInitialWallHealthMultiplier * g_zombieUnitCount, cXSRelativityPercent);
+
+        trTechSetStatus(p, cTechWatchTower, cTechStatusActive);
+        trTechSetStatus(p, cTechTzompantliWatchTower, cTechStatusActive);
     }
 
     // A unit with 0 hitpoints is destroyed on creation, so keep at least 1x scaling.
@@ -378,7 +393,12 @@ void postModifyPlayerData(){
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * healthScale, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * healthScale, cXSRelativityAssign);
 
-    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectHitpoints, 1 + (2500 * g_zombieUnitCount), cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectHitpoints, cBaseJailWallHealth * g_zombieUnitCount, cXSRelativityAssign);
+
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeWall), "KBTracked", false);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeWall2), "KBTracked", false);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeGate), "KBTracked", false);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeGate2), "KBTracked", false);
 
     setupZombiesPost();
 }

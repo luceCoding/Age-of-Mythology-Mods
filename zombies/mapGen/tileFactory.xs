@@ -9,8 +9,8 @@ const int cDungeonDefaultRoomTileSetMaximumRooms = cMaxInt;
 const int cDungeonTombTileSetMinimumRooms = 1;
 const int cDungeonTombTileSetMaximumRooms = 1;
 
-const int cDungeonBossTileSetMinimumRooms = 2;
-const int cDungeonBossTileSetMaximumRooms = cNumberPlayers / 2;
+const int cDungeonBossTileSetMinimumRooms = 3;
+const int cDungeonBossTileSetMaximumRooms = 5;
 
 const float cDungeonTileSize = 9.0;
 const int cDungeonConnectivityAttempts = 1000;

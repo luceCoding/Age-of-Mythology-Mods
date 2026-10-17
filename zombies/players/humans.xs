@@ -40,3 +40,10 @@ void initializeHumans(){
         registerZombieRespawn(p);
     }
 }
+
+void convertBuildingsToHumanAI(int p = 0){
+    applyToUnitsOfPlayer(p, cUnitTypeBuilding, cUnitStateAlive, [](int unitID = -1) -> void {
+        selectSingle(unitID);
+        trUnitConvert(cHumanAIPlayer);
+    });
+}

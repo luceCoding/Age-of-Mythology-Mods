@@ -57,6 +57,20 @@ void applyToUnitsInArea(vector centerPos = cInvalidVector, float radius = 0.0, i
     }
 }
 
+void applyToUnitsOfPlayer(int playerID = 1, int cUnitType = cUnitTypeUnit, int unitState = cUnitStateAlive,
+                          void(int) apply = [](int unitID = -1) -> void {}) {
+    xsSetContextPlayer(playerID);
+    int qID = kbUnitQueryCreate("player_units_query");
+    kbUnitQueryResetResults(qID);
+    kbUnitQuerySetPlayerID(qID, playerID);
+    kbUnitQuerySetState(qID, unitState);
+    kbUnitQuerySetUnitType(qID, cUnitType);
+    int unitCount = kbUnitQueryExecute(qID);
+    for (int i = 0; i < unitCount; i++) {
+        apply(kbUnitQueryGetResult(qID, i));
+    }
+}
+
 void applyUptoXRandomUnitsInArea(int xCount = 0, vector centerPos = cInvalidVector, float radius = 0.0, int playerID = 1, int cUnitType = cUnitTypeUnit, int unitState = cUnitStateAlive,
                                  void(int) apply = [](int unitID = -1) -> void {}) {
     if (xCount <= 0) {

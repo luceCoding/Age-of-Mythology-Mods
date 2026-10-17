@@ -11,12 +11,13 @@ void applyDayNightLighting(int transitionSeconds = 0) {
     if (g_isNight) {
         trSetLighting("night", transitionSeconds);
         trChatSend(0, "Night is upon us!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/egyptian/static_color/god_powers/eclipse_icon.png")));
-        buffZombies();
+        nightBuffZombies();
     } else {
         trSetLighting("default", transitionSeconds);
         trChatSend(0, "Day is upon us!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/chinese/static_color/technologies/chasing_the_sun_icon.png")));
-        debuffZombies();
+        dayDebuffZombies();
         spawnBossTileUnits();
+        permaDailyBuffZombies();
     }
 }
 
@@ -38,6 +39,12 @@ void updateDayNightCounter() {
 void startDayAndNightCycle(bool startAtNight = false) {
     if (g_dayCycleActive) {
         return;
+    }
+    if (startAtNight){
+        trSetLighting("night", 0);
+    }
+    else {
+        trSetLighting("default", 0);
     }
     g_isNight = startAtNight;
     g_dayNumber = 1;
