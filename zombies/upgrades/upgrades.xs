@@ -419,12 +419,10 @@ void addWellOfUrdTierCommands(int p = -1, ref int[] zombieTypes, int row = 0, fl
     }
 }
 
-void addWellOfUrdCommands() {
-    for (int p = 1; p <= cNumberPlayers-1; p++) {
-        addWellOfUrdTierCommands(p, g_purchaseableT1ZombieTypes, 0, 2.0);
-        addWellOfUrdTierCommands(p, g_purchaseableT2ZombieTypes, 1, 4.0);
-        addWellOfUrdTierCommands(p, g_purchaseableT3ZombieTypes, 2, 8.0);
-    }
+void addWellOfUrdCommands(int p = 0) {
+    addWellOfUrdTierCommands(p, g_purchaseableT1ZombieTypes, 0, 2.0);
+    addWellOfUrdTierCommands(p, g_purchaseableT2ZombieTypes, 1, 4.0);
+    addWellOfUrdTierCommands(p, g_purchaseableT3ZombieTypes, 2, 8.0);
 }
 
 // Each command raises the build limit of its zombie type by one.
@@ -536,5 +534,5 @@ void addAllCommands() {
     addSiegeCommands();
     addEconomicGuildCommands();
     addTempleCommands();
-    addWellOfUrdCommands();
+    //addWellOfUrdCommands();
 }

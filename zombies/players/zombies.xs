@@ -122,11 +122,12 @@ void registerZombieRespawn(int player = -1){
             }
             if (g_finalTeams[p] == 1){
                 trChatSend(0, kbPlayerGetName(p) + " has been infected!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/egyptian/static_color/abilities/mummy_ability_icon.png")));
+                convertBuildingsToHumanAI(p);
                 switchPlayerToZombieTeam(p);
                 g_humanUnitCount = g_humanUnitCount - 1;
                 g_zombieUnitCount = g_zombieUnitCount + 1;
                 convertCommandsToZombie(p);
-                convertBuildingsToHumanAI(p);
+                addWellOfUrdCommands(p);
             }
             int unitType = g_zombieUnitTypes[0];
             int zombieId = trUnitCreateForced(
@@ -239,6 +240,7 @@ void initializeZombies(){
             g_bspZombieSpawnLocation.y,
             g_bspZombieSpawnLocation.z + offsetZ));
         registerZombieRespawn(p);
+        addWellOfUrdCommands(p);
         spawnIndex = spawnIndex + 1;
     }
 }
