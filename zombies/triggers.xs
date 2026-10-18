@@ -77,11 +77,11 @@ active
 {
     if (g_roleVoteComplete) {
         startInteractables();
+        addAllCommands();
         initializeZombies();
         initializeHumans();
         postModifyPlayerData();
-        addAllCommands();
-        startDayAndNightCycle(true);
+        startDayAndNightCycle(false);
         xsDisableSelf();
     }
 }

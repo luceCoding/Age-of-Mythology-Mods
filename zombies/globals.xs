@@ -11,11 +11,12 @@ const int cDefaultcUnitTypeGate2 = cUnitTypeWallGate;
 
 const int cStartingWood = 50;
 const int cStartingGold = 10;
-const int cGaiaBaseGateHealth = 100;
+const int cGaiaBaseGateHealth = 500;
 const int cGaiaBaseWallHealth = 5000;
-const int cBaseJailWallHealth = 10000;
+const int cBaseJailWallHealth = 100000;
+const float cBaseJailWallLifespan = 120.0;
 const float cBaseHumanLOS = 10.0;
-const float cInitialWallHealthMultiplier = 4.0;
+const float cInitialWallHealthMultiplier = 3.0;
 
 int g_dayDurationMS = 120000;
 int g_nightDurationMS = 240000;
@@ -25,6 +26,7 @@ int g_phaseEndTimeMS = 0;
 int g_dayNumber = 1;
 
 const int cTrashZombieSpawnTimer = 5000;
+const float cBaseZombieLifespan = 120.0;
 const int maxZombiePopulation = cNumberPlayers * 10;
 
 vector g_bspZombieSpawnLocation = cInvalidVector;
@@ -33,6 +35,16 @@ int[] g_humanUnitIDs = default;
 int[] g_zombieUnitIDs = default;
 int g_humanUnitCount = 0;
 int g_zombieUnitCount = 0;
+
+const float trashZombieKillRewardWood = 2.0;
+const float trashZombieKillRewardGold = 1.0;
+const float zombieBaseWoodCost = 1.0;
+const float zombieBaseGoldCost = 1.0;
+
+const float humanBuildingsKillRewardWood = 4.0;
+const float humanBuildingsKillRewardGold = 2.0;
+const float humanBaseWoodCost = 2.0;
+const float humanBaseGoldCost = 2.0;
 
 int[] g_humanInteractableTypes = default;
 int[] g_humanInteractableObjects = default;
@@ -98,6 +110,7 @@ void initializeGlobals(){
     g_upgradeableHumanBuildings.add(cUnitTypeSmokeTrap);
     g_upgradeableHumanBuildings.add(cUnitTypeSkyPassage);
     g_upgradeableHumanBuildings.add(cUnitTypeSentryTower);
+    g_upgradeableHumanBuildings.add(cUnitTypeMirrorTower);
     g_upgradeableHumanBuildings.add(cUnitTypeRockGiant);
     g_upgradeableHumanBuildings.add(cUnitTypeSpikeTrap);
     g_upgradeableHumanBuildings.add(cUnitTypeMonolithOfTlaloc);
@@ -113,6 +126,7 @@ void initializeGlobals(){
     g_purchaseableT1ZombieTypes.add(cUnitTypeCyclops);
     g_purchaseableT1ZombieTypes.add(cUnitTypeEinheri);
     g_purchaseableT1ZombieTypes.add(cUnitTypeDraugr);
+    g_purchaseableT1ZombieTypes.add(cUnitTypeFireArcher);
 
     g_purchaseableT2ZombieTypes.add(cUnitTypeQiongQi);
     g_purchaseableT2ZombieTypes.add(cUnitTypeDestroyer);

@@ -1,4 +1,5 @@
 void spawnBossTileUnits() {
+    if (g_dayNumber <= 1) return; // Skip the first day
     for (int i = 0; i < g_bossTileIds.size(); i++) {
         int unitId = g_bossTileIds[i];
         vector position = kbUnitGetTruePosition(unitId);

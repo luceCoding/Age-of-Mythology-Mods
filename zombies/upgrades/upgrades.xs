@@ -28,6 +28,7 @@ void applyActionUpgradeToAllHumanBuildings(int unitId = -1, int actionEffect = c
         }
         trModifyProtounitAction(kbProtoUnitGetName(buildingType), "RangedAttack", p, actionEffect, delta, relativity);
         trModifyProtounitAction(kbProtoUnitGetName(buildingType), "LightningAttack", p, actionEffect, delta, relativity);
+        trModifyProtounitAction(kbProtoUnitGetName(buildingType), "BeamAttack", p, actionEffect, delta, relativity);
     }
 }
 
@@ -47,7 +48,8 @@ void applyDataUpgradeToAllHumanTypes(int unitId = -1, int puField = cXSProtoEffe
     }
 }
 
-string addCommand(int p = 1, int plantType = -1, int targetProtoType = -1, int row = 0, int col = 0, int initialCost = 0,
+string addCommand(int p = 1, int plantType = -1, int targetProtoType = -1, int row = 0, int col = 0,
+                    float initialCost = 0.0,
                     string resource = "", string name = "", string description = "", string icon = "", 
                     void(int) event = [](int unitId = -1) -> void {}) {
 
@@ -82,7 +84,7 @@ string addCommand(int p = 1, int plantType = -1, int targetProtoType = -1, int r
 
 void addArmoryCommands(){
     for (int p = 1; p <= cNumberPlayers; p++) {
-        addCommand(p, cUnitTypePlantGreekBush, cUnitTypeArmory, 0, 0, 1, "Gold",
+        addCommand(p, cUnitTypePlantGreekBush, cUnitTypeArmory, 0, 0, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Attack for All Buildings",
                     "+5% Attack for All Buildings",
                     "resources\\in_game\\stat_pierce_dmg.png",
@@ -94,7 +96,7 @@ void addArmoryCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantGreekShrub, cUnitTypeArmory, 0, 1, 1, "Gold",
+        addCommand(p, cUnitTypePlantGreekShrub, cUnitTypeArmory, 0, 1, pow(humanBaseGoldCost, 1), "Gold",
                     "-5% Rate of Fire for All Buildings",
                     "-5% Rate of Fire for All Buildings",
                     "resources\\in_game\\stat_rof.png",
@@ -103,7 +105,7 @@ void addArmoryCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantGreekGrass, cUnitTypeArmory, 0, 2, 1, "Gold",
+        addCommand(p, cUnitTypePlantGreekGrass, cUnitTypeArmory, 0, 2, pow(humanBaseGoldCost, 1), "Gold",
                     "+1 Range for All Buildings",
                     "+1 Range for All Buildings",
                     "resources\\in_game\\stat_range.png",
@@ -113,7 +115,7 @@ void addArmoryCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantGreekWeeds, cUnitTypeArmory, 1, 0, 1, "Gold",
+        addCommand(p, cUnitTypePlantGreekWeeds, cUnitTypeArmory, 1, 0, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Hack Armor for All Buildings",
                     "+5% Hack Armor for All Buildings",
                     "resources\\in_game\\stat_hack_armor.png",
@@ -122,7 +124,7 @@ void addArmoryCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantGreekFern, cUnitTypeArmory, 1, 1, 1, "Gold",
+        addCommand(p, cUnitTypePlantGreekFern, cUnitTypeArmory, 1, 1, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Pierce Armor for All Buildings",
                     "+5% Pierce Armor for All Buildings",
                     "resources\\in_game\\stat_pierce_armor.png",
@@ -131,7 +133,7 @@ void addArmoryCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantEgyptianBush, cUnitTypeArmory, 1, 2, 1, "Gold",
+        addCommand(p, cUnitTypePlantEgyptianBush, cUnitTypeArmory, 1, 2, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Crush Armor for All Buildings",
                     "+5% Crush Armor for All Buildings",
                     "resources\\in_game\\stat_crush_armor.png",
@@ -140,7 +142,7 @@ void addArmoryCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantEgyptianShrub, cUnitTypeArmory, 1, 3, 1, "Gold",
+        addCommand(p, cUnitTypePlantEgyptianShrub, cUnitTypeArmory, 1, 3, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Health for All Buildings",
                     "+5% Health for All Buildings",
                     "resources\\in_game\\stat_hp.png",
@@ -154,7 +156,7 @@ void addArmoryCommands(){
 
 void addSiegeCommands() {
     for (int p = 1; p <= cNumberPlayers; p++) {
-        addCommand(p, cUnitTypePlantEgyptianGrass, cUnitTypeSiegeWorks, 0, 0, 1, "Gold",
+        addCommand(p, cUnitTypePlantEgyptianGrass, cUnitTypeSiegeWorks, 0, 0, pow(humanBaseGoldCost, 1), "Gold",
                     "+1 Sentry Tower",
                     "+1 Sentry Tower",
                     "resources\\shared\\static_color\\buildings\\sentry_tower_icon.png",
@@ -165,7 +167,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantEgyptianWeeds, cUnitTypeSiegeWorks, 0, 1, 1, "Gold",
+        addCommand(p, cUnitTypePlantEgyptianWeeds, cUnitTypeSiegeWorks, 0, 1, pow(humanBaseGoldCost, 1), "Gold",
                     "+1 Smoke Trap",
                     "+1 Smoke Trap",
                     "resources\\aztec\\static_color\\buildings\\smoke_trap_icon.png",
@@ -176,7 +178,18 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantEgyptianFern, cUnitTypeSiegeWorks, 1, 0, 10, "Gold",
+        addCommand(p, cUnitTypePlantTundraFern, cUnitTypeSiegeWorks, 0, 2, pow(humanBaseGoldCost, 1), "Gold",
+                    "+1 Mirror Tower",
+                    "+1 Mirror Tower",
+                    "resources\\atlantean\\static_color\\buildings\\mirror_tower_icon.png",
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeMirrorTower));
+                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMirrorTower), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
+        addCommand(p, cUnitTypePlantEgyptianFern, cUnitTypeSiegeWorks, 1, 0, pow(humanBaseGoldCost, 2), "Gold",
                     "+1 Sky Passage",
                     "+1 Sky Passage",
                     "resources\\atlantean\\static_color\\buildings\\sky_passage_icon.png",
@@ -187,7 +200,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantNorseBush, cUnitTypeSiegeWorks, 1, 1, 10, "Gold",
+        addCommand(p, cUnitTypePlantNorseBush, cUnitTypeSiegeWorks, 1, 1, pow(humanBaseGoldCost, 2), "Gold",
                     "+1 Spike Trap",
                     "+1 Spike Trap",
                     "resources\\aztec\\static_color\\buildings\\spike_trap_icon.png",
@@ -198,7 +211,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantNorseShrub, cUnitTypeSiegeWorks, 1, 2, 10, "Gold",
+        addCommand(p, cUnitTypePlantNorseShrub, cUnitTypeSiegeWorks, 1, 2, pow(humanBaseGoldCost, 2), "Gold",
                     "+1 Rock Giant",
                     "+1 Rock Giant",
                     "resources\\norse_freyr\\player_color\\units\\rock_giant_icon.png",
@@ -209,7 +222,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantNorseGrass, cUnitTypeSiegeWorks, 2, 0, 20, "Gold",
+        addCommand(p, cUnitTypePlantNorseGrass, cUnitTypeSiegeWorks, 2, 0, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Pillar of Tlalocan",
                     "+1 Pillar of Tlalocan",
                     "resources\\aztec\\static_color\\god_powers\\pillar_of_tlalocan_icon.png",
@@ -220,7 +233,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantNorseWeeds, cUnitTypeSiegeWorks, 3, 0, 30, "Gold",
+        addCommand(p, cUnitTypePlantNorseWeeds, cUnitTypeSiegeWorks, 3, 0, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Statue of Lightning",
                     "+1 Statue of Lightning",
                     "resources\\spc\\static_color\\buildings\\statue_major_god_icon.png",
@@ -236,7 +249,7 @@ void addSiegeCommands() {
 
 void addEconomicGuildCommands(){
     for (int p = 1; p <= cNumberPlayers; p++) {
-        addCommand(p, cUnitTypePlantNorseFern, cUnitTypeEconomicGuild, 0, 0, 1, "Gold",
+        addCommand(p, cUnitTypePlantNorseFern, cUnitTypeEconomicGuild, 0, 0, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Build Speed for self",
                     "+5% Build Speed for self",
                     "resources\\shared/hud\\command\\military_camp_build_right_icon.png",
@@ -245,7 +258,7 @@ void addEconomicGuildCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantSnowBush, cUnitTypeEconomicGuild, 0, 1, 1, "Gold",
+        addCommand(p, cUnitTypePlantSnowBush, cUnitTypeEconomicGuild, 0, 1, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Movement Speed for self",
                     "+5% Movement Speed for self",
                     "resources\\in_game\\stat_speed.png",
@@ -254,7 +267,7 @@ void addEconomicGuildCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantSnowGrass, cUnitTypeEconomicGuild, 0, 2, 1, "Gold",
+        addCommand(p, cUnitTypePlantSnowGrass, cUnitTypeEconomicGuild, 0, 2, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Health for self",
                     "+5% Health for self",
                     "resources\\in_game\\stat_hp.png",
@@ -263,7 +276,7 @@ void addEconomicGuildCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantSnowWeeds, cUnitTypeEconomicGuild, 1, 0, 1, "Gold",
+        addCommand(p, cUnitTypePlantSnowWeeds, cUnitTypeEconomicGuild, 1, 0, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Hack Armor for self",
                     "+5% Hack Armor for self",
                     "resources\\in_game\\stat_hack_armor.png",
@@ -272,7 +285,7 @@ void addEconomicGuildCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantSnowFern, cUnitTypeEconomicGuild, 1, 1, 1, "Gold",
+        addCommand(p, cUnitTypePlantSnowFern, cUnitTypeEconomicGuild, 1, 1, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Pierce Armor for self",
                     "+5% Pierce Armor for self",
                     "resources\\in_game\\stat_pierce_armor.png",
@@ -281,7 +294,7 @@ void addEconomicGuildCommands(){
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantDeadBush, cUnitTypeEconomicGuild, 1, 2, 1, "Gold",
+        addCommand(p, cUnitTypePlantDeadBush, cUnitTypeEconomicGuild, 1, 2, pow(humanBaseGoldCost, 1), "Gold",
                     "+5% Crush Armor for self",
                     "+5% Crush Armor for self",
                     "resources\\in_game\\stat_crush_armor.png",
@@ -295,7 +308,7 @@ void addEconomicGuildCommands(){
 
 void addTempleCommands() {
     for (int p = 1; p <= cNumberPlayers; p++) {
-        addCommand(p, cUnitTypePlantDeadShrub, cUnitTypeTemple, 0, 0, 10, "Gold",
+        addCommand(p, cUnitTypePlantDeadShrub, cUnitTypeTemple, 0, 0, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Sentinel God Power",
                     "+1 Sentinel God Power",
                     "resources\\greek\\static_color\\god_powers\\sentinel_icon.png",
@@ -305,7 +318,7 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantDeadGrass, cUnitTypeTemple, 0, 1, 10, "Gold",
+        addCommand(p, cUnitTypePlantDeadGrass, cUnitTypeTemple, 0, 1, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Solar Shield God Power",
                     "+1 Solar Shield God Power",
                     "resources\\japanese\\static_color\\god_powers\\solar_shield_icon.png",
@@ -315,7 +328,7 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantDeadWeeds, cUnitTypeTemple, 0, 2, 10, "Gold",
+        addCommand(p, cUnitTypePlantDeadWeeds, cUnitTypeTemple, 0, 2, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Tailwind God Power",
                     "+1 Tailwind God Power",
                     "aztec\\static_color\\god_powers\\tailwind_icon.png",
@@ -325,7 +338,7 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantDeadFern, cUnitTypeTemple, 0, 3, 10, "Gold",
+        addCommand(p, cUnitTypePlantDeadFern, cUnitTypeTemple, 0, 3, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Earth Wall God Power",
                     "+1 Earth Wall God Power",
                     "resources\\chinese\\static_color\\god_powers\\earth_wall_power_icon.png",
@@ -336,7 +349,7 @@ void addTempleCommands() {
                     }
                 );
 
-        addCommand(p, cUnitTypePlantHadesBush, cUnitTypeTemple, 1, 0, 20, "Gold",
+        addCommand(p, cUnitTypePlantHadesBush, cUnitTypeTemple, 1, 0, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Restoration God Power",
                     "+1 Restoration God Power",
                     "resources\\greek\\static_color\\god_powers\\restoration_icon.png",
@@ -346,7 +359,7 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantHadesShrub, cUnitTypeTemple, 1, 1, 20, "Gold",
+        addCommand(p, cUnitTypePlantHadesShrub, cUnitTypeTemple, 1, 1, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Bronze God Power",
                     "+1 Bronze God Power",
                     "resources\\greek\\static_color\\god_powers\\bronze_icon.png",
@@ -356,7 +369,7 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantHadesWeeds, cUnitTypeTemple, 1, 2, 20, "Gold",
+        addCommand(p, cUnitTypePlantHadesWeeds, cUnitTypeTemple, 1, 2, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Vanish God Power",
                     "+1 Vanish God Power",
                     "resources\\chinese\\static_color\\god_powers\\vanish_icon.png",
@@ -366,7 +379,7 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantHadesFern, cUnitTypeTemple, 1, 3, 20, "Gold",
+        addCommand(p, cUnitTypePlantHadesFern, cUnitTypeTemple, 1, 3, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Forest Protection God Power",
                     "+1 Forest Protection God Power",
                     "chinese\\static_color\\god_powers\\forest_protection_icon.png",
@@ -377,7 +390,7 @@ void addTempleCommands() {
                     }
                 );
 
-        addCommand(p, cUnitTypePlantTundraBush, cUnitTypeTemple, 2, 0, 30, "Gold",
+        addCommand(p, cUnitTypePlantTundraBush, cUnitTypeTemple, 2, 0, pow(humanBaseGoldCost, 5), "Gold",
                     "+1 Underworld Passage God Power",
                     "+1 Underworld Passage God Power",
                     "resources\\greek\\static_color\\god_powers\\underworld_passage_icon.png",
@@ -387,7 +400,7 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantTundraShrub, cUnitTypeTemple, 2, 1, 30, "Gold",
+        addCommand(p, cUnitTypePlantTundraShrub, cUnitTypeTemple, 2, 1, pow(humanBaseGoldCost, 5), "Gold",
                     "+1 Lullaby God Power",
                     "+1 Lullaby God Power",
                     "aztec\\static_color\\god_powers\\lullaby_icon.png",
@@ -397,13 +410,23 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypePlantTundraGrass, cUnitTypeTemple, 2, 2, 30, "Gold",
+        addCommand(p, cUnitTypePlantTundraGrass, cUnitTypeTemple, 2, 2, pow(humanBaseGoldCost, 5), "Gold",
                     "+1 Thunder Burst God Power",
                     "+1 Thunder Burst God Power",
                     "japanese\\static_color\\god_powers\\thunder_burst_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
                         trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerThunderBurst), 1, 180);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
+        addCommand(p, cUnitTypePlantTundraWeeds, cUnitTypeTemple, 3, 0, pow(humanBaseGoldCost, 6), "Gold",
+                    "+1 Lightning Storm God Power",
+                    "+1 Lightning Storm God Power",
+                    "resources\\greek\\static_color\\god_powers\\lightning_storm_icon.png",
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerLightningStorm), 1, 240);
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
@@ -447,10 +470,18 @@ void addZombieArmoryTierCommands(int p = -1, ref int[] zombieTypes, ref int[] pl
     }
 }
 
-// Removes every human command listener for this player so zombie commands can reuse the plant types.
+// Removes every human command listener and train slot for this player so zombie commands can reuse the plant types.
 void deregisterHumanCommands(int p = -1) {
+    int[] humanBuildings = new int(0, -1);
+    humanBuildings.add(cUnitTypeArmory);
+    humanBuildings.add(cUnitTypeSiegeWorks);
+    humanBuildings.add(cUnitTypeEconomicGuild);
+    humanBuildings.add(cUnitTypeTemple);
     for (int plantType = cUnitTypePlantGreekBush; plantType <= cUnitTypePlantAtlanteanFern; plantType++) {
         g_OnCreationListener.deregisterAll(p, plantType);
+        for (int b = 0; b < humanBuildings.size(); b++) {
+            trProtounitRemoveTrain(kbProtoUnitGetName(humanBuildings[b]), p, kbProtoUnitGetName(plantType));
+        }
     }
 }
 
@@ -460,6 +491,7 @@ void addZombieArmoryCommands(int p = -1) {
     t1Plants.add(cUnitTypePlantAtlanteanShrub);
     t1Plants.add(cUnitTypePlantAtlanteanGrass);
     t1Plants.add(cUnitTypePlantAtlanteanWeeds);
+    t1Plants.add(cUnitTypePlantGreekBush);
 
     int[] t2Plants = new int(0, -1);
     t2Plants.add(cUnitTypePlantAtlanteanFern);
