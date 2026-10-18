@@ -42,16 +42,20 @@ void setupZombiesPost(){
     }
 }
 
-int createZombieLord(int p = -1, vector v = cInvalidVector){
-    int unitType = g_zombieUnitTypes[0];
+int spawnZombieLord(int p = -1, vector v = cInvalidVector){
     int zombieId = trUnitCreateForced(
-        kbProtoUnitGetName(unitType),
+        kbProtoUnitGetName(g_zombieUnitTypes[0]),
         v.x, v.y, v.z,
         0, p);
     g_zombieUnitIDs.add(zombieId);
     if (trCurrentPlayer() == p){
         cameraLookAt(v, 60.0, 45.0, 45.0);
     }
+    return zombieId;
+}
+
+int createZombieLord(int p = -1, vector v = cInvalidVector){
+    int zombieId = spawnZombieLord(p, v);
     convertCommandsToZombie(p);
     return zombieId;
 }
@@ -129,18 +133,7 @@ void registerZombieRespawn(int player = -1){
                 convertCommandsToZombie(p);
                 addWellOfUrdCommands(p);
             }
-            int unitType = g_zombieUnitTypes[0];
-            int zombieId = trUnitCreateForced(
-                kbProtoUnitGetName(unitType),
-                g_bspZombieSpawnLocation.x,
-                g_bspZombieSpawnLocation.y,
-                g_bspZombieSpawnLocation.z,
-                0, p);
-            g_zombieUnitIDs.add(zombieId);
-            vector v = kbUnitGetTruePosition(zombieId);
-            if (trCurrentPlayer() == p){
-                cameraLookAt(v, 60.0, 45.0, 45.0);
-            }
+            spawnZombieLord(p, g_bspZombieSpawnLocation);
         }
     );
 }

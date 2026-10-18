@@ -1,3 +1,18 @@
+void handlePickup(int pickupId = -1, int pickerId = -1){
+    int picker = kbUnitGetPlayerID(pickerId);
+    int pickupType = kbUnitGetProtoUnitID(pickupId);
+    if (pickupType == cUnitTypeGoldPile) {
+        trPlayerGrantResources(picker, "Gold", xsRandInt(1, cNumberPlayers));
+    } else if (pickupType == cUnitTypeWoodPileLarge) {
+        trPlayerGrantResources(picker, "Wood", xsRandInt(10, 10+cNumberPlayers));
+    }
+    trSoundsetPlayPlayer(picker, "TributeReceived");
+}
+
+void registerPickupPicker(int unitId = -1){
+    g_PickupManager.registerPicker(unitId, 0.5, true, handlePickup);
+}
+
 void setPickups(){
 
     for (int i = 0; i < g_lootDrops.size(); i++){
@@ -53,29 +68,26 @@ void setPickups(){
     g_OnCreationListener.register(0, cUnitTypeWoodPileLarge, false, [](int unitId = -1) -> void {
             selectSingle(unitId);
             trUnitSetScale(0.25, 0.25, 0.25);
+            onPickupCreated(unitId);
         }
     );
 
-    for (int p = 1; p <= cNumberPlayers; p++){
-        g_PickupManager.register(0, cUnitTypeGoldPile, p, g_humanUnitTypes[0], 1.0, true, [](int unitId = -1, int picker = 0) -> void {
-            trPlayerGrantResources(picker, "Gold", xsRandInt(1, cNumberPlayers));
-            trSoundsetPlayPlayer(picker, "TributeReceived");
-            return;
-        });
-        g_PickupManager.register(0, cUnitTypeWoodPileLarge, p, g_humanUnitTypes[0], 1.0, true, [](int unitId = -1, int picker = 0) -> void {
-            trPlayerGrantResources(picker, "Wood", xsRandInt(10, 10+cNumberPlayers));
-            trSoundsetPlayPlayer(picker, "TributeReceived");
-            return;
-        });
-        g_PickupManager.register(0, cUnitTypeGoldPile, p, g_zombieUnitTypes[0], 1.0, true, [](int unitId = -1, int picker = 0) -> void {
-            trPlayerGrantResources(picker, "Gold", xsRandInt(1, cNumberPlayers));
-            trSoundsetPlayPlayer(picker, "TributeReceived");
-            return;
-        });
-        g_PickupManager.register(0, cUnitTypeWoodPileLarge, p, g_zombieUnitTypes[0], 1.0, true, [](int unitId = -1, int picker = 0) -> void {
-            trPlayerGrantResources(picker, "Wood", xsRandInt(10, 10+cNumberPlayers));
-            trSoundsetPlayPlayer(picker, "TributeReceived");
-            return;
-        });
+    g_OnCreationListener.register(0, cUnitTypeGoldPile, false, [](int unitId = -1) -> void {
+            onPickupCreated(unitId);
+        }
+    );
+
+    // Any human or zombie unit created for any player becomes a picker automatically.
+    for (int p = 1; p <= cNumberPlayers-1; p++){
+        for (int h = 0; h < g_humanUnitTypes.size(); h++){
+            g_OnCreationListener.register(p, g_humanUnitTypes[h], false, [](int unitId = -1) -> void {
+                registerPickupPicker(unitId);
+            });
+        }
+        for (int z = 0; z < g_zombieUnitTypes.size(); z++){
+            g_OnCreationListener.register(p, g_zombieUnitTypes[z], false, [](int unitId = -1) -> void {
+                registerPickupPicker(unitId);
+            });
+        }
     }
 }
