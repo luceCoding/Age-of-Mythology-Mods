@@ -20,6 +20,9 @@ void initializeHumans(){
             continue;
         }
 
+        trPlayerGrantResources(p, "Wood", cStartingWood);
+        trPlayerGrantResources(p, "Gold", cStartingGold);
+
         int rdmSpawnPointID = xsRandInt(0, g_humanSpawnPoints.size() - 1);
         vector v = kbUnitGetTruePosition(g_humanSpawnPoints[rdmSpawnPointID]);
 

@@ -36,6 +36,8 @@ void startMapGeneration(){
 }
 
 void startGame() {
+    trChatSend(cNumberPlayers, "This mod is currently a pre-alpha build and is under development. Everything is subject to change.");
+    trChatSend(cNumberPlayers, "Created by ItzJover.");
     trPlayerSetDiplomacy(0, cHumanAIPlayer, "Ally", true);
     startMapGeneration();
     startRoleVote();

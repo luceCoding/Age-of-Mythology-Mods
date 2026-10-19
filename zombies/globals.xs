@@ -25,8 +25,10 @@ bool g_dayCycleActive = false;
 int g_phaseEndTimeMS = 0;
 int g_dayNumber = 1;
 
-const int cTrashZombieSpawnTimer = 5000;
-const float cBaseZombieLifespan = 120.0;
+const int cTrashZombieSpawnTimer = 6000;
+const float cBaseZombieLifespan = 60.0;
+const float dailyZombiePermaHPBuffPercent = 1.05;
+const float dailyZombiePermaLifespanBuff = 5.0;
 const int maxZombiePopulation = cNumberPlayers * 10;
 
 vector g_bspZombieSpawnLocation = cInvalidVector;
@@ -38,8 +40,9 @@ int g_zombieUnitCount = 0;
 
 const float trashZombieKillRewardWood = 2.0;
 const float trashZombieKillRewardGold = 1.0;
-const float zombieBaseWoodCost = 1.0;
-const float zombieBaseGoldCost = 1.0;
+const float zombieBaseWoodCost = 2.0;
+const float zombieBaseGoldCost = 2.0;
+const float zombieBaseGoldTrickle = 0.02;
 
 const float humanBuildingsKillRewardWood = 4.0;
 const float humanBuildingsKillRewardGold = 2.0;
@@ -59,14 +62,17 @@ int[] g_trashZombieTypes = default;
 int[] g_purchaseableT1ZombieTypes = default;
 int[] g_purchaseableT2ZombieTypes = default;
 int[] g_purchaseableT3ZombieTypes = default;
+int[] g_purchaseableT4ZombieTypes = default;
 
 int[] g_purchaseableT1GodPowers = default;
 int[] g_purchaseableT2GodPowers = default;
 int[] g_purchaseableT3GodPowers = default;
+int[] g_purchaseableT4GodPowers = default;
 
 string[] g_purchaseableT1GodPowerIcons = default;
 string[] g_purchaseableT2GodPowerIcons = default;
 string[] g_purchaseableT3GodPowerIcons = default;
+string[] g_purchaseableT4GodPowerIcons = default;
 
 int[] g_bossTileIds = default;
 int[] g_bossTileUnitTypes = default;
@@ -126,19 +132,20 @@ void initializeGlobals(){
     g_purchaseableT1ZombieTypes.add(cUnitTypeCyclops);
     g_purchaseableT1ZombieTypes.add(cUnitTypeEinheri);
     g_purchaseableT1ZombieTypes.add(cUnitTypeDraugr);
-    g_purchaseableT1ZombieTypes.add(cUnitTypeFireArcher);
 
     g_purchaseableT2ZombieTypes.add(cUnitTypeQiongQi);
     g_purchaseableT2ZombieTypes.add(cUnitTypeDestroyer);
-    g_purchaseableT2ZombieTypes.add(cUnitTypeScarab);
     g_purchaseableT2ZombieTypes.add(cUnitTypeHamadryad);
-    g_purchaseableT2ZombieTypes.add(cUnitTypeAyotochtli);
-    g_purchaseableT2ZombieTypes.add(cUnitTypeOni);
+    g_purchaseableT2ZombieTypes.add(cUnitTypeFireArcher);
 
     g_purchaseableT3ZombieTypes.add(cUnitTypeShinigami);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeColossus);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeFireGiant);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeOnmoraki);
+    g_purchaseableT3ZombieTypes.add(cUnitTypeScarab);
+    g_purchaseableT3ZombieTypes.add(cUnitTypeAyotochtli);
+    g_purchaseableT3ZombieTypes.add(cUnitTypeOni);
+
+    g_purchaseableT4ZombieTypes.add(cUnitTypeOnmoraki);
+    g_purchaseableT4ZombieTypes.add(cUnitTypeColossus);
+    g_purchaseableT4ZombieTypes.add(cUnitTypeFireGiant);
 
     g_bossTileUnitTypes.add(cUnitTypeSphinx);
     g_bossTileUnitTypes.add(cUnitTypeTroll);
@@ -149,27 +156,30 @@ void initializeGlobals(){
 
     g_purchaseableT1GodPowers.add(cProtoPowerCarnivora);
     g_purchaseableT1GodPowers.add(cProtoPowerPlagueOfSerpents);
-    g_purchaseableT1GodPowers.add(cProtoPowerEclipse);
     g_purchaseableT1GodPowers.add(cProtoPowerInfestation);
     g_purchaseableT1GodPowers.add(cProtoPowerBloodPact);
     g_purchaseableT1GodPowers.add(cProtoPowerWither);
 
     g_purchaseableT1GodPowerIcons.add("resources\atlantean\player_color\units\carnivora_icon.png");
     g_purchaseableT1GodPowerIcons.add("resources\egyptian\static_color\god_powers\plague_of_serpents_icon.png");
-    g_purchaseableT1GodPowerIcons.add("resources\egyptian\static_color\god_powers\eclipse_icon.png");
     g_purchaseableT1GodPowerIcons.add("resources\aztec\static_color\god_powers\infestation_icon.png");
     g_purchaseableT1GodPowerIcons.add("resources\aztec\static_color\god_powers\blood_pact_icon.png");
     g_purchaseableT1GodPowerIcons.add("resources\greek_demeter\static_color\god_powers\wither_icon.png");
 
     g_purchaseableT2GodPowers.add(cProtoPowerDroughtLand);
     g_purchaseableT2GodPowers.add(cProtoPowerAncestors);
+    g_purchaseableT2GodPowers.add(cProtoPowerEclipse);
 
     g_purchaseableT2GodPowerIcons.add("resources\chinese\static_color\god_powers\drought_land_icon.png");
     g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\ancestors_icon.png");
+    g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\eclipse_icon.png");
 
     g_purchaseableT3GodPowers.add(cProtoPowerUndermine);
     g_purchaseableT3GodPowers.add(cProtoPowerSmitingGust);
 
     g_purchaseableT3GodPowerIcons.add("resources\norse\static_color\god_powers\undermine_icon.png");
     g_purchaseableT3GodPowerIcons.add("resources\japanese\static_color\god_powers\smiting_gust_icon.png");
+
+    g_purchaseableT4GodPowers.add(cProtoPowerMeteor);
+    g_purchaseableT4GodPowerIcons.add("resources\egyptian\static_color\god_powers\meteor_icon.png");
 }

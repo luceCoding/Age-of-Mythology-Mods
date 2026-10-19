@@ -28,13 +28,23 @@ void preModifyPlayerData(){
 
     // All players
     for(int p = 0; p <= cNumberPlayers; p++) {
+
+        int food = kbGetResourceAmount(p, kbGetResourceID("Food"));
+        int wood = kbGetResourceAmount(p, kbGetResourceID("Wood"));
+        int gold = kbGetResourceAmount(p, kbGetResourceID("Gold"));
+        int favor = kbGetResourceAmount(p, kbGetResourceID("Favor"));
+        trPlayerGrantResources(p, "Food", -food);
+        trPlayerGrantResources(p, "Wood", -wood);
+        trPlayerGrantResources(p, "Gold", -gold);
+        trPlayerGrantResources(p, "Favor", -favor);
+
         for (int cUnitType = 0; cUnitType < cNumberProtoUnits; cUnitType++) {
             string protoName = kbProtoUnitGetName(cUnitType);
             trForbidProtounit(p, protoName);
-            trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectKillReward, -1, cXSRelativityAssign);
-            trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectKillReward, -1, cXSRelativityAssign);
-            trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectKillReward, -1, cXSRelativityAssign);
-            trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectKillReward, -1, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
+            trModifyProtounitResource(protoName, "Favor", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
             trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
             trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
             trModifyProtounitResource(protoName, "Gold", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
@@ -84,6 +94,12 @@ void preModifyPlayerData(){
 
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeSiegeWorks), cTechDraftHorses);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeSiegeWorks), cTechEngineers);
+
+        trProtounitRemoveCommand(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, "SetGatherPoint");
+        trProtounitRemoveCommand(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, "Eject");
+        trProtounitRemoveCommand(kbProtoUnitGetName(cUnitTypeDwarvenArmory), p, "SetGatherPoint");
+
+        trProtounitRemoveTrain(kbProtoUnitGetName(cUnitTypeTemple), p, kbProtoUnitGetName(cUnitTypeRockGiant));
 
         g_OnCreationListener.register(p, cUnitTypeTonalli, true, [](int unitId = -1) -> void {});
 
@@ -196,6 +212,12 @@ void preModifyPlayerData(){
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallConnector), p, cXSProtoEffectLOS, 1.0, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallGate), p, cXSProtoEffectLOS, 1.0, cXSRelativityAssign);
 
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallShort), p, cXSProtoEffectBuildPoints, 5.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallMedium), p, cXSProtoEffectBuildPoints, 5.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallLong), p, cXSProtoEffectBuildPoints, 5.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallConnector), p, cXSProtoEffectBuildPoints, 5.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallGate), p, cXSProtoEffectBuildPoints, 5.0, cXSRelativityAssign);
+
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSentryTower), p, cXSProtoEffectBuildPoints, 20.0, cXSRelativityAssign);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeSentryTower), "RangedAttack", p, cXSActionEffectMinRange, 0.0, cXSRelativityAssign);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeSentryTower), "RangedAttack", p, cXSActionEffectRange, cBaseHumanLOS, cXSRelativityAssign);
@@ -221,11 +243,11 @@ void preModifyPlayerData(){
 
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "MonolithStrike", p, cXSActionEffectRange, cBaseHumanLOS * 1.5, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.5, cXSRelativityAssign);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildPoints, 45.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildPoints, 40.0, cXSRelativityAssign);
 
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectRange, cBaseHumanLOS * 1.75, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.75, cXSRelativityAssign);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectBuildPoints, 50.0, cXSRelativityAssign);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectDamageDivine, 50.0, cXSRelativityAssign);
 
         trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeSmokeTrap), "Wood", p, cXSPUResourceEffectCost, pow(humanBaseWoodCost, 1), cXSRelativityAssign);
@@ -385,16 +407,6 @@ void postModifyPlayerData(){
 
     for (int p = 1; p <= cNumberPlayers; p++){
         trTechSetStatus(p, cTechRelicFeatherOfJingwei, cTechStatusActive);
-        int food = kbGetResourceAmount(p, kbGetResourceID("Food"));
-        int wood = kbGetResourceAmount(p, kbGetResourceID("Wood"));
-        int gold = kbGetResourceAmount(p, kbGetResourceID("Gold"));
-        int favor = kbGetResourceAmount(p, kbGetResourceID("Favor"));
-        trPlayerGrantResources(p, "Food", -food);
-        trPlayerGrantResources(p, "Wood", -wood);
-        trPlayerGrantResources(p, "Gold", -gold);
-        trPlayerGrantResources(p, "Favor", -favor);
-        trPlayerGrantResources(p, "Wood", cStartingWood);
-        trPlayerGrantResources(p, "Gold", cStartingGold);
 
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallGate), p, cXSProtoEffectHitpoints, max(cInitialWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallConnector), p, cXSProtoEffectHitpoints, max(cInitialWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
@@ -406,12 +418,10 @@ void postModifyPlayerData(){
         trTechSetStatus(p, cTechTzompantliWatchTower, cTechStatusActive);
     }
 
-    // A unit with 0 hitpoints is destroyed on creation, so keep at least 1x scaling.
-    int healthScale = (g_humanUnitCount > 0) ? g_humanUnitCount : 1;
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * healthScale, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * healthScale, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * healthScale, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * healthScale, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * (g_zombieUnitCount+1), cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * (g_zombieUnitCount+1), cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * (g_zombieUnitCount+1), cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * (g_zombieUnitCount+1), cXSRelativityAssign);
 
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectHitpoints, cBaseJailWallHealth, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectLifespan, cBaseJailWallLifespan, cXSRelativityAssign);

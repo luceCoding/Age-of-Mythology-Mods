@@ -6,11 +6,13 @@ void addTrainBuilding(string targetProto = "", int cUnitType = -1, int p = -1, i
 }
 
 void setupZombiesPost(){
+    float goldTrickle = zombieBaseGoldTrickle * getHumanOverZombieScale();
+
     for (int p = 1; p <= cNumberPlayers-1; p++){
         for (int i = 0; i < g_zombieUnitTypes.size(); i++) {
             int zombieType = g_zombieUnitTypes[i];
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeWellOfUrd, p, 0, 2, 0);
-            trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Wood", p, cXSPUResourceEffectCost, 30, cXSRelativityAssign);
+            trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Wood", p, cXSPUResourceEffectCost, g_dayDurationMS / 1000, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildPoints, 30.0, cXSRelativityAssign);
             trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeWellOfUrd), "AbstractTemple", true);
             trModifyProtounitUnitType(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Unit", p, cXSPUUnitTypeEffectAddNotContainType, 0.0, cXSRelativityAssign);
@@ -20,11 +22,11 @@ void setupZombiesPost(){
             trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeWellOfUrd), "Deleteable", true);
 
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeDwarvenArmory, p, 0, 3, 1);
-            trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeDwarvenArmory), "Wood", p, cXSPUResourceEffectCost, 100, cXSRelativityAssign);
+            trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeDwarvenArmory), "Wood", p, cXSPUResourceEffectCost, g_dayDurationMS / 1000 * 1.25, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(cUnitTypeDwarvenArmory), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
 
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeMonumentToGods, p, 0, 4, 1);
-            trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMonumentToGods), "Wood", p, cXSPUResourceEffectCost, 100, cXSRelativityAssign);
+            trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMonumentToGods), "Wood", p, cXSPUResourceEffectCost, g_dayDurationMS / 1000 * 1.5, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToGods), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
 
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopCapAddition, maxZombiePopulation, cXSRelativityAssign);
@@ -32,15 +34,40 @@ void setupZombiesPost(){
             trProtoUnitSetFlag(p, kbProtoUnitGetName(zombieType), "KnockoutDeath", false);
             trModifyProtounitResource(kbProtoUnitGetName(zombieType), "Gold", p, cXSPUResourceEffectKillReward, 10, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, g_humanUnitCount+1, cXSRelativityPercent);
-            trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageCrush, 5.0 * (g_humanUnitCount+1), cXSRelativityAssign);
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectRange, 10.0, cXSRelativityAssign);
             trProtoUnitActionSetEnabled(kbProtoUnitGetName(zombieType), p, "RangedAttackMyth", false);
+
+            trProtounitAssignAction(kbProtoUnitGetName(zombieType), kbProtoUnitGetName(cUnitTypePlentyVaultKOTH), "AutoGather", p);
+            trModifyProtounitActionUnitType(kbProtoUnitGetName(zombieType), "AutoGather", "Food", p, cXSActionProtoEffectWorkRate, 0, cXSRelativityAssign);
+            trModifyProtounitActionUnitType(kbProtoUnitGetName(zombieType), "AutoGather", "Wood", p, cXSActionProtoEffectWorkRate, 0, cXSRelativityAssign);
+            trModifyProtounitActionUnitType(kbProtoUnitGetName(zombieType), "AutoGather", "Gold", p, cXSActionProtoEffectWorkRate, goldTrickle, cXSRelativityAssign);
         }
         for (int i = 0; i < g_trashZombieTypes.size(); i++) {
             int zombieType = g_trashZombieTypes[i];
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopulationCount, 0, cXSRelativityAssign);
             trModifyProtounitResource(kbProtoUnitGetName(zombieType), "Wood", p, cXSPUResourceEffectKillReward, trashZombieKillRewardWood, cXSRelativityAssign);
             trModifyProtounitResource(kbProtoUnitGetName(zombieType), "Gold", p, cXSPUResourceEffectKillReward, trashZombieKillRewardGold, cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, cBaseZombieLifespan, cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, getHumanOverZombieScale(), cXSRelativityPercent);
+        }
+        for (int i = 0; i < g_purchaseableT1ZombieTypes.size(); i++) {
+            int zombieType = g_purchaseableT1ZombieTypes[i];
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, getHumanOverZombieScale(), cXSRelativityPercent);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, cBaseZombieLifespan, cXSRelativityAssign);
+        }
+        for (int i = 0; i < g_purchaseableT2ZombieTypes.size(); i++) {
+            int zombieType = g_purchaseableT2ZombieTypes[i];
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, getHumanOverZombieScale(), cXSRelativityPercent);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, cBaseZombieLifespan, cXSRelativityAssign);
+        }
+        for (int i = 0; i < g_purchaseableT3ZombieTypes.size(); i++) {
+            int zombieType = g_purchaseableT3ZombieTypes[i];
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, getHumanOverZombieScale(), cXSRelativityPercent);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, cBaseZombieLifespan, cXSRelativityAssign);
+        }
+        for (int i = 0; i < g_purchaseableT4ZombieTypes.size(); i++) {
+            int zombieType = g_purchaseableT4ZombieTypes[i];
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, getHumanOverZombieScale(), cXSRelativityPercent);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, cBaseZombieLifespan, cXSRelativityAssign);
         }
     }
@@ -67,24 +94,50 @@ int createZombieLord(int p = -1, vector v = cInvalidVector){
 }
 
 void dayDebuffZombies(){
-    for (int p = 1; p <= cNumberPlayers-1; p++){
-        for (int i = 0; i < g_trashZombieTypes.size(); i++) {
-            int trashType = g_trashZombieTypes[i];
-            trModifyProtounitData(kbProtoUnitGetName(trashType), p, cXSProtoEffectLifespan, 30.0, cXSRelativityAssign);
-        }
-    }
 }
 
 void nightBuffZombies(){
-    for (int p = 1; p <= cNumberPlayers-1; p++){
-    }
 }
 
 void permaDailyBuffZombies(){
+    float hpBuffPercent = dailyZombiePermaHPBuffPercent + (0.01 * g_humanUnitCount);
     for (int p = 1; p < cNumberPlayers; p++) {
         if (g_finalTeams[p] == 2){
             trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
             trPlayerGrantResources(p, "Gold", g_dayNumber * g_humanUnitCount);
+
+            for (int i = 0; i < g_trashZombieTypes.size(); i++) {
+                int zombieType = g_trashZombieTypes[i];
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, dailyZombiePermaLifespanBuff, cXSRelativityAbsolute);
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, hpBuffPercent, cXSRelativityPercent);
+            }
+            for (int i = 0; i < g_purchaseableT1ZombieTypes.size(); i++) {
+                int zombieType = g_purchaseableT1ZombieTypes[i];
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, dailyZombiePermaLifespanBuff, cXSRelativityAbsolute);
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, hpBuffPercent, cXSRelativityPercent);
+            }
+            for (int i = 0; i < g_purchaseableT2ZombieTypes.size(); i++) {
+                int zombieType = g_purchaseableT2ZombieTypes[i];
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, dailyZombiePermaLifespanBuff, cXSRelativityAbsolute);
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, hpBuffPercent, cXSRelativityPercent);
+            }
+            for (int i = 0; i < g_purchaseableT3ZombieTypes.size(); i++) {
+                int zombieType = g_purchaseableT3ZombieTypes[i];
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, dailyZombiePermaLifespanBuff, cXSRelativityAbsolute);
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, hpBuffPercent, cXSRelativityPercent);
+            }
+            for (int i = 0; i < g_purchaseableT4ZombieTypes.size(); i++) {
+                int zombieType = g_purchaseableT4ZombieTypes[i];
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, dailyZombiePermaLifespanBuff, cXSRelativityAbsolute);
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, hpBuffPercent, cXSRelativityPercent);
+            }
+            for (int i = 0; i < g_zombieUnitTypes.size(); i++) {
+                int zombieType = g_zombieUnitTypes[i];
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, hpBuffPercent, cXSRelativityPercent);
+                trModifyProtounitAction(kbProtoUnitGetName(zombieType), "HandAttack", p, cXSActionEffectDamageDivine, max(1, g_humanUnitCount), cXSRelativityAbsolute);
+                trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageDivine, max(1, g_humanUnitCount), cXSRelativityAbsolute);
+                trModifyProtounitActionUnitType(kbProtoUnitGetName(zombieType), "AutoGather", "Gold", p, cXSActionProtoEffectWorkRate, zombieBaseGoldTrickle, cXSRelativityAbsolute);
+            }
         }
     }
 }
@@ -119,9 +172,35 @@ void orderToAutoAttackHuman(int minionId = -1, int humanID = -1){
     trUnitMoveToPoint(humanPos.x, humanPos.y, humanPos.z, -1, true, false, 1.0);
 }
 
+// Counts real players still on team 1 (humans) who are not defeated.
+int countLivingHumanPlayers(){
+    int count = 0;
+    for (int p = 1; p <= cNumberPlayers - 1; p++){
+        if (g_finalTeams[p] == 1 && kbPlayerIsHuman(p) == true && trPlayerIsDefeatedOrResigned(p) == false){
+            count++;
+        }
+    }
+    return count;
+}
+
+void endGameAllWin(){
+    int[] winners = new int(0, -1);
+    for (int p = 1; p <= cNumberPlayers - 1; p++){
+        if (kbPlayerIsHuman(p) == true){
+            winners.add(p);
+        }
+    }
+    trSetVictoryPlayers(winners);
+    trEndGame();
+}
+
 // When a player's unit dies (leaving a skeleton), infect them if human, then respawn them as a zombie.
 void registerZombieRespawn(int player = -1){
     g_OnCreationListener.register(player, cUnitTypeSkeleton, false, [](int unitId = -1) -> void {
+            if (countLivingHumanPlayers() <= 1) {
+                endGameAllWin();
+                return;
+            }
             int p = kbUnitGetPlayerID(unitId);
             if (trPlayerIsDefeatedOrResigned(p)){
                 return;
@@ -236,6 +315,7 @@ void initializeZombies(){
             g_bspZombieSpawnLocation.z + offsetZ));
         registerZombieRespawn(p);
         addWellOfUrdCommands(p);
+        // trTechSetStatus(p, cTechRelicRingOfNibelung, cTechStatusActive);
         spawnIndex = spawnIndex + 1;
     }
 }

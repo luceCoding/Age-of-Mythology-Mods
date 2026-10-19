@@ -51,7 +51,7 @@ void setPickups(){
     for (int i = 0; i < g_bossTileUnitTypes.size(); i++){
         int unitId = g_bossTileUnitTypes[i];
         trProtounitModifySpawnData(kbProtoUnitGetName(unitId), 0, kbProtoUnitGetName(cUnitTypeRelic), 0, 1.0, cXSRelativityAssign, -1, -1);
-        trModifyProtounitData(kbProtoUnitGetName(unitId), 0, cXSProtoEffectHitpoints, cNumberPlayers, cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(unitId), 0, cXSProtoEffectHitpoints, max(cNumberPlayers / 2, 1), cXSRelativityPercent);
     }
 
     g_OnCreationListener.register(0, cUnitTypeCinematicBlockWaypoint, true, [](int unitId = -1) -> void {

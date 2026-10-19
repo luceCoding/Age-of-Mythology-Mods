@@ -3,6 +3,16 @@ void spawnBossTileUnits() {
     for (int i = 0; i < g_bossTileIds.size(); i++) {
         int unitId = g_bossTileIds[i];
         vector position = kbUnitGetTruePosition(unitId);
+        bool bossNearby = false;
+        for (int t = 0; t < g_bossTileUnitTypes.size(); t++) {
+            if (countUnitsInArea(position, 5.0, 0, g_bossTileUnitTypes[t], cUnitStateAlive) > 0) {
+                bossNearby = true;
+                break;
+            }
+        }
+        if (bossNearby) {
+            continue;
+        }
         int unitType = g_bossTileUnitTypes[xsRandInt(0, min(g_bossTileUnitTypes.size() - 1, g_dayNumber))];
         trUnitCreate(kbProtoUnitGetName(unitType), position.x, position.y, position.z, xsRandFloat(0, 359), 0, true);
     }

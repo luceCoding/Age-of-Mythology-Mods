@@ -5,6 +5,7 @@ const int cBSPMaximumCorridorWidth = 3;
 const int cBSPMinimumRoomInset = 1;
 const int cBSPMaximumRoomInset = 3;
 const int cBSPDefaultMaxRegions = configMapTileX / 4;
+const int cBSPMinHallwaysPerRoom = 2;
 const int cBSPMaxHallwaysPerRoom = 4;
 const int cBSPMaxRoomCenterOffset = 0;
 const int cBSPMapEdgePadding = 0;
@@ -109,6 +110,7 @@ Cell[] g_bspCells = default;
 BSPPartition[] g_bspPartitions = default;
 int g_bspGridWidth = 0;
 int g_bspGridHeight = 0;
+int g_bspMinHallwaysPerRoom = cBSPMinHallwaysPerRoom;
 int g_bspMaxHallwaysPerRoom = cBSPMaxHallwaysPerRoom;
 
 class Hallway {
@@ -648,7 +650,8 @@ bool splitNextBSPRegion() {
 
 bool beginBSPMapGeneration(ref Map map,
                            int maxRegions = cBSPDefaultMaxRegions,
-                           int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
+                           int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom,
+                           int minHallwaysPerRoom = cBSPMinHallwaysPerRoom) {
     g_bspCells = new Cell(0);
     g_bspPartitions = new BSPPartition(0);
     g_bspHallways = new Hallway(0);
@@ -656,6 +659,7 @@ bool beginBSPMapGeneration(ref Map map,
     g_bspGridHeight = 0;
     g_bspGenerationComplete = false;
     if (maxRegions <= 0 || maxHallwaysPerRoom <= 0) return false;
+    if (minHallwaysPerRoom < 0 || minHallwaysPerRoom > maxHallwaysPerRoom) return false;
     if (cBSPMinimumCorridorWidth <= 0
         || cBSPMaximumCorridorWidth < cBSPMinimumCorridorWidth) return false;
     if (cBSPMinimumRoomInset < 0
@@ -683,6 +687,7 @@ bool beginBSPMapGeneration(ref Map map,
     g_bspGridWidth = gridWidth;
     g_bspGridHeight = gridHeight;
     g_bspMaxHallwaysPerRoom = maxHallwaysPerRoom;
+    g_bspMinHallwaysPerRoom = minHallwaysPerRoom;
     while (g_bspCells.size() < maxRegions) {
         if (splitNextBSPRegion() == false) break;
     }
@@ -710,6 +715,8 @@ int getBSPPartitionBranch(int roomPartitionIndex = -1,
 
 bool connectBSPRooms(ref Map map) {
     int[] hallwayCounts = new int(g_bspCells.size(), 0);
+    int roomCount = g_bspCells.size();
+    bool[] connectedPairs = new bool(roomCount * roomCount, false);
     for (int partitionIndex = g_bspPartitions.size() - 1;
          partitionIndex >= 0; partitionIndex = partitionIndex - 1) {
         BSPPartition partition = g_bspPartitions[partitionIndex];
@@ -765,6 +772,40 @@ bool connectBSPRooms(ref Map map) {
         }
         hallwayCounts[closestFrom] = hallwayCounts[closestFrom] + 1;
         hallwayCounts[closestTo] = hallwayCounts[closestTo] + 1;
+        connectedPairs[(closestFrom * roomCount) + closestTo] = true;
+        connectedPairs[(closestTo * roomCount) + closestFrom] = true;
+    }
+
+    // Best effort: rooms with no clear, uncapped partner stay below the minimum.
+    for (int room = 0; room < roomCount; room = room + 1) {
+        while (hallwayCounts[room] < g_bspMinHallwaysPerRoom) {
+            Cell roomCell = g_bspCells[room];
+            int closestRoom = -1;
+            int closestRoomDistance = cMaxInt;
+            for (int other = 0; other < roomCount; other = other + 1) {
+                if (other == room || connectedPairs[(room * roomCount) + other]
+                    || hallwayCounts[other] >= g_bspMaxHallwaysPerRoom) continue;
+                Cell otherCell = g_bspCells[other];
+                if (canConnectBSPRooms(map, roomCell, otherCell) == false) continue;
+                int deltaX = roomCell.roomX - otherCell.roomX;
+                int deltaZ = roomCell.roomZ - otherCell.roomZ;
+                int distance = (deltaX * deltaX) + (deltaZ * deltaZ);
+                if (distance < closestRoomDistance) {
+                    closestRoomDistance = distance;
+                    closestRoom = other;
+                }
+            }
+            if (closestRoom < 0) break;
+
+            Cell otherRoomCell = g_bspCells[closestRoom];
+            if (carveBSPHallwayBetween(map, roomCell, otherRoomCell) == false) {
+                return false;
+            }
+            connectedPairs[(room * roomCount) + closestRoom] = true;
+            connectedPairs[(closestRoom * roomCount) + room] = true;
+            hallwayCounts[room] = hallwayCounts[room] + 1;
+            hallwayCounts[closestRoom] = hallwayCounts[closestRoom] + 1;
+        }
     }
 
     clearBSPHallwayCellsInsideRooms(map, g_bspCells);
@@ -794,9 +835,10 @@ bool stepBSPMapGeneration(ref Map map) {
 }
 
 bool generateBSPMap(ref Map map, int maxRegions = cBSPDefaultMaxRegions,
-                    int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom) {
+                    int maxHallwaysPerRoom = cBSPMaxHallwaysPerRoom,
+                    int minHallwaysPerRoom = cBSPMinHallwaysPerRoom) {
     if (beginBSPMapGeneration(
-            map, maxRegions, maxHallwaysPerRoom) == false) {
+            map, maxRegions, maxHallwaysPerRoom, minHallwaysPerRoom) == false) {
         return false;
     }
     while (g_bspGenerationComplete == false) {

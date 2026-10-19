@@ -40,6 +40,8 @@ void generate()
     // common/ui/ui3.xs
     // common/ui/ui4.xs
 
+    // zombies/proto/utils.xs
+
     // common/pickups/pickupManager.xs
 
     // zombies/mapGen/sockets.xs
