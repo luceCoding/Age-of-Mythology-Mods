@@ -204,7 +204,7 @@ void addArmoryCommands(){
 
 void addSiegeCommands() {
     for (int p = 1; p <= cNumberPlayers; p++) {
-        addCommand(p, cUnitTypeSiegeWorks, 0, 0, pow(humanBaseGoldCost, 1), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 0, 0, pow(humanBaseGoldCost, 2), "Gold",
                     "+1 Sentry Tower",
                     "+1 Sentry Tower",
                     "resources\\shared\\static_color\\buildings\\sentry_tower_icon.png",
@@ -215,7 +215,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 0, 1, pow(humanBaseGoldCost, 1), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 0, 1, pow(humanBaseGoldCost, 2), "Gold",
                     "+1 Smoke Trap",
                     "+1 Smoke Trap",
                     "resources\\aztec\\static_color\\buildings\\smoke_trap_icon.png",
@@ -226,7 +226,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 0, 2, pow(humanBaseGoldCost, 1), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 0, 2, pow(humanBaseGoldCost, 2), "Gold",
                     "+1 Mirror Tower",
                     "+1 Mirror Tower",
                     "resources\\atlantean\\static_color\\buildings\\mirror_tower_icon.png",
@@ -237,7 +237,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 1, 0, pow(humanBaseGoldCost, 2), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 1, 0, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Sky Passage",
                     "+1 Sky Passage",
                     "resources\\atlantean\\static_color\\buildings\\sky_passage_icon.png",
@@ -248,7 +248,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 1, 1, pow(humanBaseGoldCost, 2), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 1, 1, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Spike Trap",
                     "+1 Spike Trap",
                     "resources\\aztec\\static_color\\buildings\\spike_trap_icon.png",
@@ -259,7 +259,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 1, 2, pow(humanBaseGoldCost, 2), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 1, 2, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Rock Tower",
                     "Highly armored tower with a taunt ability",
                     "resources\\norse_freyr\\player_color\\units\\rock_giant_icon.png",
@@ -270,7 +270,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 1, 3, pow(humanBaseGoldCost, 2), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 1, 3, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Flame Tower",
                     "Breaths a short ranged aoe fire attack",
                     "resources\\japanese\\player_color\\units\\wanyudo_icon.png",
@@ -281,7 +281,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 2, 0, pow(humanBaseGoldCost, 3), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 2, 0, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Asgardian Hill Fort",
                     "Fortress that applies a progressive freeze",
                     "resources\\norse_freyr\\static_color\\buildings\\asgardian_hill_fort_icon.png",
@@ -292,9 +292,9 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 2, 1, pow(humanBaseGoldCost, 3), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 2, 1, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 God Power Blocker",
-                    "Blocks god powers in a 20 tile radius",
+                    "Blocks god powers in a 30 tile radius",
                     "resources\\egyptian\\static_color\\buildings\\monument_to_villagers_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -303,7 +303,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 3, 1, pow(humanBaseGoldCost, 4), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 3, 1, pow(humanBaseGoldCost, 5), "Gold",
                     "+1 Pillar of Tlalocan",
                     "+1 Pillar of Tlalocan",
                     "resources\\aztec\\static_color\\god_powers\\pillar_of_tlalocan_icon.png",
@@ -314,7 +314,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 3, 0, pow(humanBaseGoldCost, 4), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 3, 0, pow(humanBaseGoldCost, 5), "Gold",
                     "+1 Statue of Lightning",
                     "+1 Statue of Lightning",
                     "resources\\spc\\static_color\\buildings\\statue_major_god_icon.png",

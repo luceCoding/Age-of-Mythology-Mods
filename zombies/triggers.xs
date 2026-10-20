@@ -86,6 +86,7 @@ active
         postModifyPlayerData();
         startDayAndNightCycle(false);
         startPassiveIncome();
+        registerBuildingTracker();
         xsDisableSelf();
     }
 }

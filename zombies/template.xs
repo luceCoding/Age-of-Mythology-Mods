@@ -56,6 +56,9 @@ void generate()
     // zombies/mapGen/tiles/bossTile.xs
     // zombies/mapGen/tileFactory.xs
 
+    // zombies/mapGen/director/buildingTracker.xs
+    // zombies/mapGen/director/director.xs
+
     // zombies/players/humans.xs
     // zombies/players/zombies.xs
     // zombies/players/balance.xs

@@ -18,7 +18,7 @@ float getSubLinearScale(int largerTeamSize = 1, int smallerTeamSize = 1, float k
     return(scaledMultiplier);
 }
 
-float getGenericTeamScale(int myTeamSize = 1, int opposingTeamSize = 1, float k = 0.7, float minFloor = 0.20, float maxCap = 5.00) {
+float getGenericTeamScale(int myTeamSize = 1, int opposingTeamSize = 1, float k = 0.7, float minFloor = 1.0, float maxCap = 6.0) {
     // 1. Guard clause against invalid input
     if (myTeamSize <= 0 || opposingTeamSize <= 0) {
         return 1.0;

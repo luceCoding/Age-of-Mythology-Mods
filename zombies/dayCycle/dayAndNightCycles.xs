@@ -22,13 +22,12 @@ void applyDayNightLighting(int transitionSeconds = 0) {
     if (g_isNight) {
         trSetLighting("night", transitionSeconds);
         trChatSend(0, "Night is upon us!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/egyptian/static_color/god_powers/eclipse_icon.png")));
-        nightBuffZombies();
+        onNightStartZombies();
     } else {
         trSetLighting("default", transitionSeconds);
         trChatSend(0, "Day is upon us!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/chinese/static_color/technologies/chasing_the_sun_icon.png")));
-        dayDebuffZombies();
+        onDayStartZombies();
         spawnBossTileUnits();
-        permaDailyBuffZombies();
     }
 }
 

@@ -48,7 +48,8 @@ const float humanBuildingsKillRewardGold = 2.0;
 const float humanBaseWoodCost = 2.0;
 const float humanBaseGoldCost = 2.0;
 
-const float scalingExponent = 0.7;
+const float g_alphaSensitivity = 1.0; // Responsiveness weight for zombie performance adjustments
+const float g_exponentK = 0.70; // Sub-linear team size exponent
 const float baseWellOfUrdWoodCost = 45.0;
 
 const int woodEvery20Seconds = 10;
