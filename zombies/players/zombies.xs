@@ -6,7 +6,6 @@ void addTrainBuilding(string targetProto = "", int cUnitType = -1, int p = -1, i
 }
 
 void setupZombiesPost(){
-    float goldTrickle = zombieBaseGoldTrickle * getHumanOverZombieScale();
 
     for (int p = 1; p <= cNumberPlayers-1; p++){
         for (int i = 0; i < g_zombieUnitTypes.size(); i++) {
@@ -36,11 +35,6 @@ void setupZombiesPost(){
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, g_humanUnitCount+1, cXSRelativityPercent);
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectRange, 10.0, cXSRelativityAssign);
             trProtoUnitActionSetEnabled(kbProtoUnitGetName(zombieType), p, "RangedAttackMyth", false);
-
-            trProtounitAssignAction(kbProtoUnitGetName(zombieType), kbProtoUnitGetName(cUnitTypePlentyVaultKOTH), "AutoGather", p);
-            trModifyProtounitActionUnitType(kbProtoUnitGetName(zombieType), "AutoGather", "Food", p, cXSActionProtoEffectWorkRate, 0, cXSRelativityAssign);
-            trModifyProtounitActionUnitType(kbProtoUnitGetName(zombieType), "AutoGather", "Wood", p, cXSActionProtoEffectWorkRate, 0, cXSRelativityAssign);
-            trModifyProtounitActionUnitType(kbProtoUnitGetName(zombieType), "AutoGather", "Gold", p, cXSActionProtoEffectWorkRate, goldTrickle, cXSRelativityAssign);
         }
         for (int i = 0; i < g_trashZombieTypes.size(); i++) {
             int zombieType = g_trashZombieTypes[i];
@@ -84,6 +78,7 @@ int spawnZombieLord(int p = -1, vector v = cInvalidVector){
     if (trCurrentPlayer() == p){
         cameraLookAt(v, 60.0, 45.0, 45.0);
     }
+    protoApplyAutoGather(p, g_zombieUnitTypes[0], 0, zombieBaseWoodTrickle, zombieBaseGoldTrickle * getHumanOverZombieScale(), 0);
     return zombieId;
 }
 
@@ -290,6 +285,30 @@ void initializeZombies(){
         trUnitCreateForced(
             kbProtoUnitGetName(cUnitTypeWallJail),
             g_bspZombieSpawnLocation.x + 6.0,
+            g_bspZombieSpawnLocation.y,
+            g_bspZombieSpawnLocation.z + sideOffset,
+            90.0, cHumanAIPlayer);
+        trUnitCreateForced(
+            kbProtoUnitGetName(cUnitTypeRugs),
+            g_bspZombieSpawnLocation.x + sideOffset,
+            g_bspZombieSpawnLocation.y,
+            g_bspZombieSpawnLocation.z - 9.0,
+            0.0, cHumanAIPlayer);
+        trUnitCreateForced(
+            kbProtoUnitGetName(cUnitTypeRugs),
+            g_bspZombieSpawnLocation.x + sideOffset,
+            g_bspZombieSpawnLocation.y,
+            g_bspZombieSpawnLocation.z + 9.0,
+            0.0, cHumanAIPlayer);
+        trUnitCreateForced(
+            kbProtoUnitGetName(cUnitTypeRugs),
+            g_bspZombieSpawnLocation.x - 9.0,
+            g_bspZombieSpawnLocation.y,
+            g_bspZombieSpawnLocation.z + sideOffset,
+            90.0, cHumanAIPlayer);
+        trUnitCreateForced(
+            kbProtoUnitGetName(cUnitTypeRugs),
+            g_bspZombieSpawnLocation.x + 9.0,
             g_bspZombieSpawnLocation.y,
             g_bspZombieSpawnLocation.z + sideOffset,
             90.0, cHumanAIPlayer);

@@ -36,7 +36,8 @@ void startMapGeneration(){
 }
 
 void startGame() {
-    trChatSend(cNumberPlayers, "This mod is currently a pre-alpha build and is under development. Everything is subject to change.");
+    trChatSend(cNumberPlayers, "This mod is currently an alpha build and is under development. Everything is subject to change.");
+    trChatSend(cNumberPlayers, "Discord: https://discord.gg/TfTvEY2AGb");
     trChatSend(cNumberPlayers, "Created by ItzJover.");
     trPlayerSetDiplomacy(0, cHumanAIPlayer, "Ally", true);
     startMapGeneration();

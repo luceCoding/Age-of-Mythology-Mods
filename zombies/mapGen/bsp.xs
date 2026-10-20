@@ -1,7 +1,7 @@
 const float cBSPCellSpacing = 3.0;
 const int cBSPMinimumLeafSize = 18;
-const int cBSPMinimumCorridorWidth = 3;
-const int cBSPMaximumCorridorWidth = 3;
+const int cBSPMinimumCorridorWidth = 4;
+const int cBSPMaximumCorridorWidth = 4;
 const int cBSPMinimumRoomInset = 1;
 const int cBSPMaximumRoomInset = 3;
 const int cBSPDefaultMaxRegions = configMapTileX / 4;

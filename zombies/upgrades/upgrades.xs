@@ -260,8 +260,8 @@ void addSiegeCommands() {
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 1, 2, pow(humanBaseGoldCost, 2), "Gold",
-                    "+1 Rock Giant",
-                    "+1 Rock Giant",
+                    "+1 Rock Tower",
+                    "Highly armored tower with a taunt ability",
                     "resources\\norse_freyr\\player_color\\units\\rock_giant_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -270,7 +270,40 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
+        addCommand(p, cUnitTypeSiegeWorks, 1, 3, pow(humanBaseGoldCost, 2), "Gold",
+                    "+1 Flame Tower",
+                    "Breaths a short ranged aoe fire attack",
+                    "resources\\japanese\\player_color\\units\\wanyudo_icon.png",
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeWanyudo));
+                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWanyudo), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
         addCommand(p, cUnitTypeSiegeWorks, 2, 0, pow(humanBaseGoldCost, 3), "Gold",
+                    "+1 Asgardian Hill Fort",
+                    "Fortress that applies a progressive freeze",
+                    "resources\\norse_freyr\\static_color\\buildings\\asgardian_hill_fort_icon.png",
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeHillFort));
+                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeHillFort), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
+        addCommand(p, cUnitTypeSiegeWorks, 2, 1, pow(humanBaseGoldCost, 3), "Gold",
+                    "+1 God Power Blocker",
+                    "Blocks god powers in a 20 tile radius",
+                    "resources\\egyptian\\static_color\\buildings\\monument_to_villagers_icon.png",
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeMonumentToVillagers));
+                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
+        addCommand(p, cUnitTypeSiegeWorks, 3, 1, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Pillar of Tlalocan",
                     "+1 Pillar of Tlalocan",
                     "resources\\aztec\\static_color\\god_powers\\pillar_of_tlalocan_icon.png",
@@ -525,10 +558,10 @@ void deregisterHumanCommands(int p = -1) {
 }
 
 void addZombieArmoryCommands(int p = -1) {
-    addZombieArmoryTierCommands(p, g_purchaseableT1ZombieTypes, 0, pow(zombieBaseGoldCost, 2));
-    addZombieArmoryTierCommands(p, g_purchaseableT2ZombieTypes, 1, pow(zombieBaseGoldCost, 3));
-    addZombieArmoryTierCommands(p, g_purchaseableT3ZombieTypes, 2, pow(zombieBaseGoldCost, 4));
-    addZombieArmoryTierCommands(p, g_purchaseableT4ZombieTypes, 3, pow(zombieBaseGoldCost, 5));
+    addZombieArmoryTierCommands(p, g_purchaseableT1ZombieTypes, 0, pow(zombieBaseGoldCost, 3));
+    addZombieArmoryTierCommands(p, g_purchaseableT2ZombieTypes, 1, pow(zombieBaseGoldCost, 4));
+    addZombieArmoryTierCommands(p, g_purchaseableT3ZombieTypes, 2, pow(zombieBaseGoldCost, 5));
+    addZombieArmoryTierCommands(p, g_purchaseableT4ZombieTypes, 3, pow(zombieBaseGoldCost, 6));
 }
 
 // Each command grants one charge of its god power; the cost rises with every purchase.

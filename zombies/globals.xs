@@ -16,7 +16,7 @@ const int cGaiaBaseWallHealth = 5000;
 const int cBaseJailWallHealth = 100000;
 const float cBaseJailWallLifespan = 120.0;
 const float cBaseHumanLOS = 10.0;
-const float cInitialWallHealthMultiplier = 3.0;
+const float cHumanWallHealthMultiplier = 2.0;
 
 int g_dayDurationMS = 120000;
 int g_nightDurationMS = 240000;
@@ -27,7 +27,7 @@ int g_dayNumber = 1;
 
 const int cTrashZombieSpawnTimer = 6000;
 const float cBaseZombieLifespan = 60.0;
-const float dailyZombiePermaHPBuffPercent = 1.05;
+const float dailyZombiePermaHPBuffPercent = 1.00;
 const float dailyZombiePermaLifespanBuff = 5.0;
 const int maxZombiePopulation = cNumberPlayers * 10;
 
@@ -42,12 +42,15 @@ const float trashZombieKillRewardWood = 2.0;
 const float trashZombieKillRewardGold = 1.0;
 const float zombieBaseWoodCost = 2.0;
 const float zombieBaseGoldCost = 2.0;
-const float zombieBaseGoldTrickle = 0.02;
+const float zombieBaseWoodTrickle = 0.75;
+const float zombieBaseGoldTrickle = 0.1;
 
 const float humanBuildingsKillRewardWood = 4.0;
 const float humanBuildingsKillRewardGold = 2.0;
 const float humanBaseWoodCost = 2.0;
 const float humanBaseGoldCost = 2.0;
+const float humanBaseWoodTrickle = 0.5;
+const float humanBaseGoldTrickle = 0.05;
 
 int[] g_humanInteractableTypes = default;
 int[] g_humanInteractableObjects = default;
@@ -118,7 +121,10 @@ void initializeGlobals(){
     g_upgradeableHumanBuildings.add(cUnitTypeSentryTower);
     g_upgradeableHumanBuildings.add(cUnitTypeMirrorTower);
     g_upgradeableHumanBuildings.add(cUnitTypeRockGiant);
+    g_upgradeableHumanBuildings.add(cUnitTypeWanyudo);
     g_upgradeableHumanBuildings.add(cUnitTypeSpikeTrap);
+    g_upgradeableHumanBuildings.add(cUnitTypeHillFort);
+    g_upgradeableHumanBuildings.add(cUnitTypeMonumentToVillagers);
     g_upgradeableHumanBuildings.add(cUnitTypeMonolithOfTlaloc);
     g_upgradeableHumanBuildings.add(cUnitTypeStatueOfLightning);
 
@@ -174,12 +180,12 @@ void initializeGlobals(){
     g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\ancestors_icon.png");
     g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\eclipse_icon.png");
 
-    g_purchaseableT3GodPowers.add(cProtoPowerUndermine);
     g_purchaseableT3GodPowers.add(cProtoPowerSmitingGust);
 
-    g_purchaseableT3GodPowerIcons.add("resources\norse\static_color\god_powers\undermine_icon.png");
     g_purchaseableT3GodPowerIcons.add("resources\japanese\static_color\god_powers\smiting_gust_icon.png");
 
     g_purchaseableT4GodPowers.add(cProtoPowerMeteor);
+    g_purchaseableT4GodPowers.add(cProtoPowerUndermine);
     g_purchaseableT4GodPowerIcons.add("resources\egyptian\static_color\god_powers\meteor_icon.png");
+    g_purchaseableT4GodPowerIcons.add("resources\norse\static_color\god_powers\undermine_icon.png");
 }

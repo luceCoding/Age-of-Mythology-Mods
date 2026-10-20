@@ -20,6 +20,7 @@ void generate()
     // common/strings.xs
     // common/sound.xs
     // common/kbQueries.xs
+    // common/proto/proto.xs
 
     createTypedScheduler("highFreqScheduler", buildStringTypeArray(), 25, 32);
     defineHashMapDefinition("int", "int", "cMinInt", "cMinInt");
