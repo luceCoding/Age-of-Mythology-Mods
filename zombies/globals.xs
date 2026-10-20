@@ -42,15 +42,17 @@ const float trashZombieKillRewardWood = 2.0;
 const float trashZombieKillRewardGold = 1.0;
 const float zombieBaseWoodCost = 2.0;
 const float zombieBaseGoldCost = 2.0;
-const float zombieBaseWoodTrickle = 0.75;
-const float zombieBaseGoldTrickle = 0.1;
 
 const float humanBuildingsKillRewardWood = 4.0;
 const float humanBuildingsKillRewardGold = 2.0;
 const float humanBaseWoodCost = 2.0;
 const float humanBaseGoldCost = 2.0;
-const float humanBaseWoodTrickle = 0.5;
-const float humanBaseGoldTrickle = 0.05;
+
+const float scalingExponent = 0.7;
+const float baseWellOfUrdWoodCost = 45.0;
+
+const int woodEvery20Seconds = 10;
+const int goldEvery20Seconds = 1;
 
 int[] g_humanInteractableTypes = default;
 int[] g_humanInteractableObjects = default;

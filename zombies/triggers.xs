@@ -85,6 +85,7 @@ active
         initializeHumans();
         postModifyPlayerData();
         startDayAndNightCycle(false);
+        startPassiveIncome();
         xsDisableSelf();
     }
 }

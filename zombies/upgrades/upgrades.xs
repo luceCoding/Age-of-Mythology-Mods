@@ -524,10 +524,10 @@ void addWellOfUrdTierCommands(int p = -1, ref int[] zombieTypes, int row = 0, fl
 }
 
 void addWellOfUrdCommands(int p = 0) {
-    addWellOfUrdTierCommands(p, g_purchaseableT1ZombieTypes, 0, pow(zombieBaseWoodCost, 1));
-    addWellOfUrdTierCommands(p, g_purchaseableT2ZombieTypes, 1, pow(zombieBaseWoodCost, 2));
-    addWellOfUrdTierCommands(p, g_purchaseableT3ZombieTypes, 2, pow(zombieBaseWoodCost, 3));
-    addWellOfUrdTierCommands(p, g_purchaseableT4ZombieTypes, 3, pow(zombieBaseWoodCost, 4));
+    addWellOfUrdTierCommands(p, g_purchaseableT1ZombieTypes, 0, pow(zombieBaseWoodCost, 2));
+    addWellOfUrdTierCommands(p, g_purchaseableT2ZombieTypes, 1, pow(zombieBaseWoodCost, 3));
+    addWellOfUrdTierCommands(p, g_purchaseableT3ZombieTypes, 2, pow(zombieBaseWoodCost, 4));
+    addWellOfUrdTierCommands(p, g_purchaseableT4ZombieTypes, 3, pow(zombieBaseWoodCost, 5));
 }
 
 // Each command raises the build limit of its zombie type by one.

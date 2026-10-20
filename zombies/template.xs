@@ -21,6 +21,7 @@ void generate()
     // common/sound.xs
     // common/kbQueries.xs
     // common/proto/proto.xs
+    // common/balance/balanceMath.xs
 
     createTypedScheduler("highFreqScheduler", buildStringTypeArray(), 25, 32);
     defineHashMapDefinition("int", "int", "cMinInt", "cMinInt");
@@ -57,6 +58,7 @@ void generate()
 
     // zombies/players/humans.xs
     // zombies/players/zombies.xs
+    // zombies/players/balance.xs
     // zombies/vote/vote.xs
     // zombies/dayCycle/dayAndNightCycles.xs
 

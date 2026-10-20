@@ -448,12 +448,6 @@ void preModifyPlayerData(){
 void postModifyPlayerData(){
 
     for (int p = 1; p <= cNumberPlayers; p++){
-
-        for (int i = 0; i < g_humanUnitTypes.size(); i++){
-            int unitType = g_humanUnitTypes[i];
-            protoApplyAutoGather(p, unitType, 0, humanBaseWoodTrickle, humanBaseGoldTrickle, 0);
-        }
-
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallGate), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallConnector), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallShort), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
