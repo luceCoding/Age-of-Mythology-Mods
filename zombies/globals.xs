@@ -42,15 +42,18 @@ const float trashZombieKillRewardWood = 2.0;
 const float trashZombieKillRewardGold = 1.0;
 const float zombieBaseWoodCost = 2.0;
 const float zombieBaseGoldCost = 2.0;
+const float baseWellOfUrdWoodCost = 45.0;
 
 const float humanBuildingsKillRewardWood = 4.0;
 const float humanBuildingsKillRewardGold = 2.0;
 const float humanBaseWoodCost = 2.0;
 const float humanBaseGoldCost = 2.0;
 
-const float g_alphaSensitivity = 1.0; // Responsiveness weight for zombie performance adjustments
+const float g_alphaSensitivity = 2.5; // Responsiveness weight for zombie performance adjustments
 const float g_exponentK = 0.70; // Sub-linear team size exponent
-const float baseWellOfUrdWoodCost = 45.0;
+const float g_targetZombieDestruction = 0.2;
+const float g_minDailyBuff = 1.01;
+const float g_maxDailyBuff = 1.5;
 
 const int woodEvery20Seconds = 10;
 const int goldEvery20Seconds = 1;

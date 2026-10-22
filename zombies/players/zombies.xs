@@ -7,30 +7,31 @@ void addTrainBuilding(string targetProto = "", int cUnitType = -1, int p = -1, i
 
 void setupZombiesPost(){
 
-    float scaleFactor = getGenericTeamScale(g_zombieUnitCount, g_humanUnitCount, g_exponentK);
-    log(-1, "Initial scale factor: " + scaleFactor);
+    float scaleFactor = g_director.getTeamSizeScale(g_zombieUnitCount, g_humanUnitCount);
 
     for (int p = 1; p <= cNumberPlayers-1; p++){
+
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Wood", p, cXSPUResourceEffectCost, baseWellOfUrdWoodCost, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+        trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeWellOfUrd), "AbstractTemple", true);
+        trModifyProtounitUnitType(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Unit", p, cXSPUUnitTypeEffectAddNotContainType, 0.0, cXSRelativityAssign);
+        trModifyProtounitUnitType(kbProtoUnitGetName(cUnitTypeWellOfUrd), "LogicalTypePickable", p, cXSPUUnitTypeEffectAddContainType, g_trashZombieTypes.size()-1, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectMaxContained, g_trashZombieTypes.size()-1, cXSRelativityAssign);
+        trProtounitAddCommand(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, "Delete", 3, 5);
+        trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeWellOfUrd), "Deleteable", true);
+
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeDwarvenArmory), "Wood", p, cXSPUResourceEffectCost, baseWellOfUrdWoodCost * 1.25, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeDwarvenArmory), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+
+        trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMonumentToGods), "Wood", p, cXSPUResourceEffectCost, baseWellOfUrdWoodCost * 1.5, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToGods), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+
         for (int i = 0; i < g_zombieUnitTypes.size(); i++) {
             int zombieType = g_zombieUnitTypes[i];
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeWellOfUrd, p, 0, 2, 0);
-            trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Wood", p, cXSPUResourceEffectCost, baseWellOfUrdWoodCost, cXSRelativityAssign);
-            trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
-            trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeWellOfUrd), "AbstractTemple", true);
-            trModifyProtounitUnitType(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Unit", p, cXSPUUnitTypeEffectAddNotContainType, 0.0, cXSRelativityAssign);
-            trModifyProtounitUnitType(kbProtoUnitGetName(cUnitTypeWellOfUrd), "LogicalTypePickable", p, cXSPUUnitTypeEffectAddContainType, g_trashZombieTypes.size()-1, cXSRelativityAssign);
-            trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectMaxContained, g_trashZombieTypes.size()-1, cXSRelativityAssign);
-            trProtounitAddCommand(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, "Delete", 3, 5);
-            trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeWellOfUrd), "Deleteable", true);
-
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeDwarvenArmory, p, 0, 3, 1);
-            trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeDwarvenArmory), "Wood", p, cXSPUResourceEffectCost, baseWellOfUrdWoodCost * 1.25, cXSRelativityAssign);
-            trModifyProtounitData(kbProtoUnitGetName(cUnitTypeDwarvenArmory), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
-
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeMonumentToGods, p, 0, 4, 1);
-            trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMonumentToGods), "Wood", p, cXSPUResourceEffectCost, baseWellOfUrdWoodCost * 1.5, cXSRelativityAssign);
-            trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToGods), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
-
+            trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopCapAddition, maxZombiePopulation, cXSRelativityAssign);
             trProtounitModifySpawnData(kbProtoUnitGetName(zombieType), p, kbProtoUnitGetName(cUnitTypeSkeleton), 0, 1.0, cXSRelativityAssign, -1, -1);
             trProtoUnitSetFlag(p, kbProtoUnitGetName(zombieType), "KnockoutDeath", false);
@@ -76,6 +77,7 @@ int spawnZombieLord(int p = -1, vector v = cInvalidVector){
         kbProtoUnitGetName(g_zombieUnitTypes[0]),
         v.x, v.y, v.z,
         0, p);
+    trModifyProtounitData(kbProtoUnitGetName(g_zombieUnitTypes[0]), p, cXSProtoEffectHitpoints, 1.1, cXSRelativityPercent);
     selectSingle(zombieId);
     trUnitChangeName("Zombie Overlord");
     g_zombieUnitIDs.add(zombieId);
@@ -92,43 +94,35 @@ int createZombieLord(int p = -1, vector v = cInvalidVector){
 }
 
 void permaDailyBuffZombies(){
-    // 1. Process yesterday's/today's tower destruction telemetry via Director
-    float dailyPerformanceFactor = g_director.processEndOfDay(); // Returns e.g. 1.10 (+10%) or 0.92 (-8%)
-    
-    // 2. Get baseline team size ratio scale (e.g., 10v1 ratio scaling)
-    float asymmetryScale = g_director.getZombieAsymmetryScale();
 
-    // 3. Combine team scaling with live performance feedback
-    float finalHPBuff = asymmetryScale * dailyPerformanceFactor;
-    log(-1, "Daily buff: "+finalHPBuff);
+    float finalHPBuff = g_director.processEndOfDay();
 
     for (int p = 1; p < cNumberPlayers; p++) {
         if (g_finalTeams[p] == 2){
             trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-
             for (int i = 0; i < g_trashZombieTypes.size(); i++) {
                 int zombieType = g_trashZombieTypes[i];
-                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, dailyZombiePermaLifespanBuff, cXSRelativityAbsolute);
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, 5.0, cXSRelativityAbsolute);
                 trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, finalHPBuff, cXSRelativityPercent);
             }
             for (int i = 0; i < g_purchaseableT1ZombieTypes.size(); i++) {
                 int zombieType = g_purchaseableT1ZombieTypes[i];
-                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, dailyZombiePermaLifespanBuff, cXSRelativityAbsolute);
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, 5.0, cXSRelativityAbsolute);
                 trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, finalHPBuff, cXSRelativityPercent);
             }
             for (int i = 0; i < g_purchaseableT2ZombieTypes.size(); i++) {
                 int zombieType = g_purchaseableT2ZombieTypes[i];
-                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, dailyZombiePermaLifespanBuff, cXSRelativityAbsolute);
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, 5.0, cXSRelativityAbsolute);
                 trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, finalHPBuff, cXSRelativityPercent);
             }
             for (int i = 0; i < g_purchaseableT3ZombieTypes.size(); i++) {
                 int zombieType = g_purchaseableT3ZombieTypes[i];
-                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, dailyZombiePermaLifespanBuff, cXSRelativityAbsolute);
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, 5.0, cXSRelativityAbsolute);
                 trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, finalHPBuff, cXSRelativityPercent);
             }
             for (int i = 0; i < g_purchaseableT4ZombieTypes.size(); i++) {
                 int zombieType = g_purchaseableT4ZombieTypes[i];
-                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, dailyZombiePermaLifespanBuff, cXSRelativityAbsolute);
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, 5.0, cXSRelativityAbsolute);
                 trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, finalHPBuff, cXSRelativityPercent);
             }
             for (int i = 0; i < g_zombieUnitTypes.size(); i++) {
@@ -142,11 +136,12 @@ void permaDailyBuffZombies(){
 }
 
 void onDayStartZombies(){
-    // Snapshot human building state or reset daily trackers if needed
 }
 
 void onNightStartZombies(){
-    permaDailyBuffZombies();
+    if (g_dayNumber > 1){
+        permaDailyBuffZombies();
+    }
 }
 
 // Returns a random living human unit, or -1 if none (dead ones are pruned).
@@ -166,7 +161,7 @@ int getRandomLivingHumanPlayer(){
 
 int getRandomAliveBuilding(){
     int p = getRandomLivingHumanPlayer();
-    return g_buildingTracker.getRandomPlayerBuildingId(p);
+    return g_towerTracker.getRandomPlayerBuildingId(p);
 }
 
 // Spawns a minion at the zombie unit's position, owned by the zombie's player.
@@ -351,7 +346,6 @@ void initializeZombies(){
             g_bspZombieSpawnLocation.z + offsetZ));
         registerZombieRespawn(p);
         addWellOfUrdCommands(p);
-        // trTechSetStatus(p, cTechRelicRingOfNibelung, cTechStatusActive);
         spawnIndex = spawnIndex + 1;
     }
 }

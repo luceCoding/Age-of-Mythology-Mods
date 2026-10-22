@@ -6,8 +6,12 @@ void startPassiveIncome(){
                 trPlayerGrantResources(p, "Gold", goldEvery20Seconds);
             }
             else {
-                trPlayerGrantResources(p, "Wood", woodEvery20Seconds + g_dayNumber);
-                trPlayerGrantResources(p, "Gold", goldEvery20Seconds + g_dayNumber);
+                trPlayerGrantResources(p, "Wood", woodEvery20Seconds);
+                trPlayerGrantResources(p, "Gold", goldEvery20Seconds);
+                if ((iterations % 3) == 0){
+                    trPlayerGrantResources(p, "Wood", g_dayNumber);
+                    trPlayerGrantResources(p, "Gold", g_dayNumber);
+                }
             }
         }
         return true;

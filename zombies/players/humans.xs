@@ -45,8 +45,15 @@ void initializeHumans(){
 }
 
 void convertBuildingsToHumanAI(int p = 0){
-    applyToUnitsOfPlayer(p, cUnitTypeBuilding, cUnitStateAlive, [](int unitID = -1) -> void {
-        selectSingle(unitID);
+    int[] playerTowers = g_towerTracker.getAllPlayerBuildings(p);
+    for (int i = 0; i < playerTowers.size(); i++) {
+        int buildingID = playerTowers[i];
+        selectSingle(buildingID);
         trUnitConvert(cHumanAIPlayer);
-    });
-}
+    }
+    int[] playerWalls = g_wallTracker.getAllPlayerBuildings(p);
+    for (int i = 0; i < playerWalls.size(); i++) {
+        int buildingID = playerWalls[i];
+        selectSingle(buildingID);
+        trUnitConvert(cHumanAIPlayer);
+    }}

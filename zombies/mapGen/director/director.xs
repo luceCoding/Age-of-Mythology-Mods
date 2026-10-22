@@ -1,29 +1,29 @@
 class Director {
     // --- Configurable Tuning Parameters ---
-    float m_targetDestruction   = 0.35;  // Target daily tower destruction ratio (35%)
+    float m_alphaSensitivity    = 0.4;
+    float m_exponentK           = 0.70;
+    float m_targetDestruction   = 0.2;
     
     // Configurable Daily Multiplier Clamps
     float m_minDailyFactor      = 1.0;  // Max daily nerf
-    float m_maxDailyFactor      = 2.0;  // Max daily buff
+    float m_maxDailyFactor      = 1.5;  // Max daily buff
 
     float m_lastDailyFactor     = 1.00;  // Calculated relative factor for the upcoming day
 
-    void setDailyFactorClamps(float minFactor = 1.00, float maxFactor = 1.50) {
-        m_minDailyFactor = minFactor;
-        m_maxDailyFactor = maxFactor;
-    }
-
-    void setTargetDestruction(float target = 0.35) {
-        m_targetDestruction = target;
+    void initialize(float alphaSensitivity = 0.4, float exponentK = 0.70, float targetDestruction = 0.2, float minDailyFactor = 1.0, float maxDailyFactor = 1.5) {
+        m_alphaSensitivity = alphaSensitivity;
+        m_exponentK = exponentK;
+        m_targetDestruction = targetDestruction;
+        m_minDailyFactor = minDailyFactor;
+        m_maxDailyFactor = maxDailyFactor;
     }
 
     int getTotalHumanAliveBuildings() {
         int total = 0;
         for (int p = 1; p < cNumberPlayers; p++) {
             if (g_finalTeams[p] == 2) continue; // Skip Zombie team
-            total = total + g_buildingTracker.getAlivePlayerBuildingCount(p);
+            total = total + g_towerTracker.getAlivePlayerBuildingCount(p);
         }
-        // log(-1, "Total human alive buildings: " + total);
         return total;
     }
 
@@ -31,23 +31,22 @@ class Director {
         int total = 0;
         for (int p = 1; p < cNumberPlayers; p++) {
             if (g_finalTeams[p] == 2) continue;
-            total = total + g_buildingTracker.getDeadPlayerBuildingCount(p);
+            total = total + g_towerTracker.getDeadPlayerBuildingCount(p);
         }
-        // log(-1, "Total human dead buildings today: " + total);
         return total;
     }
 
     void resetHumanDeadBuildingsToday() {
         for (int p = 1; p < cNumberPlayers; p++) {
             if (g_finalTeams[p] == 2) continue;
-            g_buildingTracker.resetDeadPlayerBuildingCount(p);
+            g_towerTracker.resetDeadPlayerBuildingCount(p);
         }
     }
 
     int getHumanPlayerCount() {
         int count = 0;
         for (int p = 1; p < cNumberPlayers; p++) {
-            if (g_finalTeams[p] == 1 && kbPlayerIsHuman(p)) {
+            if (g_finalTeams[p] == 1 && kbPlayerIsHuman(p) && trPlayerIsDefeatedOrResigned(p) == false) {
                 count = count + 1;
             }
         }
@@ -58,12 +57,16 @@ class Director {
     int getZombiePlayerCount() {
         int count = 0;
         for (int p = 1; p < cNumberPlayers; p++) {
-            if (g_finalTeams[p] == 2) {
+            if (g_finalTeams[p] == 2 && kbPlayerIsHuman(p) && trPlayerIsDefeatedOrResigned(p) == false) {
                 count = count + 1;
             }
         }
         if (count <= 0) return 1;
         return count;
+    }
+
+    float getTeamSizeScale(int myTeamSize = 1, int opposingTeamSize = 1) {
+        return getGenericTeamScale(myTeamSize, opposingTeamSize, m_exponentK);
     }
 
     // Evaluated at Midnight/Dawn: Uses your tracker's alive and dead building counts
@@ -83,7 +86,7 @@ class Director {
         float delta = m_targetDestruction - actualDestruction;
 
         // Raw factor calculation
-        float rawFactor = 1.0 + (g_alphaSensitivity * delta);
+        float rawFactor = 1.0 + (m_alphaSensitivity * delta);
 
         // Clamp daily factor
         if (rawFactor < m_minDailyFactor) rawFactor = m_minDailyFactor;
@@ -106,7 +109,7 @@ class Director {
     float getZombieAsymmetryScale() {
         int zombies = getZombiePlayerCount();
         int humans = getHumanPlayerCount();
-        return getGenericTeamScale(zombies, humans, g_exponentK);
+        return getTeamSizeScale(zombies, humans);
     }
 };
 

@@ -46,6 +46,38 @@ float sqrt(float s = 1.0) {
     return ((h + s / h) / 2.0);
 }
 
+float powFloat(float n = 0.0, float x = 0.0) {
+    if (x == 0.0) {
+        return 1.0;
+    }
+
+    bool invert = false;
+    if (x < 0.0) {
+        x = 0.0 - x;
+        invert = true;
+    }
+
+    int wholeExponent = x;
+    float fractionalExponent = x - xsIntToFloat(wholeExponent);
+    float result = pow(n, wholeExponent);
+    float root = n;
+
+    for (int i = 0; i < 24; i++) {
+        root = sqrt(root);
+        fractionalExponent = fractionalExponent * 2.0;
+        if (fractionalExponent >= 1.0) {
+            result = result * root;
+            fractionalExponent = fractionalExponent - 1.0;
+        }
+    }
+
+    if (invert) {
+        return 1.0 / result;
+    }
+
+    return result;
+}
+
 float max(float a = 0.0, float b = 0.0) {
     if (a > b) {
         return (a);

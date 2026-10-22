@@ -141,7 +141,7 @@ void addArmoryCommands(){
                         applyActionUpgradeToAllHumanBuildings(unitId, cXSActionEffectDamagePierce, 1.05, cXSRelativityPercent);
                         applyActionUpgradeToAllHumanBuildings(unitId, cXSActionEffectDamageCrush, 1.05, cXSRelativityPercent);
                         applyActionUpgradeToAllHumanBuildings(unitId, cXSActionEffectDamageDivine, 1.05, cXSRelativityPercent);
-                        increaseCommandCost(unitId, 1.0);
+                        increaseCommandCost(unitId, 2.0);
                     }
                 );
         addCommand(p, cUnitTypeArmory, 0, 1, pow(humanBaseGoldCost, 1), "Gold",
@@ -150,17 +150,17 @@ void addArmoryCommands(){
                     "resources\\in_game\\stat_rof.png",
                     [](int unitId = -1) -> void {
                         applyActionUpgradeToAllHumanBuildings(unitId, cXSActionEffectROF, 0.95, cXSRelativityPercent);
-                        increaseCommandCost(unitId, 1.0);
+                        increaseCommandCost(unitId, 2.0);
                     }
                 );
         addCommand(p, cUnitTypeArmory, 0, 2, pow(humanBaseGoldCost, 1), "Gold",
-                    "+1 Range for All Buildings",
-                    "+1 Range for All Buildings",
+                    "+5% Range for All Buildings",
+                    "+5% Range for All Buildings",
                     "resources\\in_game\\stat_range.png",
                     [](int unitId = -1) -> void {
-                        applyActionUpgradeToAllHumanBuildings(unitId, cXSActionEffectRange, 1.0);
-                        applyDataUpgradeToAllHumanBuildings(unitId, cXSProtoEffectLOS, 1.0);
-                        increaseCommandCost(unitId, 1.0);
+                        applyActionUpgradeToAllHumanBuildings(unitId, cXSActionEffectRange, 1.05, cXSRelativityPercent);
+                        applyDataUpgradeToAllHumanBuildings(unitId, cXSProtoEffectLOS, 1.05, cXSRelativityPercent);
+                        increaseCommandCost(unitId, 2.0);
                     }
                 );
         addCommand(p, cUnitTypeArmory, 1, 0, pow(humanBaseGoldCost, 1), "Gold",
@@ -303,18 +303,7 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 3, 1, pow(humanBaseGoldCost, 5), "Gold",
-                    "+1 Pillar of Tlalocan",
-                    "+1 Pillar of Tlalocan",
-                    "resources\\aztec\\static_color\\god_powers\\pillar_of_tlalocan_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc));
-                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeSiegeWorks, 3, 0, pow(humanBaseGoldCost, 5), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 2, 2, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Statue of Lightning",
                     "+1 Statue of Lightning",
                     "resources\\spc\\static_color\\buildings\\statue_major_god_icon.png",
@@ -322,6 +311,17 @@ void addSiegeCommands() {
                         int p = kbUnitGetPlayerID(unitId);
                         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeStatueOfLightning));
                         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
+        addCommand(p, cUnitTypeSiegeWorks, 3, 0, pow(humanBaseGoldCost, 5), "Gold",
+                    "+1 Pillar of Tlalocan",
+                    "+1 Pillar of Tlalocan",
+                    "resources\\aztec\\static_color\\god_powers\\pillar_of_tlalocan_icon.png",
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc));
+                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
@@ -345,7 +345,7 @@ void addEconomicGuildCommands(){
                     "resources\\in_game\\stat_speed.png",
                     [](int unitId = -1) -> void {
                         applyDataUpgradeToAllHumanTypes(unitId, cXSProtoEffectSpeed, 1.05, cXSRelativityPercent);
-                        increaseCommandCost(unitId, 1.0);
+                        increaseCommandCost(unitId, 2.0);
                     }
                 );
         addCommand(p, cUnitTypeEconomicGuild, 0, 2, pow(humanBaseGoldCost, 1), "Gold",

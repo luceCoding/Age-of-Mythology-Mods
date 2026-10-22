@@ -8,7 +8,7 @@ float getSubLinearScale(int largerTeamSize = 1, int smallerTeamSize = 1, float k
     }
     
     float rawRatio = xsIntToFloat(largerTeamSize) / xsIntToFloat(smallerTeamSize);
-    float scaledMultiplier = pow(rawRatio, k);
+    float scaledMultiplier = powFloat(rawRatio, k);
     
     float maxCap = 5.0;
     if (scaledMultiplier > maxCap) {
@@ -28,7 +28,7 @@ float getGenericTeamScale(int myTeamSize = 1, int opposingTeamSize = 1, float k 
     float ratio = xsIntToFloat(opposingTeamSize) / xsIntToFloat(myTeamSize);
 
     // 3. Sub-linear power law scaling
-    float scale = pow(ratio, k);
+    float scale = powFloat(ratio, k);
 
     // 4. Clamps to prevent extreme out-of-bounds values
     if (scale < minFloor) scale = minFloor;

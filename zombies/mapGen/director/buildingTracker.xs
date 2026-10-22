@@ -1,7 +1,7 @@
 class BuildingTracker
 {
    int m_maxPlayers = cNumberPlayers+1;
-   int m_maxBuildingsPerPlayer = 2048;
+   int m_maxBuildingsPerPlayer = 1024;
    int[] m_counts = default;
    int[] m_deadCounts = default; // Cumulative buildings lost per player
    int[] m_unitIds = default;
@@ -122,22 +122,30 @@ class BuildingTracker
    }
 };
 
-BuildingTracker g_buildingTracker;
+BuildingTracker g_towerTracker;
+BuildingTracker g_wallTracker;
 
 void registerBuildingTracker(){
    for (int p = 1; p < cNumberPlayers; p++) {
       if (g_finalTeams[p] == 2) continue;
       for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++){
          int buildingType = g_upgradeableHumanBuildings[i];
-         if (buildingType >= cUnitTypeWallShort && buildingType <= cUnitTypeWallGate) continue;
-         g_OnCreationListener.register(p, g_upgradeableHumanBuildings[i], false, [](int unitId = -1) -> void {
-               g_buildingTracker.addBuilding(unitId);
-            }
-         );
-         g_OnCreationListener.register(p, cUnitTypeSentinel, false, [](int unitId = -1) -> void {
-               g_buildingTracker.addBuilding(unitId);
-            }
-         );
+         if (buildingType >= cUnitTypeWallShort && buildingType <= cUnitTypeWallGate) {
+            g_OnCreationListener.register(p, buildingType, false, [](int unitId = -1) -> void {
+                  g_wallTracker.addBuilding(unitId);
+               }
+            );
+         }
+         else {
+            g_OnCreationListener.register(p, buildingType, false, [](int unitId = -1) -> void {
+                  g_towerTracker.addBuilding(unitId);
+               }
+            );
+         }
       }
+      g_OnCreationListener.register(p, cUnitTypeSentinel, false, [](int unitId = -1) -> void {
+            g_towerTracker.addBuilding(unitId);
+         }
+      );
    }
 }

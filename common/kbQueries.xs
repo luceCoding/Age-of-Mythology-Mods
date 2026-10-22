@@ -57,6 +57,7 @@ void applyToUnitsInArea(vector centerPos = cInvalidVector, float radius = 0.0, i
     }
 }
 
+// WARNING: Slow, may cause performance issues on large numbers of units
 void applyToUnitsOfPlayer(int playerID = 1, int cUnitType = cUnitTypeUnit, int unitState = cUnitStateAlive,
                           void(int) apply = [](int unitID = -1) -> void {}) {
     xsSetContextPlayer(playerID);

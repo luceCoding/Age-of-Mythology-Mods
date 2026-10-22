@@ -272,7 +272,6 @@ void preModifyPlayerData(){
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeHillFort), p, cXSProtoEffectBuildPoints, 35.0, cXSRelativityAssign);
         trProtounitActionSpecialEffect(kbProtoUnitGetName(cUnitTypeHillFort), "RangedAttack", p, cOnHitEffectProgFreeze, "All", xsFloatToInt(2.0 * 1000.0), 1.0, 0.2);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeHillFort), "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeHillFort), p, cXSProtoEffectHitpoints, 0.5, cXSRelativityPercent);
 
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "MonolithStrike", p, cXSActionEffectRange, cBaseHumanLOS * 1.5, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.5, cXSRelativityAssign);
@@ -457,6 +456,7 @@ void postModifyPlayerData(){
 
         trTechSetStatus(p, cTechWatchTower, cTechStatusActive);
         trTechSetStatus(p, cTechTzompantliWatchTower, cTechStatusActive);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
     }
 
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * (g_zombieUnitCount+1), cXSRelativityAssign);

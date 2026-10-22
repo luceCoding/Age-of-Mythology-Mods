@@ -86,6 +86,13 @@ active
         postModifyPlayerData();
         startDayAndNightCycle(false);
         startPassiveIncome();
+        g_director.initialize(
+            g_alphaSensitivity,
+            g_exponentK,
+            g_targetZombieDestruction,
+            g_minDailyBuff,
+            g_maxDailyBuff
+        );
         registerBuildingTracker();
         xsDisableSelf();
     }
