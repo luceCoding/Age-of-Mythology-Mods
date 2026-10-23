@@ -55,7 +55,7 @@ const float g_alphaSensitivity = 2.5; // Responsiveness weight for zombie perfor
 const float g_exponentK = 0.70; // Sub-linear team size exponent
 const float g_targetZombieDestruction = 0.25;
 const float g_minDailyBuff = 1.01;
-const float g_maxDailyBuff = 1.5;
+const float g_maxDailyBuff = 1.25;
 
 const int woodEvery20Seconds = 10;
 const int goldEvery20Seconds = 1;
@@ -138,12 +138,13 @@ void initializeGlobals(){
     g_upgradeableHumanBuildings.add(cUnitTypeMonumentToVillagers);
     g_upgradeableHumanBuildings.add(cUnitTypeMonolithOfTlaloc);
     g_upgradeableHumanBuildings.add(cUnitTypeStatueOfLightning);
+    g_upgradeableHumanBuildings.add(cUnitTypeSentinel);
 
     g_trashZombieTypes.add(cUnitTypeMinion);
     g_trashZombieTypes.add(cUnitTypeTlacanexquimilliSPC);
     g_trashZombieTypes.add(cUnitTypeTartarianSpawn);
-    g_trashZombieTypes.add(cUnitTypeWarElephant);
-    g_trashZombieTypes.add(cUnitTypePolyphemus);
+    g_trashZombieTypes.add(cUnitTypeTzitzimitl);
+    g_trashZombieTypes.add(cUnitTypeMummy);
 
     g_purchaseableT1ZombieTypes.add(cUnitTypeAnubite);
     g_purchaseableT1ZombieTypes.add(cUnitTypeCyclops);
@@ -166,7 +167,8 @@ void initializeGlobals(){
     g_purchaseableT3ZombieTypes.add(cUnitTypeOnmoraki);
 
     g_purchaseableT4ZombieTypes.add(cUnitTypeNidhogg);
-    g_purchaseableT4ZombieTypes.add(cUnitTypeQuinametzin);
+    g_purchaseableT4ZombieTypes.add(cUnitTypePolyphemus);
+    // g_purchaseableT4ZombieTypes.add(cUnitTypeQuinametzin);
 
     g_bossTileUnitTypes.add(cUnitTypeSphinx);
     g_bossTileUnitTypes.add(cUnitTypeTroll);
@@ -201,4 +203,8 @@ void initializeGlobals(){
     g_purchaseableT4GodPowers.add(cProtoPowerUndermine);
     g_purchaseableT4GodPowerIcons.add("resources\egyptian\static_color\god_powers\meteor_icon.png");
     g_purchaseableT4GodPowerIcons.add("resources\norse\static_color\god_powers\undermine_icon.png");
+
+    g_otherZombieTypes.add(cUnitTypeCarnivora);
+    g_otherZombieTypes.add(cUnitTypeInfestedDen);
+    g_otherZombieTypes.add(cUnitTypeLargeScorpion);
 }

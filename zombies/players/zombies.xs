@@ -50,6 +50,8 @@ void setupZombiesPost(){
             trModifyProtounitResource(kbProtoUnitGetName(zombieType), "Gold", p, cXSPUResourceEffectKillReward, trashZombieKillRewardGold, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, cBaseZombieLifespan, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
+            trModifyProtounitAction(kbProtoUnitGetName(zombieType), "HandAttack", p, cXSActionEffectDamageCrush, i * 2, cXSRelativityAssign);
+            trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageCrush, i * 2, cXSRelativityAssign);
         }
         for (int i = 0; i < g_purchaseableT1ZombieTypes.size(); i++) {
             int zombieType = g_purchaseableT1ZombieTypes[i];
@@ -70,6 +72,10 @@ void setupZombiesPost(){
             int zombieType = g_purchaseableT4ZombieTypes[i];
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, cBaseZombieLifespan, cXSRelativityAssign);
+        }
+        for (int i = 0; i < g_otherZombieTypes.size(); i++) {
+            int zombieType = g_otherZombieTypes[i];
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
         }
     }
 }
@@ -140,6 +146,10 @@ void permaDailyBuffZombies(){
                 trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, finalHPBuff, cXSRelativityPercent);
                 trModifyProtounitAction(kbProtoUnitGetName(zombieType), "HandAttack", p, cXSActionEffectDamageDivine, max(1, g_humanUnitCount), cXSRelativityAbsolute);
                 trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageDivine, max(1, g_humanUnitCount), cXSRelativityAbsolute);
+            }
+            for (int i = 0; i < g_otherZombieTypes.size(); i++) {
+                int zombieType = g_otherZombieTypes[i];
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, finalHPBuff, cXSRelativityPercent);
             }
         }
     }
