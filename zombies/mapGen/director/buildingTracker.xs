@@ -14,23 +14,28 @@ class BuildingTracker
       }
    }
 
-   // Removes dead buildings by overwriting them with the last tracked building (pop and swap).
+   // Pop and swap: overwrite slot with the last tracked building.
+   void removeAt(int p = -1, int index = 0){
+      int base = p * m_maxBuildingsPerPlayer;
+      int last = m_counts[p] - 1;
+      m_unitIds[base + index] = m_unitIds[base + last];
+      m_unitIds[base + last] = -1;
+      m_counts[p] = last;
+      m_deadCounts[p] = m_deadCounts[p] + 1;
+   }
+
+   // Single pass; a swapped-in building is rechecked at the same index.
    void pruneDeadBuildings(int p = -1){
-      int count = m_counts[p];
       int base = p * m_maxBuildingsPerPlayer;
       int i = 0;
-      while (i < count) {
+      while (i < m_counts[p]) {
          selectSingle(m_unitIds[base + i]);
          if (trUnitDead()) {
-            count = count - 1;
-            m_unitIds[base + i] = m_unitIds[base + count];
-            m_unitIds[base + count] = -1;
-            m_deadCounts[p] = m_deadCounts[p] + 1;
+            removeAt(p, i);
          } else {
-            i = i + 1;
+            i++;
          }
       }
-      m_counts[p] = count;
    }
 
    void resetDeadPlayerBuildingCount(int p = -1){
@@ -90,10 +95,7 @@ class BuildingTracker
          if (trUnitDead() == false) {
             return unitId;
          }
-         m_counts[p] = m_counts[p] - 1;
-         m_deadCounts[p] = m_deadCounts[p] + 1;
-         m_unitIds[base + index] = m_unitIds[base + m_counts[p]];
-         m_unitIds[base + m_counts[p]] = -1;
+         removeAt(p, index);
       }
       return -1;
    }

@@ -1,6 +1,5 @@
 const int VOTE_ROLE_HUMAN = 1;
 const int VOTE_ROLE_ZOMBIE = 2;
-const int VOTE_DURATION_MS = 60000;
 const string VOTE_HUMAN_ICON = "resources/atlantean/player_color/units/villager_atlantean_hero_icon.png";
 const string VOTE_ZOMBIE_ICON = "resources/egyptian/static_color/god_powers/ancestors_icon.png";
 

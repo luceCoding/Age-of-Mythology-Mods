@@ -14,16 +14,18 @@ const int cStartingGold = 10;
 const int cGaiaBaseGateHealth = 500;
 const int cGaiaBaseWallHealth = 5000;
 const int cBaseJailWallHealth = 100000;
-const float cBaseJailWallLifespan = 120.0;
 const float cBaseHumanLOS = 10.0;
 const float cHumanWallHealthMultiplier = 2.0;
 
+const int VOTE_DURATION_MS = 60000;
 int g_dayDurationMS = 120000;
 int g_nightDurationMS = 240000;
 bool g_isNight = false;
 bool g_dayCycleActive = false;
 int g_phaseEndTimeMS = 0;
 int g_dayNumber = 1;
+int g_daysToSurvive = 7;
+int bloodMoonCycle = 7;
 
 const int cTrashZombieSpawnTimer = 6000;
 const float cBaseZombieLifespan = 60.0;
@@ -51,7 +53,7 @@ const float humanBaseGoldCost = 2.0;
 
 const float g_alphaSensitivity = 2.5; // Responsiveness weight for zombie performance adjustments
 const float g_exponentK = 0.70; // Sub-linear team size exponent
-const float g_targetZombieDestruction = 0.2;
+const float g_targetZombieDestruction = 0.25;
 const float g_minDailyBuff = 1.01;
 const float g_maxDailyBuff = 1.5;
 
@@ -67,6 +69,9 @@ int[] g_placeHolderUnitTypes = default;
 int[] g_lootDrops = default;
 int[] g_upgradeableHumanBuildings = default;
 int[] g_trashZombieTypes = default;
+
+int[] g_otherHumanTypes = default;
+int[] g_otherZombieTypes = default;
 
 int[] g_purchaseableT1ZombieTypes = default;
 int[] g_purchaseableT2ZombieTypes = default;
@@ -134,30 +139,34 @@ void initializeGlobals(){
     g_upgradeableHumanBuildings.add(cUnitTypeMonolithOfTlaloc);
     g_upgradeableHumanBuildings.add(cUnitTypeStatueOfLightning);
 
-    g_trashZombieTypes.add(cUnitTypeMinionReincarnated);
+    g_trashZombieTypes.add(cUnitTypeMinion);
     g_trashZombieTypes.add(cUnitTypeTlacanexquimilliSPC);
     g_trashZombieTypes.add(cUnitTypeTartarianSpawn);
-    g_trashZombieTypes.add(cUnitTypeTzitzimitl);
-    g_trashZombieTypes.add(cUnitTypeMummy);
+    g_trashZombieTypes.add(cUnitTypeWarElephant);
+    g_trashZombieTypes.add(cUnitTypePolyphemus);
 
     g_purchaseableT1ZombieTypes.add(cUnitTypeAnubite);
     g_purchaseableT1ZombieTypes.add(cUnitTypeCyclops);
     g_purchaseableT1ZombieTypes.add(cUnitTypeEinheri);
     g_purchaseableT1ZombieTypes.add(cUnitTypeDraugr);
+    g_purchaseableT1ZombieTypes.add(cUnitTypeFireArcher);
+    g_purchaseableT1ZombieTypes.add(cUnitTypeQiongQi);
 
-    g_purchaseableT2ZombieTypes.add(cUnitTypeQiongQi);
-    g_purchaseableT2ZombieTypes.add(cUnitTypeDestroyer);
-    g_purchaseableT2ZombieTypes.add(cUnitTypeHamadryad);
-    g_purchaseableT2ZombieTypes.add(cUnitTypeFireArcher);
+    g_purchaseableT2ZombieTypes.add(cUnitTypeDestroyerHero);
+    g_purchaseableT2ZombieTypes.add(cUnitTypeOtontin);
+    g_purchaseableT2ZombieTypes.add(cUnitTypeScarab);
+    g_purchaseableT2ZombieTypes.add(cUnitTypeAyotochtli);
+    g_purchaseableT2ZombieTypes.add(cUnitTypeOni);
 
     g_purchaseableT3ZombieTypes.add(cUnitTypeShinigami);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeScarab);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeAyotochtli);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeOni);
+    g_purchaseableT3ZombieTypes.add(cUnitTypeGastraphetoros);
+    g_purchaseableT3ZombieTypes.add(cUnitTypeFireGiant);
+    g_purchaseableT3ZombieTypes.add(cUnitTypeColossus);
+    g_purchaseableT3ZombieTypes.add(cUnitTypeOnmyoji);
+    g_purchaseableT3ZombieTypes.add(cUnitTypeOnmoraki);
 
-    g_purchaseableT4ZombieTypes.add(cUnitTypeOnmoraki);
-    g_purchaseableT4ZombieTypes.add(cUnitTypeColossus);
-    g_purchaseableT4ZombieTypes.add(cUnitTypeFireGiant);
+    g_purchaseableT4ZombieTypes.add(cUnitTypeNidhogg);
+    g_purchaseableT4ZombieTypes.add(cUnitTypeQuinametzin);
 
     g_bossTileUnitTypes.add(cUnitTypeSphinx);
     g_bossTileUnitTypes.add(cUnitTypeTroll);
@@ -167,15 +176,13 @@ void initializeGlobals(){
     g_bossTileUnitTypes.add(cUnitTypeChimera);
 
     g_purchaseableT1GodPowers.add(cProtoPowerCarnivora);
-    g_purchaseableT1GodPowers.add(cProtoPowerPlagueOfSerpents);
+    g_purchaseableT1GodPowers.add(cProtoPowerDeconstruction);
     g_purchaseableT1GodPowers.add(cProtoPowerInfestation);
-    g_purchaseableT1GodPowers.add(cProtoPowerBloodPact);
     g_purchaseableT1GodPowers.add(cProtoPowerWither);
 
     g_purchaseableT1GodPowerIcons.add("resources\atlantean\player_color\units\carnivora_icon.png");
-    g_purchaseableT1GodPowerIcons.add("resources\egyptian\static_color\god_powers\plague_of_serpents_icon.png");
+    g_purchaseableT1GodPowerIcons.add("atlantean\static_color\god_powers\deconstruction_icon.png");
     g_purchaseableT1GodPowerIcons.add("resources\aztec\static_color\god_powers\infestation_icon.png");
-    g_purchaseableT1GodPowerIcons.add("resources\aztec\static_color\god_powers\blood_pact_icon.png");
     g_purchaseableT1GodPowerIcons.add("resources\greek_demeter\static_color\god_powers\wither_icon.png");
 
     g_purchaseableT2GodPowers.add(cProtoPowerDroughtLand);

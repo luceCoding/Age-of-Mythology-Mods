@@ -1,12 +1,14 @@
 const int SOUND_NORMAL = 0;
 const int SOUND_SET = 1;
 const int SOUND_DIALOG = 2;
+const int SOUND_FN = 3;
 
 void playSound(string sound = "", int soundType = SOUND_NORMAL){
     switch(soundType){
         case SOUND_NORMAL: {trSoundPlayPaused(sound); break;}
         case SOUND_SET: {trSoundsetPlay(sound); break;}
         case SOUND_DIALOG: {trSoundPlayDialogue(0, "", "", "", sound); break;}
+        case SOUND_FN: {trSoundPlayFN(sound, -1, "", ""); break;}
     }
 }
 

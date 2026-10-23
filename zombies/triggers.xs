@@ -8,7 +8,7 @@ void startMapGeneration(){
         return;
     }
     g_mapGenerationPhase = 0;
-    highFreqScheduler.add(500, [](int iterations = 1) -> bool {
+    lowFreqScheduler.add(1000, [](int iterations = 1) -> bool {
         if (g_mapGenerationPhase == 0) {
             if (stepBSPMapGeneration(g_generatedMap) == false) {
                 errorLog("BSP room generation failed.");

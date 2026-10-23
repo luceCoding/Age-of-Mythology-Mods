@@ -206,6 +206,7 @@ void preModifyPlayerData(){
             trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectPopCapAddition, 0, cXSRelativityAssign);
             trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeValidSentinelTarget), true);
             trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeAffectedByRestoration), true);
+            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), true);
             trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeAbstractWarship), true);
             trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectLOS, cBaseHumanLOS, cXSRelativityAssign);
             trProtoUnitSetFlag(cHumanAIPlayer, kbProtoUnitGetName(unitType), "Repairable", true);
@@ -325,6 +326,7 @@ void preModifyPlayerData(){
 
     trPlayerSetCiv(cHumanAIPlayer, "Zeus");
     trProtoUnitSetFlag(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeOsirisPieceBox), "HasLOS", false);
+    trProtoUnitSetFlag(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeOsirisPieceBox), "Repairable", false);
     trModifyProtounitUnitType(kbProtoUnitGetName(cUnitTypeOsirisPieceBox), "LogicalTypePickable", cHumanAIPlayer, cXSPUUnitTypeEffectAddContainType, 1.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeOsirisPieceBox), cHumanAIPlayer, cXSProtoEffectMaxContained, 1.0, cXSRelativityAssign);
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeOsirisPieceBox), "AbstractTemple", true);
@@ -447,12 +449,12 @@ void preModifyPlayerData(){
 void postModifyPlayerData(){
 
     for (int p = 1; p <= cNumberPlayers; p++){
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallGate), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallConnector), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallShort), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallMedium), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallLong), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeEarthWall), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier * g_zombieUnitCount, 1), cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallGate), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier, 1), cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallConnector), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier, 1), cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallShort), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier, 1), cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallMedium), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier, 1), cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallLong), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier, 1), cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeEarthWall), p, cXSProtoEffectHitpoints, max(cHumanWallHealthMultiplier, 1), cXSRelativityPercent);
 
         trTechSetStatus(p, cTechWatchTower, cTechStatusActive);
         trTechSetStatus(p, cTechTzompantliWatchTower, cTechStatusActive);
@@ -465,7 +467,7 @@ void postModifyPlayerData(){
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * (g_zombieUnitCount+1), cXSRelativityAssign);
 
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectHitpoints, cBaseJailWallHealth, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectLifespan, cBaseJailWallLifespan, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallJail), cHumanAIPlayer, cXSProtoEffectLifespan, g_dayDurationMS / 1000, cXSRelativityAssign);
 
     trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeWall), "KBTracked", false);
     trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeWall2), "KBTracked", false);

@@ -558,10 +558,10 @@ void deregisterHumanCommands(int p = -1) {
 }
 
 void addZombieArmoryCommands(int p = -1) {
-    addZombieArmoryTierCommands(p, g_purchaseableT1ZombieTypes, 0, pow(zombieBaseGoldCost, 3));
-    addZombieArmoryTierCommands(p, g_purchaseableT2ZombieTypes, 1, pow(zombieBaseGoldCost, 4));
-    addZombieArmoryTierCommands(p, g_purchaseableT3ZombieTypes, 2, pow(zombieBaseGoldCost, 5));
-    addZombieArmoryTierCommands(p, g_purchaseableT4ZombieTypes, 3, pow(zombieBaseGoldCost, 6));
+    addZombieArmoryTierCommands(p, g_purchaseableT1ZombieTypes, 0, pow(zombieBaseGoldCost, 4));
+    addZombieArmoryTierCommands(p, g_purchaseableT2ZombieTypes, 1, pow(zombieBaseGoldCost, 5));
+    addZombieArmoryTierCommands(p, g_purchaseableT3ZombieTypes, 2, pow(zombieBaseGoldCost, 6));
+    addZombieArmoryTierCommands(p, g_purchaseableT4ZombieTypes, 3, pow(zombieBaseGoldCost, 7));
 }
 
 // Each command grants one charge of its god power; the cost rises with every purchase.
@@ -586,10 +586,10 @@ void addZombieGodPowerTierCommands(int p = -1, ref int[] powers, ref string[] ic
 }
 
 void addZombieGodPowerCommands(int p = -1) {
-    addZombieGodPowerTierCommands(p, g_purchaseableT1GodPowers, g_purchaseableT1GodPowerIcons, 0, pow(humanBaseGoldCost, 4), 60);
-    addZombieGodPowerTierCommands(p, g_purchaseableT2GodPowers, g_purchaseableT2GodPowerIcons, 1, pow(humanBaseGoldCost, 5), 120);
-    addZombieGodPowerTierCommands(p, g_purchaseableT3GodPowers, g_purchaseableT3GodPowerIcons, 2, pow(humanBaseGoldCost, 6), 180);
-    addZombieGodPowerTierCommands(p, g_purchaseableT4GodPowers, g_purchaseableT4GodPowerIcons, 3, pow(humanBaseGoldCost, 7), 240);
+    addZombieGodPowerTierCommands(p, g_purchaseableT1GodPowers, g_purchaseableT1GodPowerIcons, 0, pow(humanBaseGoldCost, 3), 60);
+    addZombieGodPowerTierCommands(p, g_purchaseableT2GodPowers, g_purchaseableT2GodPowerIcons, 1, pow(humanBaseGoldCost, 4), 120);
+    addZombieGodPowerTierCommands(p, g_purchaseableT3GodPowers, g_purchaseableT3GodPowerIcons, 2, pow(humanBaseGoldCost, 5), 180);
+    addZombieGodPowerTierCommands(p, g_purchaseableT4GodPowers, g_purchaseableT4GodPowerIcons, 3, pow(humanBaseGoldCost, 6), 240);
 }
 
 void convertCommandsToZombie(int p = -1) {

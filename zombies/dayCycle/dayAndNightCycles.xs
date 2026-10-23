@@ -20,11 +20,26 @@ void spawnBossTileUnits() {
 
 void applyDayNightLighting(int transitionSeconds = 0) {
     if (g_isNight) {
-        trSetLighting("night", transitionSeconds);
-        trChatSend(0, "Night is upon us!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/egyptian/static_color/god_powers/eclipse_icon.png")));
+        if (g_dayNumber % bloodMoonCycle == 0){
+            trChatSend(0, "Blood moon is upon us!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/avatar/avatar_base_014.png")));
+            playSound("RagnarokBirth", SOUND_SET);
+        }
+        else {
+            trSetLighting("default", transitionSeconds);
+            trChatSend(0, "Night is upon us!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/egyptian/static_color/god_powers/eclipse_icon.png")));
+            if (g_dayNumber == 1){
+                playSound("aotg\barks\kronos\wt_vortex\AOTG_BARK_KRONOS_WORLD_TWIST_01.wav", SOUND_FN);
+            }
+        }
+        trSetLighting("default", transitionSeconds);
         onNightStartZombies();
     } else {
-        trSetLighting("default", transitionSeconds);
+        if (g_dayNumber % bloodMoonCycle == 0){
+            trSetLighting("potg\potg02_end", transitionSeconds);
+        }
+        else {
+            trSetLighting("night", transitionSeconds);
+        }
         trChatSend(0, "Day is upon us!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/chinese/static_color/technologies/chasing_the_sun_icon.png")));
         onDayStartZombies();
         spawnBossTileUnits();
@@ -38,9 +53,9 @@ int getCurrentPhaseDurationMS() {
 // Counts down natively from the phase length to 0; restarted on every phase change.
 void updateDayNightCounter() {
     trCounterAbort("dayNight");
-    string counterText = "Day " + g_dayNumber + " - Night begins in";
+    string counterText = "Day " + g_dayNumber + " of " + g_daysToSurvive + " - Night begins in";
     if (g_isNight) {
-        counterText = "Day " + g_dayNumber + " - Day begins in";
+        counterText = "Day " + g_dayNumber + " of " + g_daysToSurvive + " - Day begins in";
     }
     trCounterAddTime("dayNight", getCurrentPhaseDurationMS() / 1000, 0, counterText);
 }
@@ -70,6 +85,11 @@ void startDayAndNightCycle(bool startAtNight = false) {
             g_isNight = (g_isNight == false);
             if (g_isNight == false) {
                 g_dayNumber = g_dayNumber + 1;
+                if (g_dayNumber > g_daysToSurvive) {
+                    g_dayCycleActive = false;
+                    endGameTeamOneWin();
+                    return false;
+                }
             }
             g_phaseEndTimeMS = g_phaseEndTimeMS + getCurrentPhaseDurationMS();
             // Fade across the entire new phase.
