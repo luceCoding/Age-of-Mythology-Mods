@@ -70,7 +70,7 @@ int[] g_lootDrops = default;
 int[] g_upgradeableHumanBuildings = default;
 int[] g_trashZombieTypes = default;
 
-int[] g_otherHumanTypes = default;
+int[] g_otherHumanBuildings = default;
 int[] g_otherZombieTypes = default;
 
 int[] g_purchaseableT1ZombieTypes = default;

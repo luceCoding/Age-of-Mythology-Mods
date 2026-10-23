@@ -235,6 +235,7 @@ void registerZombieRespawn(int player = -1){
             }
             if (g_finalTeams[p] == 1){
                 trChatSend(0, kbPlayerGetName(p) + " has been infected!\n" + toForwardSlash(displayCompensatedIcon(128, 128, "resources/egyptian/static_color/abilities/mummy_ability_icon.png")));
+                disableAttackForHumanBuildings(p);
                 convertBuildingsToHumanAI(p);
                 switchPlayerToZombieTeam(p);
                 g_humanUnitCount = g_humanUnitCount - 1;

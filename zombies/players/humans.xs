@@ -46,14 +46,47 @@ void initializeHumans(){
 
 void convertBuildingsToHumanAI(int p = 0){
     int[] playerTowers = g_towerTracker.getAllPlayerBuildings(p);
+    int time = 250;
     for (int i = 0; i < playerTowers.size(); i++) {
         int buildingID = playerTowers[i];
-        selectSingle(buildingID);
-        trUnitConvert(cHumanAIPlayer);
+        midFreqSchedulerWithInt.add(time, buildingID, [](int iteration = 0, int buildingId = 0) -> bool {
+            selectSingle(buildingId);
+            trUnitConvert(cHumanAIPlayer);
+            return false;
+        });
+        time = time + 250;
     }
     int[] playerWalls = g_wallTracker.getAllPlayerBuildings(p);
     for (int i = 0; i < playerWalls.size(); i++) {
         int buildingID = playerWalls[i];
-        selectSingle(buildingID);
-        trUnitConvert(cHumanAIPlayer);
-    }}
+        midFreqSchedulerWithInt.add(time, buildingID, [](int iteration = 0, int buildingId = 0) -> bool {
+            selectSingle(buildingId);
+            trUnitConvert(cHumanAIPlayer);
+            return false;
+        });
+        time = time + 250;
+    }
+}
+
+void disableAttackForHumanBuildings(int p = 0){
+    for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++) {
+        int buildingType = g_upgradeableHumanBuildings[i];
+        trProtoUnitActionSetEnabled(kbProtoUnitGetName(buildingType), p, "HandAttack", false);
+        trProtoUnitActionSetEnabled(kbProtoUnitGetName(buildingType), p, "RangedAttack", false);
+        trProtoUnitActionSetEnabled(kbProtoUnitGetName(buildingType), p, "LightningAttack", false);
+        trProtoUnitActionSetEnabled(kbProtoUnitGetName(buildingType), p, "BeamAttack", false);
+        trProtoUnitActionSetEnabled(kbProtoUnitGetName(buildingType), p, "MonolithStrike", false);
+        trProtoUnitSetFlag(p, kbProtoUnitGetName(buildingType), "HasLOS", false);
+        trProtoUnitSetFlag(p, kbProtoUnitGetName(buildingType), "Invulnerable", false);
+    }
+    for (int i = 0; i < g_otherHumanBuildings.size(); i++) {
+        int buildingType = g_otherHumanBuildings[i];
+        trProtoUnitActionSetEnabled(kbProtoUnitGetName(buildingType), p, "HandAttack", false);
+        trProtoUnitActionSetEnabled(kbProtoUnitGetName(buildingType), p, "RangedAttack", false);
+        trProtoUnitActionSetEnabled(kbProtoUnitGetName(buildingType), p, "LightningAttack", false);
+        trProtoUnitActionSetEnabled(kbProtoUnitGetName(buildingType), p, "BeamAttack", false);
+        trProtoUnitActionSetEnabled(kbProtoUnitGetName(buildingType), p, "MonolithStrike", false);
+        trProtoUnitSetFlag(p, kbProtoUnitGetName(buildingType), "HasLOS", false);
+        trProtoUnitSetFlag(p, kbProtoUnitGetName(buildingType), "Invulnerable", false);
+    }
+}
