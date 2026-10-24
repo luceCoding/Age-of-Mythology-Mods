@@ -204,10 +204,6 @@ void preModifyPlayerData(){
             trModifyProtounitResource(kbProtoUnitGetName(unitType), "Wood", p, cXSPUResourceEffectCost, pow(humanBaseWoodCost, 1), cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectPopulationCount, 0, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectPopCapAddition, 0, cXSRelativityAssign);
-            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeValidSentinelTarget), true);
-            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeAffectedByRestoration), true);
-            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), true);
-            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeAbstractWarship), true);
             trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectLOS, cBaseHumanLOS, cXSRelativityAssign);
             trProtoUnitSetFlag(cHumanAIPlayer, kbProtoUnitGetName(unitType), "Repairable", true);
 
@@ -459,6 +455,14 @@ void postModifyPlayerData(){
         trTechSetStatus(p, cTechWatchTower, cTechStatusActive);
         trTechSetStatus(p, cTechTzompantliWatchTower, cTechStatusActive);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+
+        for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++){
+            int unitType = g_upgradeableHumanBuildings[i];
+            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeValidSentinelTarget), true);
+            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeAffectedByRestoration), true);
+            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), true);
+            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeAbstractWarship), true);
+        }
     }
 
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * (g_zombieUnitCount+1), cXSRelativityAssign);

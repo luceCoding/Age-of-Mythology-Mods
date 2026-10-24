@@ -34,7 +34,7 @@ void setPickups(){
             for (int i = 0; i < nJars; i++){
                 float jitterX = xsRandFloat(1, 3.0);
                 float jitterZ = xsRandFloat(1, 3.0);
-                trUnitCreate(kbProtoUnitGetName(cUnitTypeCanopicJars), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
+                trUnitCreateForced(kbProtoUnitGetName(cUnitTypeCanopicJars), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
             }
             if (xsRandInt(0, 3) == 0) { trUnitSetHeading(xsRandInt(0, 30)); }
             if (xsRandInt(0, 5) == 0) { trUnitDestroy(); }

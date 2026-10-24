@@ -19,12 +19,17 @@ void setupZombiesPost(){
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectMaxContained, g_trashZombieTypes.size()-1, cXSRelativityAssign);
         trProtounitAddCommand(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, "Delete", 3, 5);
         trProtoUnitSetFlag(p, kbProtoUnitGetName(cUnitTypeWellOfUrd), "Deleteable", true);
+        trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, "Tomb of the Dead",
+            "Periodically spawns zombies at night. Capture relics to upgrade the tomb.",
+            "Periodically spawns zombies at night. Capture relics to upgrade the tomb.");
 
         trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeDwarvenArmory), "Wood", p, cXSPUResourceEffectCost, baseWellOfUrdWoodCost * 1.25, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeDwarvenArmory), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+        trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeDwarvenArmory), p, "", "Used to purchase special zombies.", "Used to purchase special zombies.");
 
         trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeMonumentToGods), "Wood", p, cXSPUResourceEffectCost, baseWellOfUrdWoodCost * 1.5, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToGods), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+        trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeMonumentToGods), p, "", "Used to purchase zombie god powers.", "Used to purchase zombie god powers.");
 
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeNidhogg), p, cXSProtoEffectHitpoints, 0.5, cXSRelativityPercent);
 
@@ -235,7 +240,7 @@ void endGameTeamOneWin(){
 // When a player's unit dies (leaving a skeleton), infect them if human, then respawn them as a zombie.
 void registerZombieRespawn(int player = -1){
     g_OnCreationListener.register(player, cUnitTypeSkeleton, false, [](int unitId = -1) -> void {
-            if (countLivingHumanPlayers() <= 1) {
+            if (countLivingHumanPlayers() <= 0) {
                 endGameAllWin();
                 return;
             }
@@ -252,6 +257,7 @@ void registerZombieRespawn(int player = -1){
                 g_zombieUnitCount = g_zombieUnitCount + 1;
                 convertCommandsToZombie(p);
                 addWellOfUrdCommands(p);
+                trPlayerKillAllGodPowers(p);
             }
             spawnZombieLord(p, g_bspZombieSpawnLocation);
         }

@@ -52,7 +52,7 @@ const float humanBaseWoodCost = 2.0;
 const float humanBaseGoldCost = 2.0;
 
 const float g_alphaSensitivity = 2.5; // Responsiveness weight for zombie performance adjustments
-const float g_exponentK = 0.70; // Sub-linear team size exponent
+const float g_exponentK = 0.75; // Sub-linear team size exponent
 const float g_targetZombieDestruction = 0.25;
 const float g_minDailyBuff = 1.01;
 const float g_maxDailyBuff = 1.25;
@@ -96,8 +96,8 @@ void initializeGlobals(){
     g_humanInteractableTypes.add(cUnitTypeLighthouse);
     g_humanInteractableTypes.add(cUnitTypeToriiGate);
     g_humanInteractableTypes.add(cUnitTypeTemple);
-    g_humanInteractableTypes.add(cUnitTypeSiegeWorks);
     g_humanInteractableTypes.add(cUnitTypeArmory);
+    g_humanInteractableTypes.add(cUnitTypeSiegeWorks);
     g_humanInteractableTypes.add(cUnitTypeEconomicGuild);
 
     g_humanUnitTypes.add(cUnitTypeVillagerAtlanteanHero);
@@ -112,13 +112,13 @@ void initializeGlobals(){
     g_placeHolderUnitTypes.add(cUnitTypeRelic);
     g_placeHolderUnitTypes.add(cUnitTypeCocoon);
     g_placeHolderUnitTypes.add(cUnitTypeTreeHades);
-    g_placeHolderUnitTypes.add(cUnitTypeWoodPileLarge);
+    // g_placeHolderUnitTypes.add(cUnitTypeWoodPileLarge);
     g_placeHolderUnitTypes.add(cUnitTypeOsirisPieceBox);
     g_placeHolderUnitTypes.add(cUnitTypeObsidianShard);
     g_placeHolderUnitTypes.add(cUnitTypeMinion);
     g_placeHolderUnitTypes.add(cUnitTypeCanopicJars);
 
-    g_lootDrops.add(cUnitTypeWoodPileLarge);
+    // g_lootDrops.add(cUnitTypeWoodPileLarge);
     g_lootDrops.add(cUnitTypeGoldPile);
 
     g_upgradeableHumanBuildings.add(cUnitTypeWallShort);
@@ -139,6 +139,7 @@ void initializeGlobals(){
     g_upgradeableHumanBuildings.add(cUnitTypeMonolithOfTlaloc);
     g_upgradeableHumanBuildings.add(cUnitTypeStatueOfLightning);
     g_upgradeableHumanBuildings.add(cUnitTypeSentinel);
+    g_upgradeableHumanBuildings.add(cUnitTypeEarthWall);
 
     g_trashZombieTypes.add(cUnitTypeMinion);
     g_trashZombieTypes.add(cUnitTypeTlacanexquimilliSPC);
