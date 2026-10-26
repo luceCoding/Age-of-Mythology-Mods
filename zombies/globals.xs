@@ -16,9 +16,10 @@ const int cGaiaBaseWallHealth = 5000;
 const int cBaseJailWallHealth = 100000;
 const float cBaseHumanLOS = 10.0;
 const float cHumanWallHealthMultiplier = 2.0;
+const float cBaseHumanBuildPoints = 5.0;
 
 const int VOTE_DURATION_MS = 60000;
-int g_dayDurationMS = 120000;
+int g_dayDurationMS = 90000;
 int g_nightDurationMS = 240000;
 bool g_isNight = false;
 bool g_dayCycleActive = false;
@@ -28,7 +29,7 @@ int g_daysToSurvive = 7;
 int bloodMoonCycle = 7;
 
 const int cTrashZombieSpawnTimer = 6000;
-const float cBaseZombieLifespan = 60.0;
+// const float cBaseZombieLifespan = 60.0;
 const float dailyZombiePermaHPBuffPercent = 1.00;
 const float dailyZombiePermaLifespanBuff = 5.0;
 const int maxZombiePopulation = cNumberPlayers * 10;
@@ -73,10 +74,7 @@ int[] g_trashZombieTypes = default;
 int[] g_otherHumanBuildings = default;
 int[] g_otherZombieTypes = default;
 
-int[] g_purchaseableT1ZombieTypes = default;
-int[] g_purchaseableT2ZombieTypes = default;
-int[] g_purchaseableT3ZombieTypes = default;
-int[] g_purchaseableT4ZombieTypes = default;
+int[] g_purchaseableZombieTypes = default;
 
 int[] g_purchaseableT1GodPowers = default;
 int[] g_purchaseableT2GodPowers = default;
@@ -139,7 +137,6 @@ void initializeGlobals(){
     g_upgradeableHumanBuildings.add(cUnitTypeMonolithOfTlaloc);
     g_upgradeableHumanBuildings.add(cUnitTypeStatueOfLightning);
     g_upgradeableHumanBuildings.add(cUnitTypeSentinel);
-    g_upgradeableHumanBuildings.add(cUnitTypeEarthWall);
 
     g_trashZombieTypes.add(cUnitTypeMinion);
     g_trashZombieTypes.add(cUnitTypeTlacanexquimilliSPC);
@@ -147,29 +144,28 @@ void initializeGlobals(){
     g_trashZombieTypes.add(cUnitTypeTzitzimitl);
     g_trashZombieTypes.add(cUnitTypeMummy);
 
-    g_purchaseableT1ZombieTypes.add(cUnitTypeAnubite);
-    g_purchaseableT1ZombieTypes.add(cUnitTypeCyclops);
-    g_purchaseableT1ZombieTypes.add(cUnitTypeEinheri);
-    g_purchaseableT1ZombieTypes.add(cUnitTypeDraugr);
-    g_purchaseableT1ZombieTypes.add(cUnitTypeFireArcher);
-    g_purchaseableT1ZombieTypes.add(cUnitTypeQiongQi);
+    g_purchaseableZombieTypes.add(cUnitTypeFireArcher);
+    g_purchaseableZombieTypes.add(cUnitTypeDestroyer);
+    g_purchaseableZombieTypes.add(cUnitTypeShinobi);
+    g_purchaseableZombieTypes.add(cUnitTypeOtontin);
+    g_purchaseableZombieTypes.add(cUnitTypeGastraphetoros);
 
-    g_purchaseableT2ZombieTypes.add(cUnitTypeDestroyerHero);
-    g_purchaseableT2ZombieTypes.add(cUnitTypeOtontin);
-    g_purchaseableT2ZombieTypes.add(cUnitTypeScarab);
-    g_purchaseableT2ZombieTypes.add(cUnitTypeAyotochtli);
-    g_purchaseableT2ZombieTypes.add(cUnitTypeOni);
+    g_purchaseableZombieTypes.add(cUnitTypeAnubite);
+    g_purchaseableZombieTypes.add(cUnitTypeCyclops);
+    g_purchaseableZombieTypes.add(cUnitTypeScarab);
+    g_purchaseableZombieTypes.add(cUnitTypeMountainGiant);
+    g_purchaseableZombieTypes.add(cUnitTypePetsuchos);
 
-    g_purchaseableT3ZombieTypes.add(cUnitTypeShinigami);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeGastraphetoros);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeFireGiant);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeColossus);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeOnmyoji);
-    g_purchaseableT3ZombieTypes.add(cUnitTypeOnmoraki);
+    g_purchaseableZombieTypes.add(cUnitTypeColossus);
+    g_purchaseableZombieTypes.add(cUnitTypeFireGiant);
+    g_purchaseableZombieTypes.add(cUnitTypeOnmyoji);
+    g_purchaseableZombieTypes.add(cUnitTypeQuinametzin);
 
-    g_purchaseableT4ZombieTypes.add(cUnitTypeNidhogg);
-    g_purchaseableT4ZombieTypes.add(cUnitTypePolyphemus);
-    // g_purchaseableT4ZombieTypes.add(cUnitTypeQuinametzin);
+    g_purchaseableZombieTypes.add(cUnitTypeQiongQi);
+    g_purchaseableZombieTypes.add(cUnitTypeOnmoraki);
+    g_purchaseableZombieTypes.add(cUnitTypeNidhogg);
+    g_purchaseableZombieTypes.add(cUnitTypePolyphemus);
+    g_purchaseableZombieTypes.add(cUnitTypeMictlantecuhtli);
 
     g_bossTileUnitTypes.add(cUnitTypeSphinx);
     g_bossTileUnitTypes.add(cUnitTypeTroll);

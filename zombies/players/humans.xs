@@ -46,7 +46,7 @@ void initializeHumans(){
 
 void convertBuildingsToHumanAI(int p = 0){
     int[] playerTowers = g_towerTracker.getAllPlayerBuildings(p);
-    int time = 250;
+    int time = 500;
     for (int i = 0; i < playerTowers.size(); i++) {
         int buildingID = playerTowers[i];
         midFreqSchedulerWithInt.add(time, buildingID, [](int iteration = 0, int buildingId = 0) -> bool {
@@ -54,7 +54,7 @@ void convertBuildingsToHumanAI(int p = 0){
             trUnitConvert(cHumanAIPlayer);
             return false;
         });
-        time = time + 250;
+        time = time + 500;
     }
     int[] playerWalls = g_wallTracker.getAllPlayerBuildings(p);
     for (int i = 0; i < playerWalls.size(); i++) {
@@ -64,7 +64,7 @@ void convertBuildingsToHumanAI(int p = 0){
             trUnitConvert(cHumanAIPlayer);
             return false;
         });
-        time = time + 250;
+        time = time + 500;
     }
 }
 

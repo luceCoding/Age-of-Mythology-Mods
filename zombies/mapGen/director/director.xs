@@ -66,7 +66,7 @@ class Director {
     }
 
     float getTeamSizeScale(int myTeamSize = 1, int opposingTeamSize = 1) {
-        return getGenericTeamScale(myTeamSize, opposingTeamSize, m_exponentK);
+        return getGenericTeamScale(myTeamSize, opposingTeamSize, m_exponentK, 1.0, cNumberPlayers);
     }
 
     // Evaluated at Midnight/Dawn: Uses your tracker's alive and dead building counts

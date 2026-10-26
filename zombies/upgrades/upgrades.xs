@@ -419,16 +419,6 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeTemple, 0, 3, pow(humanBaseGoldCost, 3), "Gold",
-                    "+1 Earth Wall God Power",
-                    "+1 Earth Wall God Power",
-                    "resources\\chinese\\static_color\\god_powers\\earth_wall_power_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerEarthWall), 1, 60);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
 
         addCommand(p, cUnitTypeTemple, 1, 0, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Restoration God Power",
@@ -514,20 +504,19 @@ void addTempleCommands() {
     }
 }
 
-void addWellOfUrdTierCommands(int p = -1, ref int[] zombieTypes, int row = 0, float woodCost = 1.0) {
+void addWellOfUrdTierCommands(int p = -1, ref int[] zombieTypes, float woodCost = 1.0) {
     for (int i = 0; i < zombieTypes.size(); i++) {
+        int row = i / 6;
+        int col = i % 6;
         string zombieName = kbProtoUnitGetName(zombieTypes[i]);
-        trProtounitAddTrain(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, zombieName, row, i);
+        trProtounitAddTrain(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, zombieName, row, col);
         trModifyProtounitResource(zombieName, "Wood", p, cXSPUResourceEffectCost, woodCost, cXSRelativityAssign);
         trUnforbidProtounit(p, zombieName);
     }
 }
 
 void addWellOfUrdCommands(int p = 0) {
-    addWellOfUrdTierCommands(p, g_purchaseableT1ZombieTypes, 0, pow(zombieBaseWoodCost, 2));
-    addWellOfUrdTierCommands(p, g_purchaseableT2ZombieTypes, 1, pow(zombieBaseWoodCost, 3));
-    addWellOfUrdTierCommands(p, g_purchaseableT3ZombieTypes, 2, pow(zombieBaseWoodCost, 4));
-    addWellOfUrdTierCommands(p, g_purchaseableT4ZombieTypes, 3, pow(zombieBaseWoodCost, 5));
+    addWellOfUrdTierCommands(p, g_purchaseableZombieTypes, 0);
 }
 
 // Each command raises the build limit of its zombie type by one.
@@ -552,17 +541,56 @@ void addZombieArmoryTierCommands(int p = -1, ref int[] zombieTypes, int row = 0,
     }
 }
 
+void addZombieArmorySingleCommand(int p = -1, int zombieType = -1, int row = 0, int col = 0, int initialCost = 1) {
+    string zombieName = kbProtoUnitGetName(zombieType);
+    trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
+    int plantType = addCommand(p, cUnitTypeDwarvenArmory, row, col, initialCost, "Gold",
+                "+1 " + zombieName,
+                "+1 " + zombieName,
+                kbProtoUnitGetIconPath(0, zombieType),
+                [](int unitId = -1) -> void {
+                    int p = kbUnitGetPlayerID(unitId);
+                    string zombieName = kbProtoUnitGetName(cPlantToUnitTypeHashMap.get(kbUnitGetProtoUnitID(unitId)));
+                    trUnforbidProtounit(p, zombieName);
+                    trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+                    trModifyProtounitData(zombieName, p, cXSProtoEffectTrainPoints, 10, cXSRelativityAssign);
+                    increaseCommandCost(unitId, 1.0);
+                }
+            );
+    cPlantToUnitTypeHashMap.put(plantType, zombieType);
+}
+
 // Frees this player's command plants (listeners and train slots) so zombie commands can reuse them.
 void deregisterHumanCommands(int p = -1) {
     g_PlantAllocator.releaseAll(p);
 }
 
 void addZombieArmoryCommands(int p = -1) {
-    addZombieArmoryTierCommands(p, g_purchaseableT1ZombieTypes, 0, pow(zombieBaseGoldCost, 4));
-    addZombieArmoryTierCommands(p, g_purchaseableT2ZombieTypes, 1, pow(zombieBaseGoldCost, 5));
-    addZombieArmoryTierCommands(p, g_purchaseableT3ZombieTypes, 2, pow(zombieBaseGoldCost, 6));
-    addZombieArmoryTierCommands(p, g_purchaseableT4ZombieTypes, 3, pow(zombieBaseGoldCost, 7));
+    addZombieArmorySingleCommand(p, cUnitTypeFireArcher, 0, 0, pow(zombieBaseGoldCost, 1));
+    addZombieArmorySingleCommand(p, cUnitTypeHuskarl, 0, 1, pow(zombieBaseGoldCost, 1));
+    addZombieArmorySingleCommand(p, cUnitTypeDestroyer, 0, 2, pow(zombieBaseGoldCost, 2));
+    addZombieArmorySingleCommand(p, cUnitTypeShinobi, 0, 3, pow(zombieBaseGoldCost, 2));
+    addZombieArmorySingleCommand(p, cUnitTypeOtontin, 0, 4, pow(zombieBaseGoldCost, 3));
+    addZombieArmorySingleCommand(p, cUnitTypeGastraphetoros, 0, 5, pow(zombieBaseGoldCost, 4));
+
+    addZombieArmorySingleCommand(p, cUnitTypeAnubite, 1, 0, pow(zombieBaseGoldCost, 2));
+    addZombieArmorySingleCommand(p, cUnitTypeCyclops, 1, 1, pow(zombieBaseGoldCost, 4));
+    addZombieArmorySingleCommand(p, cUnitTypeScarab, 1, 2, pow(zombieBaseGoldCost, 5));
+    addZombieArmorySingleCommand(p, cUnitTypeMountainGiant, 1, 3, pow(zombieBaseGoldCost, 5));
+    addZombieArmorySingleCommand(p, cUnitTypePetsuchos, 1, 4, pow(zombieBaseGoldCost, 5));
+
+    addZombieArmorySingleCommand(p, cUnitTypeColossus, 2, 0, pow(zombieBaseGoldCost, 6));
+    addZombieArmorySingleCommand(p, cUnitTypeFireGiant, 2, 1, pow(zombieBaseGoldCost, 6));
+    addZombieArmorySingleCommand(p, cUnitTypeOnmyoji, 2, 2, pow(zombieBaseGoldCost, 7));
+    addZombieArmorySingleCommand(p, cUnitTypeQuinametzin, 2, 3, pow(zombieBaseGoldCost, 8));
+
+    addZombieArmorySingleCommand(p, cUnitTypeQiongQi, 3, 0, pow(zombieBaseGoldCost, 3));
+    addZombieArmorySingleCommand(p, cUnitTypeOnmoraki, 3, 1, pow(zombieBaseGoldCost, 5));
+    addZombieArmorySingleCommand(p, cUnitTypeNidhogg, 3, 2, pow(zombieBaseGoldCost, 7));
+    addZombieArmorySingleCommand(p, cUnitTypePolyphemus, 3, 3, pow(zombieBaseGoldCost, 7));
+    addZombieArmorySingleCommand(p, cUnitTypeMictlantecuhtli, 3, 4, pow(zombieBaseGoldCost, 8));
 }
+
 
 // Each command grants one charge of its god power; the cost rises with every purchase.
 void addZombieGodPowerTierCommands(int p = -1, ref int[] powers, ref string[] icons, int row = 0, int initialCost = 10, int cooldown = 60) {
