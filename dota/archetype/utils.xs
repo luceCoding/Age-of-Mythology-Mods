@@ -33,7 +33,6 @@ string getPlayerArchetypeRollover(int p = -1){
 }
 
 void initializeArchetypes(){
-    int MAX_ARCHETYPES = ARCHETYPE_EVASION + 1;
     g_archetypes = new Archetype(MAX_ARCHETYPES);
     g_playerArchetypes = new int(cNumberPlayers + 1, -1);
     for (int i = ARCHETYPE_MISCHIEF; i < MAX_ARCHETYPES; i++){

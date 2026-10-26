@@ -136,6 +136,7 @@ const float RECALL_CAST_TIME = 10.0;
 
 const int CREEP_WAVE_SPAWN_INTERVAL_MS = 45000;
 
+const int MAX_ARCHETYPES = 5;
 const int ARCHETYPE_MISCHIEF = 0;
 const int ARCHETYPE_DEFENSE = 1;
 const int ARCHETYPE_HEALTH = 2;

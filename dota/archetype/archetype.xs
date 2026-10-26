@@ -78,7 +78,7 @@ class Archetype {
                         int unitID = unitIds[0];
                         string protoName = kbProtoUnitGetName(kbUnitGetProtoUnitID(unitID));
                         selectSingle(unitID);
-                        int cloneId = trUnitCreate(protoName, v.x, v.y, v.z, xsRandInt(0, 359), owner);
+                        int cloneId = trUnitCreateForced(protoName, v.x, v.y, v.z, xsRandInt(0, 359), owner);
                         selectSingle(cloneId);
                         trUnitApplyEffectProtoUnit(cOnHitEffectAttach, cMaxFloat, owner, kbProtoUnitGetName(cUnitTypeVFXFoxCharm));
                         playUnitSound(cloneId, "ConvertFinished", SOUND_SET);

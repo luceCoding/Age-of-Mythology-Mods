@@ -19,7 +19,7 @@ void closeArchetypeUI(int p = 1){
         setUiVisible(true);
         trSetObscuredUnits(true);
     }
-    if (archetype >= ARCHETYPE_MISCHIEF && archetype <= ARCHETYPE_EVASION &&
+    if (archetype >= ARCHETYPE_MISCHIEF && archetype < MAX_ARCHETYPES &&
         archetype != getPlayerArchetype(p)){
         Archetype selectedArchetype = g_archetypes[archetype];
         selectedArchetype.setup(p);
@@ -28,16 +28,15 @@ void closeArchetypeUI(int p = 1){
 }
 
 void renderArchetypes(int p = 1){
-    int archetypeCount = ARCHETYPE_EVASION - ARCHETYPE_MISCHIEF + 1;
     float iconSize = 0.06;
     float selectedScale = 1.2;
     float spacing = 0.14;
-    float startX = -((archetypeCount - 1) * spacing) / 2.0;
+    float startX = -((MAX_ARCHETYPES - 1) * spacing) / 2.0;
     float posY = 0.05;
 
     minimapSafeDisplay(p, 0.0, 0.18, "Choose your starting god power");
 
-    for (int i = ARCHETYPE_MISCHIEF; i <= ARCHETYPE_EVASION; i++){
+    for (int i = ARCHETYPE_MISCHIEF; i < MAX_ARCHETYPES; i++){
         Archetype archetypeObj = g_archetypes[i];
         bool isSelected = g_pendingArchetypes[p] == i;
         float scale = isSelected ? selectedScale : 1.0;
@@ -58,7 +57,7 @@ void renderArchetypes(int p = 1){
             parameters,
             [](int p = 1, ref Parameters parameters) -> void {
                 int archetype = parameters.ints[0];
-                if (archetype < ARCHETYPE_MISCHIEF || archetype > ARCHETYPE_EVASION){ return; }
+                if (archetype < ARCHETYPE_MISCHIEF || archetype >= MAX_ARCHETYPES){ return; }
                 g_pendingArchetypes[p] = archetype;
                 refreshArchetypeUI(p);
             }
@@ -82,7 +81,7 @@ void openArchetypeUI(int p = 1){
     if (g_pendingArchetypes.size() != cNumberPlayers + 1){
         g_pendingArchetypes = new int(cNumberPlayers + 1, ARCHETYPE_MISCHIEF);
     }
-    g_pendingArchetypes[p] = getPlayerArchetype(p);
+    g_pendingArchetypes[p] = ARCHETYPE_MISCHIEF;
     enterUiSystem(p);
     if (trCurrentPlayer() == p){
         setUiVisible(false);
