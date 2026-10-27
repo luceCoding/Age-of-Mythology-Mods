@@ -32,75 +32,72 @@ string preparePlant(int p = 1, int plantType = -1,
 
 void addRecallCommand(int p = 0, string protoUnit = "") {
     string plantName = preparePlant(p, cUnitTypePlantEgyptianBush, 
-                                    "Recall (B)",
-                                    "Teleport back to your card shop.",
-                                    "resources\\atlantean\\static_color\\god_powers\\vortex_icon.png",
-                                    [](int unitId = -1) -> void {
-                                        int pPlayer = kbUnitGetPlayerID(unitId);
-                                        vector v = kbUnitGetTruePosition(unitId);
+                "Recall (B)",
+                "Teleport back to your card shop.",
+                "resources\\atlantean\\static_color\\god_powers\\vortex_icon.png",
+                [](int unitId = -1) -> void {
+                    int pPlayer = kbUnitGetPlayerID(unitId);
+                    vector v = kbUnitGetTruePosition(unitId);
 
-                                        BenchData bench = g_shop.getBench(pPlayer);
-                                        int[] unitIds = bench.getDeployedUnitIDs();
-                                        int[] closestUnitIds = new int(0, -1);
+                    BenchData bench = g_shop.getBench(pPlayer);
+                    int[] unitIds = bench.getDeployedUnitIDs();
+                    int[] closestUnitIds = new int(0, -1);
 
-                                        for (int i = 0; i < unitIds.size(); i++) {
-                                            int targetUnitID = unitIds[i];
-                                            selectSingle(targetUnitID);
-                                            if (trUnitDead()) { continue; }
-                                            if (kbUnitGetDistanceToPoint(targetUnitID, v) <= 1.5) {
-                                                closestUnitIds.add(targetUnitID);
-                                            }
-                                        }
+                    for (int i = 0; i < unitIds.size(); i++) {
+                        int targetUnitID = unitIds[i];
+                        selectSingle(targetUnitID);
+                        if (trUnitDead()) { continue; }
+                        if (kbUnitGetDistanceToPoint(targetUnitID, v) <= 0.25) {
+                            closestUnitIds.add(targetUnitID);
+                        }
+                    }
 
-                                        if (closestUnitIds.size() == 1) {
-                                            int targetId = closestUnitIds[0];
-                                            if (kbUnitGetIsAffectedByStatusEffect(targetId, cStatusEffectStunned)) { return; }
+                    if (closestUnitIds.size() == 1) {
+                        int targetId = closestUnitIds[0];
+                        if (kbUnitGetIsAffectedByStatusEffect(targetId, cStatusEffectStunned)) { return; }
 
-                                            int shopId = bench.getPlayerShopID();
-                                            vector shopVector = kbUnitGetPosition(shopId);
-                                            selectSingle(targetId);
-                                            vector v2 = kbUnitGetTruePosition(targetId);
-                                            trUnitApplyEffect(cOnHitEffectStun, 10.0);
-                                            trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXVortexFinish), v2.x, v2.y, v2.z, -1, 0);
-                                            setUnitCacheValue(targetId, kbUnitGetStatFloat(targetId, cUnitStatCurrHP));
-                                            playUnitSound(targetId, "VortexBirth", SOUND_SET);
+                        int shopId = bench.getPlayerShopID();
+                        vector shopVector = kbUnitGetPosition(shopId);
+                        selectSingle(targetId);
+                        vector v2 = kbUnitGetTruePosition(targetId);
+                        trUnitApplyEffect(cOnHitEffectStun, 10.0);
+                        trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXVortexFinish), v2.x, v2.y, v2.z, -1, 0);
+                        setUnitCacheValue(targetId, kbUnitGetStatFloat(targetId, cUnitStatCurrHP));
+                        playUnitSound(targetId, "VortexBirth", SOUND_SET);
 
-                                            midFreqSchedulerWithVector.add(targetId, 500, shopVector, [](int targetId = 0, int iteration = 0, vector shopVector = cInvalidVector) -> bool {
-                                                float currHP = kbUnitGetStatFloat(targetId, cUnitStatCurrHP);
-                                                if (currHP < getUnitCacheValue(targetId)) {
-                                                    selectSingle(targetId);
-                                                    vector vPos = kbUnitGetTruePosition(targetId);
-                                                    trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXArkantosGodIn), vPos.x, vPos.y, vPos.z, -1, 0);
-                                                    playUnitSound(targetId, "AotgLegendDeath", SOUND_SET);
-                                                    setUnitCacheValue(targetId, 0);
-                                                    return false;
-                                                }
-                                                setUnitCacheValue(targetId, currHP);
-                                                if (iteration == 6 || iteration == 12 || iteration == 15) {
-                                                    vector vPos = kbUnitGetTruePosition(targetId);
-                                                    trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXVortexFinish), vPos.x, vPos.y, vPos.z, -1, 0);
-                                                }
-                                                else if (iteration >= 20) {
-                                                    selectSingle(targetId);
-                                                    trUnitReposition(shopVector.x, shopVector.y, shopVector.z, false, true);
-                                                    playUnitSound(targetId, "VortexLift", SOUND_SET);
-                                                    setUnitCacheValue(targetId, 0);
-                                                    return false;
-                                                }
-                                                return true;
-                                            });
-                                        }
-                                        else if (closestUnitIds.size() >= 2 && trCurrentPlayer() == pPlayer) {
-                                            for (int i = 0; i < closestUnitIds.size(); i++) {
-                                                selectSingle(closestUnitIds[i]);
-                                                trUnitHighlight(5.0, true);
-                                            }
-                                            trChatSendToPlayer(pPlayer, pPlayer, "Unit must be away from other units to recall.");
-                                            trSoundsetPlayPlayer(pPlayer, "PopCapHit");
-                                        }
-                                    }
+                        midFreqSchedulerWithVector.add(targetId, 500, shopVector, [](int targetId = 0, int iteration = 0, vector shopVector = cInvalidVector) -> bool {
+                            float currHP = kbUnitGetStatFloat(targetId, cUnitStatCurrHP);
+                            if (currHP < getUnitCacheValue(targetId)) {
+                                selectSingle(targetId);
+                                vector vPos = kbUnitGetTruePosition(targetId);
+                                trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXArkantosGodIn), vPos.x, vPos.y, vPos.z, -1, 0);
+                                playUnitSound(targetId, "AotgLegendDeath", SOUND_SET);
+                                setUnitCacheValue(targetId, 0);
+                                return false;
+                            }
+                            setUnitCacheValue(targetId, currHP);
+                            if (iteration == 6 || iteration == 12 || iteration == 15) {
+                                vector vPos = kbUnitGetTruePosition(targetId);
+                                trUnitCreateForced(kbProtoUnitGetName(cUnitTypeVFXVortexFinish), vPos.x, vPos.y, vPos.z, -1, 0);
+                            }
+                            else if (iteration >= 20) {
+                                selectSingle(targetId);
+                                trUnitReposition(shopVector.x, shopVector.y, shopVector.z, false, true);
+                                playUnitSound(targetId, "VortexLift", SOUND_SET);
+                                setUnitCacheValue(targetId, 0);
+                                return false;
+                            }
+                            return true;
+                        });
+                    }
+                    else if (closestUnitIds.size() >= 2 && trCurrentPlayer() == pPlayer) {
+                        errorLog("Attempt to recall unit failed, found multiple candidates. Try again.f");
+                        trSoundsetPlayPlayer(pPlayer, "PopCapHit");
+                    }
+                }
     );
 
+    trProtoUnitMovementType(kbProtoUnitGetName(cUnitTypePlantEgyptianBush), p, "Water");
     trProtounitAddTrain(protoUnit, p, plantName, 3, 5);
     setUpUnitCache(kbProtoUnitGetID(protoUnit), p, cResourceFavor);
     trExecuteConsoleCommand("map("+quote+"B"+quote+", "+quote+"game"+quote+", "+quote+"trainInSelectedByID("+648+", 1, false)"+quote+")");

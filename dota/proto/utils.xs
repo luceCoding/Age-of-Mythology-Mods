@@ -1,3 +1,8 @@
+void setupForCommands(int unitType = -1, int consumbleUnitType = -1, int p = 0){
+    trModifyProtounitUnitType(kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeNature), p, cXSPUUnitTypeEffectAddContainType, 1.0, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectMaxContained, 1, cXSRelativityAssign);
+}
+
 void setupForAllUnits(string protoName = "", int p = 0){
     trModifyProtounitResource(protoName, "Food", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
     trModifyProtounitResource(protoName, "Wood", p, cXSPUResourceEffectKillReward, 0, cXSRelativityAssign);
@@ -47,6 +52,7 @@ void setAsCardUnit(int protoID = -1, int p = 0){
     trModifyProtounitData(protoName, p, cXSProtoEffectShieldRegenRate, 0.4, cXSRelativityAssign);
     trModifyProtounitData(protoName, p, cXSProtoEffectLifespan, -1, cXSRelativityAssign);
     addRecallCommand(p, protoName);
+    setupForCommands(protoID, cUnitTypePlantEgyptianBush, p);
 }
 
 void setAsPlaceholder(string unitType = "", int p = 0){
