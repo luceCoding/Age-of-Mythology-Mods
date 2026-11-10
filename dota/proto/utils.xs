@@ -53,6 +53,10 @@ void setAsCardUnit(int protoID = -1, int p = 0){
     trModifyProtounitData(protoName, p, cXSProtoEffectLifespan, -1, cXSRelativityAssign);
     addRecallCommand(p, protoName);
     setupForCommands(protoID, cUnitTypePlantEgyptianBush, p);
+
+    trProtoUnitSetFlag(p, protoName, "MilitaryCommands", false);
+    trProtoUnitSetFlag(p, protoName, "CommonCommands", false);
+    trProtounitAddCommand(protoName, p, "AttackMove", 3, 4);
 }
 
 void setAsPlaceholder(string unitType = "", int p = 0){

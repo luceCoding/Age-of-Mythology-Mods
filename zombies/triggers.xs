@@ -39,7 +39,6 @@ void startGame() {
     trChatSend(cNumberPlayers, "This mod is currently an alpha build and is under development. Everything is subject to change.");
     trChatSend(cNumberPlayers, "Discord: https://discord.gg/TfTvEY2AGb");
     trChatSend(cNumberPlayers, "Created by ItzJover.");
-    trPlayerSetDiplomacy(0, cHumanAIPlayer, "Ally", true);
     startMapGeneration();
     startRoleVote();
 }
@@ -54,6 +53,7 @@ active
             trExecuteOnAI(p, "scenarioDisableAI()");
         }
     }
+    trPlayerSetDiplomacy(0, cHumanAIPlayer, "Ally", true);
     trSetCanSeeAllyLOSInFFA(true);
     trDisablePopCapNotifications(true);
     trDisableConquestCheck(true);
@@ -108,7 +108,8 @@ active
             trPlayerGrantResources(p, "Gold", 99999);
             trPlayerGrantResources(p, "Wood", 99999);
             trGodPowerGrant(p, "MeteorSPC", 99, 0, false, false);
-            trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageDivine, 99999, cXSRelativityAssign);
+            trGodPowerGrant(p, "Volcano", 99, 0, false, false);
+            // trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageDivine, 99999, cXSRelativityAssign);
             trGodPowerGrant(p, "ShiftingSands", 99, 0, false, false);
         }
         xsDisableSelf();

@@ -39,6 +39,9 @@ void applyDataUpgradeToAllHumanBuildings(int unitId = -1, int puField = cXSProto
         int buildingType = g_upgradeableHumanBuildings[i];
         trModifyProtounitData(kbProtoUnitGetName(buildingType), p, puField, delta, relativity);
     }
+    if (puField == cXSProtoEffectLOS){
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectGodPowerBlockRadius, delta, cXSRelativityPercent);
+    }
 }
 
 void applyDataUpgradeToAllHumanTypes(int unitId = -1, int puField = cXSProtoEffectHitpoints, float delta = 1.0, int relativity = cXSRelativityAbsolute) {
@@ -294,7 +297,7 @@ void addSiegeCommands() {
                 );
         addCommand(p, cUnitTypeSiegeWorks, 2, 1, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 God Power Blocker",
-                    "Blocks god powers in a 30 tile radius",
+                    "Blocks god powers in its vicinity, its range is upgradeable",
                     "resources\\egyptian\\static_color\\buildings\\monument_to_villagers_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -305,7 +308,7 @@ void addSiegeCommands() {
                 );
         addCommand(p, cUnitTypeSiegeWorks, 2, 2, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Statue of Lightning",
-                    "+1 Statue of Lightning",
+                    "Good against myth units",
                     "resources\\spc\\static_color\\buildings\\statue_major_god_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -419,6 +422,16 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
+        addCommand(p, cUnitTypeTemple, 0, 3, pow(humanBaseGoldCost, 3), "Gold",
+                    "+1 Lullaby God Power",
+                    "+1 Lullaby God Power",
+                    "aztec\\static_color\\god_powers\\lullaby_icon.png",
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerLullaby), 1, 180);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
 
         addCommand(p, cUnitTypeTemple, 1, 0, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Restoration God Power",
@@ -460,6 +473,16 @@ void addTempleCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
+        addCommand(p, cUnitTypeTemple, 1, 4, pow(humanBaseGoldCost, 4), "Gold",
+                    "+1 Divine Slash God Power",
+                    "+1 Divine Slash God Power",
+                    "resources\\japanese\\static_color\\god_powers\\divine_slash_icon.png",
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerDivineSlash), 1, 60);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
 
         addCommand(p, cUnitTypeTemple, 2, 0, pow(humanBaseGoldCost, 5), "Gold",
                     "+1 Underworld Passage God Power",
@@ -472,16 +495,6 @@ void addTempleCommands() {
                     }
                 );
         addCommand(p, cUnitTypeTemple, 2, 1, pow(humanBaseGoldCost, 5), "Gold",
-                    "+1 Lullaby God Power",
-                    "+1 Lullaby God Power",
-                    "aztec\\static_color\\god_powers\\lullaby_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerLullaby), 1, 180);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeTemple, 2, 2, pow(humanBaseGoldCost, 5), "Gold",
                     "+1 Thunder Burst God Power",
                     "+1 Thunder Burst God Power",
                     "japanese\\static_color\\god_powers\\thunder_burst_icon.png",
@@ -498,6 +511,16 @@ void addTempleCommands() {
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
                         trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerLightningStorm), 1, 240);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
+        addCommand(p, cUnitTypeTemple, 3, 1, pow(humanBaseGoldCost, 6), "Gold",
+                    "+1 Purge God Power",
+                    "+1 Purge God Power",
+                    "aztec\\static_color\\god_powers\\purge_icon.png",
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerPurge), 1, 240);
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
@@ -553,7 +576,7 @@ void addZombieArmorySingleCommand(int p = -1, int zombieType = -1, int row = 0, 
                     string zombieName = kbProtoUnitGetName(cPlantToUnitTypeHashMap.get(kbUnitGetProtoUnitID(unitId)));
                     trUnforbidProtounit(p, zombieName);
                     trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                    trModifyProtounitData(zombieName, p, cXSProtoEffectTrainPoints, 10, cXSRelativityAssign);
+                    // trModifyProtounitData(zombieName, p, cXSProtoEffectTrainPoints, 10, cXSRelativityAssign);
                     increaseCommandCost(unitId, 1.0);
                 }
             );
@@ -586,9 +609,9 @@ void addZombieArmoryCommands(int p = -1) {
 
     addZombieArmorySingleCommand(p, cUnitTypeQiongQi, 3, 0, pow(zombieBaseGoldCost, 3));
     addZombieArmorySingleCommand(p, cUnitTypeOnmoraki, 3, 1, pow(zombieBaseGoldCost, 5));
-    addZombieArmorySingleCommand(p, cUnitTypeNidhogg, 3, 2, pow(zombieBaseGoldCost, 7));
-    addZombieArmorySingleCommand(p, cUnitTypePolyphemus, 3, 3, pow(zombieBaseGoldCost, 7));
-    addZombieArmorySingleCommand(p, cUnitTypeMictlantecuhtli, 3, 4, pow(zombieBaseGoldCost, 8));
+    addZombieArmorySingleCommand(p, cUnitTypePolyphemus, 3, 2, pow(zombieBaseGoldCost, 6));
+    addZombieArmorySingleCommand(p, cUnitTypeNidhogg, 3, 3, pow(zombieBaseGoldCost, 7));
+    addZombieArmorySingleCommand(p, cUnitTypeMictlantecuhtli, 3, 4, pow(zombieBaseGoldCost, 7));
 }
 
 

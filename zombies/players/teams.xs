@@ -36,4 +36,5 @@ void setTeams(ref int[] voteSelections){
             trPlayerSetDiplomacy(p2, p1, diplomacy, true);
         }
     }
+    trPlayerSetDiplomacy(0, cHumanAIPlayer, "Ally", true);
 }

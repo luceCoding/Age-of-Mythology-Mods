@@ -1,3 +1,41 @@
+void setupHumansPost(){
+    for (int p = 1; p < cHumanAIPlayer; p++) {
+
+        if (g_finalTeams[p] != 1) { continue; }
+
+        for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++){
+            int buildingType = g_upgradeableHumanBuildings[i];
+            trProtoUnitSetUnitType(p, kbProtoUnitGetName(buildingType), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), false);
+        }
+
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeLightningStrike), "HandAttack", p, cXSActionEffectDamageDivine, 2.0, cXSRelativityBasePercent);
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", p, cXSActionEffectDamageCrush, 1000, cXSRelativityAssign);
+        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", kbUnitTypeGetName(cUnitTypeBuilding), p, cXSActionProtoEffectDamageBonus, 3.0, cXSRelativityAssign);
+        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", kbUnitTypeGetName(cDefaultcUnitTypeWall), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
+        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", kbUnitTypeGetName(cDefaultcUnitTypeWall2), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
+        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", kbUnitTypeGetName(cDefaultcUnitTypeGate), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
+        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", kbUnitTypeGetName(cDefaultcUnitTypeGate2), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
+
+        // trPlayerEnableTimeshift(p, true);
+
+        // for (int i = 0; i < g_humanInteractableTypes.size(); i++) {
+        //     int interactableType = g_humanInteractableTypes[i];
+        //     trModifyProtounitResource(kbProtoUnitGetName(interactableType), "Food", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+        //     trModifyProtounitResource(kbProtoUnitGetName(interactableType), "Wood", p, cXSPUResourceEffectCost, pow(humanBaseWoodCost, 3), cXSRelativityAssign);
+        //     trModifyProtounitResource(kbProtoUnitGetName(interactableType), "Favor", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+        //     trModifyProtounitResource(kbProtoUnitGetName(interactableType), "Gold", p, cXSPUResourceEffectCost, 0, cXSRelativityAssign);
+        //     trPlayerTimeshiftAddEntry(p, kbProtoUnitGetName(interactableType), 0.5, 0.25);
+        // }
+
+        // for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++) {
+        //     int buildingType = g_upgradeableHumanBuildings[i];
+        //     trPlayerTimeshiftAddEntry(p, kbProtoUnitGetName(buildingType), 0.5, 2.0);
+        // }
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.25, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSpikeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.5, cXSRelativityAssign);
+    }
+}
+
 void initializeHumans(){
     if (g_humanUnitTypes.size() == 0) {
         errorLog("Cannot spawn the human players: no human unit types are configured.");
@@ -41,30 +79,6 @@ void initializeHumans(){
         }
 
         registerZombieRespawn(p);
-    }
-}
-
-void convertBuildingsToHumanAI(int p = 0){
-    int[] playerTowers = g_towerTracker.getAllPlayerBuildings(p);
-    int time = 500;
-    for (int i = 0; i < playerTowers.size(); i++) {
-        int buildingID = playerTowers[i];
-        midFreqSchedulerWithInt.add(time, buildingID, [](int iteration = 0, int buildingId = 0) -> bool {
-            selectSingle(buildingId);
-            trUnitConvert(cHumanAIPlayer);
-            return false;
-        });
-        time = time + 500;
-    }
-    int[] playerWalls = g_wallTracker.getAllPlayerBuildings(p);
-    for (int i = 0; i < playerWalls.size(); i++) {
-        int buildingID = playerWalls[i];
-        midFreqSchedulerWithInt.add(time, buildingID, [](int iteration = 0, int buildingId = 0) -> bool {
-            selectSingle(buildingId);
-            trUnitConvert(cHumanAIPlayer);
-            return false;
-        });
-        time = time + 500;
     }
 }
 

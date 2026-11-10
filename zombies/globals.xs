@@ -53,8 +53,8 @@ const float humanBaseWoodCost = 2.0;
 const float humanBaseGoldCost = 2.0;
 
 const float g_alphaSensitivity = 2.5; // Responsiveness weight for zombie performance adjustments
-const float g_exponentK = 0.75; // Sub-linear team size exponent
-const float g_targetZombieDestruction = 0.25;
+const float g_exponentK = 0.7; // Sub-linear team size exponent
+const float g_targetZombieDestruction = 0.2;
 const float g_minDailyBuff = 1.01;
 const float g_maxDailyBuff = 1.25;
 
@@ -102,22 +102,28 @@ void initializeGlobals(){
 
     g_zombieUnitTypes.add(cUnitTypeSetna);
 
+    // g_placeHolderUnitTypes.add(cUnitTypeRelic);
+    g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
+    g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
     g_placeHolderUnitTypes.add(cUnitTypeBonePileSmallWhite);
     g_placeHolderUnitTypes.add(cUnitTypeBonePileMediumWhite);
     g_placeHolderUnitTypes.add(cUnitTypeSpiderEgg);
     g_placeHolderUnitTypes.add(cUnitTypeCracks);
-    g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
-    g_placeHolderUnitTypes.add(cUnitTypeRelic);
+    // g_placeHolderUnitTypes.add(cUnitTypeRelic);
     g_placeHolderUnitTypes.add(cUnitTypeCocoon);
     g_placeHolderUnitTypes.add(cUnitTypeTreeHades);
-    // g_placeHolderUnitTypes.add(cUnitTypeWoodPileLarge);
-    g_placeHolderUnitTypes.add(cUnitTypeOsirisPieceBox);
     g_placeHolderUnitTypes.add(cUnitTypeObsidianShard);
     g_placeHolderUnitTypes.add(cUnitTypeMinion);
+    g_placeHolderUnitTypes.add(cUnitTypeHadesShade);
     g_placeHolderUnitTypes.add(cUnitTypeCanopicJars);
+    g_placeHolderUnitTypes.add(cUnitTypeOsirisPieceBox);
 
-    // g_lootDrops.add(cUnitTypeWoodPileLarge);
     g_lootDrops.add(cUnitTypeGoldPile);
+    g_lootDrops.add(cUnitTypeGoldPile);
+    g_lootDrops.add(cUnitTypeGoldPile);
+    g_lootDrops.add(cUnitTypeGoldPile);
+    g_lootDrops.add(cUnitTypeGoldPile);
+    g_lootDrops.add(cUnitTypeWoodPileLarge);
 
     g_upgradeableHumanBuildings.add(cUnitTypeWallShort);
     g_upgradeableHumanBuildings.add(cUnitTypeWallMedium);
@@ -145,6 +151,7 @@ void initializeGlobals(){
     g_trashZombieTypes.add(cUnitTypeMummy);
 
     g_purchaseableZombieTypes.add(cUnitTypeFireArcher);
+    g_purchaseableZombieTypes.add(cUnitTypeHuskarl);
     g_purchaseableZombieTypes.add(cUnitTypeDestroyer);
     g_purchaseableZombieTypes.add(cUnitTypeShinobi);
     g_purchaseableZombieTypes.add(cUnitTypeOtontin);
@@ -163,8 +170,8 @@ void initializeGlobals(){
 
     g_purchaseableZombieTypes.add(cUnitTypeQiongQi);
     g_purchaseableZombieTypes.add(cUnitTypeOnmoraki);
-    g_purchaseableZombieTypes.add(cUnitTypeNidhogg);
     g_purchaseableZombieTypes.add(cUnitTypePolyphemus);
+    g_purchaseableZombieTypes.add(cUnitTypeNidhogg);
     g_purchaseableZombieTypes.add(cUnitTypeMictlantecuhtli);
 
     g_bossTileUnitTypes.add(cUnitTypeSphinx);
@@ -193,13 +200,17 @@ void initializeGlobals(){
     g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\eclipse_icon.png");
 
     g_purchaseableT3GodPowers.add(cProtoPowerSmitingGust);
+    g_purchaseableT3GodPowers.add(cProtoPowerMeteorSPC);
 
     g_purchaseableT3GodPowerIcons.add("resources\japanese\static_color\god_powers\smiting_gust_icon.png");
+    g_purchaseableT3GodPowerIcons.add("resources\egyptian\static_color\god_powers\meteor_icon.png");
 
-    g_purchaseableT4GodPowers.add(cProtoPowerMeteor);
-    g_purchaseableT4GodPowers.add(cProtoPowerUndermine);
-    g_purchaseableT4GodPowerIcons.add("resources\egyptian\static_color\god_powers\meteor_icon.png");
-    g_purchaseableT4GodPowerIcons.add("resources\norse\static_color\god_powers\undermine_icon.png");
+    // g_purchaseableT4GodPowers.add(cProtoPowerMeteor);
+    // g_purchaseableT4GodPowers.add(cProtoPowerUndermine);
+    g_purchaseableT4GodPowers.add(cProtoPowerVolcano);
+    // g_purchaseableT4GodPowerIcons.add("resources\egyptian\static_color\god_powers\meteor_icon.png");
+    // g_purchaseableT4GodPowerIcons.add("resources\norse\static_color\god_powers\undermine_icon.png");
+    g_purchaseableT4GodPowerIcons.add("resources\aztec\static_color\god_powers\volcano_icon.png");
 
     g_otherZombieTypes.add(cUnitTypeCarnivora);
     g_otherZombieTypes.add(cUnitTypeInfestedDen);

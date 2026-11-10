@@ -46,13 +46,14 @@ void setPickups(){
 
     trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeSpiderEgg), 0, kbProtoUnitGetName(cUnitTypeCinematicBlockWaypoint), 0, 1.0, cXSRelativityAssign, -1, -1);
     trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeMinion), 0, kbProtoUnitGetName(cUnitTypeGoldPile), 0, 1.0, cXSRelativityAssign, -1, -1);
-    trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeObsidianShard), 0, kbProtoUnitGetName(cUnitTypeGoldPile), 0, 1.0, cXSRelativityAssign, -1, -1);
+    trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeObsidianShard), 0, kbProtoUnitGetName(cUnitTypeRelic), 0, 1.0, cXSRelativityAssign, -1, -1);
+    trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeHadesShade), 0, kbProtoUnitGetName(cUnitTypeGoldPile), 0, 1.0, cXSRelativityAssign, -1, -1);
 
     for (int i = 0; i < g_bossTileUnitTypes.size(); i++){
         int unitType = g_bossTileUnitTypes[i];
         trProtounitModifySpawnData(kbProtoUnitGetName(unitType), 0, kbProtoUnitGetName(cUnitTypeRelic), 0, 1.0, cXSRelativityAssign, -1, -1);
         trProtounitModifySpawnData(kbProtoUnitGetName(unitType), 0, kbProtoUnitGetName(cUnitTypeGoldPile), 0, 1.0, cXSRelativityAssign, -1, -1);
-        trModifyProtounitData(kbProtoUnitGetName(unitType), 0, cXSProtoEffectHitpoints, (cNumberPlayers / 3), cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(unitType), 0, cXSProtoEffectHitpoints, (cNumberPlayers / 4), cXSRelativityPercent);
     }
 
     g_OnCreationListener.register(0, cUnitTypeCinematicBlockWaypoint, true, [](int unitId = -1) -> void {

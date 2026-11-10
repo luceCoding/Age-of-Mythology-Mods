@@ -125,7 +125,6 @@ class BuildingTracker
 };
 
 BuildingTracker g_towerTracker;
-BuildingTracker g_wallTracker;
 
 void registerBuildingTracker(){
    for (int p = 1; p < cNumberPlayers; p++) {
@@ -133,10 +132,7 @@ void registerBuildingTracker(){
       for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++){
          int buildingType = g_upgradeableHumanBuildings[i];
          if (buildingType >= cUnitTypeWallShort && buildingType <= cUnitTypeWallGate) {
-            g_OnCreationListener.register(p, buildingType, false, [](int unitId = -1) -> void {
-                  g_wallTracker.addBuilding(unitId);
-               }
-            );
+            continue;
          }
          else {
             g_OnCreationListener.register(p, buildingType, false, [](int unitId = -1) -> void {

@@ -260,7 +260,7 @@ void preModifyPlayerData(){
 
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectLOS, cBaseHumanLOS, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectBuildPoints, cBaseHumanBuildPoints * 5, cXSRelativityAssign);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectGodPowerBlockRadius, cBaseHumanLOS * 3.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectGodPowerBlockRadius, cBaseHumanLOS * 2, cXSRelativityAssign);
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), "AutoGather", "Favor", p, cXSActionProtoEffectWorkRate, 0, cXSRelativityAssign);
 
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeHillFort), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.25, cXSRelativityAssign);
@@ -272,7 +272,7 @@ void preModifyPlayerData(){
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectRange, cBaseHumanLOS * 1.5, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.5, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectBuildPoints, cBaseHumanBuildPoints * 5, cXSRelativityAssign);
-        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectDamageDivine, 25.0, cXSRelativityAssign);
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectDamageDivine, 20.0, cXSRelativityAssign);
 
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "MonolithStrike", p, cXSActionEffectRange, cBaseHumanLOS * 1.5, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.5, cXSRelativityAssign);
@@ -327,6 +327,7 @@ void preModifyPlayerData(){
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeOsirisPieceBox), "AbstractTemple", true);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeOsirisPieceBox), cHumanAIPlayer, cXSProtoEffectObstructionRadiusX, 1.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeOsirisPieceBox), cHumanAIPlayer, cXSProtoEffectObstructionRadiusZ, 1.0, cXSRelativityAssign);
+    trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeOsirisPieceBox), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), true);
 
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeWallJail), kbUnitTypeGetName(cUnitTypeLogicalTypeHandUnitsAutoAttack), true);
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeWallJail), kbUnitTypeGetName(cUnitTypeLogicalTypeRangedUnitsAutoAttack), true);
@@ -351,7 +352,7 @@ void preModifyPlayerData(){
 
     trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeObsidianObelisk), "Collideable", false);
     // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeTaproot), 0, cXSProtoEffectHitpoints, 10, cXSRelativityAssign);
-    // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMinion), 0, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMinion), 0, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectObstructionRadiusX, 7.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectObstructionRadiusZ, 3.0, cXSRelativityAssign);
 
@@ -476,5 +477,6 @@ void postModifyPlayerData(){
     trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeGate), "KBTracked", false);
     trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeGate2), "KBTracked", false);
 
+    setupHumansPost();
     setupZombiesPost();
 }
