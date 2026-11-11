@@ -82,6 +82,8 @@ void setupZombiesPost(){
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeInfestedDen), p, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
 
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMictlantecuhtli), p, cXSProtoEffectTrainPoints, 45.0, cXSRelativityAssign);
+
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeNidhogg), p, cXSProtoEffectPopulationCount, 4.0, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeNidhogg), p, cXSProtoEffectTrainPoints, 45.0, cXSRelativityAssign);
 
         for (int i = 0; i < g_zombieUnitTypes.size(); i++) {
@@ -126,6 +128,24 @@ void setupZombiesPost(){
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
             applyForAllZombies(p, zombieType);
         }
+
+        for (int i = 0; i < g_zombieT1GodPowers.size(); i++) {
+            GodPowerData godPower = g_zombieT1GodPowers[i];
+            godPower.redefineGodPower(p);
+        }
+        for (int i = 0; i < g_zombieT2GodPowers.size(); i++) {
+            GodPowerData godPower = g_zombieT2GodPowers[i];
+            godPower.redefineGodPower(p);
+        }
+        for (int i = 0; i < g_zombieT3GodPowers.size(); i++) {
+            GodPowerData godPower = g_zombieT3GodPowers[i];
+            godPower.redefineGodPower(p);
+        }
+        for (int i = 0; i < g_zombieT4GodPowers.size(); i++) {
+            GodPowerData godPower = g_zombieT4GodPowers[i];
+            godPower.redefineGodPower(p);
+        }
+
     }
 }
 

@@ -38,6 +38,24 @@ void setupHumansPost(){
         // }
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.25, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSpikeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.5, cXSRelativityAssign);
+
+        for (int i = 0; i < g_humanT1GodPowers.size(); i++) {
+            GodPowerData godPower = g_humanT1GodPowers[i];
+            godPower.redefineGodPower(p);
+        }
+        for (int i = 0; i < g_humanT2GodPowers.size(); i++) {
+            GodPowerData godPower = g_humanT2GodPowers[i];
+            godPower.redefineGodPower(p);
+        }
+        for (int i = 0; i < g_humanT3GodPowers.size(); i++) {
+            GodPowerData godPower = g_humanT3GodPowers[i];
+            godPower.redefineGodPower(p);
+        }
+        for (int i = 0; i < g_humanT4GodPowers.size(); i++) {
+            GodPowerData godPower = g_humanT4GodPowers[i];
+            godPower.redefineGodPower(p);
+        }
+        
     }
 }
 
