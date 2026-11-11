@@ -266,7 +266,7 @@ void initializeGlobals(){
     g_humanT3GodPowers.add(createGodPowerData(
                             cProtoPowerThunderBurst,
                             "Thunder Burst",
-                            "+1 Thunder Burst God Power",
+                            "Creates expanding shockwaves that damage and throw enemy units within range",
                             "japanese\static_color\god_powers\thunder_burst_icon.png",
                             180)
                         );
@@ -274,7 +274,7 @@ void initializeGlobals(){
     g_humanT4GodPowers.add(createGodPowerData(
                             cProtoPowerLightningStorm,
                             "Lightning Storm",
-                            "+1 Lightning Storm God Power",
+                            "Many thunderbolts strike enemies in an area",
                             "resources\greek\static_color\god_powers\lightning_storm_icon.png",
                             240)
                         );
@@ -282,7 +282,7 @@ void initializeGlobals(){
     g_humanT4GodPowers.add(createGodPowerData(
                             cProtoPowerPurge,
                             "Purge",
-                            "+1 Purge God Power",
+                            "Kills units of a type in an area",
                             "aztec\static_color\god_powers\purge_icon.png",
                             240)
                         );
