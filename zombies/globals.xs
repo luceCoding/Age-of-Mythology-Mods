@@ -76,15 +76,15 @@ int[] g_otherZombieTypes = default;
 
 int[] g_purchaseableZombieTypes = default;
 
-int[] g_purchaseableT1GodPowers = default;
-int[] g_purchaseableT2GodPowers = default;
-int[] g_purchaseableT3GodPowers = default;
-int[] g_purchaseableT4GodPowers = default;
+GodPowerData[] g_humanT1GodPowers = default;
+GodPowerData[] g_humanT2GodPowers = default;
+GodPowerData[] g_humanT3GodPowers = default;
+GodPowerData[] g_humanT4GodPowers = default;
 
-string[] g_purchaseableT1GodPowerIcons = default;
-string[] g_purchaseableT2GodPowerIcons = default;
-string[] g_purchaseableT3GodPowerIcons = default;
-string[] g_purchaseableT4GodPowerIcons = default;
+GodPowerData[] g_zombieT1GodPowers = default;
+GodPowerData[] g_zombieT2GodPowers = default;
+GodPowerData[] g_zombieT3GodPowers = default;
+GodPowerData[] g_zombieT4GodPowers = default;
 
 int[] g_bossTileIds = default;
 int[] g_bossTileUnitTypes = default;
@@ -179,38 +179,191 @@ void initializeGlobals(){
     g_bossTileUnitTypes.add(cUnitTypeHydra);
     g_bossTileUnitTypes.add(cUnitTypeChimera);
 
-    g_purchaseableT1GodPowers.add(cProtoPowerCarnivora);
-    g_purchaseableT1GodPowers.add(cProtoPowerDeconstruction);
-    g_purchaseableT1GodPowers.add(cProtoPowerInfestation);
-    g_purchaseableT1GodPowers.add(cProtoPowerWither);
-
-    g_purchaseableT1GodPowerIcons.add("resources\atlantean\player_color\units\carnivora_icon.png");
-    g_purchaseableT1GodPowerIcons.add("atlantean\static_color\god_powers\deconstruction_icon.png");
-    g_purchaseableT1GodPowerIcons.add("resources\aztec\static_color\god_powers\infestation_icon.png");
-    g_purchaseableT1GodPowerIcons.add("resources\greek_demeter\static_color\god_powers\wither_icon.png");
-
-    g_purchaseableT2GodPowers.add(cProtoPowerDroughtLand);
-    g_purchaseableT2GodPowers.add(cProtoPowerAncestors);
-    g_purchaseableT2GodPowers.add(cProtoPowerEclipse);
-    g_purchaseableT2GodPowers.add(cProtoPowerMeteorSPC);
-
-    g_purchaseableT2GodPowerIcons.add("resources\chinese\static_color\god_powers\drought_land_icon.png");
-    g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\ancestors_icon.png");
-    g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\eclipse_icon.png");
-    g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\meteor_icon.png");
-
-    g_purchaseableT3GodPowers.add(cProtoPowerSmitingGust);
-
-    g_purchaseableT3GodPowerIcons.add("resources\japanese\static_color\god_powers\smiting_gust_icon.png");
-
-    // g_purchaseableT4GodPowers.add(cProtoPowerMeteor);
-    // g_purchaseableT4GodPowers.add(cProtoPowerUndermine);
-    g_purchaseableT4GodPowers.add(cProtoPowerVolcano);
-    // g_purchaseableT4GodPowerIcons.add("resources\egyptian\static_color\god_powers\meteor_icon.png");
-    // g_purchaseableT4GodPowerIcons.add("resources\norse\static_color\god_powers\undermine_icon.png");
-    g_purchaseableT4GodPowerIcons.add("resources\aztec\static_color\god_powers\volcano_icon.png");
-
     g_otherZombieTypes.add(cUnitTypeCarnivora);
     g_otherZombieTypes.add(cUnitTypeInfestedDen);
     g_otherZombieTypes.add(cUnitTypeLargeScorpion);
+
+    g_humanT1GodPowers.add(createGodPowerData(
+                            cProtoPowerSentinel,
+                            "Sentinel",
+                            "Summons five stone guardians",
+                            "resources\greek\static_color\god_powers\sentinel_icon.png",
+                            60)
+                        );
+
+    g_humanT1GodPowers.add(createGodPowerData(
+                            cProtoPowerSolarShield,
+                            "Solar Shield",
+                            "Targeted unit becomes temporarily nearly invulnerable and heals rapidly",
+                            "resources\japanese\static_color\god_powers\solar_shield_icon.png",
+                            60)
+                        );
+
+    g_humanT1GodPowers.add(createGodPowerData(
+                            cProtoPowerTailwind,
+                            "Tailwind",
+                            "Improves the speed of ally units in an area",
+                            "aztec\static_color\god_powers\tailwind_icon.png",
+                            60)
+                        );
+
+    g_humanT1GodPowers.add(createGodPowerData(
+                            cProtoPowerLullaby,
+                            "Lullaby",
+                            "Puts units to sleep",
+                            "aztec\static_color\god_powers\lullaby_icon.png",
+                            60)
+                        );
+
+    g_humanT2GodPowers.add(createGodPowerData(
+                            cProtoPowerRestoration,
+                            "Restoration",
+                            "Heals friendly units and buildings",
+                            "resources\greek\static_color\god_powers\restoration_icon.png",
+                            120)
+                        );
+
+    g_humanT2GodPowers.add(createGodPowerData(
+                            cProtoPowerBronze,
+                            "Bronze",
+                            "Increases the armor of ally units and buildings",
+                            "resources\greek\static_color\god_powers\bronze_icon.png",
+                            120)
+                        );
+
+    g_humanT2GodPowers.add(createGodPowerData(
+                            cProtoPowerVanish,
+                            "Vanish",
+                            "Makes units invisible",
+                            "resources\chinese\static_color\god_powers\vanish_icon.png",
+                            120)
+                        );
+
+    g_humanT2GodPowers.add(createGodPowerData(
+                            cProtoPowerForestProtection,
+                            "Forest Protection",
+                            "Protects a building by rooting nearby enemies in place and healing allies",
+                            "chinese\static_color\god_powers\forest_protection_icon.png",
+                            120)
+                        );
+
+    g_humanT2GodPowers.add(createGodPowerData(
+                            cProtoPowerDivineSlash,
+                            "Divine Slash",
+                            "Damages enemy units and buildings in a line",
+                            "resources\japanese\static_color\god_powers\divine_slash_icon.png",
+                            120)
+                        );
+
+    g_humanT3GodPowers.add(createGodPowerData(
+                            cProtoPowerUnderworldPassage,
+                            "Underworld Passage",
+                            "Allows rapid movement of troops from one spot to another",
+                            "resources\greek\static_color\god_powers\underworld_passage_icon.png",
+                            180)
+                        );
+
+    g_humanT3GodPowers.add(createGodPowerData(
+                            cProtoPowerThunderBurst,
+                            "Thunder Burst",
+                            "+1 Thunder Burst God Power",
+                            "japanese\static_color\god_powers\thunder_burst_icon.png",
+                            180)
+                        );
+
+    g_humanT4GodPowers.add(createGodPowerData(
+                            cProtoPowerLightningStorm,
+                            "Lightning Storm",
+                            "+1 Lightning Storm God Power",
+                            "resources\greek\static_color\god_powers\lightning_storm_icon.png",
+                            240)
+                        );
+
+    g_humanT4GodPowers.add(createGodPowerData(
+                            cProtoPowerPurge,
+                            "Purge",
+                            "+1 Purge God Power",
+                            "aztec\static_color\god_powers\purge_icon.png",
+                            240)
+                        );
+
+    g_zombieT1GodPowers.add(createGodPowerData(
+                            cProtoPowerCarnivora,
+                            "Zombie Carnivora",
+                            "Summon a Zombie Carnivora which deals moderate crush damage",
+                            "resources\atlantean\player_color\units\carnivora_icon.png",
+                            60)
+                        );
+
+    g_zombieT1GodPowers.add(createGodPowerData(
+                            cProtoPowerDeconstruction,
+                            "Wall Deconstruction",
+                            "Deconstructs enemy walls and gates",
+                            "atlantean\static_color\god_powers\deconstruction_icon.png",
+                            60)
+                        );
+
+    g_zombieT1GodPowers.add(createGodPowerData(
+                            cProtoPowerInfestation,
+                            "Zombie Infestation",
+                            "Summon a permanent Infested Nest which periodically spawns Large Scorpions",
+                            "resources\aztec\static_color\god_powers\infestation_icon.png",
+                            60)
+                        );
+
+    g_zombieT1GodPowers.add(createGodPowerData(
+                            cProtoPowerWither,
+                            "",
+                            "Slows enemies and destroys Berry Bushes, trees, and Farms in the target area and prevents building construction",
+                            "resources\greek_demeter\static_color\god_powers\wither_icon.png",
+                            60)
+                        );
+
+    g_zombieT2GodPowers.add(createGodPowerData(
+                            cProtoPowerDroughtLand,
+                            "Drought Land",
+                            "Makes enemy buildings and land units vulnerable and prevents building construction",
+                            "resources\chinese\static_color\god_powers\drought_land_icon.png",
+                            120)
+                        );
+
+    g_zombieT2GodPowers.add(createGodPowerData(
+                            cProtoPowerAncestors,
+                            "Ancestors",
+                            "Summons minions",
+                            "resources\egyptian\static_color\god_powers\ancestors_icon.png",
+                            120)
+                        );
+
+    g_zombieT2GodPowers.add(createGodPowerData(
+                            cProtoPowerEclipse,
+                            "Eclipse",
+                            "Buffs myth units damage, abilities, speed and armor for a duration",
+                            "resources\egyptian\static_color\god_powers\eclipse_icon.png",
+                            120)
+                        );
+
+    g_zombieT2GodPowers.add(createGodPowerData(
+                            cProtoPowerMeteorSPC,
+                            "Comet",
+                            "Rain down a single meteor that does bonus damage to walls",
+                            "resources\egyptian\static_color\god_powers\meteor_icon.png",
+                            120)
+                        );
+
+    g_zombieT3GodPowers.add(createGodPowerData(
+                            cProtoPowerSmitingGust,
+                            "Smiting Gust",
+                            "Blows away units in the chosen direction",
+                            "resources\japanese\static_color\god_powers\smiting_gust_icon.png",
+                            180)
+                        );
+
+    g_zombieT4GodPowers.add(createGodPowerData(
+                            cProtoPowerVolcano,
+                            "Volcano",
+                            "Summons a volcano that destroys walls and bombards enemies",
+                            "resources\aztec\static_color\god_powers\volcano_icon.png",
+                            240)
+                        );
 }
