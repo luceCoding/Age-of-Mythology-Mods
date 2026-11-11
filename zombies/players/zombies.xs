@@ -1,3 +1,20 @@
+// Counts human players on team 1 who are not defeated/resigned and whose human unit is still alive.
+int countLivingHumanPlayers(){
+    int count = 0;
+    for (int i = 0; i < g_humanUnitIDs.size(); i++){
+        int unitId = g_humanUnitIDs[i];
+        int p = kbUnitGetPlayerID(unitId);
+        if (g_finalTeams[p] != 1 || trPlayerIsDefeatedOrResigned(p)){
+            continue;
+        }
+        selectSingle(unitId);
+        if (trUnitDead() == false){
+            count++;
+        }
+    }
+    return count;
+}
+
 void addTrainBuilding(string targetProto = "", int cUnitType = -1, int p = -1, int row = 0, int col = 0, int buildLimit = 1){
     trProtounitAddTrain(targetProto, p, kbProtoUnitGetName(cUnitType), row, col);
     trModifyProtounitActionUnitType(targetProto, "Build", kbUnitTypeGetName(cUnitTypeBuilding), p, cXSActionProtoEffectWorkRate, 1.0, cXSRelativityAssign);
@@ -54,6 +71,9 @@ void setupZombiesPost(){
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallConnector), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallGate), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
 
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", p, cXSActionEffectDamageCrush, 0.5, cXSRelativityPercent);
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeVolcanoMeteor), "HandAttack", p, cXSActionEffectDamageDivine, 0, cXSRelativityAssign);
+
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeUndermineDamage), "HandAttack", p, cXSActionEffectDamageCrush, 0.5, cXSRelativityBasePercent);
 
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeCarnivora), "HandAttack", p, cXSActionEffectDamageCrush, 25, cXSRelativityAssign);
@@ -70,13 +90,13 @@ void setupZombiesPost(){
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeDwarvenArmory, p, 0, 3, 1);
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeMonumentToGods, p, 0, 4, 1);
             trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAssign);
-            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopCapAddition, maxZombiePopulation, cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopCapAddition, g_humanUnitCount / g_zombieUnitCount * 20, cXSRelativityAssign);
             trProtounitModifySpawnData(kbProtoUnitGetName(zombieType), p, kbProtoUnitGetName(cUnitTypeCinematicBlockSpawnPoint), 0, 1.0, cXSRelativityAssign, -1, -1);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, g_humanUnitCount+1, cXSRelativityPercent);
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectRange, 10.0, cXSRelativityAssign);
             trProtoUnitActionSetEnabled(kbProtoUnitGetName(zombieType), p, "RangedAttackMyth", false);
             applyForAllZombies(p, zombieType);
-            trModifyProtounitResource(kbProtoUnitGetName(zombieType), "Gold", p, cXSPUResourceEffectKillReward, 10, cXSRelativityAssign);
+            trModifyProtounitResource(kbProtoUnitGetName(zombieType), "Gold", p, cXSPUResourceEffectKillReward, cNumberPlayers, cXSRelativityAssign);
             trProtoUnitSetUnitType(p, kbProtoUnitGetName(zombieType), kbUnitTypeGetName(cUnitTypeLogicalTypeValidShiftingSandsTarget), false);
             trProtoUnitActionSetEnabled(kbProtoUnitGetName(zombieType), p, "Pickup", true);
         }
@@ -85,7 +105,12 @@ void setupZombiesPost(){
             int zombieType = g_trashZombieTypes[i];
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopulationCount, 0, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
-            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
+            if (i == 0){
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor * g_firstTrashZombieScaleFactor, cXSRelativityPercent);
+            }
+            else {
+                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
+            }
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "HandAttack", p, cXSActionEffectDamageCrush, i * 2, cXSRelativityAssign);
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageCrush, i * 2, cXSRelativityAssign);
             applyForAllZombies(p, zombieType);
@@ -146,7 +171,7 @@ void permaBuffAZombie(int zombieType = -1, int p = -1, float finalHPBuff = 0){
 
 void permaDailyBuffZombies(){
 
-    float finalHPBuff = g_director.processEndOfDay();
+    float finalHPBuff = max(g_director.processEndOfDay(), 1.0 + (max(xsIntToFloat(countLivingHumanPlayers()), 1.0) / 100));
     for (int p = 1; p < cNumberPlayers; p++) {
         if (g_finalTeams[p] == 2){
             trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
@@ -254,23 +279,6 @@ void orderToAutoAttackUnit(int minionId = -1, int unitId = -1){
     vector unitPos = kbUnitGetTruePosition(unitId);
     selectSingle(minionId);
     trUnitMoveToPoint(unitPos.x, unitPos.y, unitPos.z, -1, true, false, 1.0);
-}
-
-// Counts human players on team 1 who are not defeated/resigned and whose human unit is still alive.
-int countLivingHumanPlayers(){
-    int count = 0;
-    for (int i = 0; i < g_humanUnitIDs.size(); i++){
-        int unitId = g_humanUnitIDs[i];
-        int p = kbUnitGetPlayerID(unitId);
-        if (g_finalTeams[p] != 1 || trPlayerIsDefeatedOrResigned(p)){
-            continue;
-        }
-        selectSingle(unitId);
-        if (trUnitDead() == false){
-            count++;
-        }
-    }
-    return count;
 }
 
 void endGameAllWin(){

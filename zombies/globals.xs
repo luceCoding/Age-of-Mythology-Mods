@@ -32,7 +32,6 @@ const int cTrashZombieSpawnTimer = 6000;
 // const float cBaseZombieLifespan = 60.0;
 const float dailyZombiePermaHPBuffPercent = 1.00;
 const float dailyZombiePermaLifespanBuff = 5.0;
-const int maxZombiePopulation = cNumberPlayers * 10;
 
 vector g_bspZombieSpawnLocation = cInvalidVector;
 int[] g_humanSpawnPoints = default;
@@ -54,6 +53,7 @@ const float humanBaseGoldCost = 2.0;
 
 const float g_alphaSensitivity = 2.5; // Responsiveness weight for zombie performance adjustments
 const float g_exponentK = 0.7; // Sub-linear team size exponent
+const float g_firstTrashZombieScaleFactor = 1.25;
 const float g_targetZombieDestruction = 0.2;
 const float g_minDailyBuff = 1.01;
 const float g_maxDailyBuff = 1.25;
@@ -102,14 +102,12 @@ void initializeGlobals(){
 
     g_zombieUnitTypes.add(cUnitTypeSetna);
 
-    // g_placeHolderUnitTypes.add(cUnitTypeRelic);
     g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
     g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
     g_placeHolderUnitTypes.add(cUnitTypeBonePileSmallWhite);
     g_placeHolderUnitTypes.add(cUnitTypeBonePileMediumWhite);
     g_placeHolderUnitTypes.add(cUnitTypeSpiderEgg);
     g_placeHolderUnitTypes.add(cUnitTypeCracks);
-    // g_placeHolderUnitTypes.add(cUnitTypeRelic);
     g_placeHolderUnitTypes.add(cUnitTypeCocoon);
     g_placeHolderUnitTypes.add(cUnitTypeTreeHades);
     g_placeHolderUnitTypes.add(cUnitTypeObsidianShard);
@@ -194,16 +192,16 @@ void initializeGlobals(){
     g_purchaseableT2GodPowers.add(cProtoPowerDroughtLand);
     g_purchaseableT2GodPowers.add(cProtoPowerAncestors);
     g_purchaseableT2GodPowers.add(cProtoPowerEclipse);
+    g_purchaseableT2GodPowers.add(cProtoPowerMeteorSPC);
 
     g_purchaseableT2GodPowerIcons.add("resources\chinese\static_color\god_powers\drought_land_icon.png");
     g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\ancestors_icon.png");
     g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\eclipse_icon.png");
+    g_purchaseableT2GodPowerIcons.add("resources\egyptian\static_color\god_powers\meteor_icon.png");
 
     g_purchaseableT3GodPowers.add(cProtoPowerSmitingGust);
-    g_purchaseableT3GodPowers.add(cProtoPowerMeteorSPC);
 
     g_purchaseableT3GodPowerIcons.add("resources\japanese\static_color\god_powers\smiting_gust_icon.png");
-    g_purchaseableT3GodPowerIcons.add("resources\egyptian\static_color\god_powers\meteor_icon.png");
 
     // g_purchaseableT4GodPowers.add(cProtoPowerMeteor);
     // g_purchaseableT4GodPowers.add(cProtoPowerUndermine);

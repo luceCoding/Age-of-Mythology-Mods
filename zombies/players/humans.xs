@@ -5,7 +5,12 @@ void setupHumansPost(){
 
         for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++){
             int buildingType = g_upgradeableHumanBuildings[i];
-            trProtoUnitSetUnitType(p, kbProtoUnitGetName(buildingType), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), false);
+            if (i <= 4){ // Only Walls
+                trProtoUnitSetUnitType(p, kbProtoUnitGetName(buildingType), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), true);
+            }
+            else {
+                trProtoUnitSetUnitType(p, kbProtoUnitGetName(buildingType), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), false);
+            }
         }
 
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeLightningStrike), "HandAttack", p, cXSActionEffectDamageDivine, 2.0, cXSRelativityBasePercent);
