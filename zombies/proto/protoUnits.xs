@@ -269,24 +269,24 @@ void preModifyPlayerData(){
         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeMonumentToVillagers));
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeObelisk), p, cXSProtoEffectLOS, 25.0, cXSRelativityAssign);
 
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectLOS, cBaseHumanLOS, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.5, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectGodPowerBlockRadius, cBaseHumanLOS * 1.5, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectBuildPoints, cBaseHumanBuildPoints * 5, cXSRelativityAssign);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectGodPowerBlockRadius, cBaseHumanLOS, cXSRelativityAssign);
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), "AutoGather", "Favor", p, cXSActionProtoEffectWorkRate, 0, cXSRelativityAssign);
 
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeHillFort), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.25, cXSRelativityAssign);
-        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeHillFort), "RangedAttack", p, cXSActionEffectRange, cBaseHumanLOS * 1.25, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeHillFort), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.5, cXSRelativityAssign);
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeHillFort), "RangedAttack", p, cXSActionEffectRange, cBaseHumanLOS * 1.5, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeHillFort), p, cXSProtoEffectBuildPoints, cBaseHumanBuildPoints * 5, cXSRelativityAssign);
         trProtounitActionSpecialEffect(kbProtoUnitGetName(cUnitTypeHillFort), "RangedAttack", p, cOnHitEffectProgFreeze, "All", xsFloatToInt(2.0 * 1000.0), 1.0, 0.2);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeHillFort), "RangedAttack", p, cXSActionEffectMinRange, 0, cXSRelativityAssign);
 
-        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectRange, cBaseHumanLOS * 1.25, cXSRelativityAssign);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.5, cXSRelativityAssign);
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectRange, cBaseHumanLOS * 1.1, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.1, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, cXSProtoEffectBuildPoints, cBaseHumanBuildPoints * 5, cXSRelativityAssign);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeStatueOfLightning), "LightningAttack", p, cXSActionEffectDamageDivine, 20.0, cXSRelativityAssign);
 
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "MonolithStrike", p, cXSActionEffectRange, cBaseHumanLOS * 1.25, cXSRelativityAssign);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.5, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectLOS, cBaseHumanLOS * 1.25, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildPoints, cBaseHumanBuildPoints * 6, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectHitpoints, 0.5, cXSRelativityPercent);
 
@@ -367,8 +367,8 @@ void preModifyPlayerData(){
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectObstructionRadiusX, 7.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectObstructionRadiusZ, 3.0, cXSRelativityAssign);
 
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusX, 1.5, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusZ, 1.5, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
     g_OnCreationListener.register(0, cDefaultcUnitTypeWall, false, [](int unitId = -1) -> void {
             selectSingle(unitId);
@@ -385,7 +385,7 @@ void preModifyPlayerData(){
             for (int i = 0; i < nJars; i++){
                 float jitterX = xsRandFloat(1, 3.0);
                 float jitterZ = xsRandFloat(1, 3.0);
-                trUnitCreate(kbProtoUnitGetName(cUnitTypeCanopicJars), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
+                trUnitCreateForced(kbProtoUnitGetName(cUnitTypeCanopicJars), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
             }
         }
     );
@@ -397,7 +397,7 @@ void preModifyPlayerData(){
             for (int i = 0; i < maxNumberOfSpiders; i++){
                 float jitterX = xsRandFloat(0, jitterMax);
                 float jitterZ = xsRandFloat(0, jitterMax);
-                trUnitCreate(kbProtoUnitGetName(cUnitTypeSpiderEgg), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
+                trUnitCreateForced(kbProtoUnitGetName(cUnitTypeSpiderEgg), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
             }
         }
     );
@@ -409,7 +409,7 @@ void preModifyPlayerData(){
             float jitterX = xsRandFloat(0, jitterMax);
             float jitterZ = xsRandFloat(0, jitterMax);
             int unitType = g_placeHolderUnitTypes[xsRandInt(0, g_placeHolderUnitTypes.size()-1)];
-            trUnitCreate(kbProtoUnitGetName(unitType), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
+            trUnitCreateForced(kbProtoUnitGetName(unitType), v.x + jitterX, v.y, v.z + jitterZ, xsRandFloat(0, 359), 0, true);
         }
     );
 
@@ -443,8 +443,8 @@ void preModifyPlayerData(){
     trProtoUnitSetUnitType(0, kbProtoUnitGetName(cDefaultcUnitTypeGate), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), true);
     trProtoUnitSetUnitType(0, kbProtoUnitGetName(cDefaultcUnitTypeGate2), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), true);
 
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusX, 1.5, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusZ, 1.5, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
     g_OnCreationListener.register(0, cDefaultcUnitTypeWall2, false, [](int unitId = -1) -> void {
             selectSingle(unitId);

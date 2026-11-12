@@ -327,13 +327,13 @@ void initializeGlobals(){
                             120)
                         );
 
-    g_zombieT2GodPowers.add(createGodPowerData(
-                            cProtoPowerAncestors,
-                            "Ancestors",
-                            "Summons minions",
-                            "resources\egyptian\static_color\god_powers\ancestors_icon.png",
-                            120)
-                        );
+    // g_zombieT2GodPowers.add(createGodPowerData(
+    //                         cProtoPowerAncestors,
+    //                         "Ancestors",
+    //                         "Summons minions",
+    //                         "resources\egyptian\static_color\god_powers\ancestors_icon.png",
+    //                         120)
+    //                     );
 
     g_zombieT2GodPowers.add(createGodPowerData(
                             cProtoPowerEclipse,

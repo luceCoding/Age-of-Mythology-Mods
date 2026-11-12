@@ -14,7 +14,7 @@ void spawnBossTileUnits() {
             continue;
         }
         int unitType = g_bossTileUnitTypes[xsRandInt(0, min(g_bossTileUnitTypes.size() - 1, g_dayNumber))];
-        trUnitCreate(kbProtoUnitGetName(unitType), position.x, position.y, position.z, xsRandFloat(0, 359), 0, true);
+        trUnitCreateForced(kbProtoUnitGetName(unitType), position.x, position.y, position.z, xsRandFloat(0, 359), 0, true);
     }
 }
 
