@@ -74,7 +74,10 @@ int[] g_trashZombieTypes = default;
 int[] g_otherHumanBuildings = default;
 int[] g_otherZombieTypes = default;
 
-int[] g_purchaseableZombieTypes = default;
+TrainableUnitData[] g_zombieT1Trainables = default;
+TrainableUnitData[] g_zombieT2Trainables = default;
+TrainableUnitData[] g_zombieT3Trainables = default;
+TrainableUnitData[] g_zombieT4Trainables = default;
 
 GodPowerData[] g_humanT1GodPowers = default;
 GodPowerData[] g_humanT2GodPowers = default;
@@ -148,30 +151,6 @@ void initializeGlobals(){
     g_trashZombieTypes.add(cUnitTypeTzitzimitl);
     g_trashZombieTypes.add(cUnitTypeMummy);
 
-    g_purchaseableZombieTypes.add(cUnitTypeFireArcher);
-    g_purchaseableZombieTypes.add(cUnitTypeHuskarl);
-    g_purchaseableZombieTypes.add(cUnitTypeDestroyer);
-    g_purchaseableZombieTypes.add(cUnitTypeShinobi);
-    g_purchaseableZombieTypes.add(cUnitTypeOtontin);
-    g_purchaseableZombieTypes.add(cUnitTypeGastraphetoros);
-
-    g_purchaseableZombieTypes.add(cUnitTypeAnubite);
-    g_purchaseableZombieTypes.add(cUnitTypeCyclops);
-    g_purchaseableZombieTypes.add(cUnitTypeScarab);
-    g_purchaseableZombieTypes.add(cUnitTypeMountainGiant);
-    g_purchaseableZombieTypes.add(cUnitTypePetsuchos);
-
-    g_purchaseableZombieTypes.add(cUnitTypeColossus);
-    g_purchaseableZombieTypes.add(cUnitTypeFireGiant);
-    g_purchaseableZombieTypes.add(cUnitTypeOnmyoji);
-    g_purchaseableZombieTypes.add(cUnitTypeQuinametzin);
-
-    g_purchaseableZombieTypes.add(cUnitTypeQiongQi);
-    g_purchaseableZombieTypes.add(cUnitTypeOnmoraki);
-    g_purchaseableZombieTypes.add(cUnitTypePolyphemus);
-    g_purchaseableZombieTypes.add(cUnitTypeNidhogg);
-    g_purchaseableZombieTypes.add(cUnitTypeMictlantecuhtli);
-
     g_bossTileUnitTypes.add(cUnitTypeSphinx);
     g_bossTileUnitTypes.add(cUnitTypeTroll);
     g_bossTileUnitTypes.add(cUnitTypeCentimanus);
@@ -182,6 +161,29 @@ void initializeGlobals(){
     g_otherZombieTypes.add(cUnitTypeCarnivora);
     g_otherZombieTypes.add(cUnitTypeInfestedDen);
     g_otherZombieTypes.add(cUnitTypeLargeScorpion);
+
+    g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeFireArcher, pow(zombieBaseGoldCost, 1)));
+    g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeHuskarl, pow(zombieBaseGoldCost, 1)));
+    g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeDestroyer, pow(zombieBaseGoldCost, 2)));
+    g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeShinobi, pow(zombieBaseGoldCost, 2)));
+    g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeOtontin, pow(zombieBaseGoldCost, 3)));
+    g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeGastraphetoros, pow(zombieBaseGoldCost, 4)));
+
+    g_zombieT2Trainables.add(createTrainableUnitData(cUnitTypeAnubite, pow(zombieBaseGoldCost, 2)));
+    g_zombieT2Trainables.add(createTrainableUnitData(cUnitTypeCyclops, pow(zombieBaseGoldCost, 4)));
+    g_zombieT2Trainables.add(createTrainableUnitData(cUnitTypeMountainGiant, pow(zombieBaseGoldCost, 5)));
+    g_zombieT2Trainables.add(createTrainableUnitData(cUnitTypePetsuchos, pow(zombieBaseGoldCost, 5)));
+
+    g_zombieT3Trainables.add(createTrainableUnitData(cUnitTypeColossus, pow(zombieBaseGoldCost, 6)));
+    g_zombieT3Trainables.add(createTrainableUnitData(cUnitTypeFireGiant, pow(zombieBaseGoldCost, 6)));
+    g_zombieT3Trainables.add(createTrainableUnitData(cUnitTypeOnmyoji, pow(zombieBaseGoldCost, 7)));
+    g_zombieT3Trainables.add(createTrainableUnitData(cUnitTypeQuinametzin, pow(zombieBaseGoldCost, 8)));
+
+    g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypeQiongQi, pow(zombieBaseGoldCost, 3)));
+    g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypeOnmoraki, pow(zombieBaseGoldCost, 5)));
+    g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypePolyphemus, pow(zombieBaseGoldCost, 6)));
+    g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypeNidhogg, pow(zombieBaseGoldCost, 7)));
+    g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypeMictlantecuhtli, pow(zombieBaseGoldCost, 7)));
 
     g_humanT1GodPowers.add(createGodPowerData(
                             cProtoPowerSentinel,

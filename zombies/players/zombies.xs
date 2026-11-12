@@ -32,6 +32,14 @@ void applyForAllZombies(int p = -1, int zombieType = -1){
     trProtoUnitActionSetEnabled(kbProtoUnitGetName(zombieType), p, "Pickup", false);
 }
 
+void setupTrainableZombies(int p = -1, ref TrainableUnitData[] trainables, float scaleFactor = 1.0) {
+    for (int i = 0; i < trainables.size(); i++) {
+        TrainableUnitData unitData = trainables[i];
+        trModifyProtounitData(kbProtoUnitGetName(unitData.unitType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
+        applyForAllZombies(p, unitData.unitType);
+    }
+}
+
 void setupZombiesPost(){
 
     float scaleFactor = g_director.getTeamSizeScale(g_zombieUnitCount, g_humanUnitCount);
@@ -117,12 +125,10 @@ void setupZombiesPost(){
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageCrush, i * 2, cXSRelativityAssign);
             applyForAllZombies(p, zombieType);
         }
-        for (int i = 0; i < g_purchaseableZombieTypes.size(); i++) {
-            int zombieType = g_purchaseableZombieTypes[i];
-            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
-            // trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, cBaseZombieLifespan, cXSRelativityAssign);
-            applyForAllZombies(p, zombieType);
-        }
+        setupTrainableZombies(p, g_zombieT1Trainables, scaleFactor);
+        setupTrainableZombies(p, g_zombieT2Trainables, scaleFactor);
+        setupTrainableZombies(p, g_zombieT3Trainables, scaleFactor);
+        setupTrainableZombies(p, g_zombieT4Trainables, scaleFactor);
         for (int i = 0; i < g_otherZombieTypes.size(); i++) {
             int zombieType = g_otherZombieTypes[i];
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
@@ -189,6 +195,13 @@ void permaBuffAZombie(int zombieType = -1, int p = -1, float finalHPBuff = 0){
     trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageDivine, 1.01, cXSRelativityPercent);
 }
 
+void permaBuffTrainableZombies(int p = -1, ref TrainableUnitData[] trainables, float finalHPBuff = 0.0) {
+    for (int i = 0; i < trainables.size(); i++) {
+        TrainableUnitData unitData = trainables[i];
+        permaBuffAZombie(unitData.unitType, p, finalHPBuff);
+    }
+}
+
 void permaDailyBuffZombies(){
 
     float finalHPBuff = max(g_director.processEndOfDay(), 1.0 + (max(xsIntToFloat(countLivingHumanPlayers()), 1.0) / 100));
@@ -198,9 +211,10 @@ void permaDailyBuffZombies(){
             for (int i = 0; i < g_trashZombieTypes.size(); i++) {
                 permaBuffAZombie(g_trashZombieTypes[i], p, finalHPBuff);
             }
-            for (int i = 0; i < g_purchaseableZombieTypes.size(); i++) {
-                permaBuffAZombie(g_purchaseableZombieTypes[i], p, finalHPBuff);
-            }
+            permaBuffTrainableZombies(p, g_zombieT1Trainables, finalHPBuff);
+            permaBuffTrainableZombies(p, g_zombieT2Trainables, finalHPBuff);
+            permaBuffTrainableZombies(p, g_zombieT3Trainables, finalHPBuff);
+            permaBuffTrainableZombies(p, g_zombieT4Trainables, finalHPBuff);
             for (int i = 0; i < g_zombieUnitTypes.size(); i++) {
                 int zombieType = g_zombieUnitTypes[i];
                 trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, finalHPBuff, cXSRelativityPercent);
@@ -215,16 +229,23 @@ void permaDailyBuffZombies(){
     }
 }
 
+void setTrainableZombieRegen(int p = -1, ref TrainableUnitData[] trainables, float regen = 0.0) {
+    for (int i = 0; i < trainables.size(); i++) {
+        TrainableUnitData unitData = trainables[i];
+        trModifyProtounitData(kbProtoUnitGetName(unitData.unitType), p, cXSProtoEffectUnitRegenRate, regen, cXSRelativityAssign);
+    }
+}
+
 void onDayStartZombies(){
     for (int p = 1; p <= cNumberPlayers-1; p++){
         for (int i = 0; i < g_trashZombieTypes.size(); i++) {
             int zombieType = g_trashZombieTypes[i];
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectUnitRegenRate, -g_dayNumber*2, cXSRelativityAssign);
         }
-        for (int i = 0; i < g_purchaseableZombieTypes.size(); i++) {
-            int zombieType = g_purchaseableZombieTypes[i];
-            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectUnitRegenRate, -g_dayNumber*2, cXSRelativityAssign);
-        }
+        setTrainableZombieRegen(p, g_zombieT1Trainables, -g_dayNumber*2);
+        setTrainableZombieRegen(p, g_zombieT2Trainables, -g_dayNumber*2);
+        setTrainableZombieRegen(p, g_zombieT3Trainables, -g_dayNumber*2);
+        setTrainableZombieRegen(p, g_zombieT4Trainables, -g_dayNumber*2);
         for (int i = 0; i < g_otherZombieTypes.size(); i++) {
             int zombieType = g_otherZombieTypes[i];
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectUnitRegenRate, -g_dayNumber*2, cXSRelativityAssign);
@@ -241,10 +262,10 @@ void onNightStartZombies(){
             int zombieType = g_trashZombieTypes[i];
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectUnitRegenRate, 0, cXSRelativityAssign);
         }
-        for (int i = 0; i < g_purchaseableZombieTypes.size(); i++) {
-            int zombieType = g_purchaseableZombieTypes[i];
-            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectUnitRegenRate, 0, cXSRelativityAssign);
-        }
+        setTrainableZombieRegen(p, g_zombieT1Trainables, 0);
+        setTrainableZombieRegen(p, g_zombieT2Trainables, 0);
+        setTrainableZombieRegen(p, g_zombieT3Trainables, 0);
+        setTrainableZombieRegen(p, g_zombieT4Trainables, 0);
         for (int i = 0; i < g_otherZombieTypes.size(); i++) {
             int zombieType = g_otherZombieTypes[i];
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectUnitRegenRate, 0, cXSRelativityAssign);

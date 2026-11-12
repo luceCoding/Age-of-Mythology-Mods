@@ -10,6 +10,8 @@ const int configMapBaseHeight = 4;
 void generate()
 {
     // zombies/upgrades/godPowerData.xs
+    // zombies/upgrades/trainableUnitData.xs
+    // common/math.xs
     // zombies/globals.xs
     // zombies/mutables.xs
     // zombies/players/teams.xs
@@ -17,7 +19,6 @@ void generate()
     // common/utils.xs
     // common/logs.xs
     // common/uuid.xs
-    // common/math.xs
     // common/strings.xs
     // common/sound.xs
     // common/kbQueries.xs

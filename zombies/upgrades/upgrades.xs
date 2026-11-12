@@ -429,31 +429,50 @@ void addTempleCommands() {
     }
 }
 
-void addWellOfUrdTierCommands(int p = -1, ref int[] zombieTypes, float woodCost = 1.0) {
-    for (int i = 0; i < zombieTypes.size(); i++) {
-        int row = i / 6;
-        int col = i % 6;
-        string zombieName = kbProtoUnitGetName(zombieTypes[i]);
-        trProtounitAddTrain(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, zombieName, row, col);
+int zombieTrainableRowCapacity(int row = 0) {
+    // The Well of Urd's Delete command occupies the last slot of row 3.
+    if (row == 3) {
+        return 5;
+    }
+    return 6;
+}
+
+void addWellOfUrdTierCommands(int p = -1, ref TrainableUnitData[] trainables, int row = 0, float woodCost = 1.0) {
+    for (int i = 0; i < trainables.size(); i++) {
+        if (i >= zombieTrainableRowCapacity(row)) {
+            errorLog("Too many zombie trainables for the Well of Urd row " + row);
+            break;
+        }
+        TrainableUnitData unitData = trainables[i];
+        string zombieName = kbProtoUnitGetName(unitData.unitType);
+        trProtounitAddTrain(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, zombieName, row, i);
         trModifyProtounitResource(zombieName, "Wood", p, cXSPUResourceEffectCost, woodCost, cXSRelativityAssign);
         trUnforbidProtounit(p, zombieName);
     }
 }
 
 void addWellOfUrdCommands(int p = 0) {
-    addWellOfUrdTierCommands(p, g_purchaseableZombieTypes, 0);
+    addWellOfUrdTierCommands(p, g_zombieT1Trainables, 0, 0);
+    addWellOfUrdTierCommands(p, g_zombieT2Trainables, 1, 0);
+    addWellOfUrdTierCommands(p, g_zombieT3Trainables, 2, 0);
+    addWellOfUrdTierCommands(p, g_zombieT4Trainables, 3, 0);
 }
 
 // Each command raises the build limit of its zombie type by one.
-void addZombieArmoryTierCommands(int p = -1, ref int[] zombieTypes, int row = 0, int initialCost = 1) {
-    for (int i = 0; i < zombieTypes.size(); i++) {
-        int zombieType = zombieTypes[i];
+void addZombieArmoryTierCommands(int p = -1, ref TrainableUnitData[] trainables, int row = 0) {
+    for (int i = 0; i < trainables.size(); i++) {
+        if (i >= zombieTrainableRowCapacity(row)) {
+            errorLog("Too many zombie trainables for the zombie armory row " + row);
+            break;
+        }
+        TrainableUnitData unitData = trainables[i];
+        int zombieType = unitData.unitType;
         string zombieName = kbProtoUnitGetName(zombieType);
         trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
-        int plantType = addCommand(p, cUnitTypeDwarvenArmory, row, i, initialCost, "Gold",
-                    "+1 " + zombieName,
-                    "+1 " + zombieName,
-                    kbProtoUnitGetIconPath(0, zombieType),
+        int plantType = addCommand(p, cUnitTypeDwarvenArmory, row, i, unitData.initialCost, "Gold",
+                    unitData.name,
+                    unitData.description,
+                    unitData.icon,
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
                         int key = getCostKey(p, kbUnitGetProtoUnitID(unitId));
@@ -469,57 +488,16 @@ void addZombieArmoryTierCommands(int p = -1, ref int[] zombieTypes, int row = 0,
     }
 }
 
-void addZombieArmorySingleCommand(int p = -1, int zombieType = -1, int row = 0, int col = 0, int initialCost = 1) {
-    string zombieName = kbProtoUnitGetName(zombieType);
-    trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
-    int plantType = addCommand(p, cUnitTypeDwarvenArmory, row, col, initialCost, "Gold",
-                "+1 " + zombieName,
-                "+1 " + zombieName,
-                kbProtoUnitGetIconPath(0, zombieType),
-                [](int unitId = -1) -> void {
-                    int p = kbUnitGetPlayerID(unitId);
-                    int key = getCostKey(p, kbUnitGetProtoUnitID(unitId));
-                    string zombieName = kbProtoUnitGetName(cPlantToUnitTypeHashMap.get(key));
-                    trUnforbidProtounit(p, zombieName);
-                    trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                    // trModifyProtounitData(zombieName, p, cXSProtoEffectTrainPoints, 10, cXSRelativityAssign);
-                    increaseCommandCost(unitId, 1.0);
-                }
-            );
-    if (plantType != -1) {
-        cPlantToUnitTypeHashMap.put(getCostKey(p, plantType), zombieType);
-    }
-}
-
 // Frees this player's command plants (listeners and train slots) so zombie commands can reuse them.
 void deregisterHumanCommands(int p = -1) {
     g_PlantAllocator.releaseAll(p);
 }
 
 void addZombieArmoryCommands(int p = -1) {
-    addZombieArmorySingleCommand(p, cUnitTypeFireArcher, 0, 0, pow(zombieBaseGoldCost, 1));
-    addZombieArmorySingleCommand(p, cUnitTypeHuskarl, 0, 1, pow(zombieBaseGoldCost, 1));
-    addZombieArmorySingleCommand(p, cUnitTypeDestroyer, 0, 2, pow(zombieBaseGoldCost, 2));
-    addZombieArmorySingleCommand(p, cUnitTypeShinobi, 0, 3, pow(zombieBaseGoldCost, 2));
-    addZombieArmorySingleCommand(p, cUnitTypeOtontin, 0, 4, pow(zombieBaseGoldCost, 3));
-    addZombieArmorySingleCommand(p, cUnitTypeGastraphetoros, 0, 5, pow(zombieBaseGoldCost, 4));
-
-    addZombieArmorySingleCommand(p, cUnitTypeAnubite, 1, 0, pow(zombieBaseGoldCost, 2));
-    addZombieArmorySingleCommand(p, cUnitTypeCyclops, 1, 1, pow(zombieBaseGoldCost, 4));
-    addZombieArmorySingleCommand(p, cUnitTypeScarab, 1, 2, pow(zombieBaseGoldCost, 5));
-    addZombieArmorySingleCommand(p, cUnitTypeMountainGiant, 1, 3, pow(zombieBaseGoldCost, 5));
-    addZombieArmorySingleCommand(p, cUnitTypePetsuchos, 1, 4, pow(zombieBaseGoldCost, 5));
-
-    addZombieArmorySingleCommand(p, cUnitTypeColossus, 2, 0, pow(zombieBaseGoldCost, 6));
-    addZombieArmorySingleCommand(p, cUnitTypeFireGiant, 2, 1, pow(zombieBaseGoldCost, 6));
-    addZombieArmorySingleCommand(p, cUnitTypeOnmyoji, 2, 2, pow(zombieBaseGoldCost, 7));
-    addZombieArmorySingleCommand(p, cUnitTypeQuinametzin, 2, 3, pow(zombieBaseGoldCost, 8));
-
-    addZombieArmorySingleCommand(p, cUnitTypeQiongQi, 3, 0, pow(zombieBaseGoldCost, 3));
-    addZombieArmorySingleCommand(p, cUnitTypeOnmoraki, 3, 1, pow(zombieBaseGoldCost, 5));
-    addZombieArmorySingleCommand(p, cUnitTypePolyphemus, 3, 2, pow(zombieBaseGoldCost, 6));
-    addZombieArmorySingleCommand(p, cUnitTypeNidhogg, 3, 3, pow(zombieBaseGoldCost, 7));
-    addZombieArmorySingleCommand(p, cUnitTypeMictlantecuhtli, 3, 4, pow(zombieBaseGoldCost, 7));
+    addZombieArmoryTierCommands(p, g_zombieT1Trainables, 0);
+    addZombieArmoryTierCommands(p, g_zombieT2Trainables, 1);
+    addZombieArmoryTierCommands(p, g_zombieT3Trainables, 2);
+    addZombieArmoryTierCommands(p, g_zombieT4Trainables, 3);
 }
 
 
