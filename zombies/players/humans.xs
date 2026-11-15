@@ -13,7 +13,7 @@ void setupHumansPost(){
             }
         }
 
-        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeLightningStrike), "HandAttack", p, cXSActionEffectDamageDivine, 2.0, cXSRelativityBasePercent);
+        // trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeLightningStrike), "HandAttack", p, cXSActionEffectDamageDivine, 2.0, cXSRelativityBasePercent);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", p, cXSActionEffectDamageCrush, 1000, cXSRelativityAssign);
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", kbUnitTypeGetName(cUnitTypeBuilding), p, cXSActionProtoEffectDamageBonus, 3.0, cXSRelativityAssign);
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", kbUnitTypeGetName(cDefaultcUnitTypeWall), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
@@ -36,8 +36,10 @@ void setupHumansPost(){
         //     int buildingType = g_upgradeableHumanBuildings[i];
         //     trPlayerTimeshiftAddEntry(p, kbProtoUnitGetName(buildingType), 0.5, 2.0);
         // }
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.25, cXSRelativityAssign);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSpikeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.5, cXSRelativityAssign);
+
+        // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.25, cXSRelativityAssign);
+        // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSpikeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.5, cXSRelativityAssign);
+        // trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeSpikeTrap), "HandAttack", p, cXSActionEffectROF, 2.0, cXSRelativityAssign);
 
         for (int i = 0; i < g_humanT1GodPowers.size(); i++) {
             GodPowerData godPower = g_humanT1GodPowers[i];
@@ -56,6 +58,45 @@ void setupHumansPost(){
             godPower.redefineGodPower(p);
         }
         
+        trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeSentryTower), p, 
+            "Watch Tower", 
+            "Standard defensive tower",
+            "Standard defensive tower");
+
+        trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeMirrorTower), p, 
+            "Laser Tower", 
+            "Good against walls and buildings",
+            "Good against walls and buildings");
+
+        // trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeRockGiant), p, 
+        //     "Rock Tower", 
+        //     "High health defensive melee tower, applies taunt to nearby enemies",
+        //     "High health defensive melee tower, applies taunt to nearby enemies");
+
+        // trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeWanyudo), p, 
+        //     "Flame Tower", 
+        //     "Short ranged AOE tower, applies burning onto its targets",
+        //     "Short ranged AOE tower, applies burning onto its targets");
+
+        trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeHillFort), p, 
+            "Frost fort", 
+            "Long ranged fort, applies freeze onto its targets",
+            "Long ranged fort, applies freeze onto its targets");
+
+        trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeStatueOfLightning), p, 
+            "Lightning tower", 
+            "Good against myth units, attacks bounce up to three times",
+            "Good against myth units, attacks bounce up to three times");
+
+        trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, 
+            "Water tower", 
+            "Moderate ranged tower, applies AOE stun onto its targets",
+            "Moderate ranged tower, applies AOE stun onto its targets");
+
+        trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, 
+            "Ward tower", 
+            "Blocks god powers",
+            "Blocks god powers");
     }
 }
 

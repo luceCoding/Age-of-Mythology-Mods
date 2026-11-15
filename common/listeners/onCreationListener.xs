@@ -28,13 +28,13 @@ class OnCreationListener {
 
         for (int i = 0; i < recent.size(); i++) {
             int unitId = recent[i];
-            int p = kbUnitGetPlayerID(unitId);
             int cUnitType = kbUnitGetProtoUnitID(unitId);
 
             if (cUnitType <= cUnitTypeMoveTo || cUnitType == cUnitTypeAttackRevealer || cUnitType == cUnitTypeCrate || cUnitType == cUnitTypeCrateSmall) { 
                 continue; 
             }
 
+            int p = kbUnitGetPlayerID(unitId);
             int baseKey = makeBaseKey(p, cUnitType);
             int count = cUnitTypeCountMap.get(baseKey);
 

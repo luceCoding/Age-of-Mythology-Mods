@@ -48,6 +48,8 @@ void setupZombiesPost(){
 
         if (g_finalTeams[p] != 2) { continue; }
 
+        registerRemovalOfRelicMisc(cHumanAIPlayer);
+
         trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Wood", p, cXSPUResourceEffectCost, baseWellOfUrdWoodCost, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
         trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeWellOfUrd), "AbstractTemple", true);
@@ -78,11 +80,6 @@ void setupZombiesPost(){
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallLong), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallConnector), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallGate), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
-
-        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", p, cXSActionEffectDamageCrush, 0.5, cXSRelativityPercent);
-        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeVolcanoMeteor), "HandAttack", p, cXSActionEffectDamageDivine, 0, cXSRelativityAssign);
-
-        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeUndermineDamage), "HandAttack", p, cXSActionEffectDamageCrush, 0.5, cXSRelativityBasePercent);
 
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeCarnivora), "HandAttack", p, cXSActionEffectDamageCrush, 25, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeCarnivora), p, cXSProtoEffectArmorPierce, 0.9, cXSRelativityAssign);
@@ -282,7 +279,7 @@ int getRandomLivingHumanPlayer(){
     int humanID = g_humanUnitIDs[rdmIdx];
     selectSingle(humanID);
     if (trUnitDead()){
-        g_humanUnitIDs.removeIndex(rdmIdx);
+        g_humanUnitIDs[rdmIdx] = g_humanUnitIDs[g_humanUnitIDs.size() - 1];
         return -1;
     }
     return kbUnitGetPlayerID(humanID);
@@ -392,10 +389,10 @@ void initializeZombies(){
                     }
 
                     int minionId = createTrashMinion(unitID);
-                    if (minionId != -1){
-                        int buildingId = getRandomAliveBuilding();
-                        orderToAutoAttackUnit(minionId, buildingId);
-                    }
+                    // if (minionId != -1){
+                    //     int buildingId = getRandomAliveBuilding();
+                    //     orderToAutoAttackUnit(minionId, buildingId);
+                    // }
 
                     return true;
                 });
@@ -414,10 +411,10 @@ void initializeZombies(){
                 }
 
                 int minionId = createTrashMinion(unitID, kbUnitGetNumberContained(unitID));
-                if (minionId != -1){
-                    int buildingId = getRandomAliveBuilding();
-                    orderToAutoAttackUnit(minionId, buildingId);
-                }
+                // if (minionId != -1){
+                //     int buildingId = getRandomAliveBuilding();
+                //     orderToAutoAttackUnit(minionId, buildingId);
+                // }
 
                 return true;
             });

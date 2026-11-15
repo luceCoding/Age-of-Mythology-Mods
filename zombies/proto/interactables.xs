@@ -1,6 +1,13 @@
 void processHumanInteractables(){
-    for (int i = 0; i < g_humanInteractableObjects.size(); i++){
+    for (int i = 0; i < g_humanInteractableObjectsLength; i++){
         int interactableId = g_humanInteractableObjects[i];
+        selectSingle(interactableId);
+        if (trUnitAlive() == false){
+            g_humanInteractableObjects[i] = g_humanInteractableObjects[g_humanInteractableObjectsLength - 1];
+            g_humanInteractableObjectsLength = g_humanInteractableObjectsLength - 1;
+            i = i - 1;
+            continue;
+        }
         int numberContained = kbUnitGetNumberContained(interactableId);
         int owner = kbUnitGetPlayerID(interactableId);
         if (numberContained > 0 && owner == cHumanAIPlayer) {
@@ -22,17 +29,29 @@ void processHumanInteractables(){
 }
 
 void processTreasureChests(){
-    for (int i = 0; i < g_treasureChestObjects.size(); i++){
+    for (int i = 0; i < g_treasureChestObjectsLength; i++){
         int interactableId = g_treasureChestObjects[i];
+        selectSingle(interactableId);
+        if (trUnitAlive() == false){
+            g_treasureChestObjects[i] = g_treasureChestObjects[g_treasureChestObjectsLength - 1];
+            g_treasureChestObjectsLength = g_treasureChestObjectsLength - 1;
+            break;
+        }
         int numberContained = kbUnitGetNumberContained(interactableId);
         if (numberContained > 0) {
-            selectSingle(interactableId);
             trUnitSetAnimationPath("Opening","spc\buildings\props\osiris_piece_box\anim\osiris_piece_box_opening", false, -1, false);
             lowFreqSchedulerWithIntInt.add(2000, interactableId, 0, [](int iteration = 0, int unitId = 0, int _ = 0) -> bool {
                 selectSingle(unitId);
+                if (trUnitAlive() == false) {
+                    return false;
+                }
                 trUnitChangeProtoUnit(kbProtoUnitGetName(cUnitTypeVFXOsirisAnkh));
                 playUnitSound(unitId, "AotgBlessingRewardReceivedEternal", SOUND_SET);
                 lowFreqSchedulerWithIntInt.add(1000, unitId, 0, [](int iteration = 0, int unitId = 0, int _ = 0) -> bool {
+                    selectSingle(unitId);
+                    if (trUnitAlive() == false) {
+                        return false;
+                    }
                     vector v = kbUnitGetTruePosition(unitId);
                     int numPiles = 10;
                     for (int g = 0; g < numPiles; g++) {
@@ -48,7 +67,8 @@ void processTreasureChests(){
                 });
                 return false;
             });
-            g_treasureChestObjects.removeIndex(i);
+            g_treasureChestObjects[i] = g_treasureChestObjects[g_treasureChestObjectsLength - 1];
+            g_treasureChestObjectsLength = g_treasureChestObjectsLength - 1;
             break;
         }
     }

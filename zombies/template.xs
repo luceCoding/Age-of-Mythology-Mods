@@ -1,5 +1,5 @@
-const int configMapTileX = 159;
-const int configMapTileZ = 159;
+const int configMapTileX = 128;
+const int configMapTileZ = 128;
 const int configMapBaseHeight = 4;
 
 //// common/nottud.xs
@@ -28,8 +28,6 @@ void generate()
     createTypedScheduler("highFreqScheduler", buildStringTypeArray(), 25, 32);
     defineHashMapDefinition("int", "int", "cMinInt", "cMinInt");
     // common/listeners/onCreationListener.xs
-
-    createTypedScheduler("midFreqSchedulerWithInt", buildStringTypeArray("Int"), 250, 512);
 
     createTypedScheduler("lowFreqScheduler", buildStringTypeArray(), 1000, 256);
     createTypedScheduler("lowFreqSchedulerWithIntInt", buildStringTypeArray("Int", "Int"), 1000, 256);

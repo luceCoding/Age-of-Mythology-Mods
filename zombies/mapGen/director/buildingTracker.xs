@@ -1,22 +1,38 @@
 class BuildingTracker
 {
    int m_maxPlayers = cNumberPlayers+1;
-   int m_maxBuildingsPerPlayer = 1024;
-   int[] m_counts = default;
-   int[] m_deadCounts = default; // Cumulative buildings lost per player
+   int m_perPlayerCapacity = 16;
    int[] m_unitIds = default;
+   int[] m_counts = default;
+   int[] m_deadCounts = default;
 
    void ensureInitialised(){
       if (m_counts.size() == 0) {
          m_counts = new int(m_maxPlayers, 0);
          m_deadCounts = new int(m_maxPlayers, 0);
-         m_unitIds = new int(m_maxPlayers * m_maxBuildingsPerPlayer, -1);
+         m_unitIds = new int(m_maxPlayers * m_perPlayerCapacity, -1);
+      }
+   }
+
+   void growArrayIfNeeded(int p = -1){
+      if (m_counts[p] >= m_perPlayerCapacity) {
+         int newCapacity = (m_perPlayerCapacity * 3) / 2;
+         int oldSize = m_maxPlayers * m_perPlayerCapacity;
+         int newSize = m_maxPlayers * newCapacity;
+         int[] newArray = new int(newSize, -1);
+         
+         for (int i = 0; i < oldSize; i++) {
+            newArray[i] = m_unitIds[i];
+         }
+         
+         m_unitIds = newArray;
+         m_perPlayerCapacity = newCapacity;
       }
    }
 
    // Pop and swap: overwrite slot with the last tracked building.
    void removeAt(int p = -1, int index = 0){
-      int base = p * m_maxBuildingsPerPlayer;
+      int base = p * m_perPlayerCapacity;
       int last = m_counts[p] - 1;
       m_unitIds[base + index] = m_unitIds[base + last];
       m_unitIds[base + last] = -1;
@@ -26,7 +42,7 @@ class BuildingTracker
 
    // Single pass; a swapped-in building is rechecked at the same index.
    void pruneDeadBuildings(int p = -1){
-      int base = p * m_maxBuildingsPerPlayer;
+      int base = p * m_perPlayerCapacity;
       int i = 0;
       while (i < m_counts[p]) {
          selectSingle(m_unitIds[base + i]);
@@ -62,14 +78,13 @@ class BuildingTracker
       if (p < 0 || p >= m_maxPlayers) {
          return;
       }
-      if (m_counts[p] >= m_maxBuildingsPerPlayer) {
+      if (m_counts[p] >= m_perPlayerCapacity) {
          pruneDeadBuildings(p);
-         if (m_counts[p] >= m_maxBuildingsPerPlayer) {
-            errorLog("Building tracker is full for player " + p);
-            return;
+         if (m_counts[p] >= m_perPlayerCapacity) {
+            growArrayIfNeeded(p);
          }
       }
-      m_unitIds[p * m_maxBuildingsPerPlayer + m_counts[p]] = unitId;
+      m_unitIds[p * m_perPlayerCapacity + m_counts[p]] = unitId;
       m_counts[p] = m_counts[p] + 1;
    }
 
@@ -87,7 +102,7 @@ class BuildingTracker
       if (p < 0 || p >= m_maxPlayers) {
          return -1;
       }
-      int base = p * m_maxBuildingsPerPlayer;
+      int base = p * m_perPlayerCapacity;
       while (m_counts[p] > 0) {
          int index = xsRandInt(0, m_counts[p] - 1);
          int unitId = m_unitIds[base + index];
@@ -109,7 +124,7 @@ class BuildingTracker
       int count = m_counts[p];
       int[] buildings = new int(count, -1);
       for (int i = 0; i < count; i++) {
-         buildings[i] = m_unitIds[p * m_maxBuildingsPerPlayer + i];
+         buildings[i] = m_unitIds[p * m_perPlayerCapacity + i];
       }
       return buildings;
    }

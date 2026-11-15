@@ -148,11 +148,11 @@ void addArmoryCommands(){
                     }
                 );
         addCommand(p, cUnitTypeArmory, 0, 1, pow(humanBaseGoldCost, 1), "Gold",
-                    "-5% Rate of Fire for All Buildings",
-                    "-5% Rate of Fire for All Buildings",
+                    "-2% Rate of Fire for All Buildings",
+                    "-2% Rate of Fire for All Buildings",
                     "resources\\in_game\\stat_rof.png",
                     [](int unitId = -1) -> void {
-                        applyActionUpgradeToAllHumanBuildings(unitId, cXSActionEffectROF, 0.95, cXSRelativityPercent);
+                        applyActionUpgradeToAllHumanBuildings(unitId, cXSActionEffectROF, 0.98, cXSRelativityPercent);
                         increaseCommandCost(unitId, 2.0);
                     }
                 );
@@ -208,8 +208,8 @@ void addArmoryCommands(){
 void addSiegeCommands() {
     for (int p = 1; p <= cNumberPlayers; p++) {
         addCommand(p, cUnitTypeSiegeWorks, 0, 0, pow(humanBaseGoldCost, 2), "Gold",
-                    "+1 Sentry Tower",
-                    "+1 Sentry Tower",
+                    "+1 Watch Tower",
+                    "Standard defensive tower",
                     "resources\\shared\\static_color\\buildings\\sentry_tower_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -218,20 +218,20 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 0, 1, pow(humanBaseGoldCost, 2), "Gold",
-                    "+1 Smoke Trap",
-                    "+1 Smoke Trap",
-                    "resources\\aztec\\static_color\\buildings\\smoke_trap_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeSmokeTrap));
-                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
+        // addCommand(p, cUnitTypeSiegeWorks, 0, 1, pow(humanBaseGoldCost, 2), "Gold",
+        //             "+1 Smoke Trap",
+        //             "+1 Smoke Trap",
+        //             "resources\\aztec\\static_color\\buildings\\smoke_trap_icon.png",
+        //             [](int unitId = -1) -> void {
+        //                 int p = kbUnitGetPlayerID(unitId);
+        //                 trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeSmokeTrap));
+        //                 trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+        //                 increaseCommandCost(unitId, 1.0);
+        //             }
+        //         );
         addCommand(p, cUnitTypeSiegeWorks, 0, 2, pow(humanBaseGoldCost, 2), "Gold",
-                    "+1 Mirror Tower",
-                    "+1 Mirror Tower",
+                    "+1 Laser Tower",
+                    "Good against walls and buildings",
                     "resources\\atlantean\\static_color\\buildings\\mirror_tower_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -251,42 +251,42 @@ void addSiegeCommands() {
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 1, 1, pow(humanBaseGoldCost, 3), "Gold",
-                    "+1 Spike Trap",
-                    "+1 Spike Trap",
-                    "resources\\aztec\\static_color\\buildings\\spike_trap_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeSpikeTrap));
-                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSpikeTrap), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeSiegeWorks, 1, 2, pow(humanBaseGoldCost, 3), "Gold",
-                    "+1 Rock Tower",
-                    "Highly armored tower with a taunt ability",
-                    "resources\\norse_freyr\\player_color\\units\\rock_giant_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeRockGiant));
-                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeRockGiant), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeSiegeWorks, 1, 3, pow(humanBaseGoldCost, 3), "Gold",
-                    "+1 Flame Tower",
-                    "Breaths a short ranged aoe fire attack",
-                    "resources\\japanese\\player_color\\units\\wanyudo_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeWanyudo));
-                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWanyudo), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
+        // addCommand(p, cUnitTypeSiegeWorks, 1, 1, pow(humanBaseGoldCost, 3), "Gold",
+        //             "+1 Spike Trap",
+        //             "+1 Spike Trap",
+        //             "resources\\aztec\\static_color\\buildings\\spike_trap_icon.png",
+        //             [](int unitId = -1) -> void {
+        //                 int p = kbUnitGetPlayerID(unitId);
+        //                 trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeSpikeTrap));
+        //                 trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSpikeTrap), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+        //                 increaseCommandCost(unitId, 1.0);
+        //             }
+        //         );
+        // addCommand(p, cUnitTypeSiegeWorks, 1, 2, pow(humanBaseGoldCost, 3), "Gold",
+        //             "+1 Rock Tower",
+        //             "High health defensive melee tower, applies taunt to nearby enemies",
+        //             "resources\\norse_freyr\\player_color\\units\\rock_giant_icon.png",
+        //             [](int unitId = -1) -> void {
+        //                 int p = kbUnitGetPlayerID(unitId);
+        //                 trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeRockGiant));
+        //                 trModifyProtounitData(kbProtoUnitGetName(cUnitTypeRockGiant), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+        //                 increaseCommandCost(unitId, 1.0);
+        //             }
+        //         );
+        // addCommand(p, cUnitTypeSiegeWorks, 1, 3, pow(humanBaseGoldCost, 3), "Gold",
+        //             "+1 Flame Tower",
+        //             "Short ranged AOE tower, applies burning onto its targets",
+        //             "resources\\japanese\\player_color\\units\\wanyudo_icon.png",
+        //             [](int unitId = -1) -> void {
+        //                 int p = kbUnitGetPlayerID(unitId);
+        //                 trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeWanyudo));
+        //                 trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWanyudo), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+        //                 increaseCommandCost(unitId, 1.0);
+        //             }
+        //         );
         addCommand(p, cUnitTypeSiegeWorks, 2, 0, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 Asgardian Hill Fort",
-                    "Fortress that applies a progressive freeze",
+                    "+1 Frost fort",
+                    "Long ranged fort, applies freeze onto its targets",
                     "resources\\norse_freyr\\static_color\\buildings\\asgardian_hill_fort_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -296,8 +296,8 @@ void addSiegeCommands() {
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 2, 1, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 God Power Blocker",
-                    "Blocks god powers in its vicinity, its range is upgradeable",
+                    "+1 Ward tower",
+                    "Blocks god powers",
                     "resources\\egyptian\\static_color\\buildings\\monument_to_villagers_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -307,8 +307,8 @@ void addSiegeCommands() {
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 2, 2, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 Statue of Lightning",
-                    "Good against myth units",
+                    "+1 Lightning tower",
+                    "Good against myth units, attacks bounce up to three times",
                     "resources\\spc\\static_color\\buildings\\statue_major_god_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -318,8 +318,8 @@ void addSiegeCommands() {
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 3, 0, pow(humanBaseGoldCost, 5), "Gold",
-                    "+1 Pillar of Tlalocan",
-                    "+1 Pillar of Tlalocan",
+                    "+1 Water tower",
+                    "Moderate ranged tower, applies AOE stun onto its targets",
                     "resources\\aztec\\static_color\\god_powers\\pillar_of_tlalocan_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);

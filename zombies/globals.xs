@@ -1,5 +1,5 @@
-const int configMapTileX = 159;
-const int configMapTileZ = 159;
+const int configMapTileX = 128;
+const int configMapTileZ = 128;
 const int configMapBaseHeight = 4;
 
 const int cHumanAIPlayer = cNumberPlayers;
@@ -11,8 +11,8 @@ const int cDefaultcUnitTypeGate2 = cUnitTypeWallGate;
 
 const int cStartingWood = 50;
 const int cStartingGold = 10;
-const int cGaiaBaseGateHealth = 500;
-const int cGaiaBaseWallHealth = 5000;
+const int cGaiaBaseGateHealth = 1000;
+const int cGaiaBaseWallHealth = 10000;
 const int cBaseJailWallHealth = 100000;
 const float cBaseHumanLOS = 10.0;
 const float cHumanWallHealthMultiplier = 2.0;
@@ -28,8 +28,7 @@ int g_dayNumber = 1;
 int g_daysToSurvive = 7;
 int bloodMoonCycle = 7;
 
-const int cTrashZombieSpawnTimer = 6000;
-// const float cBaseZombieLifespan = 60.0;
+const int cTrashZombieSpawnTimer = 10000;
 const float dailyZombiePermaHPBuffPercent = 1.00;
 const float dailyZombiePermaLifespanBuff = 5.0;
 
@@ -52,7 +51,7 @@ const float humanBaseWoodCost = 2.0;
 const float humanBaseGoldCost = 2.0;
 
 const float g_alphaSensitivity = 2.5; // Responsiveness weight for zombie performance adjustments
-const float g_exponentK = 0.7; // Sub-linear team size exponent
+const float g_exponentK = 1.0; // Sub-linear team size exponent
 const float g_firstTrashZombieScaleFactor = 1.25;
 const float g_targetZombieDestruction = 0.2;
 const float g_minDailyBuff = 1.01;
@@ -90,7 +89,11 @@ GodPowerData[] g_zombieT3GodPowers = default;
 GodPowerData[] g_zombieT4GodPowers = default;
 
 int[] g_bossTileIds = default;
+int g_bossTileIdsLength = 0;
 int[] g_bossTileUnitTypes = default;
+
+int g_humanInteractableObjectsLength = 0;
+int g_treasureChestObjectsLength = 0;
 
 void initializeGlobals(){
     // Lowest weight for first interactable, higher for later ones to make them rarer
@@ -132,13 +135,13 @@ void initializeGlobals(){
     g_upgradeableHumanBuildings.add(cUnitTypeWallConnector);
     g_upgradeableHumanBuildings.add(cUnitTypeWallGate);
     g_upgradeableHumanBuildings.add(cUnitTypeObelisk);
-    g_upgradeableHumanBuildings.add(cUnitTypeSmokeTrap);
+    // g_upgradeableHumanBuildings.add(cUnitTypeSmokeTrap);
     g_upgradeableHumanBuildings.add(cUnitTypeSkyPassage);
     g_upgradeableHumanBuildings.add(cUnitTypeSentryTower);
     g_upgradeableHumanBuildings.add(cUnitTypeMirrorTower);
-    g_upgradeableHumanBuildings.add(cUnitTypeRockGiant);
-    g_upgradeableHumanBuildings.add(cUnitTypeWanyudo);
-    g_upgradeableHumanBuildings.add(cUnitTypeSpikeTrap);
+    // g_upgradeableHumanBuildings.add(cUnitTypeRockGiant);
+    // g_upgradeableHumanBuildings.add(cUnitTypeWanyudo);
+    // g_upgradeableHumanBuildings.add(cUnitTypeSpikeTrap);
     g_upgradeableHumanBuildings.add(cUnitTypeHillFort);
     g_upgradeableHumanBuildings.add(cUnitTypeMonumentToVillagers);
     g_upgradeableHumanBuildings.add(cUnitTypeMonolithOfTlaloc);
@@ -151,25 +154,28 @@ void initializeGlobals(){
     g_trashZombieTypes.add(cUnitTypeTzitzimitl);
     g_trashZombieTypes.add(cUnitTypeMummy);
 
-    g_bossTileUnitTypes.add(cUnitTypeSphinx);
+    g_bossTileUnitTypes.add(cUnitTypeMinotaur);
+    g_bossTileUnitTypes.add(cUnitTypeAutomaton);
+    g_bossTileUnitTypes.add(cUnitTypeDraugr);
     g_bossTileUnitTypes.add(cUnitTypeTroll);
+    g_bossTileUnitTypes.add(cUnitTypeScorpionMan);
+    g_bossTileUnitTypes.add(cUnitTypeSoulGuide);
+    g_bossTileUnitTypes.add(cUnitTypeArgus);
     g_bossTileUnitTypes.add(cUnitTypeCentimanus);
-    g_bossTileUnitTypes.add(cUnitTypeNemeanLion);
-    g_bossTileUnitTypes.add(cUnitTypeHydra);
-    g_bossTileUnitTypes.add(cUnitTypeChimera);
 
     g_otherZombieTypes.add(cUnitTypeCarnivora);
     g_otherZombieTypes.add(cUnitTypeInfestedDen);
     g_otherZombieTypes.add(cUnitTypeLargeScorpion);
 
-    g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeFireArcher, pow(zombieBaseGoldCost, 1)));
     g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeHuskarl, pow(zombieBaseGoldCost, 1)));
+    g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeFireArcher, pow(zombieBaseGoldCost, 2)));
     g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeDestroyer, pow(zombieBaseGoldCost, 2)));
     g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeShinobi, pow(zombieBaseGoldCost, 2)));
     g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeOtontin, pow(zombieBaseGoldCost, 3)));
-    g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeGastraphetoros, pow(zombieBaseGoldCost, 4)));
+    g_zombieT1Trainables.add(createTrainableUnitData(cUnitTypeWarElephant, pow(zombieBaseGoldCost, 4)));
 
     g_zombieT2Trainables.add(createTrainableUnitData(cUnitTypeAnubite, pow(zombieBaseGoldCost, 2)));
+    g_zombieT2Trainables.add(createTrainableUnitData(cUnitTypeEinheri, pow(zombieBaseGoldCost, 3)));
     g_zombieT2Trainables.add(createTrainableUnitData(cUnitTypeCyclops, pow(zombieBaseGoldCost, 4)));
     g_zombieT2Trainables.add(createTrainableUnitData(cUnitTypeMountainGiant, pow(zombieBaseGoldCost, 5)));
     g_zombieT2Trainables.add(createTrainableUnitData(cUnitTypePetsuchos, pow(zombieBaseGoldCost, 5)));
@@ -179,7 +185,7 @@ void initializeGlobals(){
     g_zombieT3Trainables.add(createTrainableUnitData(cUnitTypeOnmyoji, pow(zombieBaseGoldCost, 7)));
     g_zombieT3Trainables.add(createTrainableUnitData(cUnitTypeQuinametzin, pow(zombieBaseGoldCost, 8)));
 
-    g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypeQiongQi, pow(zombieBaseGoldCost, 3)));
+    // g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypeQiongQi, pow(zombieBaseGoldCost, 3)));
     g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypeOnmoraki, pow(zombieBaseGoldCost, 5)));
     g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypePolyphemus, pow(zombieBaseGoldCost, 6)));
     g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypeNidhogg, pow(zombieBaseGoldCost, 7)));
@@ -214,6 +220,14 @@ void initializeGlobals(){
                             "Lullaby",
                             "Puts units to sleep",
                             "aztec\static_color\god_powers\lullaby_icon.png",
+                            60)
+                        );
+
+    g_humanT1GodPowers.add(createGodPowerData(
+                            cProtoPowerBolt,
+                            "Bolt",
+                            "Strikes a unit dealing 10,000 damage",
+                            "greek\static_color\god_powers\bolt_icon.png",
                             60)
                         );
 
@@ -257,6 +271,14 @@ void initializeGlobals(){
                             120)
                         );
 
+    g_humanT2GodPowers.add(createGodPowerData(
+                            cProtoPowerLightningWeapons,
+                            "Lightning Towers",
+                            "Empowers units and buildings with a chance to stun and deal extra divine damage",
+                            "chinese\static_color\god_powers\lightning_weapons_icon.png",
+                            120)
+                        );
+
     g_humanT3GodPowers.add(createGodPowerData(
                             cProtoPowerUnderworldPassage,
                             "Underworld Passage",
@@ -274,10 +296,10 @@ void initializeGlobals(){
                         );
 
     g_humanT4GodPowers.add(createGodPowerData(
-                            cProtoPowerLightningStorm,
-                            "Lightning Storm",
-                            "Many thunderbolts strike enemies in an area",
-                            "resources\greek\static_color\god_powers\lightning_storm_icon.png",
+                            cProtoPowerFrost,
+                            "Frost",
+                            "Freezes enemy units",
+                            "norse\static_color\god_powers\frost_icon.png",
                             240)
                         );
 
@@ -310,14 +332,6 @@ void initializeGlobals(){
                             "Zombie Infestation",
                             "Summon a permanent Infested Nest which periodically spawns Large Scorpions",
                             "resources\aztec\static_color\god_powers\infestation_icon.png",
-                            60)
-                        );
-
-    g_zombieT1GodPowers.add(createGodPowerData(
-                            cProtoPowerWither,
-                            "",
-                            "Slows enemies and destroys Berry Bushes, trees, and Farms in the target area and prevents building construction",
-                            "resources\greek_demeter\static_color\god_powers\wither_icon.png",
                             60)
                         );
 
@@ -361,11 +375,11 @@ void initializeGlobals(){
                             180)
                         );
 
-    g_zombieT4GodPowers.add(createGodPowerData(
-                            cProtoPowerVolcano,
-                            "Volcano",
-                            "Summons a volcano that destroys walls and bombards enemies",
-                            "resources\aztec\static_color\god_powers\volcano_icon.png",
-                            240)
+    g_zombieT3GodPowers.add(createGodPowerData(
+                            cProtoPowerWither,
+                            "Wither",
+                            "Slows enemies, damages buildings and prevents building construction",
+                            "resources\greek_demeter\static_color\god_powers\wither_icon.png",
+                            180)
                         );
 }

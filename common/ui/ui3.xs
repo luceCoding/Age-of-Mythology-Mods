@@ -702,12 +702,6 @@ void initialiseUiSystems(bool debug = false)
 
         trProtoUnitSetFlag(p, UI_SYSTEM_UNIT2, "Relic", true);
     }
-
-    highFreqScheduler.add(25, [](int iteration = 0) -> bool
-    {
-        _processUiSystems();
-        return true;
-    });
 }
 
 // UI helper methods

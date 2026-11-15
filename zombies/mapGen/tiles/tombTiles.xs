@@ -39,6 +39,27 @@ Tile[] createTombTileTypes() {
     }
 
     {
+        Tile rugTile;
+        rugTile.setUnits(
+            -1, -1, -1,
+            -1, cUnitTypeRugs, -1,
+            -1, -1, -1);
+        rugTile.setPassability(
+            true, true, true,
+            true, true, true,
+            true, true, true);
+        rugTile.setSocketsAndWeight(
+            cSocketTypeAny, cSocketTypeAny,
+            cSocketTypeAny, cSocketTypeAny,
+            1);
+        tileTypes.add(rugTile);
+        for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
+            rugTile = rotateMapTileClockwise(rugTile);
+            tileTypes.add(rugTile);
+        }
+    }
+
+    {
         Tile placeholderTile;
         placeholderTile.setUnits(
             -1, -1, -1,
@@ -50,7 +71,7 @@ Tile[] createTombTileTypes() {
             true, true, true);
         placeholderTile.setSocketsAndWeight(
             cSocketTypeAny, cSocketTypeAny, cSocketWall, cSocketTypeAny, 
-            1);
+            2);
         tileTypes.add(placeholderTile);
         for (int rotation = 0; rotation < 3; rotation = rotation + 1) {
             Tile rotatedTile = rotateMapTileClockwise(placeholderTile);

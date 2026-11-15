@@ -1,7 +1,14 @@
 void spawnBossTileUnits() {
     if (g_dayNumber <= 1) return; // Skip the first day
-    for (int i = 0; i < g_bossTileIds.size(); i++) {
+    for (int i = 0; i < g_bossTileIdsLength; i++) {
         int unitId = g_bossTileIds[i];
+        selectSingle(unitId);
+        if (trUnitAlive() == false) {
+            g_bossTileIds[i] = g_bossTileIds[g_bossTileIdsLength - 1];
+            g_bossTileIdsLength = g_bossTileIdsLength - 1;
+            i = i - 1;
+            continue;
+        }
         vector position = kbUnitGetTruePosition(unitId);
         bool bossNearby = false;
         for (int t = 0; t < g_bossTileUnitTypes.size(); t++) {

@@ -40,6 +40,7 @@ void setPickups(){
             if (xsRandInt(0, 5) == 0) { trUnitDestroy(); }
             if (trUnitAlive()){
                 g_treasureChestObjects.add(unitId);
+                g_treasureChestObjectsLength = g_treasureChestObjectsLength + 1;
             }
         }
     );

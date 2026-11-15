@@ -90,6 +90,13 @@ active
         g_OnCreationListener.process();
         return true;
     });
+
+    highFreqScheduler.add(25, [](int iteration = 0) -> bool
+    {
+        _processUiSystems();
+        return true;
+    });
+
     xsDisableSelf();
 }
 

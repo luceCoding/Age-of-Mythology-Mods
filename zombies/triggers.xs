@@ -71,6 +71,16 @@ active
         g_PickupManager.process();
         return true;
     });
+
+    highFreqScheduler.add(25, [](int iteration = 0) -> bool
+    {
+        _processUiSystems();
+        if (g_roleVoteComplete){
+            return false;
+        }
+        return true;
+    });
+
     xsDisableSelf();
 }
 
@@ -108,7 +118,7 @@ active
             trPlayerGrantResources(p, "Gold", 99999);
             trPlayerGrantResources(p, "Wood", 99999);
             trGodPowerGrant(p, "MeteorSPC", 99, 0, false, false);
-            trGodPowerGrant(p, "Volcano", 99, 0, false, false);
+            trGodPowerGrant(p, "Deconstruction", 99, 0, false, false);
             // trModifyProtounitAction("MeteorSPC", "HandAttack", p, cXSActionEffectDamageDivine, 99999, cXSRelativityAssign);
             trGodPowerGrant(p, "ShiftingSands", 99, 0, false, false);
         }
