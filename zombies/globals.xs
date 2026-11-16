@@ -28,11 +28,9 @@ int g_dayNumber = 1;
 int g_daysToSurvive = 7;
 int bloodMoonCycle = 7;
 
-const int cTrashZombieSpawnTimer = 6000;
-// const float cBaseZombieLifespan = 60.0;
+const int cTrashZombieSpawnTimer = 10000;
 const float dailyZombiePermaHPBuffPercent = 1.00;
 const float dailyZombiePermaLifespanBuff = 5.0;
-const int maxZombiePopulation = cNumberPlayers * 10;
 
 vector g_bspZombieSpawnLocation = cInvalidVector;
 int[] g_humanSpawnPoints = default;
@@ -53,9 +51,9 @@ const float humanBaseWoodCost = 2.0;
 const float humanBaseGoldCost = 2.0;
 
 const float g_alphaSensitivity = 2.5; // Responsiveness weight for zombie performance adjustments
-const float g_exponentK = 0.75; // Sub-linear team size exponent
+const float g_exponentK = 1.0; // Sub-linear team size exponent
 const float g_firstTrashZombieScaleFactor = 1.25;
-const float g_targetZombieDestruction = 0.25;
+const float g_targetZombieDestruction = 0.2;
 const float g_minDailyBuff = 1.01;
 const float g_maxDailyBuff = 1.25;
 
@@ -112,18 +110,20 @@ void initializeGlobals(){
     g_placeHolderUnitTypes.add(cUnitTypeBonePileMediumWhite);
     g_placeHolderUnitTypes.add(cUnitTypeSpiderEgg);
     g_placeHolderUnitTypes.add(cUnitTypeCracks);
-    g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
-    g_placeHolderUnitTypes.add(cUnitTypeRelic);
     g_placeHolderUnitTypes.add(cUnitTypeCocoon);
     g_placeHolderUnitTypes.add(cUnitTypeTreeHades);
-    // g_placeHolderUnitTypes.add(cUnitTypeWoodPileLarge);
-    g_placeHolderUnitTypes.add(cUnitTypeOsirisPieceBox);
     g_placeHolderUnitTypes.add(cUnitTypeObsidianShard);
     g_placeHolderUnitTypes.add(cUnitTypeMinion);
+    g_placeHolderUnitTypes.add(cUnitTypeHadesShade);
     g_placeHolderUnitTypes.add(cUnitTypeCanopicJars);
+    g_placeHolderUnitTypes.add(cUnitTypeOsirisPieceBox);
 
-    // g_lootDrops.add(cUnitTypeWoodPileLarge);
     g_lootDrops.add(cUnitTypeGoldPile);
+    g_lootDrops.add(cUnitTypeGoldPile);
+    g_lootDrops.add(cUnitTypeGoldPile);
+    g_lootDrops.add(cUnitTypeGoldPile);
+    g_lootDrops.add(cUnitTypeGoldPile);
+    g_lootDrops.add(cUnitTypeWoodPileLarge);
 
     g_upgradeableHumanBuildings.add(cUnitTypeWallShort);
     g_upgradeableHumanBuildings.add(cUnitTypeWallMedium);
@@ -150,7 +150,13 @@ void initializeGlobals(){
     g_trashZombieTypes.add(cUnitTypeTzitzimitl);
     g_trashZombieTypes.add(cUnitTypeMummy);
 
+    g_bossTileUnitTypes.add(cUnitTypeMinotaur);
+    // g_bossTileUnitTypes.add(cUnitTypeAutomaton);
+    g_bossTileUnitTypes.add(cUnitTypeDraugr);
     g_bossTileUnitTypes.add(cUnitTypeTroll);
+    g_bossTileUnitTypes.add(cUnitTypeScorpionMan);
+    g_bossTileUnitTypes.add(cUnitTypeSoulGuide);
+    g_bossTileUnitTypes.add(cUnitTypeArgus);
     g_bossTileUnitTypes.add(cUnitTypeCentimanus);
 
     g_otherZombieTypes.add(cUnitTypeCarnivora);

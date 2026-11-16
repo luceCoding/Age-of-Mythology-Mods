@@ -46,7 +46,7 @@ void setPickups(){
 
     trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeSpiderEgg), 0, kbProtoUnitGetName(cUnitTypeCinematicBlockWaypoint), 0, 1.0, cXSRelativityAssign, -1, -1);
     trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeMinion), 0, kbProtoUnitGetName(cUnitTypeGoldPile), 0, 1.0, cXSRelativityAssign, -1, -1);
-    trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeObsidianShard), 0, kbProtoUnitGetName(cUnitTypeGoldPile), 0, 1.0, cXSRelativityAssign, -1, -1);
+    trProtounitModifySpawnData(kbProtoUnitGetName(cUnitTypeObsidianShard), 0, kbProtoUnitGetName(cUnitTypeRelic), 0, 1.0, cXSRelativityAssign, -1, -1);
 
     for (int i = 0; i < g_bossTileUnitTypes.size(); i++){
         int unitType = g_bossTileUnitTypes[i];

@@ -46,7 +46,7 @@ void generate()
     // common/ui/ui3.xs
     // common/ui/ui4.xs
 
-    // zombies/proto/utils.xs
+    // zombies/upgrades/utils.xs
 
     // common/pickups/pickupManager.xs
 

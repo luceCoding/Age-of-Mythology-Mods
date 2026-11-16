@@ -36,9 +36,11 @@ void setupHumansPost(){
         //     trPlayerTimeshiftAddEntry(p, kbProtoUnitGetName(buildingType), 0.5, 2.0);
         // }
 
-        // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.25, cXSRelativityAssign);
-        // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSpikeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.5, cXSRelativityAssign);
-        // trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeSpikeTrap), "HandAttack", p, cXSActionEffectROF, 2.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.25, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSpikeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.5, cXSRelativityAssign);
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeSpikeTrap), "HandAttack", p, cXSActionEffectROF, 2.0, cXSRelativityAssign);
+
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "MonolithStrike", p, cXSActionEffectROF, 2.0, cXSRelativityPercent);
 
         for (int i = 0; i < g_humanT1GodPowers.size(); i++) {
             GodPowerData godPower = g_humanT1GodPowers[i];

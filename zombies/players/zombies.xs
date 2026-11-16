@@ -3,14 +3,15 @@ int countLivingHumanPlayers(){
     int count = 0;
     for (int i = 0; i < g_humanUnitIDs.size(); i++){
         int unitId = g_humanUnitIDs[i];
+        selectSingle(unitId);
+        if (trUnitDead()){
+            continue;
+        }
         int p = kbUnitGetPlayerID(unitId);
         if (g_finalTeams[p] != 1 || trPlayerIsDefeatedOrResigned(p)){
             continue;
         }
-        selectSingle(unitId);
-        if (trUnitDead() == false){
-            count++;
-        }
+        count++;
     }
     return count;
 }
@@ -95,7 +96,7 @@ void setupZombiesPost(){
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeDwarvenArmory, p, 0, 3, 1);
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeMonumentToGods, p, 0, 4, 1);
             trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAssign);
-            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopCapAddition, g_humanUnitCount / g_zombieUnitCount * 20, cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopCapAddition, xsIntToFloat((xsIntToFloat(max(g_humanUnitCount, 1)) / xsIntToFloat(g_zombieUnitCount)) * 20.0), cXSRelativityAssign);
             trProtounitModifySpawnData(kbProtoUnitGetName(zombieType), p, kbProtoUnitGetName(cUnitTypeCinematicBlockSpawnPoint), 0, 1.0, cXSRelativityAssign, -1, -1);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, g_humanUnitCount+1, cXSRelativityPercent);
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectRange, 10.0, cXSRelativityAssign);
