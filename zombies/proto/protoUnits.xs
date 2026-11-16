@@ -62,8 +62,8 @@ void preModifyPlayerData(){
         }
 
         for (int cTech = 0; cTech < cNumberTechs; cTech++) {
-            trTechSetStatus(p, cTech, cTechStatusUnobtainable);
-        }
+                trTechSetStatus(p, cTech, cTechStatusUnobtainable);
+            }
 
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechCopperWeapons);
         trTechRemove(p, kbProtoUnitGetName(cUnitTypeArmory), cTechCopperArmor);
@@ -204,13 +204,14 @@ void preModifyPlayerData(){
             trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectPopCapAddition, 0, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(unitType), p, cXSProtoEffectLOS, cBaseHumanLOS, cXSRelativityAssign);
             trProtoUnitSetFlag(cHumanAIPlayer, kbProtoUnitGetName(unitType), "Repairable", true);
-
+            
             // trModifyProtounitActionUnitType(kbProtoUnitGetName(unitType), "HandAttack", kbProtoUnitGetName(cDefaultcUnitTypeWall), p, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAssign);
             // trModifyProtounitActionUnitType(kbProtoUnitGetName(unitType), "RangedAttack", kbProtoUnitGetName(cDefaultcUnitTypeWall), p, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAssign);
             // trModifyProtounitActionUnitType(kbProtoUnitGetName(unitType), "LightningAttack", kbProtoUnitGetName(cDefaultcUnitTypeWall), p, cXSActionProtoEffectDamageBonus, 0.25, cXSRelativityAssign);
-        }
 
-        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMeteor), "HandAttack", p, cXSActionEffectDamageDivine, 0.0, cXSRelativityAssign);
+            trProtoUnitSetUnitType(p, kbProtoUnitGetName(unitType), kbUnitTypeGetName(cUnitTypeLogicalTypeWitherable), true);
+            trProtoUnitSetFlag(p, kbProtoUnitGetName(unitType), "WitherDoesDamage", true);
+        }
 
         // Buildings
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWallShort), p, cXSProtoEffectLOS, 1.0, cXSRelativityAssign);
@@ -309,6 +310,8 @@ void preModifyPlayerData(){
     // Human AI Only
     for (int i = 0; i < g_humanInteractableTypes.size(); i++){
         int interactableType = g_humanInteractableTypes[i];
+        trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(interactableType), kbUnitTypeGetName(cUnitTypeLogicalTypeWitherable), true);
+        trProtoUnitSetFlag(cHumanAIPlayer, kbProtoUnitGetName(interactableType), "WitherDoesDamage", true);
         g_OnCreationListener.register(cHumanAIPlayer, interactableType, false, [](int unitId = -1) -> void {
                 selectSingle(unitId);
                 if (kbUnitGetProtoUnitID(unitId) != cUnitTypeToriiGate){
@@ -327,6 +330,7 @@ void preModifyPlayerData(){
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeOsirisPieceBox), "AbstractTemple", true);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeOsirisPieceBox), cHumanAIPlayer, cXSProtoEffectObstructionRadiusX, 1.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cUnitTypeOsirisPieceBox), cHumanAIPlayer, cXSProtoEffectObstructionRadiusZ, 1.0, cXSRelativityAssign);
+    trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeOsirisPieceBox), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), true);
 
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeWallJail), kbUnitTypeGetName(cUnitTypeLogicalTypeHandUnitsAutoAttack), true);
     trProtoUnitSetUnitType(cHumanAIPlayer, kbProtoUnitGetName(cUnitTypeWallJail), kbUnitTypeGetName(cUnitTypeLogicalTypeRangedUnitsAutoAttack), true);
@@ -350,20 +354,44 @@ void preModifyPlayerData(){
     );
 
     trProtoUnitSetFlag(0, kbProtoUnitGetName(cUnitTypeObsidianObelisk), "Collideable", false);
-    // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeTaproot), 0, cXSProtoEffectHitpoints, 10, cXSRelativityAssign);
-    // trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMinion), 0, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMinion), 0, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
+
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectObstructionRadiusX, 7.0, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectObstructionRadiusZ, 3.0, cXSRelativityAssign);
 
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusX, 1.5, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectObstructionRadiusZ, 1.5, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeWall), "WallBuild", false); // Makes neighboring walls not damage each other
     g_OnCreationListener.register(0, cDefaultcUnitTypeWall, false, [](int unitId = -1) -> void {
             selectSingle(unitId);
             trUnitSetScale(1.35, 0.75, 1.35);
             trUnitSetShading(cShaderBurning, xsRandFloat(75.0, 100.0));
+            trUnitSetFlag(cProtoUnitFlagCollidesWithProjectiles, true); // Makes neighboring walls not damage each other
         }
     );
+
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusX, 1.5, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusZ, 1.5, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeWall2), "WallBuild", false); // Makes neighboring walls not damage each other
+    g_OnCreationListener.register(0, cDefaultcUnitTypeWall2, false, [](int unitId = -1) -> void {
+            selectSingle(unitId);
+            trUnitSetScale(1.35, 0.75, 1.35);
+            trUnitSetShading(cShaderBurning, xsRandFloat(75.0, 100.0));
+            trUnitSetFlag(cProtoUnitFlagCollidesWithProjectiles, true); // Makes neighboring walls not damage each other
+        }
+    );
+
+    trProtoUnitSetUnitType(0, kbProtoUnitGetName(cDefaultcUnitTypeWall), kbUnitTypeGetName(cUnitTypeLogicalTypeWitherable), true);
+    trProtoUnitSetUnitType(0, kbProtoUnitGetName(cDefaultcUnitTypeWall2), kbUnitTypeGetName(cUnitTypeLogicalTypeWitherable), true);
+    trProtoUnitSetUnitType(0, kbProtoUnitGetName(cDefaultcUnitTypeGate), kbUnitTypeGetName(cUnitTypeLogicalTypeWitherable), true);
+    trProtoUnitSetUnitType(0, kbProtoUnitGetName(cDefaultcUnitTypeGate2), kbUnitTypeGetName(cUnitTypeLogicalTypeWitherable), true);
+
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeWall), "WitherDoesDamage", true);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeWall2), "WitherDoesDamage", true);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeGate), "WitherDoesDamage", true);
+    trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeGate2), "WitherDoesDamage", true);
 
     g_OnCreationListener.register(0, cUnitTypeObeliskProp, false, [](int unitId = -1) -> void {
             selectSingle(unitId);
@@ -426,18 +454,6 @@ void preModifyPlayerData(){
         }
     );
 
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusX, 1.25, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectArmorCrush, 0.25, cXSRelativityAssign);
-    g_OnCreationListener.register(0, cDefaultcUnitTypeWall2, false, [](int unitId = -1) -> void {
-            selectSingle(unitId);
-            trUnitSetScale(1.0, 0.8, 1.0);
-            trUnitSetShading(cShaderBurning, xsRandFloat(50.0, 100.0));
-        }
-    );
-
-    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeBoulderWall), 0, cXSProtoEffectObstructionRadiusX, 4, cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cUnitTypeBoulderWall), 0, cXSProtoEffectObstructionRadiusZ, 1.25, cXSRelativityAssign);
     trTechSetStatus(0, cTechStoneWall, cTechStatusActive);
 }
 
@@ -463,8 +479,8 @@ void postModifyPlayerData(){
         }
     }
 
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * (g_zombieUnitCount+1), cXSRelativityAssign);
-    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth * (g_zombieUnitCount+1), cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth, cXSRelativityAssign);
+    trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeWall2), 0, cXSProtoEffectHitpoints, cGaiaBaseWallHealth, cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * (g_zombieUnitCount+1), cXSRelativityAssign);
     trModifyProtounitData(kbProtoUnitGetName(cDefaultcUnitTypeGate2), 0, cXSProtoEffectHitpoints, cGaiaBaseGateHealth * (g_zombieUnitCount+1), cXSRelativityAssign);
 
@@ -476,5 +492,6 @@ void postModifyPlayerData(){
     trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeGate), "KBTracked", false);
     trProtoUnitSetFlag(0, kbProtoUnitGetName(cDefaultcUnitTypeGate2), "KBTracked", false);
 
+    setupHumansPost();
     setupZombiesPost();
 }

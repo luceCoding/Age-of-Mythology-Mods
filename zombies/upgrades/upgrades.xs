@@ -39,6 +39,9 @@ void applyDataUpgradeToAllHumanBuildings(int unitId = -1, int puField = cXSProto
         int buildingType = g_upgradeableHumanBuildings[i];
         trModifyProtounitData(kbProtoUnitGetName(buildingType), p, puField, delta, relativity);
     }
+    if (puField == cXSProtoEffectLOS){
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectGodPowerBlockRadius, delta, cXSRelativityPercent);
+    }
 }
 
 void applyDataUpgradeToAllHumanTypes(int unitId = -1, int puField = cXSProtoEffectHitpoints, float delta = 1.0, int relativity = cXSRelativityAbsolute) {
@@ -145,11 +148,11 @@ void addArmoryCommands(){
                     }
                 );
         addCommand(p, cUnitTypeArmory, 0, 1, pow(humanBaseGoldCost, 1), "Gold",
-                    "-5% Rate of Fire for All Buildings",
-                    "-5% Rate of Fire for All Buildings",
+                    "-2% Rate of Fire for All Buildings",
+                    "-2% Rate of Fire for All Buildings",
                     "resources\\in_game\\stat_rof.png",
                     [](int unitId = -1) -> void {
-                        applyActionUpgradeToAllHumanBuildings(unitId, cXSActionEffectROF, 0.95, cXSRelativityPercent);
+                        applyActionUpgradeToAllHumanBuildings(unitId, cXSActionEffectROF, 0.98, cXSRelativityPercent);
                         increaseCommandCost(unitId, 2.0);
                     }
                 );
@@ -205,8 +208,8 @@ void addArmoryCommands(){
 void addSiegeCommands() {
     for (int p = 1; p <= cNumberPlayers; p++) {
         addCommand(p, cUnitTypeSiegeWorks, 0, 0, pow(humanBaseGoldCost, 2), "Gold",
-                    "+1 Sentry Tower",
-                    "+1 Sentry Tower",
+                    "+1 Watch Tower",
+                    "Standard defensive tower",
                     "resources\\shared\\static_color\\buildings\\sentry_tower_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -227,8 +230,8 @@ void addSiegeCommands() {
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 0, 2, pow(humanBaseGoldCost, 2), "Gold",
-                    "+1 Mirror Tower",
-                    "+1 Mirror Tower",
+                    "+1 Laser Tower",
+                    "Good against walls and buildings",
                     "resources\\atlantean\\static_color\\buildings\\mirror_tower_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -261,7 +264,7 @@ void addSiegeCommands() {
                 );
         addCommand(p, cUnitTypeSiegeWorks, 1, 2, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Rock Tower",
-                    "Highly armored tower with a taunt ability",
+                    "High health defensive melee tower, applies taunt to nearby enemies",
                     "resources\\norse_freyr\\player_color\\units\\rock_giant_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -272,7 +275,7 @@ void addSiegeCommands() {
                 );
         addCommand(p, cUnitTypeSiegeWorks, 1, 3, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Flame Tower",
-                    "Breaths a short ranged aoe fire attack",
+                    "Short ranged AOE tower, applies burning onto its targets",
                     "resources\\japanese\\player_color\\units\\wanyudo_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -282,8 +285,8 @@ void addSiegeCommands() {
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 2, 0, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 Asgardian Hill Fort",
-                    "Fortress that applies a progressive freeze",
+                    "+1 Frost fort",
+                    "Long ranged fort, applies freeze onto its targets",
                     "resources\\norse_freyr\\static_color\\buildings\\asgardian_hill_fort_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -293,8 +296,8 @@ void addSiegeCommands() {
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 2, 1, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 God Power Blocker",
-                    "Blocks god powers in a 30 tile radius",
+                    "+1 Ward tower",
+                    "Blocks god powers",
                     "resources\\egyptian\\static_color\\buildings\\monument_to_villagers_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -304,8 +307,8 @@ void addSiegeCommands() {
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 2, 2, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 Statue of Lightning",
-                    "+1 Statue of Lightning",
+                    "+1 Lightning tower",
+                    "Good against myth units, attacks bounce up to three times",
                     "resources\\spc\\static_color\\buildings\\statue_major_god_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -315,8 +318,8 @@ void addSiegeCommands() {
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 3, 0, pow(humanBaseGoldCost, 5), "Gold",
-                    "+1 Pillar of Tlalocan",
-                    "+1 Pillar of Tlalocan",
+                    "+1 Water tower",
+                    "Moderate ranged tower, applies AOE stun onto its targets",
                     "resources\\aztec\\static_color\\god_powers\\pillar_of_tlalocan_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -387,177 +390,102 @@ void addEconomicGuildCommands(){
     }
 }
 
-void addTempleCommands() {
-    for (int p = 1; p <= cNumberPlayers; p++) {
-        addCommand(p, cUnitTypeTemple, 0, 0, pow(humanBaseGoldCost, 3), "Gold",
-                    "+1 Sentinel God Power",
-                    "+1 Sentinel God Power",
-                    "resources\\greek\\static_color\\god_powers\\sentinel_icon.png",
+void addGodPowerTierCommands(int p = -1, int building = -1, ref GodPowerData[] powers, int row = 0, int initialCost = 10) {
+    for (int i = 0; i < powers.size(); i++) {
+        GodPowerData gpData = powers[i];
+        int protoPower = gpData.protoPower;
+        string powerName = gpData.name;
+        if (powerName == "") {
+            powerName = kbGodPowerGetName(protoPower);
+        }
+        if (gpData.cooldown < 0) {
+            errorLog("Missing cooldown for god power " + powerName);
+            continue;
+        }
+        int plantType = addCommand(p, building, row, i, initialCost, "Gold",
+                    "+1 " + powerName + " God Power", gpData.description, gpData.icon,
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerSentinel), 1, 60);
+                        int key = getCostKey(p, kbUnitGetProtoUnitID(unitId));
+                        int power = cPlantToUnitTypeHashMap.get(key);
+                        trGodPowerGrant(p, kbGodPowerGetName(power), 1, cPlantToCooldownHashMap.get(key));
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        addCommand(p, cUnitTypeTemple, 0, 1, pow(humanBaseGoldCost, 3), "Gold",
-                    "+1 Solar Shield God Power",
-                    "+1 Solar Shield God Power",
-                    "resources\\japanese\\static_color\\god_powers\\solar_shield_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerSolarShield), 1, 60);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeTemple, 0, 2, pow(humanBaseGoldCost, 3), "Gold",
-                    "+1 Tailwind God Power",
-                    "+1 Tailwind God Power",
-                    "aztec\\static_color\\god_powers\\tailwind_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerTailwind), 1, 60);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-
-        addCommand(p, cUnitTypeTemple, 1, 0, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 Restoration God Power",
-                    "+1 Restoration God Power",
-                    "resources\\greek\\static_color\\god_powers\\restoration_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerRestoration), 1, 120);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeTemple, 1, 1, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 Bronze God Power",
-                    "+1 Bronze God Power",
-                    "resources\\greek\\static_color\\god_powers\\bronze_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerBronze), 1, 120);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeTemple, 1, 2, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 Vanish God Power",
-                    "+1 Vanish God Power",
-                    "resources\\chinese\\static_color\\god_powers\\vanish_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerVanish), 1, 120);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeTemple, 1, 3, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 Forest Protection God Power",
-                    "+1 Forest Protection God Power",
-                    "chinese\\static_color\\god_powers\\forest_protection_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerForestProtection), 1, 120);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-
-        addCommand(p, cUnitTypeTemple, 2, 0, pow(humanBaseGoldCost, 5), "Gold",
-                    "+1 Underworld Passage God Power",
-                    "+1 Underworld Passage God Power",
-                    "resources\\greek\\static_color\\god_powers\\underworld_passage_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerUnderworldPassage), 1, 180);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeTemple, 2, 1, pow(humanBaseGoldCost, 5), "Gold",
-                    "+1 Lullaby God Power",
-                    "+1 Lullaby God Power",
-                    "aztec\\static_color\\god_powers\\lullaby_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerLullaby), 1, 180);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeTemple, 2, 2, pow(humanBaseGoldCost, 5), "Gold",
-                    "+1 Thunder Burst God Power",
-                    "+1 Thunder Burst God Power",
-                    "japanese\\static_color\\god_powers\\thunder_burst_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerThunderBurst), 1, 180);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeTemple, 3, 0, pow(humanBaseGoldCost, 6), "Gold",
-                    "+1 Lightning Storm God Power",
-                    "+1 Lightning Storm God Power",
-                    "resources\\greek\\static_color\\god_powers\\lightning_storm_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trGodPowerGrant(p, kbGodPowerGetName(cProtoPowerLightningStorm), 1, 240);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
+        if (plantType != -1) {
+            int key = getCostKey(p, plantType);
+            cPlantToUnitTypeHashMap.put(key, protoPower);
+            cPlantToCooldownHashMap.put(key, gpData.cooldown);
+        }
     }
 }
 
-void addWellOfUrdTierCommands(int p = -1, ref int[] zombieTypes, float woodCost = 1.0) {
-    for (int i = 0; i < zombieTypes.size(); i++) {
-        int row = i / 6;
-        int col = i % 6;
-        string zombieName = kbProtoUnitGetName(zombieTypes[i]);
-        trProtounitAddTrain(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, zombieName, row, col);
+void addTempleCommands() {
+    for (int p = 1; p <= cNumberPlayers; p++) {
+        addGodPowerTierCommands(p, cUnitTypeTemple, g_humanT1GodPowers, 0, pow(humanBaseGoldCost, 3));
+        addGodPowerTierCommands(p, cUnitTypeTemple, g_humanT2GodPowers, 1, pow(humanBaseGoldCost, 4));
+        addGodPowerTierCommands(p, cUnitTypeTemple, g_humanT3GodPowers, 2, pow(humanBaseGoldCost, 5));
+        addGodPowerTierCommands(p, cUnitTypeTemple, g_humanT4GodPowers, 3, pow(humanBaseGoldCost, 6));
+    }
+}
+
+int zombieTrainableRowCapacity(int row = 0) {
+    // The Well of Urd's Delete command occupies the last slot of row 3.
+    if (row == 3) {
+        return 5;
+    }
+    return 6;
+}
+
+void addWellOfUrdTierCommands(int p = -1, ref TrainableUnitData[] trainables, int row = 0, float woodCost = 1.0) {
+    for (int i = 0; i < trainables.size(); i++) {
+        if (i >= zombieTrainableRowCapacity(row)) {
+            errorLog("Too many zombie trainables for the Well of Urd row " + row);
+            break;
+        }
+        TrainableUnitData unitData = trainables[i];
+        string zombieName = kbProtoUnitGetName(unitData.unitType);
+        trProtounitAddTrain(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, zombieName, row, i);
         trModifyProtounitResource(zombieName, "Wood", p, cXSPUResourceEffectCost, woodCost, cXSRelativityAssign);
         trUnforbidProtounit(p, zombieName);
     }
 }
 
 void addWellOfUrdCommands(int p = 0) {
-    addWellOfUrdTierCommands(p, g_purchaseableZombieTypes, 0);
+    addWellOfUrdTierCommands(p, g_zombieT1Trainables, 0, 0);
+    addWellOfUrdTierCommands(p, g_zombieT2Trainables, 1, 0);
+    addWellOfUrdTierCommands(p, g_zombieT3Trainables, 2, 0);
+    addWellOfUrdTierCommands(p, g_zombieT4Trainables, 3, 0);
 }
 
 // Each command raises the build limit of its zombie type by one.
-void addZombieArmoryTierCommands(int p = -1, ref int[] zombieTypes, int row = 0, int initialCost = 1) {
-    for (int i = 0; i < zombieTypes.size(); i++) {
-        int zombieType = zombieTypes[i];
+void addZombieArmoryTierCommands(int p = -1, ref TrainableUnitData[] trainables, int row = 0) {
+    for (int i = 0; i < trainables.size(); i++) {
+        if (i >= zombieTrainableRowCapacity(row)) {
+            errorLog("Too many zombie trainables for the zombie armory row " + row);
+            break;
+        }
+        TrainableUnitData unitData = trainables[i];
+        int zombieType = unitData.unitType;
         string zombieName = kbProtoUnitGetName(zombieType);
         trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
-        int plantType = addCommand(p, cUnitTypeDwarvenArmory, row, i, initialCost, "Gold",
-                    "+1 " + zombieName,
-                    "+1 " + zombieName,
-                    kbProtoUnitGetIconPath(0, zombieType),
+        int plantType = addCommand(p, cUnitTypeDwarvenArmory, row, i, unitData.initialCost, "Gold",
+                    unitData.name,
+                    unitData.description,
+                    unitData.icon,
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
-                        string zombieName = kbProtoUnitGetName(cPlantToUnitTypeHashMap.get(kbUnitGetProtoUnitID(unitId)));
+                        int key = getCostKey(p, kbUnitGetProtoUnitID(unitId));
+                        string zombieName = kbProtoUnitGetName(cPlantToUnitTypeHashMap.get(key));
                         trUnforbidProtounit(p, zombieName);
                         trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
                         increaseCommandCost(unitId, 1.0);
                     }
                 );
-        cPlantToUnitTypeHashMap.put(plantType, zombieType);
+        if (plantType != -1) {
+            cPlantToUnitTypeHashMap.put(getCostKey(p, plantType), zombieType);
+        }
     }
-}
-
-void addZombieArmorySingleCommand(int p = -1, int zombieType = -1, int row = 0, int col = 0, int initialCost = 1) {
-    string zombieName = kbProtoUnitGetName(zombieType);
-    trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 0, cXSRelativityAssign);
-    int plantType = addCommand(p, cUnitTypeDwarvenArmory, row, col, initialCost, "Gold",
-                "+1 " + zombieName,
-                "+1 " + zombieName,
-                kbProtoUnitGetIconPath(0, zombieType),
-                [](int unitId = -1) -> void {
-                    int p = kbUnitGetPlayerID(unitId);
-                    string zombieName = kbProtoUnitGetName(cPlantToUnitTypeHashMap.get(kbUnitGetProtoUnitID(unitId)));
-                    trUnforbidProtounit(p, zombieName);
-                    trModifyProtounitData(zombieName, p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                    trModifyProtounitData(zombieName, p, cXSProtoEffectTrainPoints, 10, cXSRelativityAssign);
-                    increaseCommandCost(unitId, 1.0);
-                }
-            );
-    cPlantToUnitTypeHashMap.put(plantType, zombieType);
 }
 
 // Frees this player's command plants (listeners and train slots) so zombie commands can reuse them.
@@ -566,58 +494,18 @@ void deregisterHumanCommands(int p = -1) {
 }
 
 void addZombieArmoryCommands(int p = -1) {
-    addZombieArmorySingleCommand(p, cUnitTypeFireArcher, 0, 0, pow(zombieBaseGoldCost, 1));
-    addZombieArmorySingleCommand(p, cUnitTypeHuskarl, 0, 1, pow(zombieBaseGoldCost, 1));
-    addZombieArmorySingleCommand(p, cUnitTypeDestroyer, 0, 2, pow(zombieBaseGoldCost, 2));
-    addZombieArmorySingleCommand(p, cUnitTypeShinobi, 0, 3, pow(zombieBaseGoldCost, 2));
-    addZombieArmorySingleCommand(p, cUnitTypeOtontin, 0, 4, pow(zombieBaseGoldCost, 3));
-    addZombieArmorySingleCommand(p, cUnitTypeGastraphetoros, 0, 5, pow(zombieBaseGoldCost, 4));
-
-    addZombieArmorySingleCommand(p, cUnitTypeAnubite, 1, 0, pow(zombieBaseGoldCost, 2));
-    addZombieArmorySingleCommand(p, cUnitTypeCyclops, 1, 1, pow(zombieBaseGoldCost, 4));
-    addZombieArmorySingleCommand(p, cUnitTypeScarab, 1, 2, pow(zombieBaseGoldCost, 5));
-    addZombieArmorySingleCommand(p, cUnitTypeMountainGiant, 1, 3, pow(zombieBaseGoldCost, 5));
-    addZombieArmorySingleCommand(p, cUnitTypePetsuchos, 1, 4, pow(zombieBaseGoldCost, 5));
-
-    addZombieArmorySingleCommand(p, cUnitTypeColossus, 2, 0, pow(zombieBaseGoldCost, 6));
-    addZombieArmorySingleCommand(p, cUnitTypeFireGiant, 2, 1, pow(zombieBaseGoldCost, 6));
-    addZombieArmorySingleCommand(p, cUnitTypeOnmyoji, 2, 2, pow(zombieBaseGoldCost, 7));
-    addZombieArmorySingleCommand(p, cUnitTypeQuinametzin, 2, 3, pow(zombieBaseGoldCost, 8));
-
-    addZombieArmorySingleCommand(p, cUnitTypeQiongQi, 3, 0, pow(zombieBaseGoldCost, 3));
-    addZombieArmorySingleCommand(p, cUnitTypeOnmoraki, 3, 1, pow(zombieBaseGoldCost, 5));
-    addZombieArmorySingleCommand(p, cUnitTypeNidhogg, 3, 2, pow(zombieBaseGoldCost, 7));
-    addZombieArmorySingleCommand(p, cUnitTypePolyphemus, 3, 3, pow(zombieBaseGoldCost, 7));
-    addZombieArmorySingleCommand(p, cUnitTypeMictlantecuhtli, 3, 4, pow(zombieBaseGoldCost, 8));
+    addZombieArmoryTierCommands(p, g_zombieT1Trainables, 0);
+    addZombieArmoryTierCommands(p, g_zombieT2Trainables, 1);
+    addZombieArmoryTierCommands(p, g_zombieT3Trainables, 2);
+    addZombieArmoryTierCommands(p, g_zombieT4Trainables, 3);
 }
 
-
-// Each command grants one charge of its god power; the cost rises with every purchase.
-void addZombieGodPowerTierCommands(int p = -1, ref int[] powers, ref string[] icons, int row = 0, int initialCost = 10, int cooldown = 60) {
-    for (int i = 0; i < powers.size(); i++) {
-        int power = powers[i];
-        string powerName = kbGodPowerGetName(power);
-        int plantType = addCommand(p, cUnitTypeMonumentToGods, row, i, initialCost, "Gold",
-                    "+1 " + powerName + " God Power",
-                    "+1 " + powerName + " God Power",
-                    icons[i],
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        int power = cPlantToUnitTypeHashMap.get(kbUnitGetProtoUnitID(unitId));
-                        trGodPowerGrant(p, kbGodPowerGetName(power), 1, cPlantToCooldownHashMap.get(kbUnitGetProtoUnitID(unitId)));
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        cPlantToUnitTypeHashMap.put(plantType, power);
-        cPlantToCooldownHashMap.put(plantType, cooldown);
-    }
-}
 
 void addZombieGodPowerCommands(int p = -1) {
-    addZombieGodPowerTierCommands(p, g_purchaseableT1GodPowers, g_purchaseableT1GodPowerIcons, 0, pow(humanBaseGoldCost, 3), 60);
-    addZombieGodPowerTierCommands(p, g_purchaseableT2GodPowers, g_purchaseableT2GodPowerIcons, 1, pow(humanBaseGoldCost, 4), 120);
-    addZombieGodPowerTierCommands(p, g_purchaseableT3GodPowers, g_purchaseableT3GodPowerIcons, 2, pow(humanBaseGoldCost, 5), 180);
-    addZombieGodPowerTierCommands(p, g_purchaseableT4GodPowers, g_purchaseableT4GodPowerIcons, 3, pow(humanBaseGoldCost, 6), 240);
+    addGodPowerTierCommands(p, cUnitTypeMonumentToGods, g_zombieT1GodPowers, 0, pow(humanBaseGoldCost, 3));
+    addGodPowerTierCommands(p, cUnitTypeMonumentToGods, g_zombieT2GodPowers, 1, pow(humanBaseGoldCost, 4));
+    addGodPowerTierCommands(p, cUnitTypeMonumentToGods, g_zombieT3GodPowers, 2, pow(humanBaseGoldCost, 5));
+    addGodPowerTierCommands(p, cUnitTypeMonumentToGods, g_zombieT4GodPowers, 3, pow(humanBaseGoldCost, 6));
 }
 
 void convertCommandsToZombie(int p = -1) {
