@@ -207,31 +207,31 @@ void addArmoryCommands(){
 
 void addSiegeCommands() {
     for (int p = 1; p <= cNumberPlayers; p++) {
-        addCommand(p, cUnitTypeSiegeWorks, 0, 0, pow(humanBaseGoldCost, 2), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 0, 0, pow(humanBaseGoldCost, 1), "Gold",
                     "+1 Watch Tower",
-                    "Standard defensive tower",
+                    "Standard defensive tower. Does not increase in cost. Does not increase in cost with each purchase.",
                     "resources\\shared\\static_color\\buildings\\sentry_tower_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
                         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeSentryTower));
                         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSentryTower), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                        increaseCommandCost(unitId, 1.0);
+                        increaseCommandCost(unitId, 0.0);
                     }
                 );
-        addCommand(p, cUnitTypeSiegeWorks, 0, 1, pow(humanBaseGoldCost, 2), "Gold",
+        addCommand(p, cUnitTypeSiegeWorks, 0, 1, pow(humanBaseGoldCost, 1), "Gold",
                     "+1 Smoke Trap",
-                    "+1 Smoke Trap",
+                    "Reduces enemy visibility and speed. Does not increase in cost with each purchase.",
                     "resources\\aztec\\static_color\\buildings\\smoke_trap_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
                         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeSmokeTrap));
                         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                        increaseCommandCost(unitId, 1.0);
+                        increaseCommandCost(unitId, 0.0);
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 0, 2, pow(humanBaseGoldCost, 2), "Gold",
                     "+1 Laser Tower",
-                    "Good against walls and buildings",
+                    "Good against walls and buildings. Increases in cost with each purchase.",
                     "resources\\atlantean\\static_color\\buildings\\mirror_tower_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -242,7 +242,7 @@ void addSiegeCommands() {
                 );
         addCommand(p, cUnitTypeSiegeWorks, 1, 0, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Sky Passage",
-                    "+1 Sky Passage",
+                    "Allows units to travel between sky passages. Increases in cost with each purchase.",
                     "resources\\atlantean\\static_color\\buildings\\sky_passage_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -253,7 +253,7 @@ void addSiegeCommands() {
                 );
         addCommand(p, cUnitTypeSiegeWorks, 1, 1, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Spike Trap",
-                    "+1 Spike Trap",
+                    "Damages and stuns nearby enemies. Increases in cost with each purchase.",
                     "resources\\aztec\\static_color\\buildings\\spike_trap_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -264,7 +264,7 @@ void addSiegeCommands() {
                 );
         addCommand(p, cUnitTypeSiegeWorks, 1, 2, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Rock Tower",
-                    "High health defensive melee tower, applies taunt to nearby enemies",
+                    "High health defensive melee tower, applies taunt to nearby enemies. Increases in cost with each purchase.",
                     "resources\\norse_freyr\\player_color\\units\\rock_giant_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -275,7 +275,7 @@ void addSiegeCommands() {
                 );
         addCommand(p, cUnitTypeSiegeWorks, 1, 3, pow(humanBaseGoldCost, 3), "Gold",
                     "+1 Flame Tower",
-                    "Short ranged AOE tower, applies burning onto its targets",
+                    "Short ranged AOE tower, applies burning onto its targets. Increases in cost with each purchase.",
                     "resources\\japanese\\player_color\\units\\wanyudo_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -286,7 +286,7 @@ void addSiegeCommands() {
                 );
         addCommand(p, cUnitTypeSiegeWorks, 2, 0, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Frost fort",
-                    "Long ranged fort, applies freeze onto its targets",
+                    "Long ranged fort, applies freeze onto its targets. Increases in cost with each purchase.",
                     "resources\\norse_freyr\\static_color\\buildings\\asgardian_hill_fort_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -296,19 +296,8 @@ void addSiegeCommands() {
                     }
                 );
         addCommand(p, cUnitTypeSiegeWorks, 2, 1, pow(humanBaseGoldCost, 4), "Gold",
-                    "+1 Ward tower",
-                    "Blocks god powers",
-                    "resources\\egyptian\\static_color\\buildings\\monument_to_villagers_icon.png",
-                    [](int unitId = -1) -> void {
-                        int p = kbUnitGetPlayerID(unitId);
-                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeMonumentToVillagers));
-                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
-                        increaseCommandCost(unitId, 1.0);
-                    }
-                );
-        addCommand(p, cUnitTypeSiegeWorks, 2, 2, pow(humanBaseGoldCost, 4), "Gold",
                     "+1 Lightning tower",
-                    "Good against myth units, attacks bounce up to three times",
+                    "Good against myth units, attacks bounce up to three times. Increases in cost with each purchase.",
                     "resources\\spc\\static_color\\buildings\\statue_major_god_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
@@ -319,12 +308,23 @@ void addSiegeCommands() {
                 );
         addCommand(p, cUnitTypeSiegeWorks, 3, 0, pow(humanBaseGoldCost, 5), "Gold",
                     "+1 Water tower",
-                    "Moderate ranged tower, applies AOE stun onto its targets",
+                    "Moderate ranged tower, applies AOE stun onto its targets. Increases in cost with each purchase.",
                     "resources\\aztec\\static_color\\god_powers\\pillar_of_tlalocan_icon.png",
                     [](int unitId = -1) -> void {
                         int p = kbUnitGetPlayerID(unitId);
                         trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc));
                         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
+                        increaseCommandCost(unitId, 1.0);
+                    }
+                );
+        addCommand(p, cUnitTypeSiegeWorks, 3, 1, pow(humanBaseGoldCost, 5), "Gold",
+                    "+1 Ward tower",
+                    "Blocks god powers. Increases in cost with each purchase.",
+                    "resources\\egyptian\\static_color\\buildings\\monument_to_villagers_icon.png",
+                    [](int unitId = -1) -> void {
+                        int p = kbUnitGetPlayerID(unitId);
+                        trUnforbidProtounit(p, kbProtoUnitGetName(cUnitTypeMonumentToVillagers));
+                        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToVillagers), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAbsolute);
                         increaseCommandCost(unitId, 1.0);
                     }
                 );

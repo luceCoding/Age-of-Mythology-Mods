@@ -50,7 +50,7 @@ void setupZombiesPost(){
         if (g_finalTeams[p] != 2) { continue; }
 
         trModifyProtounitResource(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Wood", p, cXSPUResourceEffectCost, baseWellOfUrdWoodCost, cXSRelativityAssign);
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildPoints, 30.0, cXSRelativityAssign);
         trProtoUnitSetUnitType(p, kbProtoUnitGetName(cUnitTypeWellOfUrd), "AbstractTemple", true);
         trModifyProtounitUnitType(kbProtoUnitGetName(cUnitTypeWellOfUrd), "Unit", p, cXSPUUnitTypeEffectAddNotContainType, 0.0, cXSRelativityAssign);
         trModifyProtounitUnitType(kbProtoUnitGetName(cUnitTypeWellOfUrd), "LogicalTypePickable", p, cXSPUUnitTypeEffectAddContainType, g_trashZombieTypes.size()-1, cXSRelativityAssign);
@@ -69,16 +69,16 @@ void setupZombiesPost(){
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeMonumentToGods), p, cXSProtoEffectBuildPoints, 60.0, cXSRelativityAssign);
         trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeMonumentToGods), p, "", "Used to purchase zombie god powers.", "Used to purchase zombie god powers.");
 
-        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeNidhogg), p, cXSProtoEffectHitpoints, 0.15, cXSRelativityPercent);
+        trModifyProtounitData(kbProtoUnitGetName(cUnitTypeNidhogg), p, cXSProtoEffectHitpoints, 0.2, cXSRelativityPercent);
 
         trGodPowerRedefine(p, "MeteorSPC", "resources\egyptian\static_color\god_powers\meteor_icon.png", "Comet", "Rains down a single meteor. Does bonus damage to walls.");
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", p, cXSActionEffectDamageDivine, 0, cXSRelativityAssign);
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", p, cXSActionEffectDamageCrush, 580, cXSRelativityAssign);
-        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallShort), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
-        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallMedium), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
-        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallLong), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
-        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallConnector), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
-        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallGate), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
+        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallShort), p, cXSActionProtoEffectDamageBonus, 2.5, cXSRelativityAssign);
+        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallMedium), p, cXSActionProtoEffectDamageBonus, 2.5, cXSRelativityAssign);
+        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallLong), p, cXSActionProtoEffectDamageBonus, 2.5, cXSRelativityAssign);
+        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallConnector), p, cXSActionProtoEffectDamageBonus, 2.5, cXSRelativityAssign);
+        trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeMeteorSPC), "HandAttack", kbUnitTypeGetName(cUnitTypeWallGate), p, cXSActionProtoEffectDamageBonus, 2.5, cXSRelativityAssign);
 
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeCarnivora), "HandAttack", p, cXSActionEffectDamageCrush, 25, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeCarnivora), p, cXSProtoEffectArmorPierce, 0.9, cXSRelativityAssign);
@@ -96,7 +96,7 @@ void setupZombiesPost(){
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeDwarvenArmory, p, 0, 3, 1);
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeMonumentToGods, p, 0, 4, 1);
             trModifyProtounitData(kbProtoUnitGetName(cUnitTypeWellOfUrd), p, cXSProtoEffectBuildLimit, 1, cXSRelativityAssign);
-            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopCapAddition, xsIntToFloat((xsIntToFloat(max(g_humanUnitCount, 1)) / xsIntToFloat(g_zombieUnitCount)) * 20.0), cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopCapAddition, xsIntToFloat((xsIntToFloat(max(g_humanUnitCount, 1)) / xsIntToFloat(g_zombieUnitCount)) * 30.0), cXSRelativityAssign);
             trProtounitModifySpawnData(kbProtoUnitGetName(zombieType), p, kbProtoUnitGetName(cUnitTypeCinematicBlockSpawnPoint), 0, 1.0, cXSRelativityAssign, -1, -1);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, g_humanUnitCount+1, cXSRelativityPercent);
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectRange, 10.0, cXSRelativityAssign);
@@ -247,6 +247,9 @@ void onDayStartZombies(){
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectUnitRegenRate, -g_dayNumber*2, cXSRelativityAssign);
         }
     }
+    if (g_dayNumber > 1){
+        trUnitCreate(kbProtoUnitGetName(cUnitTypeRelic), g_bspZombieSpawnLocation.x, g_bspZombieSpawnLocation.y, g_bspZombieSpawnLocation.z, -1, 0);
+    }
 }
 
 void onNightStartZombies(){
@@ -306,6 +309,7 @@ int createTrashMinion(int unitID = -1, int minionTier = 0){
         trUnitAddModifier(cModifyTypeDamage, cXSDamageTypePierce, 2, duration);
         trUnitAddModifier(cModifyTypeDamage, cXSDamageTypeCrush, 2, duration);
         trUnitAddModifier(cModifyTypeDamage, cXSDamageTypeDivine, 2, duration);
+        trUnitAddModifier(cModifyTypeArmor, 0, 1.5, duration);
         trUnitApplyEffectProtoUnit(cOnHitEffectAttach, duration, kbUnitGetPlayerID(minionId), kbProtoUnitGetName(cUnitTypeVFXAbsorbSoulTargetRed));
     }
     return minionId;
@@ -495,4 +499,5 @@ void initializeZombies(){
         addWellOfUrdCommands(p);
         spawnIndex = spawnIndex + 1;
     }
+    trPaintTerrainCircularBySubtypeName("Hades Cracked 1", g_bspZombieSpawnLocation, 15.0, true);
 }

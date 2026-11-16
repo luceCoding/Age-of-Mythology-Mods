@@ -12,7 +12,7 @@ const int cDefaultcUnitTypeGate2 = cUnitTypeWallGate;
 const int cStartingWood = 50;
 const int cStartingGold = 10;
 const int cGaiaBaseGateHealth = 1000;
-const int cGaiaBaseWallHealth = 10000;
+const int cGaiaBaseWallHealth = 3000;
 const int cBaseJailWallHealth = 100000;
 const float cBaseHumanLOS = 10.0;
 const float cHumanWallHealthMultiplier = 2.0;
@@ -317,8 +317,8 @@ void initializeGlobals(){
 
     g_zombieT1GodPowers.add(createGodPowerData(
                             cProtoPowerDeconstruction,
-                            "Wall Deconstruction",
-                            "Deconstructs enemy walls and gates",
+                            "Deconstruction",
+                            "Deconstructs enemy walls, buildings and treasure chests",
                             "atlantean\static_color\god_powers\deconstruction_icon.png",
                             60)
                         );
@@ -374,7 +374,7 @@ void initializeGlobals(){
     g_zombieT3GodPowers.add(createGodPowerData(
                             cProtoPowerWither,
                             "Wither",
-                            "Slows enemies, damages buildings and prevents building construction",
+                            "Slows enemies and damages buildings and walls",
                             "resources\greek_demeter\static_color\god_powers\wither_icon.png",
                             180)
                         );

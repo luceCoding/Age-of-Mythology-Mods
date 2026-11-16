@@ -3,16 +3,6 @@ void setupHumansPost(){
 
         if (g_finalTeams[p] != 1) { continue; }
 
-        for (int i = 0; i < g_upgradeableHumanBuildings.size(); i++){
-            int buildingType = g_upgradeableHumanBuildings[i];
-            if (i <= 4){ // Only Walls
-                trProtoUnitSetUnitType(p, kbProtoUnitGetName(buildingType), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), true);
-            }
-            else {
-                trProtoUnitSetUnitType(p, kbProtoUnitGetName(buildingType), kbUnitTypeGetName(cUnitTypeLogicalTypeTartarianGateValidOverlapPlacement), false);
-            }
-        }
-
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", p, cXSActionEffectDamageCrush, 1000, cXSRelativityAssign);
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", kbUnitTypeGetName(cUnitTypeBuilding), p, cXSActionProtoEffectDamageBonus, 3.0, cXSRelativityAssign);
         trModifyProtounitActionUnitType(kbProtoUnitGetName(cUnitTypeDivineSlashDamage), "HandAttack", kbUnitTypeGetName(cDefaultcUnitTypeWall), p, cXSActionProtoEffectDamageBonus, 10.0, cXSRelativityAssign);
@@ -38,7 +28,7 @@ void setupHumansPost(){
 
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSmokeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.25, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeSpikeTrap), p, cXSProtoEffectHitpoints, 600.0 * 0.5, cXSRelativityAssign);
-        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeSpikeTrap), "HandAttack", p, cXSActionEffectROF, 2.0, cXSRelativityAssign);
+        trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeSpikeTrap), "HandAttack", p, cXSActionEffectROF, 2.0, cXSRelativityPercent);
 
         trModifyProtounitAction(kbProtoUnitGetName(cUnitTypeMonolithOfTlaloc), "MonolithStrike", p, cXSActionEffectROF, 2.0, cXSRelativityPercent);
 
