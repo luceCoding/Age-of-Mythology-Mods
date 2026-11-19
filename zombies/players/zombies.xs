@@ -90,8 +90,10 @@ void setupZombiesPost(){
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeNidhogg), p, cXSProtoEffectPopulationCount, 4.0, cXSRelativityAssign);
         trModifyProtounitData(kbProtoUnitGetName(cUnitTypeNidhogg), p, cXSProtoEffectTrainPoints, 45.0, cXSRelativityAssign);
 
-        for (int i = 0; i < g_zombieUnitTypes.size(); i++) {
-            int zombieType = g_zombieUnitTypes[i];
+        trProtoUnitChangeName(kbProtoUnitGetName(cUnitTypeMinion), p, "Zombie", "Brains!", "Brains!");
+
+        for (int i = 0; i < g_zombieOverlordUnitTypes.size(); i++) {
+            int zombieType = g_zombieOverlordUnitTypes[i];
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeWellOfUrd, p, 0, 2, 0);
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeDwarvenArmory, p, 0, 3, 1);
             addTrainBuilding(kbProtoUnitGetName(zombieType), cUnitTypeMonumentToGods, p, 0, 4, 1);
@@ -107,20 +109,30 @@ void setupZombiesPost(){
             trProtoUnitActionSetEnabled(kbProtoUnitGetName(zombieType), p, "Pickup", true);
         }
 
+        float hp = g_baseT1ZombieHP;
+        float attack = g_baseT1ZombieAttack;
+        float hackArmor = g_baseT1ZombieHackArmor;
+        float pierceArmor = g_baseT1ZombiePierceArmor;
+
         for (int i = 0; i < g_trashZombieTypes.size(); i++) {
             int zombieType = g_trashZombieTypes[i];
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, hp, cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectArmorHack, hackArmor, cXSRelativityAssign);
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectArmorPierce, pierceArmor, cXSRelativityAssign);
+
+            trModifyProtounitAction(kbProtoUnitGetName(zombieType), "HandAttack", p, cXSActionEffectDamageHack, attack, cXSRelativityAssign);
+            trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamagePierce, attack, cXSRelativityAssign);
+            hp = hp * 1.2;
+            attack = attack * 1.2;
+
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectPopulationCount, 0, cXSRelativityAssign);
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectLifespan, cMaxFloat, cXSRelativityAssign);
-            if (i == 0){
-                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor * g_firstTrashZombieScaleFactor, cXSRelativityPercent);
-            }
-            else {
-                trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
-            }
+            trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, scaleFactor, cXSRelativityPercent);
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "HandAttack", p, cXSActionEffectDamageCrush, i * 2, cXSRelativityAssign);
             trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageCrush, i * 2, cXSRelativityAssign);
             applyForAllZombies(p, zombieType);
         }
+
         setupTrainableZombies(p, g_zombieT1Trainables, scaleFactor);
         setupTrainableZombies(p, g_zombieT2Trainables, scaleFactor);
         setupTrainableZombies(p, g_zombieT3Trainables, scaleFactor);
@@ -148,15 +160,17 @@ void setupZombiesPost(){
             godPower.redefineGodPower(p);
         }
 
+        addZombieAutoAttackSkill(p);
+
     }
 }
 
 int spawnZombieLord(int p = -1, vector v = cInvalidVector){
     int zombieId = trUnitCreateForced(
-        kbProtoUnitGetName(g_zombieUnitTypes[0]),
+        kbProtoUnitGetName(g_zombieOverlordUnitTypes[0]),
         v.x, v.y, v.z,
         0, p);
-    trModifyProtounitData(kbProtoUnitGetName(g_zombieUnitTypes[0]), p, cXSProtoEffectHitpoints, 1.1, cXSRelativityPercent);
+    trModifyProtounitData(kbProtoUnitGetName(g_zombieOverlordUnitTypes[0]), p, cXSProtoEffectHitpoints, 1.1, cXSRelativityPercent);
     selectSingle(zombieId);
     trUnitMakeInvulnerable(true);
     lowFreqSchedulerWithIntInt.add(120000, zombieId, 0, [](int iteration = 0, int unitID = 0, int _ = 0) -> bool {
@@ -164,7 +178,7 @@ int spawnZombieLord(int p = -1, vector v = cInvalidVector){
         trUnitMakeInvulnerable(false);
         return trUnitAlive();
     });
-    trUnitChangeName("Zombie Overlord");
+    trUnitChangeName("Necromancer");
     g_zombieUnitIDs.add(zombieId);
     if (trCurrentPlayer() == p){
         cameraLookAt(v, 60.0, 45.0, 45.0);
@@ -211,8 +225,8 @@ void permaDailyBuffZombies(){
             permaBuffTrainableZombies(p, g_zombieT2Trainables, finalHPBuff);
             permaBuffTrainableZombies(p, g_zombieT3Trainables, finalHPBuff);
             permaBuffTrainableZombies(p, g_zombieT4Trainables, finalHPBuff);
-            for (int i = 0; i < g_zombieUnitTypes.size(); i++) {
-                int zombieType = g_zombieUnitTypes[i];
+            for (int i = 0; i < g_zombieOverlordUnitTypes.size(); i++) {
+                int zombieType = g_zombieOverlordUnitTypes[i];
                 trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectHitpoints, finalHPBuff, cXSRelativityPercent);
                 trModifyProtounitAction(kbProtoUnitGetName(zombieType), "HandAttack", p, cXSActionEffectDamageDivine, max(1, g_humanUnitCount), cXSRelativityAbsolute);
                 trModifyProtounitAction(kbProtoUnitGetName(zombieType), "RangedAttack", p, cXSActionEffectDamageDivine, max(1, g_humanUnitCount), cXSRelativityAbsolute);
@@ -246,9 +260,6 @@ void onDayStartZombies(){
             int zombieType = g_otherZombieTypes[i];
             trModifyProtounitData(kbProtoUnitGetName(zombieType), p, cXSProtoEffectUnitRegenRate, -g_dayNumber*2, cXSRelativityAssign);
         }
-    }
-    if (g_dayNumber > 1){
-        trUnitCreate(kbProtoUnitGetName(cUnitTypeRelic), g_bspZombieSpawnLocation.x, g_bspZombieSpawnLocation.y, g_bspZombieSpawnLocation.z, -1, 0);
     }
 }
 
@@ -300,7 +311,7 @@ int createTrashMinion(int unitID = -1, int minionTier = 0){
 
     int p = kbUnitGetPlayerID(unitID);
     vector zombiePos = kbUnitGetTruePosition(unitID);
-    int minionType = g_trashZombieTypes[minionTier];
+    int minionType = g_trashZombieTypes[xsFloatToInt(max(0, min(minionTier, g_trashZombieTypes.size() - 1)))];
     int minionId = trUnitCreate(kbProtoUnitGetName(minionType), zombiePos.x, zombiePos.y, zombiePos.z, xsRandInt(0, 359), p);
     if (g_isNight == true && (g_dayNumber % bloodMoonCycle == 0)){
         float duration = g_nightDurationMS / 1000;
@@ -381,9 +392,9 @@ void registerZombieRespawn(int player = -1){
 void initializeZombies(){
 
     for (int p = 1; p <= cNumberPlayers-1; p++){
-        for (int i = 0; i < g_zombieUnitTypes.size(); i = i + 1) {
-            int zombieType = g_zombieUnitTypes[i];
-            g_OnCreationListener.register(p, zombieType, false, [](int unitId = -1) -> void {
+        for (int i = 0; i < g_zombieOverlordUnitTypes.size(); i = i + 1) {
+            int zombieOverlordType = g_zombieOverlordUnitTypes[i];
+            g_OnCreationListener.register(p, zombieOverlordType, false, [](int unitId = -1) -> void {
                 lowFreqSchedulerWithIntInt.add(cTrashZombieSpawnTimer, unitId, 0, [](int iteration = 0, int unitID = 0, int _ = 0) -> bool {
                     int p = kbUnitGetPlayerID(unitID);
                     selectSingle(unitID);
@@ -391,8 +402,8 @@ void initializeZombies(){
                         return false;
                     }
 
-                    int minionId = createTrashMinion(unitID);
-                    if (minionId != -1){
+                    int minionId = createTrashMinion(unitID, g_dayNumber-1);
+                    if (minionId != -1 && g_isZombieAutoAttack[p]){
                         int buildingId = getRandomAliveBuilding();
                         orderToAutoAttackUnit(minionId, buildingId);
                     }
@@ -414,7 +425,7 @@ void initializeZombies(){
                 }
 
                 int minionId = createTrashMinion(unitID, kbUnitGetNumberContained(unitID));
-                if (minionId != -1){
+                if (minionId != -1 && g_isZombieAutoAttack[p]){
                     int buildingId = getRandomAliveBuilding();
                     orderToAutoAttackUnit(minionId, buildingId);
                 }
@@ -477,7 +488,7 @@ void initializeZombies(){
             90.0, 0);
     }
 
-    if (g_zombieUnitTypes.size() == 0) {
+    if (g_zombieOverlordUnitTypes.size() == 0) {
         errorLog("Cannot spawn the zombie players: no zombie unit types are configured.");
         return;
     }

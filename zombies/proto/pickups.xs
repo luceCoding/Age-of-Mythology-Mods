@@ -85,8 +85,8 @@ void setPickups(){
                 registerPickupPicker(unitId);
             });
         }
-        for (int z = 0; z < g_zombieUnitTypes.size(); z++){
-            g_OnCreationListener.register(p, g_zombieUnitTypes[z], false, [](int unitId = -1) -> void {
+        for (int z = 0; z < g_zombieOverlordUnitTypes.size(); z++){
+            g_OnCreationListener.register(p, g_zombieOverlordUnitTypes[z], false, [](int unitId = -1) -> void {
                 registerPickupPicker(unitId);
             });
         }

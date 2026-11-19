@@ -29,6 +29,9 @@ void generate()
     defineHashMapDefinition("int", "int", "cMinInt", "cMinInt");
     // common/listeners/onCreationListener.xs
 
+    // common/commands/plantAllocator.xs
+    // common/commands/commands.xs
+
     createTypedScheduler("midFreqSchedulerWithInt", buildStringTypeArray("Int"), 250, 512);
 
     createTypedScheduler("lowFreqScheduler", buildStringTypeArray(), 1000, 256);
@@ -62,6 +65,8 @@ void generate()
 
     // zombies/mapGen/director/buildingTracker.xs
     // zombies/mapGen/director/director.xs
+
+    // zombies/skills/skills.xs
 
     // zombies/players/humans.xs
     // zombies/players/zombies.xs

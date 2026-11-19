@@ -51,8 +51,13 @@ const float humanBaseWoodCost = 2.0;
 const float humanBaseGoldCost = 2.0;
 
 const float g_alphaSensitivity = 2.5; // Responsiveness weight for zombie performance adjustments
-const float g_exponentK = 1.0; // Sub-linear team size exponent
-const float g_firstTrashZombieScaleFactor = 1.25;
+const float g_exponentK = 0.7; // Sub-linear team size exponent
+
+const float g_baseT1ZombieHP = 300.0;
+const float g_baseT1ZombieAttack = 10.0;
+const float g_baseT1ZombieHackArmor = 0.35;
+const float g_baseT1ZombiePierceArmor = 0.40;
+
 const float g_targetZombieDestruction = 0.2;
 const float g_minDailyBuff = 1.01;
 const float g_maxDailyBuff = 1.25;
@@ -64,7 +69,7 @@ int[] g_humanInteractableTypes = default;
 int[] g_humanInteractableObjects = default;
 int[] g_treasureChestObjects = default;
 int[] g_humanUnitTypes = default;
-int[] g_zombieUnitTypes = default;
+int[] g_zombieOverlordUnitTypes = default;
 int[] g_placeHolderUnitTypes = default;
 int[] g_lootDrops = default;
 int[] g_upgradeableHumanBuildings = default;
@@ -72,6 +77,8 @@ int[] g_trashZombieTypes = default;
 
 int[] g_otherHumanBuildings = default;
 int[] g_otherZombieTypes = default;
+
+bool[] g_isZombieAutoAttack = default;
 
 TrainableUnitData[] g_zombieT1Trainables = default;
 TrainableUnitData[] g_zombieT2Trainables = default;
@@ -102,7 +109,7 @@ void initializeGlobals(){
 
     g_humanUnitTypes.add(cUnitTypeVillagerAtlanteanHero);
 
-    g_zombieUnitTypes.add(cUnitTypeSetna);
+    g_zombieOverlordUnitTypes.add(cUnitTypeSetna);
 
     g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
     g_placeHolderUnitTypes.add(cUnitTypeGoldPile);
@@ -186,6 +193,8 @@ void initializeGlobals(){
     g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypePolyphemus, pow(zombieBaseGoldCost, 6)));
     g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypeNidhogg, pow(zombieBaseGoldCost, 7)));
     g_zombieT4Trainables.add(createTrainableUnitData(cUnitTypeMictlantecuhtli, pow(zombieBaseGoldCost, 7)));
+
+    g_isZombieAutoAttack = new bool(cNumberPlayers, true);
 
     g_humanT1GodPowers.add(createGodPowerData(
                             cProtoPowerSentinel,
@@ -342,7 +351,7 @@ void initializeGlobals(){
     g_zombieT2GodPowers.add(createGodPowerData(
                             cProtoPowerAncestors,
                             "Ancestors",
-                            "Summons minions",
+                            "Summons zombies",
                             "resources\egyptian\static_color\god_powers\ancestors_icon.png",
                             120)
                         );
